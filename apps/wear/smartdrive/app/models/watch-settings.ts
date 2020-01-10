@@ -1,4 +1,4 @@
-import { L } from '@permobil/nativescript';
+type TranslateFunction = (translationKey: string) => string;
 
 // These settings are specific to the watch - they are not sent to the
 // server or the SmartDrive
@@ -41,20 +41,20 @@ export class WatchSettings {
     }, true);
   }
 
-  displayLabel(key: string): string {
+  displayLabel(key: string, TRANSLATE: TranslateFunction): string {
     let displayString = undefined;
     switch (key) {
       case 'wear-check':
       case 'disable-wear-check':
       case 'wearcheck':
       case 'disablewearcheck':
-        displayString = L('settings.watch-required.title');
+        displayString = TRANSLATE('settings.watch-required.title');
         break;
       case 'power-assist-timeout-time':
       case 'power-assist-timeout':
       case 'powerassisttimeouttime':
       case 'powerassisttimeout':
-        displayString = L('settings.power-assist-timeout.title');
+        displayString = TRANSLATE('settings.power-assist-timeout.title');
         break;
       default:
         break;
@@ -62,7 +62,7 @@ export class WatchSettings {
     return displayString;
   }
 
-  displayValue(key: string): string {
+  displayValue(key: string, TRANSLATE: TranslateFunction): string {
     const timeSeconds = (this.powerAssistTimeoutMinutes).toFixed(0);
     let displayString = undefined;
     switch (key) {
@@ -71,9 +71,9 @@ export class WatchSettings {
       case 'wearcheck':
       case 'disablewearcheck':
         if (this.disableWearCheck) {
-          displayString = L('settings.watch-required.values.disabled');
+          displayString = TRANSLATE('settings.watch-required.values.disabled');
         } else {
-          displayString = L('settings.watch-required.values.enabled');
+          displayString = TRANSLATE('settings.watch-required.values.enabled');
         }
         break;
       case 'power-assist-timeout-time':
@@ -81,7 +81,7 @@ export class WatchSettings {
       case 'powerassisttimeouttime':
       case 'powerassisttimeout':
         displayString = timeSeconds + ' ' +
-          L('settings.power-assist-timeout.units-short');
+          TRANSLATE('settings.power-assist-timeout.units-short');
         break;
       default:
         break;

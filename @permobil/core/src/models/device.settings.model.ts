@@ -1,8 +1,8 @@
 import { bindingTypeToString } from '../packet';
 import { mod } from '../utils';
 import { Observable } from '@nativescript/core';
-// REDO?
-import { L } from '../../../nativescript/src/utils/i18n.util';
+
+type TranslateFunction = (translationKey: string) => string;
 
 export namespace Device {
   // Standard Device Settings:
@@ -83,44 +83,44 @@ export namespace Device {
       return flags;
     }
 
-    displayLabel(key: string): string {
+    displayLabel(key: string, TRANSLATE: TranslateFunction): string {
       let displayString = undefined;
       switch (key) {
         case 'maxspeed':
         case 'Max Speed':
         case 'max-speed':
-          displayString = L('settings.max-speed');
+          displayString = TRANSLATE('settings.max-speed');
           break;
         case 'acceleration':
         case 'Acceleration':
-          displayString = L('settings.acceleration');
+          displayString = TRANSLATE('settings.acceleration');
           break;
         case 'tapsensitivity':
         case 'tap-sensitivity':
         case 'Tap Sensitivity':
-          displayString = L('settings.tap-sensitivity');
+          displayString = TRANSLATE('settings.tap-sensitivity');
           break;
         case 'powerassistbuzzer':
         case 'power-assist-buzzer':
         case 'Power Assist Buzzer':
-          displayString = L(
+          displayString = TRANSLATE(
             'settings.power-assist-buzzer'
           );
           break;
         case 'controlmode':
         case 'control-mode':
         case 'Control Mode':
-          displayString = L('settings.control-mode');
+          displayString = TRANSLATE('settings.control-mode');
           break;
         case 'units':
         case 'Units':
-          displayString = L('settings.units');
+          displayString = TRANSLATE('settings.units');
           break;
       }
       return displayString;
     }
 
-    displayValue(key: string): string {
+    displayValue(key: string, TRANSLATE: TranslateFunction): string {
       let translationKey = '';
       let displayString = undefined;
       switch (key) {
@@ -142,11 +142,11 @@ export namespace Device {
         case 'power-assist-buzzer':
         case 'Power Assist Buzzer':
           if (this.disablePowerAssistBeep) {
-            displayString = L(
+            displayString = TRANSLATE(
               'sd.settings.power-assist-buzzer.disabled'
             );
           } else {
-            displayString = L(
+            displayString = TRANSLATE(
               'sd.settings.power-assist-buzzer.enabled'
             );
           }
@@ -160,7 +160,7 @@ export namespace Device {
         case 'Units':
           translationKey =
             'sd.settings.units.' + this.units.toLowerCase();
-          displayString = L(translationKey);
+          displayString = TRANSLATE(translationKey);
           break;
       }
       return displayString;
@@ -363,24 +363,24 @@ export namespace Device {
       super();
     }
 
-    displayLabel(key: string): string {
+    displayLabel(key: string, TRANSLATE: TranslateFunction): string {
       let displayString = undefined;
       switch (key) {
         case 'switchcontrolspeed':
         case 'switch-control-speed':
         case 'Switch Control Speed':
-          displayString = L('switch-control.max-speed');
+          displayString = TRANSLATE('switch-control.max-speed');
           break;
         case 'switchcontrolmode':
         case 'switch-control-mode':
         case 'Switch Control Mode':
-          displayString = L('switch-control.mode');
+          displayString = TRANSLATE('switch-control.mode');
           break;
       }
       return displayString;
     }
 
-    displayValue(key: string): string {
+    displayValue(key: string, TRANSLATE: TranslateFunction): string {
       let translationKey = '';
       let displayString = undefined;
       switch (key) {
@@ -395,7 +395,7 @@ export namespace Device {
           translationKey =
             'sd.switch-settings.mode.' +
             this.mode.toLowerCase();
-          displayString = L(translationKey);
+          displayString = TRANSLATE(translationKey);
           break;
       }
       return displayString;
