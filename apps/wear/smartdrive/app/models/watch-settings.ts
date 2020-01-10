@@ -41,47 +41,39 @@ export class WatchSettings {
     }, true);
   }
 
-  displayLabel(key: string, TRANSLATE: TranslateFunction): string {
-    let displayString = undefined;
-    switch (key) {
-      case 'wear-check':
-      case 'disable-wear-check':
-      case 'wearcheck':
-      case 'disablewearcheck':
-        displayString = TRANSLATE('settings.watch-required.title');
-        break;
-      case 'power-assist-timeout-time':
-      case 'power-assist-timeout':
-      case 'powerassisttimeouttime':
-      case 'powerassisttimeout':
-        displayString = TRANSLATE('settings.power-assist-timeout.title');
-        break;
-      default:
-        break;
-    }
-    return displayString;
-  }
-
-  displayValue(key: string, TRANSLATE: TranslateFunction): string {
+  display(displayType: WatchSettings.Display, key: string, TRANSLATE: TranslateFunction): string {
+    key = key.toLowerCase().replace(/\W/g, '');
     const timeSeconds = (this.powerAssistTimeoutMinutes).toFixed(0);
     let displayString = undefined;
-    switch (key) {
-      case 'wear-check':
-      case 'disable-wear-check':
-      case 'wearcheck':
-      case 'disablewearcheck':
-        if (this.disableWearCheck) {
-          displayString = TRANSLATE('settings.watch-required.values.disabled');
-        } else {
-          displayString = TRANSLATE('settings.watch-required.values.enabled');
+    switch (displayType) {
+      case WatchSettings.Display.Label:
+        switch (key) {
+          case 'wearcheck':
+            displayString = TRANSLATE('settings.watch-required.title');
+            break;
+          case 'powerassisttimeout':
+            displayString = TRANSLATE('settings.power-assist-timeout.title');
+            break;
+          default:
+            break;
         }
         break;
-      case 'power-assist-timeout-time':
-      case 'power-assist-timeout':
-      case 'powerassisttimeouttime':
-      case 'powerassisttimeout':
-        displayString = timeSeconds + ' ' +
-          TRANSLATE('settings.power-assist-timeout.units-short');
+      case WatchSettings.Display.Value:
+        switch (key) {
+          case 'wearcheck':
+            if (this.disableWearCheck) {
+              displayString = TRANSLATE('settings.watch-required.values.disabled');
+            } else {
+              displayString = TRANSLATE('settings.watch-required.values.enabled');
+            }
+            break;
+          case 'powerassisttimeout':
+            displayString = timeSeconds + ' ' +
+              TRANSLATE('settings.power-assist-timeout.units-short');
+            break;
+          default:
+            break;
+        }
         break;
       default:
         break;
@@ -90,16 +82,11 @@ export class WatchSettings {
   }
 
   increase(key: string, increment: number = 1): void {
+    key = key.toLowerCase().replace(/\W/g, '');
     switch (key) {
-      case 'wear-check':
-      case 'disable-wear-check':
       case 'wearcheck':
-      case 'disablewearcheck':
         this.disableWearCheck = !this.disableWearCheck;
         break;
-      case 'power-assist-timeout-time':
-      case 'power-assist-timeout':
-      case 'powerassisttimeouttime':
       case 'powerassisttimeout':
         this.powerAssistTimeoutMinutes =
           Math.min(this.powerAssistTimeoutMinutes + increment, 20);
@@ -110,16 +97,11 @@ export class WatchSettings {
   }
 
   decrease(key: string, increment: number = 1): void {
+    key = key.toLowerCase().replace(/\W/g, '');
     switch (key) {
-      case 'wear-check':
-      case 'disable-wear-check':
       case 'wearcheck':
-      case 'disablewearcheck':
         this.disableWearCheck = !this.disableWearCheck;
         break;
-      case 'power-assist-timeout-time':
-      case 'power-assist-timeout':
-      case 'powerassisttimeouttime':
       case 'powerassisttimeout':
         this.powerAssistTimeoutMinutes =
           Math.max(this.powerAssistTimeoutMinutes - increment, 1);
@@ -128,4 +110,10 @@ export class WatchSettings {
         break;
     }
   }
+}
+
+export namespace WatchSettings {
+  export enum Display {
+    Label, Value
+  };
 }

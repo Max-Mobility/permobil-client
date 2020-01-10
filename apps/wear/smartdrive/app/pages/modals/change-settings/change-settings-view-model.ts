@@ -73,16 +73,40 @@ export class ChangeSettingsViewModel extends Observable {
   private _updateSettingsLabelDisplay() {
     // set the displayed settings label based on the selected setting
     this.changeSettingKeyString =
-      this.tempSettings.displayLabel(this.activeSettingToChange, L) ||
-      this.tempSwitchControlSettings.displayLabel(this.activeSettingToChange, L) ||
-      this.tempWatchSettings.displayLabel(this.activeSettingToChange, L);
+      this.tempSettings.display(
+        Device.Display.Label,
+        this.activeSettingToChange,
+        L
+      ) ||
+      this.tempSwitchControlSettings.display(
+        Device.Display.Label,
+        this.activeSettingToChange,
+        L
+      ) ||
+      this.tempWatchSettings.display(
+        WatchSettings.Display.Label,
+        this.activeSettingToChange,
+        L
+      );
   }
 
   private _updateSettingsValueDisplay() {
     // now set the displayed value
     this.changeSettingKeyValue =
-      this.tempSettings.displayValue(this.activeSettingToChange, L) ||
-      this.tempSwitchControlSettings.displayValue(this.activeSettingToChange, L) ||
-      this.tempWatchSettings.displayValue(this.activeSettingToChange, L);
+      this.tempSettings.display(
+        Device.Display.Value,
+        this.activeSettingToChange,
+        L
+      ) ||
+      this.tempSwitchControlSettings.display(
+        Device.Display.Value,
+        this.activeSettingToChange,
+        L
+      ) ||
+      this.tempWatchSettings.display(
+        WatchSettings.Display.Value,
+        this.activeSettingToChange,
+        L
+      );
   }
 }
