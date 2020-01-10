@@ -297,9 +297,11 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
 
             // Lay the view out at the rect width and height
             mRelativeLayout.layout(0, 0, bounds.width(), bounds.height());
+            // update the children of mRelativeLayout before drawing them
+            drawTimeStrings();
+            // now draw everything
             mRelativeLayout.draw(canvas);
 
-            drawTimeStrings();
             float batteryLvl = getWatchBatteryLevel();
             watchBatteryCircle.setValue(batteryLvl);
             float sdBatteryLvl = getSmartDriveBatteryLevel();
@@ -644,13 +646,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             // Get the minutes.
             String minuteString;
             int minute = mCalendar.get(Calendar.MINUTE);
-            // HACK - for some reason when we are setting the value of the string in Ambient Mode it's using the previous value.
-            // so here we are just incrementing the string value +1 to force the minutes in ambient mode to be in sync with what the system clock is
-            // For now this seems to be working fine... will need to analyze with other devices and more testing feedback.
-            // https://github.com/Max-Mobility/permobil-client/issues/639
-            if (isInAmbientMode()) {
-                minute = ((minute) + 1) % 60;
-            }
             minuteString = DateUtils.formatTwoDigitNumber(minute);
             minuteTextView.setText(minuteString);
 
@@ -660,14 +655,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 hourString = DateUtils.formatTwoDigitNumber(mCalendar.get(Calendar.HOUR_OF_DAY));
             } else {
                 int hour = mCalendar.get(Calendar.HOUR);
-
-                // handle updating the hour in ambient mode - if the minutes have rolled around to 00
-                // https://github.com/Max-Mobility/permobil-client/issues/639
-                if (isInAmbientMode() && minute == 0) {
-                    // we need to bump the hour +1 around the clock our minutes are updating in ambient here
-                    hour = (hour + 1);
-                }
-
                 if (hour == 0) {
                     hour = 12;
                 }
