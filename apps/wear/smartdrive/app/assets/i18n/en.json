@@ -62,6 +62,7 @@
     "no-smartdrive-paired": "No SmartDrive paired.",
     "no-smartdrives-found": "No SmartDrives found nearby.",
     "permissions": "Unable to perform the requested action. Required permissions were not granted.",
+    "power-assist-timeout": "Power assist was automatically disabled via timeout due to inactivity. Please consult the SmartDrive MX2+ setting [Power Assist Timeout] for more information.",
     "saving-error": "Failed saving SmartDrive error.",
     "saving-usage": "Failed saving usage.",
     "scan": "Could not scan.",
@@ -164,6 +165,7 @@
       "controlmode": "MX2+: The default, gesture based operation of the SmartDrive. In MX2+ Control Mode, a double tap will start driving the motor by ramping up its speed, a single tap will coast at the current speed, and a double tap will deactivate the driving.\n\nMX2: In MX2 Control Mode, the SmartDrive will start driving when it senses your push, and will deactivate driving when you tap. Please note this is a legacy-support option.\n\nMX1: In MX1 Control Mode, the SmartDrive will start driving when it senses your push, and will stop driving when you tap or when you brake on the handrims. Please note this is a legacy-support option.",
       "maxspeed": "The maximum speed the SmartDrive can drive at when controlled by your smartwatch.",
       "powerassistbuzzer": "When enabled, the SmartDrive will beep any time a connection from a remote device is established, or when SwitchControl is taken out of the standby state.",
+      "powerassisttimeout": "The SmartDrive MX2+ will automatically deactivate power assist after the specified time if the user has power assist active and is connected to the SmartDrive but has not activated the motor before the timeout expires.\n\nNote: the SmartDrive MX2+ will automatically deactivate power assist after 1 minute if it is not connected to the SmartDrive.",
       "switchcontrolmode": "Momentary: The default SwitchControl Mode in which the SmartDrive will start driving the motor by ramping up its speed to the configured SwitchControl Max Speed only while one of the SwitchControl Buttons is being held. When the held Button is released, or both of the Buttons [if present] are pressed, the driving will deactivate. Please note that upon deactivation it does not put the device in the standby state.\n\nLatched: In Latched SwitchControl Mode, the SmartDrive will start driving the motor by ramping up its speed to the configured SwitchControl Max Speed while one of the SwitchControl buttons is being held. When the held button is released, the SmartDrive will remain driving / coast at the current speed when the button was released. When one of the Buttons is pressed and released again, or both of the Buttons [if present] are pressed, the driving will deactivate. Please note that upon deactivation it does not put the device in the standby state.",
       "switchcontrolspeed": "The maximum speed the SmartDrive can drive at when controlled by SwitchControl.",
       "tapsensitivity": "The sensitivity of the tap gesture used for activating and deactivating the driving. The lower the percentage is the harder you need to tap - 100% is the most sensitive and therefore easiest to tap, and 10% is the least sensitive and therefore hardest to tap.",
@@ -176,6 +178,11 @@
     "pair-smartdrive": "Pair SmartDrive",
     "paired-to-smartdrive": "Successfully paired to SmartDrive.",
     "power-assist-buzzer": "Power Assist Beep Indication",
+    "power-assist-timeout": {
+      "title": "Power Assist Timeout",
+      "units-long": "minutes",
+      "units-short": "min"
+    },
     "scanning": "Scanning for SmartDrive to pair with...",
     "select-smartdrive": "Select SmartDrive",
     "tap-sensitivity": "Tap Sensitivity",
