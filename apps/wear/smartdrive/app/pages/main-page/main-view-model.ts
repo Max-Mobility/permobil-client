@@ -100,6 +100,7 @@ export class MainViewModel extends Observable {
 
   // #region "Private Members"
   private sendTapTimeoutId: any = null;
+  private powerAssistTimeoutId: any = null;
 
   private _showingModal: boolean = false;
 
@@ -219,7 +220,7 @@ export class MainViewModel extends Observable {
   }
 
   get disableWearCheck() {
-    return this._settingsService.disableWearCheck;
+    return this._settingsService.watchSettings.disableWearCheck;
   }
 
   // #region "Public Functions"
@@ -424,7 +425,7 @@ export class MainViewModel extends Observable {
       return;
     }
     this._enablingTraining = true;
-    if (!this.watchBeingWorn && !this._settingsService.disableWearCheck) {
+    if (!this.watchBeingWorn && !this.disableWearCheck) {
       alert({
         title: L('failures.title'),
         message: L('failures.must-wear-watch'),
@@ -510,6 +511,42 @@ export class MainViewModel extends Observable {
     btn.showModal('pages/modals/updates/updates-page', option);
   }
 
+  private _clearPowerAssistTimeout() {
+    // clear the timeout if it exists
+    if (this.powerAssistTimeoutId !== null) {
+      clearTimeout(this.powerAssistTimeoutId);
+      this.powerAssistTimeoutId = null;
+    }
+  }
+
+  private _restartPowerAssistTimeout(minutes: number) {
+    this._clearPowerAssistTimeout();
+    // set the timeout again
+    this._ensurePowerAssistTimeout(minutes);
+  }
+
+  private _ensurePowerAssistTimeout(minutes: number) {
+    if (this.powerAssistTimeoutId === null) {
+      // set the timeout only if there is no timeout
+      this.powerAssistTimeoutId = setTimeout(
+        this.onPowerAssistTimeout.bind(this),
+        minutes * 60 * 1000
+      );
+    }
+  }
+
+  private async onPowerAssistTimeout() {
+    this._clearPowerAssistTimeout();
+    // disable power assist
+    this.disablePowerAssist();
+    // and alert the user that we timed out
+    alert({
+      title: L('failures.title'),
+      message: L('failures.power-assist-timeout'),
+      okButtonText: L('buttons.ok')
+    });
+  }
+
   private _enablingPowerAssist: boolean = false;
   async enablePowerAssist() {
     if (this._enablingPowerAssist) {
@@ -519,7 +556,7 @@ export class MainViewModel extends Observable {
     this._enablingPowerAssist = true;
     sentryBreadCrumb('Enabling power assist');
     // only enable power assist if we're on the user's wrist
-    if (!this.watchBeingWorn && !this._settingsService.disableWearCheck) {
+    if (!this.watchBeingWorn && !this.disableWearCheck) {
       alert({
         title: L('failures.title'),
         message: L('failures.must-wear-watch'),
@@ -572,12 +609,16 @@ export class MainViewModel extends Observable {
               'Could not enable tap sensor for power assist!'
             );
           } else {
+            // we have successfully done everything to enable power
+            // assist, now show the user the change in state
             if (this._ringTimerId === null) {
               this._ringTimerId = setInterval(
                 this._blinkPowerAssistRing.bind(this),
                 this.RING_TIMER_INTERVAL_MS
               );
             }
+            // then set the timeout for power assist for 1 minute
+            this._restartPowerAssistTimeout(1);
           }
         } else {
           sentryBreadCrumb('Did not connect, disabling power assist');
@@ -615,6 +656,9 @@ export class MainViewModel extends Observable {
 
     // make sure to stop any pending taps
     this._stopTaps();
+
+    // clear timeout if there was one
+    this._clearPowerAssistTimeout();
 
     // decrease energy consumption
     this._disableTapSensor();
@@ -1460,7 +1504,7 @@ export class MainViewModel extends Observable {
         parsedData.s === android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT
       ) {
         this.watchBeingWorn = parsedData.d.state !== 0.0;
-        if (!this._settingsService.disableWearCheck) {
+        if (!this.disableWearCheck) {
           if (!this.watchBeingWorn && this.powerAssistActive) {
             sentryBreadCrumb('Watch not being worn - disabling power assist!');
             // disable power assist if the watch is taken off!
@@ -1484,7 +1528,7 @@ export class MainViewModel extends Observable {
       return;
     }
     // ignore tapping if we're not on the users wrist
-    if (!this.watchBeingWorn && !this._settingsService.disableWearCheck) {
+    if (!this.watchBeingWorn && !this.disableWearCheck) {
       return;
     }
     // scale the acceleration values if we're not up to date
@@ -2206,7 +2250,7 @@ export class MainViewModel extends Observable {
       this.smartDrive &&
       !this.smartDrive.connected
     ) {
-      setTimeout(this._connectToSavedSmartDrive.bind(this), 1 * 1000);
+      setTimeout(this._connectToSavedSmartDrive.bind(this), 5 * 1000);
     }
   }
 
@@ -2250,6 +2294,11 @@ export class MainViewModel extends Observable {
       clearInterval(this.rssiIntervalId);
       this.rssiIntervalId = null;
     }
+    // we've connected - set the timeout to be the user-configured
+    // timeout
+    this._restartPowerAssistTimeout(
+      this._settingsService.watchSettings.powerAssistTimeoutMinutes
+    );
     /*
     this.rssiIntervalId = setInterval(
       this._readSmartDriveSignalStrength.bind(this),
@@ -2275,6 +2324,12 @@ export class MainViewModel extends Observable {
     this.motorOn = false;
     this.hasSentSettingsToSmartDrive = false;
     if (this.powerAssistActive) {
+      if (this.powerAssistState !== PowerAssist.State.Disconnected) {
+        // set the timeout for power assist to 1 minute since we're
+        // disconnected
+        this._restartPowerAssistTimeout(1);
+      }
+      // update state
       this.powerAssistState = PowerAssist.State.Disconnected;
       this._updatePowerAssistRing();
       this._retrySmartDriveConnection();
@@ -2309,11 +2364,20 @@ export class MainViewModel extends Observable {
     // update motor state
     if (this.motorOn !== this.smartDrive.driving) {
       if (this.smartDrive.driving) {
+        // motor has turned on just now
         this._vibrator.cancel();
         this._vibrator.vibrate(250); // vibrate for 250 ms
+        // cancel the existing power assist timeout id if there is one
+        this._clearPowerAssistTimeout();
       } else {
+        // motor has turned off just now
         this._vibrator.cancel();
         this._vibrator.vibrate([0, 250, 50, 250]); // vibrate twice
+        // motor has just stopped - set the timeout to be the
+        // user-configured timeout
+        this._restartPowerAssistTimeout(
+          this._settingsService.watchSettings.powerAssistTimeoutMinutes
+        );
       }
     }
     this.motorOn = this.smartDrive.driving;
