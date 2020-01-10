@@ -608,6 +608,9 @@ export class MainViewModel extends Observable {
     // make sure to stop any pending taps
     this._stopTaps();
 
+    // clear timeout if there was one
+    this._clearPowerAssistTimeout();
+
     // decrease energy consumption
     this._disableTapSensor();
     this._releaseCPU();
