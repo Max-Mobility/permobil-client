@@ -41,7 +41,7 @@ export class WatchSettings {
     }, true);
   }
 
-  display(displayType: WatchSettings.Display, key: string, TRANSLATE: TranslateFunction): string {
+  getDisplayString(displayType: WatchSettings.Display, key: string, TRANSLATE: TranslateFunction): string {
     key = key.toLowerCase().replace(/\W/g, '');
     const timeSeconds = (this.powerAssistTimeoutMinutes).toFixed(0);
     let displayString = undefined;

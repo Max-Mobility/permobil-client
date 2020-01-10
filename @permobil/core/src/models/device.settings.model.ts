@@ -89,7 +89,7 @@ export namespace Device {
       return flags;
     }
 
-    display(displayType: Device.Display, key: string, TRANSLATE: TranslateFunction): string {
+    getDisplayString(displayType: Device.Display, key: string, TRANSLATE: TranslateFunction): string {
       key = key.toLowerCase().replace(/\W/g, '');
       let translationKey = '';
       let displayString = undefined;
@@ -335,7 +335,7 @@ export namespace Device {
       super();
     }
 
-    display(displayType: Device.Display, key: string, TRANSLATE: TranslateFunction): string {
+    getDisplayString(displayType: Device.Display, key: string, TRANSLATE: TranslateFunction): string {
       key = key.toLowerCase().replace(/\W/g, '');
       let translationKey = '';
       let displayString = undefined;
