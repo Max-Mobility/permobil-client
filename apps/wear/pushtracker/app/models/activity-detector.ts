@@ -237,7 +237,6 @@ export class ActivityDetector {
         maxZ = z;
       }
     });
-    const jerk = maxZ - minZ;
     // check that the prediction(s) were all above the threshold
     const predictionsWereGood = this.predictionHistory.reduce(
       (good, prediction) => {
