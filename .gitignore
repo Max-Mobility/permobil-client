@@ -105,7 +105,7 @@ Thumbs.db
 platforms/
 hooks/
 *~
-# package-lock.json
+package-lock.json
 *.js
 **/*.js
 **/*.css
