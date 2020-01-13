@@ -24,7 +24,8 @@ jobs:
           echo no | npm i -g nativescript
           tns usage-reporting disable
           tns error-reporting disable
-          npm i && npm run nuki
+          npm i -g rimraf && npm i -g typescript
+          npm i && NODE_OPTIONS=--max-old-space-size=4096 npm run nuki
 
       - name: Lint
         run: npm run tslint
@@ -70,7 +71,7 @@ jobs:
           tns usage-reporting disable
           tns error-reporting disable
           npm i -g rimraf && npm i -g typescript
-          npm i && NODE_OPTIONS=--max-old-space-size=4096 npm run nuki 
+          npm i && NODE_OPTIONS=--max-old-space-size=4096 npm run nuki
 
       - name: Install PIP #PIP needed for iOS builds and for TNS CLI to configure correctly on macOS
         run: |
