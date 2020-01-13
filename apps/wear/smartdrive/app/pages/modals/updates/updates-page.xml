@@ -1,5 +1,5 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd"
-  xmlns:nac="nativescript-animated-circle"
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" 
+  xmlns:nac="nativescript-animated-circle" 
   xmlns:ui="nativescript-auto-fit-text" shownModally="onShownModally" actionBarHidden="true">
   <GridLayout rows="*" columns="*" height="100%" width="100%">
     // SmartDrive Update Progress Circle

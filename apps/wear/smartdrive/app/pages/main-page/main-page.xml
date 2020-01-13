@@ -1,4 +1,4 @@
-<Page xmlns="http://ns.nativescript.org/tns.xsd" 
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" 
   xmlns:nac="nativescript-animated-circle" 
   xmlns:wol="nativescript-wear-os/packages/wear-os-layout" 
   xmlns:pager="nativescript-pager" 
