@@ -1328,7 +1328,7 @@ export class ActivityComponent implements OnInit {
   }
 
   private async _initMonthViewStyle() {
-    const pageColor =
+    /*const pageColor =
       this.CURRENT_THEME === APP_THEMES.DARK
         ? this._colorBlackCss
         : this._colorWhite;
@@ -1389,7 +1389,7 @@ export class ActivityComponent implements OnInit {
     dayNameCellStyle.cellBackgroundColor = pageColor;
     dayNameCellStyle.cellBorderColor = pageColor;
     dayNameCellStyle.cellTextColor = textColor;
-    this.monthViewStyle.dayNameCellStyle = dayNameCellStyle;
+    this.monthViewStyle.dayNameCellStyle = dayNameCellStyle;*/
   }
 
   private async _initMonthChartTitle() {

@@ -1,7 +1,7 @@
 <GridLayout rows="auto, *" class="activity-tab-layout">
   // Mock ActionBar
   <MockActionBar row="0" [title]="'activity-tab-component.title' | translate" [showBackNav]="true" (navTapEvent)="closeModal()"></MockActionBar>
-  <PullToRefresh row="1" (refresh)="refreshPlots($event)" [color]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'">
+  <PullToRefresh row="1" (refresh)="refreshPlots($event)" >
     <ScrollView>
       <GridLayout rows="auto, *">
         <GridLayout row="1" rows="auto, auto, auto, auto, auto" columns="*" height="100%">
@@ -40,7 +40,6 @@
               <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
               <CategoricalAxis
                 tkCartesianHorizontalAxis
-                [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'white' : 'black'"
                 lineHidden="true"
                 tickHidden="false"
                 majorTickInterval="4"
@@ -53,7 +52,6 @@
               <LinearAxis
                 id="vAxis"
                 tkCartesianVerticalAxis
-                [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'white' : 'black'"
                 horizontalLocation="Right"
                 labelSize="12"
                 labelMargin="20"
@@ -73,15 +71,6 @@
               >
               </BarSeries>
 
-              <Palettes>
-                <Palette tkCartesianPalette seriesName="DailyActivity">
-                  <PaletteEntry tkCartesianPaletteEntry [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
-                </Palette>
-                <Palette tkCartesianPalette seriesName="DailyActivity" seriesState="Selected">
-                  <PaletteEntry tkCartesianPaletteEntry [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
-                </Palette>
-              </Palettes>
-
               <ChartGridLineAnnotation
                 #dailyActivityAnnotation
                 tkCartesianAnnotations
@@ -90,7 +79,6 @@
                 [value]="dailyActivityAnnotationValue"
                 zPosition="AboveSeries"
                 strokeWidth="1"
-                [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
                 strokeDashPattern="3, 3"
               >
               </ChartGridLineAnnotation>
@@ -103,7 +91,6 @@
               <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
               <CategoricalAxis
                 tkCartesianHorizontalAxis
-                [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'white' : 'black'"
                 lineHidden="true"
                 tickHidden="false"
                 majorTickInterval="1"
@@ -117,7 +104,6 @@
               <LinearAxis
                 id="vAxis"
                 tkCartesianVerticalAxis
-                [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'white' : 'black'"
                 horizontalLocation="Right"
                 labelMargin="10"
                 lineHidden="true"
@@ -134,14 +120,7 @@
                 [valueProperty]="chartYAxis === CHART_Y_AXIS.COAST_TIME ? 'coastTime' : chartYAxis === CHART_Y_AXIS.PUSH_COUNT ? 'pushCount' : 'coastDistance'"
               >
               </BarSeries>
-              <Palettes>
-                <Palette tkCartesianPalette seriesName="WeeklyActivity">
-                  <PaletteEntry tkCartesianPaletteEntry [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
-                </Palette>
-                <Palette tkCartesianPalette seriesName="WeeklyActivity" seriesState="Selected">
-                  <PaletteEntry tkCartesianPaletteEntry [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
-                </Palette>
-              </Palettes>
+
               <ChartGridLineAnnotation
                 #weeklyActivityAnnotation
                 tkCartesianAnnotations
@@ -150,7 +129,6 @@
                 [value]="weeklyActivityAnnotationValue"
                 zPosition="AboveSeries"
                 strokeWidth="1"
-                [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
                 strokeDashPattern="3, 3"
               >
               </ChartGridLineAnnotation>

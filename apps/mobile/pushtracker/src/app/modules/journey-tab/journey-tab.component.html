@@ -13,7 +13,6 @@
       horizontalAlignment="right"
       marginRight="15"
       *ngIf="(!journeyItemsLoaded || showLoadingIndicator) && !noMoreDataAvailable"
-      [color]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
       busy="true"
     ></ActivityIndicator>
 
