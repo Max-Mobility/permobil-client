@@ -34,8 +34,11 @@ jobs:
           echo no | npm i -g nativescript
           tns usage-reporting disable
           tns error-reporting disable
-          npm i -g rimraf && npm i -g typescript
-          npm i && NODE_OPTIONS=--max-old-space-size=4096 npm run nuki
+          npm run global.installs
+          npm run setup.@permobil
+          npm run setup.forked.plugins
+          npm run setup.mobile
+          npm i && npm run clean.all
 
       - name: Lint
         run: npm run tslint
