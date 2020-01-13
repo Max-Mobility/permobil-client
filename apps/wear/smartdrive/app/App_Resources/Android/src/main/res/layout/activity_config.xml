@@ -131,13 +131,13 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="bottom|center">
+                android:gravity="bottom|center|center_horizontal|center_vertical">
 
                 <!-- ignore the useless parent warning here, the layout wont align with just table row to the design -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
+                    android:gravity="center|center_horizontal"
                     android:orientation="horizontal"
                     tools:ignore="UselessParent">
 
@@ -146,39 +146,39 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
+                        android:gravity="right|bottom"
+                        android:textSize="18sp"
                         android:text="@string/_12"
-                        android:textAlignment="viewEnd"
-                        android:textColor="@color/ambient_mode_text"
-                        android:textSize="18sp" />
+                        android:textColor="@color/ambient_mode_text" />
 
                     <TextView
                         android:id="@+id/colonTextView"
                         android:layout_width="6dp"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
+                        android:gravity="center_horizontal|bottom"
+                        android:textSize="18sp"
                         android:text="@string/colon"
-                        android:textAlignment="center"
-                        android:textColor="@color/ambient_mode_text"
-                        android:textSize="18sp" />
+                        android:textColor="@color/ambient_mode_text" />
 
                     <TextView
                         android:id="@+id/minuteTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
+                        android:gravity="left|bottom"
+                        android:textSize="18sp"
                         android:text="@string/_00"
-                        android:textAlignment="viewStart"
-                        android:textColor="@color/ambient_mode_text"
-                        android:textSize="18sp" />
+                        android:textColor="@color/ambient_mode_text" />
                     <TextView
                         android:id="@+id/amPmTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:text="@string/_00"
-                        android:textAlignment="viewStart"
-                        android:textColor="@color/ambient_mode_text"
-                        android:textSize="12sp" />
+                        android:gravity="right|bottom"
+                        android:textSize="12sp"
+                        android:text="@string/pm"
+                        android:textColor="@color/ambient_mode_text" />
                 </LinearLayout>
 
             </TableRow>
@@ -186,7 +186,7 @@
             <TableRow
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="bottom|center">
+                android:gravity="center">
 
                 <TextView
                     android:id="@+id/dateTextView"
@@ -194,10 +194,9 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
                     android:gravity="center"
-                    android:text="@string/pm"
-                    android:textAlignment="center"
-                    android:textColor="@color/ambient_mode_text"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:text="@string/_date"
+                    android:textColor="@color/ambient_mode_text" />
             </TableRow>
 
         </TableLayout>
