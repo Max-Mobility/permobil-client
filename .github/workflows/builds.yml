@@ -4,54 +4,8 @@ name: CI
 on: [push]
 
 jobs:
-  job1: #Android Builds
-    name: Android Builds
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v1
-
-      - name: Setup SSH-Agent
-        uses: webfactory/ssh-agent@support-multiple-keys
-        with:
-          ssh-private-key: |
-            ${{ secrets.SSH_PRIVATE_KEY }}
-            ${{ secrets.SQLITE_ENCRYPTED_SSH_TOKEN }}
-            ${{ secrets.SQLITE_COMMERCIAL_SSH_TOKEN }}
-
-      - name: Setup Permobil-Client
-        run: |
-          echo no | npm i -g nativescript
-          tns usage-reporting disable
-          tns error-reporting disable
-          npm i -g rimraf && npm i -g typescript
-          npm i && NODE_OPTIONS=--max-old-space-size=4096 npm run nuki
-
-      - name: Lint
-        run: npm run tslint
-
-      - name: Setup JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-
-      - name: Build PT.M
-        run: |
-          cd apps/mobile/pushtracker
-          tns build android --env.aot
-
-      - name: Build SD.W
-        run: |
-          cd apps/wear/smartdrive
-          tns build android
-
-      - name: Build PT.W
-        run: |
-          cd apps/wear/pushtracker
-          tns build android
-
-  job2: #iOS Builds
-    name: iOS Builds
+  job1: # App Builds
+    name: App Builds
     runs-on: macos-latest
     steps:
       - name: Checkout Repo
@@ -65,63 +19,44 @@ jobs:
             ${{ secrets.SQLITE_ENCRYPTED_SSH_TOKEN }}
             ${{ secrets.SQLITE_COMMERCIAL_SSH_TOKEN }}
 
-      - name: Setup Permobil-Client
-        run: |
-          echo no | npm i -g nativescript
-          tns usage-reporting disable
-          tns error-reporting disable
-          npm i -g rimraf && npm i -g typescript
-          npm i && NODE_OPTIONS=--max-old-space-size=4096 npm run nuki
+      - name: Lint
+        run: npm run tslint
+
+      - name: Setup JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
 
       - name: Install PIP #PIP needed for iOS builds and for TNS CLI to configure correctly on macOS
         run: |
           sudo pip install --upgrade pip
           sudo pip install six
 
-      - name: Build PT.M
+      - name: Setup Permobil-Client
+        run: |
+          echo no | npm i -g nativescript
+          tns usage-reporting disable
+          tns error-reporting disable
+          npm i -g rimraf && npm i -g typescript
+          npm run clean.all
+          npm i && NODE_OPTIONS=--max-old-space-size=4096 npm run nuki
+
+      - name: Build PT.M Android
         run: |
           cd apps/mobile/pushtracker
-          tns build ios --env.aot
-  # lintAndBuild:
-  #   name: App Builds
-  #   runs-on: macos-latest
-  #   steps:
-  #     - uses: actions/checkout@v1
-  #     # - name: Increase Node Memory
-  #     #   run: export NODE_OPTIONS=--max-old-space-size=8192
-  #     - name: Setup SSH-Agent
-  #       uses: webfactory/ssh-agent@support-multiple-keys
-  #       with:
-  #         ssh-private-key: |
-  #           ${{ secrets.SSH_PRIVATE_KEY }}
-  #           ${{ secrets.SQLITE_ENCRYPTED_SSH_TOKEN }}
-  #           ${{ secrets.SQLITE_COMMERCIAL_SSH_TOKEN }}
-  #     - name: Setup Permobil-Client
-  #       run: |
-  #         echo no | npm i -g nativescript
-  #         tns usage-reporting disable
-  #         tns error-reporting disable
-  #         npm i -g rimraf && npm i -g typescript
-  #         npm i && npm run nuki
-  #     - name: Lint
-  #       run: npm run tslint
-  #     - name: Setup JDK 1.8
-  #       uses: actions/setup-java@v1
-  #       with:
-  #         java-version: 1.8
-  #     - name: Install PIP #PIP needed for iOS builds and for TNS CLI to configure correctly on macOS
-  #       run: |
-  #         sudo pip install --upgrade pip
-  #         sudo pip install six
-  #     - name: Build PT.M
-  #       run: |
-  #         cd apps/mobile/pushtracker
-  #         tns build android --env.aot
-  #     - name: Build SD.W
-  #       run: |
-  #         cd apps/wear/smartdrive
-  #         tns build android
-  #     - name: Build PT.W
-  #       run: |
-  #         cd apps/wear/pushtracker
-  #         tns build android
+          tns build android --env.aot --env.uglify
+
+      - name: Build PT.W Android
+        run: |
+          cd apps/wear/pushtracker
+          tns build android --env.uglify
+
+      - name: Build SD.W Android
+        run: |
+          cd apps/wear/smartdrive
+          tns build android --env.uglify
+
+      - name: Build PT.M iOS
+        run: |
+          cd apps/mobile/pushtracker
+          tns build ios --env.aot --env.uglify
