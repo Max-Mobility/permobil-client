@@ -329,11 +329,6 @@ export class Bluetooth extends BluetoothCommon {
   }
 
   makeDescriptor(options) {
-    const uuid = this._stringToUuid(options.UUID);
-    // const perms = (opts && opts.perms) ||
-    const descriptor = CBMutableDescriptor.alloc().init();
-    const d = CBDescriptor.alloc().init();
-    // return new android.bluetooth.BluetoothGattDescriptor(uuid, perms);
     return null;
   }
 
