@@ -250,9 +250,6 @@ export class BluetoothService {
       name: argdata.name
     };
     Log.D(`${peripheral.name}::${peripheral.address} - discovered`);
-    if (this.isSmartDrive(peripheral)) {
-      const sd = this.getOrMakeSmartDrive(peripheral);
-    }
   }
 
   private onDeviceNameChange(args: any): void {

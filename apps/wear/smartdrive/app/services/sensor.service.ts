@@ -252,21 +252,6 @@ export class SensorService extends Observable {
       resolver,
       android.provider.Settings.Secure.ANDROID_ID
     );
-
-    const dbRecord = {
-      user_identifier: this._identifier,
-      sensor_data,
-      sensor_list,
-      device_uuid: deviceUUID,
-      // device_uuid: device.uuid,
-      device_manufacturer: device.manufacturer,
-      device_model: device.model,
-      device_os_version: device.osVersion,
-      device_sdk_version: device.sdkVersion
-    };
-
-    // now save to kinvey data collection
-    // return this._datastore.save(dbRecord);
   }
 
   public flush() {

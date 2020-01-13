@@ -1158,7 +1158,6 @@ export class Bluetooth extends BluetoothCommon {
   getServerService(uuidString) {
     if (this.gattServer) {
       const pUuid = this.stringToUuid(uuidString);
-      const services = this.gattServer.getServices();
       const service = this.gattServer.getService(pUuid);
       if (service) {
         CLog(
@@ -1473,14 +1472,12 @@ export class Bluetooth extends BluetoothCommon {
       }
 
       const type = scanRecord[offset++] & 0xff;
-      switch (type) {
-        case 0xff: // Manufacturer Specific Data
-          return this.decodeValue(
-            java.util.Arrays.copyOfRange(scanRecord, offset, offset + len - 1)
-          );
-        default:
-          offset += len - 1;
-          break;
+      if (type === 0xff) { // Manufacturer Specific Data
+        return this.decodeValue(
+          java.util.Arrays.copyOfRange(scanRecord, offset, offset + len - 1)
+        );
+      } else {
+        offset += len - 1;
       }
     }
   }

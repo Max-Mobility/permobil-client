@@ -465,9 +465,6 @@ export class BluetoothService {
       address: argdata.UUID,
       name: argdata.name
     };
-    if (this.isSmartDrive(peripheral)) {
-      const sd = this.getOrMakeSmartDrive(peripheral);
-    }
   }
 
   private onDeviceNameChange(args: any): void {
