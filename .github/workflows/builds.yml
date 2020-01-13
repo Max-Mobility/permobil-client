@@ -35,7 +35,6 @@ jobs:
           tns usage-reporting disable
           tns error-reporting disable
           npm i -g rimraf && npm i -g typescript
-          npm run clean.all
           npm i && NODE_OPTIONS=--max-old-space-size=4096 npm run nuki
 
       - name: Lint
