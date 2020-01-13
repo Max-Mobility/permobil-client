@@ -1,4 +1,4 @@
-name: App Builds
+name: CI
 
 # Trigger the workflow on push or pull request
 on: [push]
@@ -12,7 +12,7 @@ jobs:
   #       run: export NODE_OPTIONS=--max-old-space-size=8192
 
   lintAndBuild:
-    name: Build Apps
+    name: App Builds
 
     runs-on: macos-latest
     steps:
@@ -29,16 +29,13 @@ jobs:
             ${{ secrets.SQLITE_ENCRYPTED_SSH_TOKEN }}
             ${{ secrets.SQLITE_COMMERCIAL_SSH_TOKEN }}
 
-      # - name: Add Keys for Private Deps
-      #   run: ssh-add - <<< ${{ secrets.SQLITE_COMMERCIAL_SSH_TOKEN }} && ssh-add - <<< ${{ secrets.SQLITE_ENCRYPTED_SSH_TOKEN }}
-
       - name: Setup Permobil-Client
         run: |
           echo no | npm i -g nativescript
           tns usage-reporting disable
           tns error-reporting disable
           npm i -g rimraf && npm i -g typescript
-          npm i && npm run nuki
+          npm i
 
       - name: Lint
         run: npm run tslint
