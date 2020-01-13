@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v1
 
       - name: Increase Node Memory
-        run: export NODE_OPTIONS="--max-old-space-size=8192"
+        run: export NODE_OPTIONS=--max-old-space-size=8192
 
       - name: Setup SSH-Agent
         uses: webfactory/ssh-agent@support-multiple-keys
