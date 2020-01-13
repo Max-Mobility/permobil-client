@@ -5,6 +5,7 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "diagnostics": true,
     "noEmitHelpers": true,
     "noEmitOnError": false,
     "skipLibCheck": true,
@@ -21,5 +22,10 @@
       "@permobil/nativescript/*": ["../../../@permobil/nativescript/*"]
     }
   },
+  "include": [
+    "../../../@permobil/nativescript/src/**/*.ts",
+    "../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/src/**/*.ts",
+    "../../../forked-plugins/nativescript-bluetooth/**/*.ts"
+  ],
   "exclude": ["node_modules", "platforms", "tools", "hooks"]
 }
