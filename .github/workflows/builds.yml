@@ -46,15 +46,15 @@ jobs:
           cd apps/mobile/pushtracker
           tns build android --env.aot --env.uglify
 
-      - name: Build PT.W Android
-        run: |
-          cd apps/wear/pushtracker
-          tns build android --env.uglify
+      # - name: Build PT.W Android
+      #   run: |
+      #     cd apps/wear/pushtracker
+      #     tns build android --env.uglify
 
-      - name: Build SD.W Android
-        run: |
-          cd apps/wear/smartdrive
-          tns build android --env.uglify
+      # - name: Build SD.W Android
+      #   run: |
+      #     cd apps/wear/smartdrive
+      #     tns build android --env.uglify
 
       - name: Build PT.M iOS
         run: |
