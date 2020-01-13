@@ -170,6 +170,15 @@
                         android:textAlignment="viewStart"
                         android:textColor="@color/ambient_mode_text"
                         android:textSize="18sp" />
+                    <TextView
+                        android:id="@+id/amPmTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:text="@string/_00"
+                        android:textAlignment="viewStart"
+                        android:textColor="@color/ambient_mode_text"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
             </TableRow>
@@ -180,7 +189,7 @@
                 android:gravity="bottom|center">
 
                 <TextView
-                    android:id="@+id/amPmTextView"
+                    android:id="@+id/dateTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"

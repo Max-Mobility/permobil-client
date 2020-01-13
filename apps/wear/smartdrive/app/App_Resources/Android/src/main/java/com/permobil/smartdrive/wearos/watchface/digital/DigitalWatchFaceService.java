@@ -60,7 +60,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
     private int ambientColor;
     private SharedPreferences sharedPreferences;
 
-    
     /**
      * Update rate in milliseconds for normal (not ambient and not mute) mode. We update twice
      * a second to blink the colons.
@@ -148,6 +147,8 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         TextView minuteTextView;
         @BindView(R.id.amPmTextView)
         TextView amPmTextView;
+        @BindView(R.id.dateTextView)
+        TextView dateTextView;
         @BindView(R.id.spaceTableRow)
         TableRow spaceTableRow;
 
@@ -323,6 +324,10 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             Resources res = getResources();
             Resources.Theme theme = getTheme();
 
+            int timeSize, amPmSize, dateSize,
+              watchBarColor, watchRimColor,
+              sdBarColor, sdRimColor;
+
             if (inAmbientMode) {
                 int ambientColor = res.getColor(R.color.ambient_mode_text, theme);
                 int transparentColor = res.getColor(R.color.transparent, theme);
@@ -334,20 +339,13 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 if (smartDriveBtn != null) {
                     smartDriveBtn.setVisibility(View.GONE);
                 }
-                if (watchBatteryCircle != null) {
-                    watchBatteryCircle.setBarColor(ambientColor);
-                    watchBatteryCircle.setRimColor(transparentColor);
-                }
-                if (smartDriveBatteryCircle != null) {
-                    smartDriveBatteryCircle.setBarColor(ambientColor);
-                    smartDriveBatteryCircle.setRimColor(transparentColor);
-                }
-
-                hourTextView.setTextSize(48);
-                colonTextView.setTextSize(48);
-                minuteTextView.setTextSize(48);
-                amPmTextView.setTextSize(20);
-
+                watchBarColor = ambientColor;
+                watchRimColor = transparentColor;
+                sdBarColor = ambientColor;
+                sdRimColor = transparentColor;
+                timeSize = 48;
+                amPmSize = 30;
+                dateSize = 20;
                 // always draw the colon with the time in ambient mode
                 colonTextView.setVisibility(View.VISIBLE);
             } else {
@@ -362,20 +360,27 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 if (smartDriveBtn != null) {
                     smartDriveBtn.setVisibility(View.VISIBLE);
                 }
-                if (watchBatteryCircle != null) {
-                    watchBatteryCircle.setBarColor(oceanColor);
-                    watchBatteryCircle.setRimColor(charcoalColor);
-                }
-                if (smartDriveBatteryCircle != null) {
-                    smartDriveBatteryCircle.setBarColor(skyColor);
-                    smartDriveBatteryCircle.setRimColor(charcoalColor);
-                }
-
-                hourTextView.setTextSize(18);
-                colonTextView.setTextSize(18);
-                minuteTextView.setTextSize(18);
-                amPmTextView.setTextSize(12);
+                watchBarColor = oceanColor;
+                watchRimColor = charcoalColor;
+                sdBarColor = skyColor;
+                sdRimColor = charcoalColor;
+                timeSize = 18;
+                amPmSize = 12;
+                dateSize = 12;
             }
+            if (watchBatteryCircle != null) {
+              watchBatteryCircle.setBarColor(watchBarColor);
+              watchBatteryCircle.setRimColor(watchRimColor);
+            }
+            if (smartDriveBatteryCircle != null) {
+              smartDriveBatteryCircle.setBarColor(sdBarColor);
+              smartDriveBatteryCircle.setRimColor(sdRimColor);
+            }
+            hourTextView.setTextSize(timeSize);
+            colonTextView.setTextSize(timeSize);
+            minuteTextView.setTextSize(timeSize);
+            amPmTextView.setTextSize(amPmSize);
+            dateTextView.setTextSize(dateSize);
 
             if (mLowBitAmbient) {
                 boolean antiAlias = !inAmbientMode;
@@ -383,6 +388,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 colonTextView.getPaint().setAntiAlias(antiAlias);
                 minuteTextView.getPaint().setAntiAlias(antiAlias);
                 amPmTextView.getPaint().setAntiAlias(antiAlias);
+                dateTextView.getPaint().setAntiAlias(antiAlias);
             }
 
             // Update drawable complications' ambient state.
@@ -418,6 +424,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 colonTextView.setAlpha(alpha);
                 minuteTextView.setAlpha(alpha);
                 amPmTextView.setAlpha(alpha);
+                dateTextView.setAlpha(alpha);
                 invalidate();
             }
         }
@@ -665,12 +672,19 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
 
             // Set the am/pm.
             if (!is24Hour) {
-                String value = DateUtils.getAmPmString(mCalendar.get(Calendar.AM_PM));
-                amPmTextView.setText(value);
-                amPmTextView.setVisibility(View.VISIBLE);
+              String value = DateUtils.getAmPmString(mCalendar.get(Calendar.AM_PM));
+              amPmTextView.setText(" " + value);
+              amPmTextView.setVisibility(View.VISIBLE);
             } else {
-                amPmTextView.setVisibility(View.INVISIBLE);
+              amPmTextView.setVisibility(View.GONE);
             }
+
+            // set the date string
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+            dateFormat.setTimeZone(TimeZone.getDefault());
+            Date today = mCalendar.getTime();
+            String dateString = dateFormat.format(today);
+            dateTextView.setText(dateString);
 
             // handle color of text depending if ambient mode
             colorTextViewsForAmbientHandling();
@@ -714,12 +728,14 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 colonTextView.setTextColor(whiteColor);
                 minuteTextView.setTextColor(whiteColor);
                 amPmTextView.setTextColor(whiteColor);
+                dateTextView.setTextColor(whiteColor);
             } else {
                 // in ambient so use ambient color
                 hourTextView.setTextColor(ambientColor);
                 colonTextView.setTextColor(ambientColor);
                 minuteTextView.setTextColor(ambientColor);
                 amPmTextView.setTextColor(ambientColor);
+                dateTextView.setTextColor(ambientColor);
             }
         }
 
