@@ -4,15 +4,14 @@ name: App Builds
 on: [push]
 
 jobs:
-  configureNodeLimit:
-    name: configureNodeLimit
-    runs-on: macos-latest
-    steps:
-      - name: Increase Node Memory
-        run: export NODE_OPTIONS=--max-old-space-size=8192
+  # configureNodeLimit:
+  #   name: configureNodeLimit
+  #   runs-on: macos-latest
+  #   steps:
+  #     - name: Increase Node Memory
+  #       run: export NODE_OPTIONS=--max-old-space-size=8192
 
   lintAndBuild:
-    needs: configureNodeLimit
     name: Build Apps
 
     runs-on: macos-latest
@@ -38,7 +37,8 @@ jobs:
           echo no | npm i -g nativescript
           tns usage-reporting disable
           tns error-reporting disable
-          npm i && npm i -g rimraf && npm i -g typescript && npm run nuki && npm run setup.all.non-global
+          npm i -g rimraf && npm i -g typescript
+          npm i && npm run nuki
 
       - name: Lint
         run: npm run tslint
