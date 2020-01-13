@@ -48,7 +48,7 @@ module.exports = env => {
     resolve(
       __dirname,
       'node_modules/nativescript-bluetooth/android/TNS_ScanCallback'
-    )
+    ),
     resolve(__dirname, './app/main-activity')
   ];
 
