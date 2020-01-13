@@ -23,32 +23,32 @@ module.exports = env => {
     '@nativescript/core/ui/frame/activity',
     resolve(
       __dirname,
-      '../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/src/android/ResultReceiver'
+      'node_modules/@maxmobility/nativescript-wear-os-comms/android/ResultReceiver'
     ),
     resolve(
       __dirname,
-      '../../../forked-plugins/nativescript-bluetooth/android/TNS_AdvertiseCallback'
+      'node_modules/nativescript-bluetooth/android/TNS_AdvertiseCallback'
     ),
     resolve(
       __dirname,
-      '../../../forked-plugins/nativescript-bluetooth/android/TNS_BluetoothGattCallback'
+      'node_modules/nativescript-bluetooth/android/TNS_BluetoothGattCallback'
     ),
     resolve(
       __dirname,
-      '../../../forked-plugins/nativescript-bluetooth/android/TNS_BluetoothGattServerCallback'
+      'node_modules/nativescript-bluetooth/android/TNS_BluetoothGattServerCallback'
     ),
     resolve(
       __dirname,
-      '../../../forked-plugins/nativescript-bluetooth/android/TNS_BroadcastReceiver'
+      'node_modules/nativescript-bluetooth/android/TNS_BroadcastReceiver'
     ),
     resolve(
       __dirname,
-      '../../../forked-plugins/nativescript-bluetooth/android/TNS_LeScanCallback'
+      'node_modules/nativescript-bluetooth/android/TNS_LeScanCallback'
     ),
     resolve(
       __dirname,
-      '../../../forked-plugins/nativescript-bluetooth/android/TNS_ScanCallback'
-    ),
+      'node_modules/nativescript-bluetooth/android/TNS_ScanCallback'
+    )
     resolve(__dirname, './app/main-activity')
   ];
 
