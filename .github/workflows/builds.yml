@@ -19,9 +19,6 @@ jobs:
             ${{ secrets.SQLITE_ENCRYPTED_SSH_TOKEN }}
             ${{ secrets.SQLITE_COMMERCIAL_SSH_TOKEN }}
 
-      - name: Lint
-        run: npm run tslint
-
       - name: Setup JDK 1.8
         uses: actions/setup-java@v1
         with:
@@ -40,6 +37,9 @@ jobs:
           npm i -g rimraf && npm i -g typescript
           npm run clean.all
           npm i && NODE_OPTIONS=--max-old-space-size=4096 npm run nuki
+
+      - name: Lint
+        run: npm run tslint
 
       - name: Build PT.M Android
         run: |
