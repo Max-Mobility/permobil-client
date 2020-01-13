@@ -4,15 +4,23 @@ name: App Builds
 on: [push]
 
 jobs:
+  configureNodeLimit:
+    name: configureNodeLimit
+    runs-on: macos-latest
+    steps:
+      - name: Increase Node Memory
+        run: export NODE_OPTIONS=--max-old-space-size=8192
+
   lintAndBuild:
+    needs: configureNodeLimit
     name: Build Apps
 
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v1
 
-      - name: Increase Node Memory
-        run: export NODE_OPTIONS=--max-old-space-size=8192
+      # - name: Increase Node Memory
+      #   run: export NODE_OPTIONS=--max-old-space-size=8192
 
       - name: Setup SSH-Agent
         uses: webfactory/ssh-agent@support-multiple-keys
