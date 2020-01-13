@@ -1,7 +1,7 @@
 import { ObservableArray } from '@nativescript/core';
 import { Log } from '@permobil/core';
-import { Bluetooth, ConnectionState } from 'forked-plugins/ns-bluetooth';
 import { Injectable } from 'injection-js';
+import { Bluetooth, ConnectionState } from 'nativescript-bluetooth';
 import 'reflect-metadata';
 import { SmartDrive } from '../models/smartdrive';
 
