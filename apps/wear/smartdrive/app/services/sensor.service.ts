@@ -217,43 +217,6 @@ export class SensorService extends Observable {
     this._identifier = id;
   }
 
-  /**
-   * Saves a record to Kinvey with all of the sensor data and device information.
-   * @param sensor_data [any[]] - An array of sensor data.
-   */
-  saveRecord(sensor_data: any[]) {
-    const deviceSensors = this.androidSensorClass.getDeviceSensors();
-    const sensor_list = [];
-
-    deviceSensors.forEach(i => {
-      if (i) {
-        sensor_list.push({
-          id: i.getId(),
-          vendor: i.getVendor(),
-          version: i.getVersion(),
-          name: i.getName(),
-          power: i.getPower(),
-          type: i.getType(),
-          string_type: i.getStringType(),
-          max_range: i.getMaximumRange(),
-          max_delay: i.getMaxDelay(),
-          min_delay: i.getMinDelay(),
-          resolution: i.getResolution(),
-          reporting_mode: i.getReportingMode()
-        });
-      }
-    });
-
-    Log.D(`Saving data collection record for WatchData to Kinvey...`);
-    // getting the UUID of the device here. We've seen some crashes with core-modules device.uuid not resolving the android app instance.
-    const nApp = app.android.nativeApp as android.app.Application;
-    const resolver = nApp.getContentResolver();
-    const deviceUUID = android.provider.Settings.Secure.getString(
-      resolver,
-      android.provider.Settings.Secure.ANDROID_ID
-    );
-  }
-
   public flush() {
     this.androidSensorClass.flush();
   }
