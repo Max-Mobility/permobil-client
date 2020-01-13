@@ -13,7 +13,7 @@
     "noImplicitUseStrict": true,
     "declaration": false,
     "lib": ["es6", "dom", "es2015.iterable"],
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
       "~/*": ["app/*"],
       "*": ["./node_modules/tns-core-modules/*", "./node_modules/*"],
