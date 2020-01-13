@@ -364,8 +364,8 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 watchRimColor = charcoalColor;
                 sdBarColor = skyColor;
                 sdRimColor = charcoalColor;
-                timeSize = 18;
-                amPmSize = 12;
+                timeSize = 22;
+                amPmSize = 14;
                 dateSize = 12;
             }
             if (watchBatteryCircle != null) {
@@ -679,12 +679,19 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
               amPmTextView.setVisibility(View.GONE);
             }
 
-            // set the date string
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
-            dateFormat.setTimeZone(TimeZone.getDefault());
-            Date today = mCalendar.getTime();
-            String dateString = dateFormat.format(today);
-            dateTextView.setText(dateString);
+            if (isInAmbientMode()) {
+              // show the date view when in ambient
+              dateTextView.setVisibility(View.VISIBLE);
+              // set the date string
+              SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+              dateFormat.setTimeZone(TimeZone.getDefault());
+              Date today = mCalendar.getTime();
+              String dateString = dateFormat.format(today);
+              dateTextView.setText(dateString);
+            } else {
+              // hide date when not in ambient
+              dateTextView.setVisibility(View.INVISIBLE);
+            }
 
             // handle color of text depending if ambient mode
             colorTextViewsForAmbientHandling();

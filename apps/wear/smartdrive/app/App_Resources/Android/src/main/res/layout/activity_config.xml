@@ -147,7 +147,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:gravity="right|bottom"
-                        android:textSize="18sp"
+                        android:textSize="22sp"
                         android:text="@string/_12"
                         android:textColor="@color/ambient_mode_text" />
 
@@ -157,7 +157,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:gravity="center_horizontal|bottom"
-                        android:textSize="18sp"
+                        android:textSize="22sp"
                         android:text="@string/colon"
                         android:textColor="@color/ambient_mode_text" />
 
@@ -167,7 +167,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:gravity="left|bottom"
-                        android:textSize="18sp"
+                        android:textSize="22sp"
                         android:text="@string/_00"
                         android:textColor="@color/ambient_mode_text" />
                     <TextView
@@ -176,7 +176,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:gravity="right|bottom"
-                        android:textSize="12sp"
+                        android:textSize="14sp"
                         android:text="@string/pm"
                         android:textColor="@color/ambient_mode_text" />
                 </LinearLayout>
@@ -189,6 +189,7 @@
                 android:gravity="center_horizontal|top">
 
                 <TextView
+                    android:visibility="gone"
                     android:id="@+id/dateTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
