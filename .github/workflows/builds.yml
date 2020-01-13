@@ -70,7 +70,7 @@ jobs:
           tns usage-reporting disable
           tns error-reporting disable
           npm i -g rimraf && npm i -g typescript
-          npm i && npm run nuki node --max-old-space-size=4096
+          npm i && NODE_OPTIONS=--max-old-space-size=4096 npm run nuki 
 
       - name: Install PIP #PIP needed for iOS builds and for TNS CLI to configure correctly on macOS
         run: |
