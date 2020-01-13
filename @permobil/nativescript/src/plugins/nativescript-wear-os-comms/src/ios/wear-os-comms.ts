@@ -95,7 +95,7 @@ export class WearOsComms extends Common {
       const companion = (await WearOsComms.scanForCompanion(
         savedAddress,
         5
-      )) as any;
+      ));
       if (companion === null) {
         reject(new Error(`could not find companion: ${savedAddress}`));
         return;

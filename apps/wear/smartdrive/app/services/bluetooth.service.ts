@@ -251,7 +251,7 @@ export class BluetoothService {
     };
     Log.D(`${peripheral.name}::${peripheral.address} - discovered`);
     if (this.isSmartDrive(peripheral)) {
-      const sd = this.getOrMakeSmartDrive(peripheral);
+      this.getOrMakeSmartDrive(peripheral);
     }
   }
 

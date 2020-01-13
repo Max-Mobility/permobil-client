@@ -224,21 +224,6 @@ export class ActivityDetector {
       // we don't have enough historical data so detect no activitys
       return false;
     }
-    // check that input history contains >= 1 difference (jerk) above
-    // the threshold
-    let minZ = null;
-    let maxZ = null;
-    this.inputHistory.forEach(accel => {
-      const z = accel.z;
-      if (minZ === null || z < minZ) {
-        minZ = z;
-      }
-      if (maxZ === null || z > maxZ) {
-        maxZ = z;
-      }
-    });
-    const jerk = maxZ - minZ;
-    const jerkAboveThreshold = jerk > this.jerkThreshold;
     // check that the prediction(s) were all above the threshold
     const predictionsWereGood = this.predictionHistory.reduce(
       (good, prediction) => {
