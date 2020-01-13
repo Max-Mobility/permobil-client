@@ -1,5 +1,5 @@
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
-import { Color, EventData, Frame, GridLayout, Observable, ShowModalOptions, StackLayout, View } from '@nativescript/core';
+import { Color, EventData, Frame, GridLayout, Observable, ShowModalOptions, StackLayout } from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
@@ -101,8 +101,8 @@ export class MainViewModel extends Observable {
   private estimatedDistance: number = 0.0;
   private watchIsCharging: boolean = false;
   // views for main page ambient mode
-  private _ambientTimeView: View;
-  private _powerAssistView: View;
+  private _ambientTimeView: StackLayout;
+  private _powerAssistView: GridLayout;
   // tap detector config
   private tapDetector: TapDetector = null;
   private tapTimeoutId: any = null;
