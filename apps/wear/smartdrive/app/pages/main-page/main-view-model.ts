@@ -13,7 +13,6 @@ import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
 import last from 'lodash/last';
 import once from 'lodash/once';
-import throttle from 'lodash/throttle';
 import * as LS from 'nativescript-localstorage';
 import { Pager } from 'nativescript-pager';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
@@ -77,6 +76,11 @@ export class MainViewModel extends Observable {
   @Prop() isTraining: boolean = false;
 
   /**
+   * Data related to today's usage specifically
+   */
+  private _todaysUsage: any;
+
+  /**
    * Data to bind to the Battery Usage Chart repeater.
    */
   @Prop() batteryChartData: any[];
@@ -93,6 +97,7 @@ export class MainViewModel extends Observable {
 
   // #region "Private Members"
   private sendTapTimeoutId: any = null;
+  private powerAssistTimeoutId: any = null;
 
   private _showingModal: boolean = false;
 
@@ -138,7 +143,6 @@ export class MainViewModel extends Observable {
   private _ringTimerId = null;
   private RING_TIMER_INTERVAL_MS = 500;
   private CHARGING_WORK_PERIOD_MS = 1 * 60 * 1000;
-  private DATABASE_SAVE_INTERVAL_MS = 10 * 1000;
   private _lastChartDay = null;
 
   /**
@@ -153,7 +157,6 @@ export class MainViewModel extends Observable {
   private _sqliteService: SqliteService;
   private _kinveyService: SmartDriveKinveyService;
   private _settingsService: SettingsService;
-  private _throttledSmartDriveSaveFn: any = null;
   private _onceSendSmartDriveSettings: any = null;
   // Used for doing work while charing
   private chargingWorkTimeoutId: any = null;
@@ -213,7 +216,7 @@ export class MainViewModel extends Observable {
   }
 
   get disableWearCheck() {
-    return this._settingsService.disableWearCheck;
+    return this._settingsService.watchSettings.disableWearCheck;
   }
 
   // #region "Public Functions"
@@ -383,7 +386,7 @@ export class MainViewModel extends Observable {
       return;
     }
     this._enablingTraining = true;
-    if (!this.watchBeingWorn && !this._settingsService.disableWearCheck) {
+    if (!this.watchBeingWorn && !this.disableWearCheck) {
       alert({
         title: L('failures.title'),
         message: L('failures.must-wear-watch'),
@@ -464,6 +467,42 @@ export class MainViewModel extends Observable {
     btn.showModal('pages/modals/updates/updates-page', option);
   }
 
+  private _clearPowerAssistTimeout() {
+    // clear the timeout if it exists
+    if (this.powerAssistTimeoutId !== null) {
+      clearTimeout(this.powerAssistTimeoutId);
+      this.powerAssistTimeoutId = null;
+    }
+  }
+
+  private _restartPowerAssistTimeout(minutes: number) {
+    this._clearPowerAssistTimeout();
+    // set the timeout again
+    this._ensurePowerAssistTimeout(minutes);
+  }
+
+  private _ensurePowerAssistTimeout(minutes: number) {
+    if (this.powerAssistTimeoutId === null) {
+      // set the timeout only if there is no timeout
+      this.powerAssistTimeoutId = setTimeout(
+        this.onPowerAssistTimeout.bind(this),
+        minutes * 60 * 1000
+      );
+    }
+  }
+
+  private async onPowerAssistTimeout() {
+    this._clearPowerAssistTimeout();
+    // disable power assist
+    this.disablePowerAssist();
+    // and alert the user that we timed out
+    alert({
+      title: L('failures.title'),
+      message: L('failures.power-assist-timeout'),
+      okButtonText: L('buttons.ok')
+    });
+  }
+
   private _enablingPowerAssist: boolean = false;
   async enablePowerAssist() {
     if (this._enablingPowerAssist) {
@@ -473,7 +512,7 @@ export class MainViewModel extends Observable {
     this._enablingPowerAssist = true;
     sentryBreadCrumb('Enabling power assist');
     // only enable power assist if we're on the user's wrist
-    if (!this.watchBeingWorn && !this._settingsService.disableWearCheck) {
+    if (!this.watchBeingWorn && !this.disableWearCheck) {
       alert({
         title: L('failures.title'),
         message: L('failures.must-wear-watch'),
@@ -521,12 +560,16 @@ export class MainViewModel extends Observable {
               'Could not enable tap sensor for power assist!'
             );
           } else {
+            // we have successfully done everything to enable power
+            // assist, now show the user the change in state
             if (this._ringTimerId === null) {
               this._ringTimerId = setInterval(
                 this._blinkPowerAssistRing.bind(this),
                 this.RING_TIMER_INTERVAL_MS
               );
             }
+            // then set the timeout for power assist for 1 minute
+            this._restartPowerAssistTimeout(1);
           }
         } else {
           sentryBreadCrumb('Did not connect, disabling power assist');
@@ -564,6 +607,9 @@ export class MainViewModel extends Observable {
 
     // make sure to stop any pending taps
     this._stopTaps();
+
+    // clear timeout if there was one
+    this._clearPowerAssistTimeout();
 
     // decrease energy consumption
     this._disableTapSensor();
@@ -655,13 +701,6 @@ export class MainViewModel extends Observable {
 
     // handle application lifecycle events
     this._registerAppEventHandlers();
-
-    // make throttled save function - not called more than once every 10 seconds
-    this._throttledSmartDriveSaveFn = throttle(
-      this._saveSmartDriveData,
-      this.DATABASE_SAVE_INTERVAL_MS,
-      { leading: true, trailing: false }
-    );
 
     // regiter for system updates related to battery / time UI
     this._registerForBatteryUpdates();
@@ -1407,7 +1446,7 @@ export class MainViewModel extends Observable {
         parsedData.s === android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT
       ) {
         this.watchBeingWorn = parsedData.d.state !== 0.0;
-        if (!this._settingsService.disableWearCheck) {
+        if (!this.disableWearCheck) {
           if (!this.watchBeingWorn && this.powerAssistActive) {
             sentryBreadCrumb('Watch not being worn - disabling power assist!');
             // disable power assist if the watch is taken off!
@@ -1431,7 +1470,7 @@ export class MainViewModel extends Observable {
       return;
     }
     // ignore tapping if we're not on the users wrist
-    if (!this.watchBeingWorn && !this._settingsService.disableWearCheck) {
+    if (!this.watchBeingWorn && !this.disableWearCheck) {
       return;
     }
     // scale the acceleration values if we're not up to date
@@ -2153,7 +2192,7 @@ export class MainViewModel extends Observable {
       this.smartDrive &&
       !this.smartDrive.connected
     ) {
-      setTimeout(this._connectToSavedSmartDrive.bind(this), 1 * 1000);
+      setTimeout(this._connectToSavedSmartDrive.bind(this), 5 * 1000);
     }
   }
 
@@ -2197,6 +2236,11 @@ export class MainViewModel extends Observable {
       clearInterval(this.rssiIntervalId);
       this.rssiIntervalId = null;
     }
+    // we've connected - set the timeout to be the user-configured
+    // timeout
+    this._restartPowerAssistTimeout(
+      this._settingsService.watchSettings.powerAssistTimeoutMinutes
+    );
     /*
     this.rssiIntervalId = setInterval(
       this._readSmartDriveSignalStrength.bind(this),
@@ -2222,6 +2266,12 @@ export class MainViewModel extends Observable {
     this.motorOn = false;
     this.hasSentSettingsToSmartDrive = false;
     if (this.powerAssistActive) {
+      if (this.powerAssistState !== PowerAssist.State.Disconnected) {
+        // set the timeout for power assist to 1 minute since we're
+        // disconnected
+        this._restartPowerAssistTimeout(1);
+      }
+      // update state
       this.powerAssistState = PowerAssist.State.Disconnected;
       this._updatePowerAssistRing();
       this._retrySmartDriveConnection();
@@ -2256,11 +2306,20 @@ export class MainViewModel extends Observable {
     // update motor state
     if (this.motorOn !== this.smartDrive.driving) {
       if (this.smartDrive.driving) {
+        // motor has turned on just now
         this._vibrator.cancel();
         this._vibrator.vibrate(250); // vibrate for 250 ms
+        // cancel the existing power assist timeout id if there is one
+        this._clearPowerAssistTimeout();
       } else {
+        // motor has turned off just now
         this._vibrator.cancel();
         this._vibrator.vibrate([0, 250, 50, 250]); // vibrate twice
+        // motor has just stopped - set the timeout to be the
+        // user-configured timeout
+        this._restartPowerAssistTimeout(
+          this._settingsService.watchSettings.powerAssistTimeoutMinutes
+        );
       }
     }
     this.motorOn = this.smartDrive.driving;
@@ -2270,11 +2329,8 @@ export class MainViewModel extends Observable {
     // only check against 1 so that we filter out charging and only
     // get decreases due to driving / while connected
     if (batteryChange === 1) {
-      // cancel previous invocations of the save so that the next
-      // one definitely saves the battery increment
-      this._throttledSmartDriveSaveFn.flush();
       // save to the database
-      this._throttledSmartDriveSaveFn({
+      this._saveSmartDriveData({
         battery: 1,
         driveDistance: this.smartDrive.driveDistance,
         coastDistance: this.smartDrive.coastDistance
@@ -2299,7 +2355,7 @@ export class MainViewModel extends Observable {
 
     if (coastDistance !== currentCoast || driveDistance !== currentDrive) {
       // save to the database
-      this._throttledSmartDriveSaveFn({
+      this._saveSmartDriveData({
         battery: 0,
         driveDistance: this.smartDrive.driveDistance,
         coastDistance: this.smartDrive.coastDistance
@@ -2368,8 +2424,8 @@ export class MainViewModel extends Observable {
       // save state to LS
       this._saveSmartDriveStateToLS();
       // now save to database
-      const driveDistance = args.driveDistance || 0;
-      const coastDistance = args.coastDistance || 0;
+      const driveDistance = args.driveDistance || this.smartDrive?.driveDistance || 0;
+      const coastDistance = args.coastDistance || this.smartDrive?.coastDistance || 0;
       const battery = args.battery || 0;
       if (driveDistance === 0 && coastDistance === 0 && battery === 0) {
         return;
@@ -2389,17 +2445,11 @@ export class MainViewModel extends Observable {
           }
         );
       } else {
-        const newEntry = SmartDriveData.Info.newInfo(
-          undefined,
-          new Date(),
-          battery,
-          driveDistance,
-          coastDistance
-        );
-        // this is the first record, so we create it
-        await this._sqliteService.insertIntoTable(
-          SmartDriveData.Info.TableName,
-          newEntry
+        // should not come here - _getTodaysUsageFromDatabase loads /
+        // creates as needed - but if it encounters an exception then
+        // it will not have an id - so we will try to make it again...
+        this._todaysUsage = await this._makeTodaysUsage(
+          battery, driveDistance, coastDistance
         );
       }
       // update the estimated range (doesn't use weekly usage info -
@@ -2414,24 +2464,61 @@ export class MainViewModel extends Observable {
     }
   }
 
-  private async _getTodaysUsageInfoFromDatabase() {
+  private async _makeTodaysUsage(battery?: number, drive?: number, coast?: number) {
+    if (!drive || !coast) {
+      // try to use our smartdrive's existing drive / coast to
+      // initialize the data, fall back on 0 if necessary
+      drive = this.smartDrive?.driveDistance || 0;
+      coast = this.smartDrive?.coastDistance || 0;
+    }
+    const newEntry = SmartDriveData.Info.newInfo(undefined,
+      new Date(),
+      battery,
+      drive,
+      coast);
     try {
-      const e = await this._sqliteService.getLast(
+      const id = await this._sqliteService.insertIntoTable(
         SmartDriveData.Info.TableName,
-        SmartDriveData.Info.IdName
+        newEntry
       );
-      const date = new Date((e && e[1]) || null);
-      if (e && e[1] && isToday(date)) {
-        // @ts-ignore
-        return SmartDriveData.Info.loadInfo(...e);
-      } else {
-        return SmartDriveData.Info.newInfo(undefined, new Date(), 0, 0, 0);
-      }
+      newEntry[SmartDriveData.Info.IdName] = id;
     } catch (err) {
       Sentry.captureException(err);
-      // nothing was found
-      return SmartDriveData.Info.newInfo(undefined, new Date(), 0, 0, 0);
     }
+    return newEntry;
+  }
+
+  private async _getTodaysUsageInfoFromDatabase() {
+    if (this._todaysUsage) {
+      // check to see it is actually today and create a new one if
+      // needed
+      if (isToday(this._todaysUsage[SmartDriveData.Info.DateName])) {
+        return this._todaysUsage;
+      } else {
+        this._todaysUsage = await this._makeTodaysUsage();
+      }
+    } else {
+      // try to load it from the db and create it if one cannot be
+      // found
+      try {
+        const e = await this._sqliteService.getLast(
+          SmartDriveData.Info.TableName,
+          SmartDriveData.Info.IdName
+        );
+        const date = new Date((e && e[1]) || null);
+        if (e && e[1] && isToday(date)) {
+          // @ts-ignore
+          this._todaysUsage = SmartDriveData.Info.loadInfo(...e);
+        } else {
+          this._todaysUsage = await this._makeTodaysUsage();
+        }
+      } catch (err) {
+        Sentry.captureException(err);
+        // nothing was found
+        this._todaysUsage = await this._makeTodaysUsage();
+      }
+    }
+    return this._todaysUsage;
   }
 
   private async _updateSharedUsageInfo(sdData: any[]) {

@@ -879,8 +879,6 @@ export class MainViewModel extends Observable {
       let activityData = (await this._getActivityInfoFromDatabase(7)) as any[];
       // we've asked for one more day than needed so that we can
       // compute distance differences
-      const oldest = activityData[0];
-      // const newest = last(activityData);
       const newest = activityData[activityData.length - 1]; // get the last item in the array
       // keep track of the most recent day so we know when to update
       this.lastChartDay = new Date(newest.date);

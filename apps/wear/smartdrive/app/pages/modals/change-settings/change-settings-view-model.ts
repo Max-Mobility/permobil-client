@@ -1,13 +1,14 @@
 import { Device, Log } from '@permobil/core';
 import { L, Prop } from '@permobil/nativescript';
 import { Observable, Page } from '@nativescript/core';
+import { WatchSettings } from '../../../models';
 
 export class ChangeSettingsViewModel extends Observable {
   @Prop() insetPadding = 0;
   @Prop() chinSize = 0;
   @Prop() tempSettings = new Device.Settings();
   @Prop() tempSwitchControlSettings = new Device.SwitchControlSettings();
-  @Prop() disableWearCheck: boolean = false;
+  @Prop() tempWatchSettings = new WatchSettings();
   /**
    * SmartDrive Settings UI:
    */
@@ -20,33 +21,33 @@ export class ChangeSettingsViewModel extends Observable {
   constructor(page: Page, data, closeCallback) {
     super();
 
-    this.activeSettingToChange = data.activeSettingToChange;
-    this.changeSettingKeyString = data.changeSettingKeyString;
-    this.changeSettingKeyValue = data.changeSettingKeyValue;
-    this.disableWearCheck = data.disableWearCheck;
+    // copy the settings into temporary storage
     this.tempSettings.copy(data.settings);
     this.tempSwitchControlSettings.copy(data.switchControlSettings);
-    this._closeCallback = closeCallback;
+    this.tempWatchSettings.copy(data.watchSettings);
 
-    this._updateSettingsChangeDisplay();
+    // determine which one we are changing
+    this.activeSettingToChange = data.activeSettingToChange;
+    // now set the displayed setting label
+    this._updateSettingsLabelDisplay();
+    // now set the displayed setting value
+    this._updateSettingsValueDisplay();
+    // save the close callback to bind to buttons
+    this._closeCallback = closeCallback;
   }
 
   onIncreaseSettingsTap() {
     this.tempSettings.increase(this.activeSettingToChange);
     this.tempSwitchControlSettings.increase(this.activeSettingToChange);
-    if (this.activeSettingToChange === 'wearcheck') {
-      this.disableWearCheck = !this.disableWearCheck;
-    }
-    this._updateSettingsChangeDisplay();
+    this.tempWatchSettings.increase(this.activeSettingToChange);
+    this._updateSettingsValueDisplay();
   }
 
   onDecreaseSettingsTap() {
     this.tempSettings.decrease(this.activeSettingToChange);
     this.tempSwitchControlSettings.decrease(this.activeSettingToChange);
-    if (this.activeSettingToChange === 'wearcheck') {
-      this.disableWearCheck = !this.disableWearCheck;
-    }
-    this._updateSettingsChangeDisplay();
+    this.tempWatchSettings.decrease(this.activeSettingToChange);
+    this._updateSettingsValueDisplay();
   }
 
   onSettingsInfoItemTap() {
@@ -65,63 +66,47 @@ export class ChangeSettingsViewModel extends Observable {
       true,
       this.tempSettings,
       this.tempSwitchControlSettings,
-      this.disableWearCheck
+      this.tempWatchSettings
     );
   }
 
-  private _updateSettingsChangeDisplay() {
-    let translationKey = '';
-    switch (this.activeSettingToChange) {
-      case 'maxspeed':
-        this.changeSettingKeyValue = `${this.tempSettings.maxSpeed} %`;
-        break;
-      case 'acceleration':
-        this.changeSettingKeyValue = `${this.tempSettings.acceleration} %`;
-        break;
-      case 'tapsensitivity':
-        this.changeSettingKeyValue = `${this.tempSettings.tapSensitivity} %`;
-        break;
-      case 'powerassistbuzzer':
-        if (this.tempSettings.disablePowerAssistBeep) {
-          this.changeSettingKeyValue = L(
-            'sd.settings.power-assist-buzzer.disabled'
-          );
-        } else {
-          this.changeSettingKeyValue = L(
-            'sd.settings.power-assist-buzzer.enabled'
-          );
-        }
-        break;
-      case 'controlmode':
-        this.changeSettingKeyValue = `${this.tempSettings.controlMode}`;
-        return;
-      case 'units':
-        translationKey =
-          'sd.settings.units.' + this.tempSettings.units.toLowerCase();
-        this.changeSettingKeyValue = L(translationKey);
-        return;
-      case 'switchcontrolmode':
-        translationKey =
-          'sd.switch-settings.mode.' +
-          this.tempSwitchControlSettings.mode.toLowerCase();
-        this.changeSettingKeyValue = L(translationKey);
-        return;
-      case 'switchcontrolspeed':
-        this.changeSettingKeyValue = `${this.tempSwitchControlSettings.maxSpeed} %`;
-        return;
-      case 'wearcheck':
-        if (this.disableWearCheck) {
-          this.changeSettingKeyValue = L(
-            'settings.watch-required.values.disabled'
-          );
-        } else {
-          this.changeSettingKeyValue = L(
-            'settings.watch-required.values.enabled'
-          );
-        }
-        break;
-      default:
-        break;
-    }
+  private _updateSettingsLabelDisplay() {
+    // set the displayed settings label based on the selected setting
+    this.changeSettingKeyString =
+      this.tempSettings.getDisplayString(
+        Device.Display.Label,
+        this.activeSettingToChange,
+        L
+      ) ||
+      this.tempSwitchControlSettings.getDisplayString(
+        Device.Display.Label,
+        this.activeSettingToChange,
+        L
+      ) ||
+      this.tempWatchSettings.getDisplayString(
+        WatchSettings.Display.Label,
+        this.activeSettingToChange,
+        L
+      );
+  }
+
+  private _updateSettingsValueDisplay() {
+    // now set the displayed value
+    this.changeSettingKeyValue =
+      this.tempSettings.getDisplayString(
+        Device.Display.Value,
+        this.activeSettingToChange,
+        L
+      ) ||
+      this.tempSwitchControlSettings.getDisplayString(
+        Device.Display.Value,
+        this.activeSettingToChange,
+        L
+      ) ||
+      this.tempWatchSettings.getDisplayString(
+        WatchSettings.Display.Value,
+        this.activeSettingToChange,
+        L
+      );
   }
 }

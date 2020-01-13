@@ -466,7 +466,7 @@ export class BluetoothService {
       name: argdata.name
     };
     if (this.isSmartDrive(peripheral)) {
-      const sd = this.getOrMakeSmartDrive(peripheral);
+      this.getOrMakeSmartDrive(peripheral);
     }
   }
 

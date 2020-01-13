@@ -5,7 +5,7 @@
       <Label text="{{ L('settings.title') }}" class="chart-title" textWrap="true" />
       <Label text="" class="hr-blue" />
       <ScrollView height="100%" marginBottom="{{ chinSize / 2 }}">
-        <GridLayout rows="*, *, *, *, *, *, *, *, *, *" columns="auto, *" paddingBottom="{{ insetPadding }}">
+        <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *" paddingBottom="{{ insetPadding }}">
           // Back
           <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
           <Label row="0" col="1" text="{{ L('buttons.back') }}" tap="onCloseTap" class="settings-label" textWrap="true" />
@@ -36,6 +36,9 @@
           // Check for Wrist
           <Label row="9" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
           <Label row="9" col="1" text="{{ L('settings.watch-required.title') }}" class="settings-label" textWrap="true" id="wearCheck" tap="{{ onChangeSettingsItemTap }}" />
+          // Power Assist Timeout
+          <Label row="10" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+          <Label row="10" col="1" text="{{ L('settings.power-assist-timeout.title') }}" class="settings-label" textWrap="true" id="powerAssistTimeout" tap="{{ onChangeSettingsItemTap }}" />
         </GridLayout>
       </ScrollView>
     </StackLayout>

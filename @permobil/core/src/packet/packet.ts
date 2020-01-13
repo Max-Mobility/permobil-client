@@ -85,8 +85,7 @@ export class Packet {
     let output = null;
 
     if (this.instance) {
-      let vectorOut = new PacketBinding.VectorInt();
-      vectorOut = this.instance.format();
+      const vectorOut = this.instance.format();
       const len = vectorOut.size();
       output = Buffer.alloc(len);
       for (let i = 0; i < vectorOut.size(); i++) {

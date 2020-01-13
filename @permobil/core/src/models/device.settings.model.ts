@@ -2,7 +2,15 @@ import { bindingTypeToString } from '../packet';
 import { mod } from '../utils';
 import { Observable } from '@nativescript/core';
 
+type TranslateFunction = (translationKey: string) => string;
+
 export namespace Device {
+  // for rendering the different parts of each of the settings in
+  // different ways
+  export enum Display {
+    Label, Value
+  }
+
   // Standard Device Settings:
   export class Settings extends Observable {
     // settings classes
@@ -81,37 +89,95 @@ export namespace Device {
       return flags;
     }
 
+    getDisplayString(displayType: Device.Display, key: string, TRANSLATE: TranslateFunction): string {
+      key = key.toLowerCase().replace(/\W/g, '');
+      let translationKey = '';
+      let displayString = undefined;
+      switch (displayType) {
+        case Device.Display.Label:
+          switch (key) {
+            case 'maxspeed':
+              displayString = TRANSLATE('settings.max-speed');
+              break;
+            case 'acceleration':
+              displayString = TRANSLATE('settings.acceleration');
+              break;
+            case 'tapsensitivity':
+              displayString = TRANSLATE('settings.tap-sensitivity');
+              break;
+            case 'powerassistbuzzer':
+              displayString = TRANSLATE(
+                'settings.power-assist-buzzer'
+              );
+              break;
+            case 'controlmode':
+              displayString = TRANSLATE('settings.control-mode');
+              break;
+            case 'units':
+              displayString = TRANSLATE('settings.units');
+              break;
+          }
+          break;
+        case Device.Display.Value:
+          switch (key) {
+            case 'maxspeed':
+              displayString = `${this.maxSpeed} %`;
+              break;
+            case 'acceleration':
+              displayString = `${this.acceleration} %`;
+              break;
+            case 'tapsensitivity':
+              displayString = `${this.tapSensitivity} %`;
+              break;
+            case 'powerassistbuzzer':
+              if (this.disablePowerAssistBeep) {
+                displayString = TRANSLATE(
+                  'sd.settings.power-assist-buzzer.disabled'
+                );
+              } else {
+                displayString = TRANSLATE(
+                  'sd.settings.power-assist-buzzer.enabled'
+                );
+              }
+              break;
+            case 'controlmode':
+              displayString = `${this.controlMode}`;
+              break;
+            case 'units':
+              translationKey =
+                'sd.settings.units.' + this.units.toLowerCase();
+              displayString = TRANSLATE(translationKey);
+              break;
+          }
+          break;
+        default:
+          break;
+      }
+      return displayString;
+    }
+
     increase(key: string, increment: number = 10): void {
+      key = key.toLowerCase().replace(/\W/g, '');
       let index = 0;
       switch (key) {
         case 'maxspeed':
-        case 'Max Speed':
-        case 'max-speed':
           this.maxSpeed = Math.min(this.maxSpeed + increment, 100);
           break;
         case 'acceleration':
-        case 'Acceleration':
           this.acceleration = Math.min(this.acceleration + increment, 100);
           break;
         case 'tapsensitivity':
-        case 'tap-sensitivity':
-        case 'Tap Sensitivity':
           this.tapSensitivity = Math.min(this.tapSensitivity + increment, 100);
           break;
         case 'powerassistbuzzer':
-        case 'power-assist-buzzer':
-        case 'Power Assist Buzzer':
           this.disablePowerAssistBeep = !this.disablePowerAssistBeep;
           break;
         case 'controlmode':
-        case 'control-mode':
-        case 'Control Mode':
           index = Device.Settings.ControlMode.Options.indexOf(this.controlMode);
           index = mod(index + 1, Device.Settings.ControlMode.Options.length);
           this.controlMode = Device.Settings.ControlMode.Options[index];
           break;
         case 'units':
-        case 'Units':
           index = Device.Settings.Units.Options.indexOf(this.units);
           index = mod(index + 1, Device.Settings.Units.Options.length);
           this.units = Device.Settings.Units.Options[index];
@@ -120,36 +186,27 @@ export namespace Device {
     }
 
     decrease(key: string, increment: number = 10): void {
+      key = key.toLowerCase().replace(/\W/g, '');
       let index = 0;
       switch (key) {
         case 'maxspeed':
-        case 'Max Speed':
-        case 'max-speed':
           this.maxSpeed = Math.max(this.maxSpeed - increment, 10);
           break;
         case 'acceleration':
-        case 'Acceleration':
           this.acceleration = Math.max(this.acceleration - increment, 10);
           break;
         case 'tapsensitivity':
-        case 'tap-sensitivity':
-        case 'Tap Sensitivity':
           this.tapSensitivity = Math.max(this.tapSensitivity - increment, 10);
           break;
         case 'powerassistbuzzer':
-        case 'power-assist-buzzer':
-        case 'Power Assist Buzzer':
           this.disablePowerAssistBeep = !this.disablePowerAssistBeep;
           break;
         case 'controlmode':
-        case 'control-mode':
-        case 'Control Mode':
           index = Device.Settings.ControlMode.Options.indexOf(this.controlMode);
           index = mod(index - 1, Device.Settings.ControlMode.Options.length);
           this.controlMode = Device.Settings.ControlMode.Options[index];
           break;
         case 'units':
-        case 'Units':
           index = Device.Settings.Units.Options.indexOf(this.units);
           index = mod(index - 1, Device.Settings.Units.Options.length);
           this.units = Device.Settings.Units.Options[index];
@@ -278,17 +335,48 @@ export namespace Device {
       super();
     }
 
+    getDisplayString(displayType: Device.Display, key: string, TRANSLATE: TranslateFunction): string {
+      key = key.toLowerCase().replace(/\W/g, '');
+      let translationKey = '';
+      let displayString = undefined;
+      switch (displayType) {
+        case Device.Display.Label:
+          switch (key) {
+            case 'switchcontrolspeed':
+              displayString = TRANSLATE('switch-control.max-speed');
+              break;
+            case 'switchcontrolmode':
+              displayString = TRANSLATE('switch-control.mode');
+              break;
+          }
+          break;
+        case Device.Display.Value:
+          switch (key) {
+            case 'switchcontrolspeed':
+              displayString = `${this.maxSpeed} %`;
+              break;
+            case 'switchcontrolmode':
+              translationKey =
+                'sd.switch-settings.mode.' +
+                this.mode.toLowerCase();
+              displayString = TRANSLATE(translationKey);
+              break;
+          }
+          break;
+        default:
+          break;
+      }
+      return displayString;
+    }
+
     increase(key: string, increment: number = 10): void {
+      key = key.toLowerCase().replace(/\W/g, '');
       let index;
       switch (key) {
         case 'switchcontrolspeed':
-        case 'switch-control-speed':
-        case 'Switch Control Speed':
           this.maxSpeed = Math.min(this.maxSpeed + increment, 100);
           break;
         case 'switchcontrolmode':
-        case 'switch-control-mode':
-        case 'Switch Control Mode':
           index = Device.SwitchControlSettings.Mode.Options.indexOf(this.mode);
           index = mod(
             index + 1,
@@ -300,16 +388,13 @@ export namespace Device {
     }
 
     decrease(key: string, increment: number = 10): void {
+      key = key.toLowerCase().replace(/\W/g, '');
       let index;
       switch (key) {
         case 'switchcontrolspeed':
-        case 'switch-control-speed':
-        case 'Switch Control Speed':
           this.maxSpeed = Math.max(this.maxSpeed - increment, 10);
           break;
         case 'switchcontrolmode':
-        case 'switch-control-mode':
-        case 'Switch Control Mode':
           index = Device.SwitchControlSettings.Mode.Options.indexOf(this.mode);
           index = mod(
             index - 1,

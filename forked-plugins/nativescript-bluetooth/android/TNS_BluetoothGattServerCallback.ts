@@ -332,18 +332,6 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
     status: number,
     service: android.bluetooth.BluetoothGattService
   ) {
-    // console.log('added service', status, service);
-    // console.log('        uuid:', service.getUuid());
-    const chars = service.getCharacteristics();
-    for (let i = 0; i < chars.size(); i++) {
-      const char = chars.get(i);
-      // console.log('        ------------');
-      // console.log('        char uuid:', char.getUuid());
-      // console.log('        char perm:', char.getPermissions());
-      // console.log('        char prop:', char.getProperties());
-      // console.log('        char type:', char.getWriteType());
-      // console.log('        char val: ', Array.from(char.getValue()));
-    }
     CLog(
       CLogTypes.info,
       `---- TNS_BluetoothGattServerCallback.onServiceAdded ---- status: ${status}, service: ${service}`
