@@ -4,7 +4,7 @@ name: CI
 on: [push]
 
 jobs:
-  job1:
+  job1: #Android Builds
     name: Android Builds
     runs-on: ubuntu-latest
     steps:
@@ -50,7 +50,7 @@ jobs:
           cd apps/wear/pushtracker
           tns build android
 
-  job2:
+  job2: #iOS Builds
     name: iOS Builds
     runs-on: macos-latest
     steps:
@@ -71,7 +71,7 @@ jobs:
           tns usage-reporting disable
           tns error-reporting disable
           npm i -g rimraf && npm i -g typescript
-          npm i && npm run nuki
+          npm i && npm run nuki node --max-old-space-size=8192
 
       - name: Lint
         run: npm run tslint
