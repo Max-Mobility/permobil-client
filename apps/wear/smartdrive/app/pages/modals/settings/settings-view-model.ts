@@ -1,7 +1,6 @@
 import { Observable, Page, ShowModalOptions } from '@nativescript/core';
 import { Device } from '@permobil/core';
 import { L, Prop } from '@permobil/nativescript';
-import { WearOsLayout } from 'nativescript-wear-os';
 import { SettingsService } from '../../../services';
 import { configureLayout, sentryBreadCrumb } from '../../../utils';
 import { WatchSettings } from '../../../models';
@@ -23,7 +22,7 @@ export class SettingsViewModel extends Observable {
     super();
     this._settingsService = settingsService;
     this._settingsService.loadSettings();
-    const wearOsLayout: WearOsLayout = page.getViewById('wearOsLayout');
+    const wearOsLayout: any = page.getViewById('wearOsLayout');
     const res = configureLayout(wearOsLayout);
     this.chinSize = res.chinSize;
     this.insetPadding = res.insetPadding;

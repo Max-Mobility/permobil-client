@@ -1,5 +1,5 @@
-import { Level, Sentry } from 'nativescript-sentry';
 import { Log } from '@permobil/core';
+import { Level, Sentry } from 'nativescript-sentry';
 
 export function sentryBreadCrumb(message: string) {
   Log.D(`Sentry breadcrumb`, message);

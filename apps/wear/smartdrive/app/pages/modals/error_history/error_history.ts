@@ -6,7 +6,6 @@ import { format } from 'date-fns';
 import differenceBy from 'lodash/differenceBy';
 import { Sentry } from 'nativescript-sentry';
 import { LoadOnDemandListViewEventData, RadListView } from 'nativescript-ui-listview';
-import { WearOsLayout } from 'nativescript-wear-os';
 import { SmartDriveData } from '../../../namespaces';
 import { SqliteService } from '../../../services';
 import { configureLayout } from '../../../utils';
@@ -46,7 +45,7 @@ export async function onShownModally(args: ShownModallyData) {
   // set the pages bindingContext
   page.bindingContext = fromObject(data);
 
-  const wearOsLayout: WearOsLayout = page.getViewById('wearOsLayout');
+  const wearOsLayout: any = page.getViewById('wearOsLayout');
   const res = configureLayout(wearOsLayout);
   page.bindingContext.set('chinSize', res.chinSize);
   page.bindingContext.set('insetPadding', res.insetPadding);
