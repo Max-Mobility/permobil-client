@@ -1,5 +1,3 @@
-/// <reference path="../node_modules/tns-platform-declarations/ios.d.ts" />
-
 import { BluetoothCommon, CLog, CLogTypes, ConnectOptions, Device, MakeCharacteristicOptions, MakeServiceOptions, StartAdvertisingOptions, StartNotifyingOptions, StartScanningOptions, StopNotifyingOptions } from '../common';
 import { CBCentralManagerDelegateImpl } from './CBCentralManagerDelegateImpl';
 import { CBPeripheralDelegateImpl } from './CBPeripheralDelegateImpl';

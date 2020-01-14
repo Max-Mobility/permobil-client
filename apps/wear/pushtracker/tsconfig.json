@@ -5,6 +5,7 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "diagnostics": true,
     "noEmitHelpers": true,
     "noEmitOnError": false,
     "skipLibCheck": true,
@@ -15,15 +16,22 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["app/*"],
+      "*": ["./node_modules/tns-core-modules/*", "./node_modules/*"],
       "@permobil/*": ["../../permobil/*"],
-      "*": ["./node_modules/tns-core-modules/*", "./node_modules/*"]
+      "@permobil/core/*": ["../../../@permobil/core/*"],
+      "@permobil/nativescript/*": ["../../../@permobil/nativescript/*"]
     }
   },
+  "include": [
+    "../../../@permobil/nativescript/src/**/*.ts",
+    "../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/src/**/*.ts",
+    "../../../forked-plugins/nativescript-bluetooth/**/*.ts"
+  ],
   "exclude": [
     "node_modules",
     "platforms",
-    "nativescript-bluetooth",
     "tools",
-    "hooks"
+    "hooks",
+    "../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/demo/**/*.ts"
   ]
 }

@@ -1,6 +1,5 @@
 import { device } from '@nativescript/core/platform';
-import { CheckOptions, RequestOptions } from './permissions';
-import { CLog, CLogTypes } from './permissions.common';
+import { CheckOptions, CLog, CLogTypes, RequestOptions } from './permissions.common';
 export * from './permissions.common';
 
 export namespace PermissionsIOS {

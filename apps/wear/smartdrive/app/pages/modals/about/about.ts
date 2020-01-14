@@ -5,7 +5,6 @@ import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
 import { L } from '@permobil/nativescript';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
-import { WearOsLayout } from 'nativescript-wear-os';
 import { SmartDriveKinveyService } from '../../../services';
 import { configureLayout, getSerialNumber, sentryBreadCrumb } from '../../../utils';
 
@@ -77,9 +76,7 @@ export function onShownModally(args: ShownModallyData) {
   // set the pages bindingContext
   page.bindingContext = fromObject(data);
 
-  const wearOsLayout = (<unknown>(
-    page.getViewById('wearOsLayout')
-  )) as WearOsLayout;
+  const wearOsLayout = (<unknown>page.getViewById('wearOsLayout')) as any;
   const res = configureLayout(wearOsLayout);
   page.bindingContext.set('chinSize', res.chinSize);
   page.bindingContext.set('insetPadding', res.insetPadding);
