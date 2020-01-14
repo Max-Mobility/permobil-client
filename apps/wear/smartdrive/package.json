@@ -3,7 +3,7 @@
   "nativescript": {
     "id": "com.permobil.smartdrive.wearos",
     "tns-android": {
-      "version": "6.3.0"
+      "version": "6.3.1"
     }
   },
   "scripts": {
@@ -11,9 +11,9 @@
     "scss-b": "node-sass --watch ./app/scss -o ./app/scss"
   },
   "dependencies": {
-    "@maxmobility/nativescript-wear-os-comms": "file:../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/wear-os-comms-0.1.3-rc3.tgz",
+    "@maxmobility/nativescript-wear-os-comms": "file:../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/src",
     "@maxmobility/private-keys": "autochair/maxmobility-private-keys#master",
-    "@nativescript/core": "file:../../../forked-plugins/nativescript-core-6.3.1-swipe-modals.tgz",
+    "@nativescript/core": "file:../../../forked-plugins/nativescript-core-6.3.2-swipe-modals.tgz",
     "@permobil/core": "file:../../../@permobil/core",
     "@permobil/nativescript": "file:../../../@permobil/nativescript",
     "buffer": "~5.2.1",
@@ -21,19 +21,19 @@
     "injection-js": "~2.2.2",
     "lodash": "~4.17.15",
     "nativescript-android-sensors": "~1.5.0",
-    "nativescript-animated-circle": "file:../../../forked-plugins/nativescript-animated-circle",
+    "nativescript-animated-circle": "file:../../../forked-plugins/nativescript-animated-circle-1.3.0.tgz",
     "nativescript-appavailability": "~1.3.2",
     "nativescript-auto-fit-text": "file:../../../forked-plugins/nativescript-auto-fit-text-1.0.1.tgz",
     "nativescript-bluetooth": "file:../../../forked-plugins/nativescript-bluetooth",
-    "nativescript-download-progress": "~1.2.0",
+    "nativescript-download-progress": "^1.3.0",
     "nativescript-localstorage": "~2.0.0",
     "nativescript-ng-ripple": "~3.0.0-beta.1",
     "nativescript-pager": "file:../../../forked-plugins/nativescript-pager-11.0.11.tgz",
     "nativescript-permissions": "~1.3.8",
     "nativescript-sentry": "file:../../../forked-plugins/nativescript-sentry-1.9.1.tgz",
     "nativescript-sqlite": "~2.3.3",
-    "nativescript-sqlite-commercial": "github:autochair/nativescript-sqlite-commercial",
-    "nativescript-sqlite-encrypted": "github:autochair/nativescript-sqlite-encrypted",
+    "nativescript-sqlite-commercial": "github:autochair/nativescript-sqlite-commercial#master",
+    "nativescript-sqlite-encrypted": "github:autochair/nativescript-sqlite-encrypted#master",
     "nativescript-theme-core": "~1.0.6",
     "nativescript-themes": "~2.0.1",
     "nativescript-ui-listview": "~8.0.1",
@@ -50,8 +50,9 @@
     "node-sass": "4.13.0",
     "prompts": "~2.2.1",
     "rimraf": "~2.6.3",
-    "tns-platform-declarations": "~6.3.1",
+    "sass-loader": "^8.0.0",
+    "tns-platform-declarations": "~6.3.2",
     "tslint": "~5.20.1",
-    "typescript": "~3.7.3"
+    "typescript": "~3.7.4"
   }
 }
