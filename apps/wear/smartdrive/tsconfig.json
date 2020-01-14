@@ -27,5 +27,11 @@
     "../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/src/**/*.ts",
     "../../../forked-plugins/nativescript-bluetooth/**/*.ts"
   ],
-  "exclude": ["node_modules", "platforms", "tools", "hooks"]
+  "exclude": [
+    "node_modules",
+    "platforms",
+    "tools",
+    "hooks",
+    "../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/demo/**/*.ts"
+  ]
 }
