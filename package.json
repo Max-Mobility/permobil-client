@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "scripts": {
     "*************************** GITHUB ACTIONS CI SPECIFIC SCRIPTS": "***************************",
-    "ci.build.setup": "echo no | npm i -g nativescript && tns usage-reporting disable && tns error-reporting disable && npm run setup.all",
+    "ci.build.setup": "echo no | npm i -g nativescript && tns usage-reporting disable && tns error-reporting disable && npm i && npm run global.installs",
     "ci.pip.install": "sudo pip install --upgrade pip && sudo pip install six",
+    "ci.build.mobile.setup": "npm run setup.@permobil && npm run setup.forked.plugins && npm run setup.mobile",
     "ci.pt.m.android": "cd apps/mobile/pushtracker && tns build android --env.aot --env.uglify",
     "ci.pt.m.ios": "cd apps/mobile/pushtracker && tns build ios --env.aot --env.uglify",
+    "ci.build.wear.setup": "npm run setup.@permobil && npm run setup.forked.plugins && npm run setup.wear",
     "ci.pt.w.android": "cd apps/wear/pushtracker && tns build android --env.uglify",
     "ci.sd.w.android": "cd apps/wear/smartdrive && tns build android --env.uglify",
     "*************************** /end GITHUB ACTIONS CI SPECIFIC SCRIPTS": "***************************",
