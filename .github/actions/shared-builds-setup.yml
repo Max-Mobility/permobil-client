@@ -1,3 +1,6 @@
+- name: Clone Repo
+  uses: actions/checkout@v1
+
 - name: Setup SSH-Agent
   uses: webfactory/ssh-agent@v0.2.0
   with:

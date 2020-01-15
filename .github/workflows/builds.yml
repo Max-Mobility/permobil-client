@@ -8,8 +8,6 @@ jobs:
     name: PT.M Android Build
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v1
-
       - name: Shared Setup
         uses: max-mobility/permobil-client/.github/actions/shared-builds-setup@chore/wear-builds
 
