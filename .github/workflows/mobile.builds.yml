@@ -1,4 +1,4 @@
-name: CI
+name: Mobile Builds CI
 
 # Trigger the workflow on push or pull request
 on: [push]

@@ -1,4 +1,4 @@
-name: CI
+name: Wear Builds CI
 
 # Trigger the workflow on push or pull request
 on: [push]
@@ -28,9 +28,6 @@ jobs:
           tns usage-reporting disable
           tns error-reporting disable
           npm run setup.all
-
-      - name: Lint
-        run: npm run tslint
 
       - name: Build PT.W Android
         run: |
