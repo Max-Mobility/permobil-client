@@ -13,7 +13,7 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Build PT.M iOS
-        run: npm run ci.build.setup && npm run ci.pip.install && npm run ci.pt.m.ios
+        run: npm run ci.build.mobile.setup && npm run ci.pip.install && npm run ci.pt.m.ios
 
   job2:
     name: PushTracker Mobile Android
@@ -27,7 +27,7 @@ jobs:
         with:
           java-version: 1.8
       - name: Build PT.M Android
-        run: npm run ci.build.setup && npm run tslint && npm run ci.pt.m.android # only linting in one job to avoid duplicating it
+        run: npm run ci.build.mobile.setup && npm run tslint && npm run ci.pt.m.android # only linting in one job to avoid duplicating it
 
   job3:
     name: PushTracker Wear Android
@@ -41,7 +41,7 @@ jobs:
         with:
           java-version: 1.8
       - name: Build PT.W Android
-        run: npm run ci.build.setup && npm run ci.pt.w.android
+        run: npm run ci.build.wear.setup && npm run ci.pt.w.android
 
   job4:
     name: SmartDrive Wear Android
@@ -55,4 +55,4 @@ jobs:
         with:
           java-version: 1.8
       - name: Build SD.W Android
-        run: npm run ci.build.setup && npm run ci.sd.w.android
+        run: npm run ci.build.wear.setup && npm run ci.sd.w.android
