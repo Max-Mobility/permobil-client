@@ -14,8 +14,7 @@ jobs:
       - name: Setup SSH-Agent
         uses: webfactory/ssh-agent@v0.2.0
         with:
-          ssh-private-key: |
-            ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Setup JDK 1.8
         uses: actions/setup-java@v1
@@ -33,9 +32,7 @@ jobs:
         run: npm run tslint
 
       - name: Build PT.M Android
-        run: |
-          cd apps/mobile/pushtracker
-          tns build android --env.aot --env.uglify
+        run: cd apps/mobile/pushtracker && tns build android --env.aot --env.uglify
 
   job2:
     name: PT.M iOS Build
@@ -47,8 +44,7 @@ jobs:
       - name: Setup SSH-Agent
         uses: webfactory/ssh-agent@v0.2.0
         with:
-          ssh-private-key: |
-            ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Install PIP #PIP needed for iOS builds and for TNS CLI to configure correctly on macOS
         run: |
@@ -63,6 +59,4 @@ jobs:
           npm run setup.all
 
       - name: Build PT.M iOS
-        run: |
-          cd apps/mobile/pushtracker
-          tns build ios --env.aot --env.uglify
+        run: cd apps/mobile/pushtracker && tns build ios --env.aot --env.uglify
