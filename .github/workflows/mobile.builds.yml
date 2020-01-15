@@ -4,8 +4,8 @@ name: CI
 on: [push]
 
 jobs:
-  job1: # App Builds
-    name: App Builds
+  job1:
+    name: PT.M Android Build
     runs-on: macos-latest
     steps:
       - name: Checkout Repo
@@ -16,13 +16,39 @@ jobs:
         with:
           ssh-private-key: |
             ${{ secrets.SSH_PRIVATE_KEY }}
-            ${{ secrets.SQLITE_ENCRYPTED_SSH_TOKEN }}
-            ${{ secrets.SQLITE_COMMERCIAL_SSH_TOKEN }}
 
       - name: Setup JDK 1.8
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+
+      - name: Setup Permobil-Client
+        run: |
+          echo no | npm i -g nativescript
+          tns usage-reporting disable
+          tns error-reporting disable
+          npm run setup.all
+
+      - name: Lint
+        run: npm run tslint
+
+      - name: Build PT.M Android
+        run: |
+          cd apps/mobile/pushtracker
+          tns build android --env.aot --env.uglify
+
+  job2:
+    name: PT.M iOS Build
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v1
+
+      - name: Setup SSH-Agent
+        uses: webfactory/ssh-agent@v0.2.0
+        with:
+          ssh-private-key: |
+            ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Install PIP #PIP needed for iOS builds and for TNS CLI to configure correctly on macOS
         run: |
@@ -34,27 +60,7 @@ jobs:
           echo no | npm i -g nativescript
           tns usage-reporting disable
           tns error-reporting disable
-          npm run global.installs
-          npm i
-          npm run setup.forked.plugins && npm run setup.mobile && npm run setup.@permobil
-
-      - name: Lint
-        run: npm run tslint
-
-      - name: Build PT.M Android
-        run: |
-          cd apps/mobile/pushtracker
-          tns build android --env.aot --env.uglify
-
-      # - name: Build PT.W Android
-      #   run: |
-      #     cd apps/wear/pushtracker
-      #     tns build android --env.uglify
-
-      # - name: Build SD.W Android
-      #   run: |
-      #     cd apps/wear/smartdrive
-      #     tns build android --env.uglify
+          npm run setup.all
 
       - name: Build PT.M iOS
         run: |
