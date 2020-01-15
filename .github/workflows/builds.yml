@@ -8,8 +8,8 @@ jobs:
     name: PushTracker Mobile iOS
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: webfactory/ssh-agent@v0.2.0
+      - uses: actions/checkout@v1 # checks out the repo to CI runner
+      - uses: webfactory/ssh-agent@v0.2.0 # sets SSH key for our private-keys repo
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Build PT.M iOS
