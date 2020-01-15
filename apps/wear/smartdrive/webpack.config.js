@@ -89,6 +89,10 @@ module.exports = env => {
 
   const useLibs = compileSnapshot;
   const isAnySourceMapEnabled = !!sourceMap || !!hiddenSourceMap;
+  env.externals = [
+    'nativescript-sqlite-commercial',
+    'nativescript-sqlite-encrypted'
+  ];
   const externals = nsWebpack.getConvertedExternals(env.externals);
 
   const appFullPath = resolve(projectRoot, appPath);
