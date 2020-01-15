@@ -461,6 +461,7 @@ export class MainViewModel extends Observable {
         this._showingModal = false;
       },
       animated: false,
+      cancelable: false,
       fullscreen: true
     };
     this._showingModal = true;
