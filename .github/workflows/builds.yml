@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Shared Setup
-        uses: ./.github/actions/shared-setup
+        uses: ./.github/actions/shared-setup/shared-setup
       # - name: Build
       #   run: npm run ci.build.setup && npm run tslint && npm run ci.pt.m.android
   # job2:
