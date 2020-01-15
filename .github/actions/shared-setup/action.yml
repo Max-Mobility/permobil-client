@@ -3,8 +3,8 @@ name: "WTF"
 description: "Something"
 author: "Permobil"
 runs:
-  using: "node12"
-  main: "dist/index.js"
+  using: 'docker'
+  image: 'docker://debian:stetch-slim'
 branding:
   color: "yellow"
   icon: "command"
