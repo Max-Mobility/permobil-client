@@ -5,16 +5,57 @@ on: [push]
 
 jobs:
   job1:
-    name: PT.M Android Build
+    name: PushTracker Mobile iOS
     runs-on: macos-latest
     steps:
-      - name: Clone Repo
-        uses: actions/checkout@v1
+      - uses: actions/checkout@v1
+      - uses: webfactory/ssh-agent@v0.2.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Build PT.M iOS
+        run: npm run ci.build.setup && npm run ci.pip.install && npm run ci.pt.m.ios
 
-      - name: Shared Setup
-        uses: ./.github/actions/shared-setup
-      # - name: Build
-      #   run: npm run ci.build.setup && npm run tslint && npm run ci.pt.m.android
+  job2:
+    name: PushTracker Mobile Android
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: webfactory/ssh-agent@v0.2.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build PT.M Android
+        run: npm run ci.build.setup && npm run tslint && npm run ci.pt.m.android # only linting in one job to avoid duplicating it
+
+  job3:
+    name: PushTracker Wear Android
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: webfactory/ssh-agent@v0.2.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build PT.W Android
+        run: npm run ci.build.setup && npm run ci.pt.w.android
+
+  job4:
+    name: SmartDrive Wear Android
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: webfactory/ssh-agent@v0.2.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build SD.W Android
+        run: npm run ci.build.setup && npm run ci.sd.w.android
   # job2:
   #   name: PT.M iOS Build
   #   runs-on: macos-latest
