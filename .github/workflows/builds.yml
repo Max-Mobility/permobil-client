@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v1
 
       - name: Shared Setup
-        uses: ./.github/actions/build-setup
+        uses: ./.github/actions/build-setup-action.yml
 
       - name: Build
         run: npm run ci.build.setup && npm run tslint && npm run ci.pt.m.android
