@@ -9,7 +9,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout
+        uses: actions/checkout@v1
 
       - name: Shared Setup
         uses: ../actions/build-setup.yml
