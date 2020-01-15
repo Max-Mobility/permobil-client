@@ -2238,11 +2238,13 @@ export class MainViewModel extends Observable {
       clearInterval(this.rssiIntervalId);
       this.rssiIntervalId = null;
     }
-    // we've connected - set the timeout to be the user-configured
-    // timeout
-    this._restartPowerAssistTimeout(
-      this._settingsService.watchSettings.powerAssistTimeoutMinutes
-    );
+    if (this.powerAssistActive) {
+      // we've connected - set the timeout to be the user-configured
+      // timeout
+      this._restartPowerAssistTimeout(
+        this._settingsService.watchSettings.powerAssistTimeoutMinutes
+      );
+    }
     /*
     this.rssiIntervalId = setInterval(
       this._readSmartDriveSignalStrength.bind(this),
@@ -2277,6 +2279,8 @@ export class MainViewModel extends Observable {
       this.powerAssistState = PowerAssist.State.Disconnected;
       this._updatePowerAssistRing();
       this._retrySmartDriveConnection();
+    } else {
+      this._clearPowerAssistTimeout();
     }
   }
 
