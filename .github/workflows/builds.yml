@@ -3,12 +3,6 @@ name: App Builds
 # Trigger the workflow on push or pull request
 on: [push]
 
-# Weekly Build
-on: 
-  schedule:
-    # * is a special character in YAML so you have to quote this string
-    - cron:  '01 0 * * 1' # Monday morning before week starts to ensure project is safe and sound
-
 jobs:
   job1:
     name: PT.M Android Build
@@ -19,58 +13,47 @@ jobs:
 
       - name: Build
         run: npm run ci.build.setup && npm run tslint && npm run ci.pt.m.android
-
   # job2:
   #   name: PT.M iOS Build
   #   runs-on: macos-latest
   #   steps:
   #     - name: Checkout Repo
   #       uses: actions/checkout@v1
-
   #     - name: Setup SSH-Agent
   #       uses: webfactory/ssh-agent@v0.2.0
   #       with:
   #         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
   #     - name: Build PT.M iOS
   #       run: npm run ci.build.setup && npm run ci.pip.install && npm run ci.pt.m.ios
-
   # job3:
   #   name: PT.W Build
   #   runs-on: macos-latest
   #   steps:
   #     - name: Checkout Repo
   #       uses: actions/checkout@v1
-
   #     - name: Setup SSH-Agent
   #       uses: webfactory/ssh-agent@v0.2.0
   #       with:
   #         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
   #     - name: Setup JDK 1.8
   #       uses: actions/setup-java@v1
   #       with:
   #         java-version: 1.8
-
   #     - name: Build PT.W Android
   #       run: npm run ci.build.setup && npm run ci.pt.w.android
-
   # job4:
   #   name: SD.W Build
   #   runs-on: macos-latest
   #   steps:
   #     - name: Checkout Repo
   #       uses: actions/checkout@v1
-
   #     - name: Setup SSH-Agent
   #       uses: webfactory/ssh-agent@v0.2.0
   #       with:
   #         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
   #     - name: Setup JDK 1.8
   #       uses: actions/setup-java@v1
   #       with:
   #         java-version: 1.8
-
   #     - name: Build SD.W Android
   #       run: npm run ci.build.setup && npm run ci.sd.w.android
