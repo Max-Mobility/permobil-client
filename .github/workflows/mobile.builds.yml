@@ -1,21 +1,23 @@
 name: Mobile Builds CI
 
 # Shared project setup
-steps: &repoSetup
-  - name: Checkout Repo
-    uses: actions/checkout@v
+aliases: 
+  - &repoSetup
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v
 
-  - name: Setup SSH-Agent
-    uses: webfactory/ssh-agent@v0.2.0
-    with:
-      ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    - name: Setup SSH-Agent
+      uses: webfactory/ssh-agent@v0.2.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-  - name: Setup Permobil-Client
-    run: |
-      echo no | npm i -g nativescript
-      tns usage-reporting disable
-      tns error-reporting disable
-      npm run setup.all
+    - name: Setup Permobil-Client
+      run: |
+        echo no | npm i -g nativescript
+        tns usage-reporting disable
+        tns error-reporting disable
+        npm run setup.all
       
 
 # Trigger the workflow on push or pull request
@@ -61,8 +63,7 @@ jobs:
   job2:
     name: PT.M iOS Build
     runs-on: macos-latest
-
-      <<: *repoSetup
+    - *repoSetup
 
       - name: Install PIP #PIP needed for iOS builds and for TNS CLI to configure correctly on macOS
         run: |
