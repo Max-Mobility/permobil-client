@@ -18,7 +18,7 @@
     "*************************** SETUP": "***************************",
     "setup": "npm run global.installs && npm run setup.@permobil && npm run setup.mobile && npm run setup.wear && npm run setup.forked.plugins",
     "setup.all": "npm i && npm run global.installs && npm run setup.all.non-global",
-    "setup.all.non-global": "npm i && npm run setup.@permobil && npm run setup.forked.plugins && npm run setup.mobile && npm run setup.wear",
+    "setup.all.non-global": "npm i && npm run setup.forked.plugins && npm run setup.@permobil && npm run setup.mobile && npm run setup.wear",
     "setup.mobile": "npm run setup.pt.mobile",
     "setup.se.mobile": "cd apps/mobile/smart-eval && npm i && tsc",
     "setup.pt.mobile": "cd apps/mobile/pushtracker && npm i && tsc",

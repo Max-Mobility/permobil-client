@@ -297,7 +297,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-          }`,
+            }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -461,6 +461,7 @@ export class MainViewModel extends Observable {
         this._showingModal = false;
       },
       animated: false,
+      cancelable: false,
       fullscreen: true
     };
     this._showingModal = true;
@@ -836,7 +837,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => {});
+        await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
       } catch (permissionsObj) {
@@ -1917,6 +1918,7 @@ export class MainViewModel extends Observable {
         this._showingModal = false;
       },
       animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
+      cancelable: false,
       fullscreen: true
     };
     this._showingModal = true;
@@ -1961,7 +1963,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -2026,7 +2028,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
@@ -2192,7 +2194,7 @@ export class MainViewModel extends Observable {
       this.smartDrive &&
       !this.smartDrive.connected
     ) {
-      setTimeout(this._connectToSavedSmartDrive.bind(this), 5 * 1000);
+      setTimeout(this._connectToSavedSmartDrive.bind(this), 0);
     }
   }
 
@@ -2236,11 +2238,13 @@ export class MainViewModel extends Observable {
       clearInterval(this.rssiIntervalId);
       this.rssiIntervalId = null;
     }
-    // we've connected - set the timeout to be the user-configured
-    // timeout
-    this._restartPowerAssistTimeout(
-      this._settingsService.watchSettings.powerAssistTimeoutMinutes
-    );
+    if (this.powerAssistActive) {
+      // we've connected - set the timeout to be the user-configured
+      // timeout
+      this._restartPowerAssistTimeout(
+        this._settingsService.watchSettings.powerAssistTimeoutMinutes
+      );
+    }
     /*
     this.rssiIntervalId = setInterval(
       this._readSmartDriveSignalStrength.bind(this),
@@ -2275,6 +2279,8 @@ export class MainViewModel extends Observable {
       this.powerAssistState = PowerAssist.State.Disconnected;
       this._updatePowerAssistRing();
       this._retrySmartDriveConnection();
+    } else {
+      this._clearPowerAssistTimeout();
     }
   }
 
