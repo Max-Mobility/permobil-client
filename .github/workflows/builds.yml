@@ -8,8 +8,11 @@ jobs:
     name: PT.M Android Build
     runs-on: macos-latest
     steps:
+      - name: Checkout Repo
+        uses: actions/checkout
+
       - name: Shared Setup
-        uses: "../actions/build-setup.yml"
+        uses: ../actions/build-setup.yml
 
       - name: Build
         run: npm run ci.build.setup && npm run tslint && npm run ci.pt.m.android
