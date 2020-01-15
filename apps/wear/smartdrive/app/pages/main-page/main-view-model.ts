@@ -1917,6 +1917,7 @@ export class MainViewModel extends Observable {
         this._showingModal = false;
       },
       animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
+      cancelable: false,
       fullscreen: true
     };
     this._showingModal = true;
