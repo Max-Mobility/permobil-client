@@ -85,6 +85,7 @@ export class SettingsViewModel extends Observable {
         }
       },
       animated: false,
+      cancelable: false,
       fullscreen: true
     };
     this._showingModal = true;
