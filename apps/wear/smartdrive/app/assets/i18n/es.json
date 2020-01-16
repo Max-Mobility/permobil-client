@@ -82,6 +82,7 @@
     "no-smartdrive-paired": "SmartDrive no emparejado.",
     "no-smartdrives-found": "No se han encontrado otros SmartDrives cerca.",
     "permissions": "No se puede realizar la acción solicitada. No se otorgaron los permisos requeridos.",
+    "power-assist-timeout": "La asistencia eléctrica se deshabilitó automáticamente a través del tiempo de espera debido a la inactividad. Consulte la configuración de SmartDrive MX2 [Tiempo de espera de asistencia de energía] para obtener más información.",
     "saving-error": "No se pudo guardar el error del SmartDrive.",
     "saving-usage": "No se pudieron guardar los datos del uso del SmartDrive.",
     "scan": "No se pudo escanear.",
@@ -126,6 +127,7 @@
     },
     "sd": {
       "state": {
+        "already-uptodate": "Ya está actualizado. Seleccione Forzar para actualizar de todos modos.",
         "awaiting-ble-ready": "Esperando conexion al BT",
         "awaiting-connection": "Esperando la conexión",
         "awaiting-mcu-ready": "Esperando conexion al SD",
@@ -187,6 +189,7 @@
       "controlmode": "MX2+: La operación predeterminada basada en gestos de SmartDrive. En el modo de control MX2+, con una doble palmada se iniciará la marcha aumentando la velocidad, con una palmada mantendrá la velocidad actual y haciendo una doble palmada desactivará el motor.\n\nMX2: En el modo de control MX2, el SmartDrive iniciará la marcha cuando detecte su impulso y se desactivará el motor cuando realize una palmada. Tenga en cuenta que esta es una opción de soporte heredada.\n\nMX1: En el modo de control MX1, el SmartDrive iniciará la marcha cuando detecte su impulso, y se desactivará el motor cuando realize una palmada o cuando frene los aros con la mano. Tenga en cuenta que esta es una opción de soporte heredado.",
       "maxspeed": "Velocidad máxima a la que puede conducir el SmartDrive cuando lo controla con su reloj inteligente (PushTracker E2).",
       "powerassistbuzzer": "Cuando está encendido, el SmartDrive emitirá un pitido cada vez que se establezca una conexión desde un dispositivo remoto, o cuando el Botón del interruptor salga del estado de espera.",
+      "powerassisttimeout": "El SmartDrive MX2 desactivará automáticamente la asistencia eléctrica después del tiempo especificado si el usuario tiene activada la asistencia eléctrica y está conectado al SmartDrive pero no ha activado el motor antes de que expire el tiempo de espera.\n\nNota: el SmartDrive MX2 desactivará automáticamente la asistencia de potencia después de 1 minuto si no está conectado al SmartDrive.",
       "switchcontrolmode": "Momentáneo: el modo de control de Botón del SmartDrive,  iniciará la marcha  aumentando su velocidad a la velocidad máxima de control del Botón solo si se mantiene presionado uno de los Botones. Cuando se suelta el Botón retenido, o se presionan ambos Botones [si están presentes], el motor se desactivará. Tenga en cuenta que, tras la desactivación,  el dispositivo no se pone en modo de espera.\n\nEnganchado: en el modo de control de Botón, el SmartDrive iniciará la marcha aumentando su velocidad a la velocidad máxima de control del Botón mientras se mantiene presionado uno de los Botones de control. Cuando se suelta el Botón retenido, el SmartDrive seguirá  la marcha a la velocidad actual cuando se suelte el Botón. Cuando se presiona y suelte uno de los Botones nuevamente, o si se presionan ambos Botones [si está presente], el motor se desactivará. Tenga en cuenta que, tras la desactivación, el dispositivo no se pone en modo de espera.",
       "switchcontrolspeed": "La velocidad máxima a la que puede conducir el SmartDrive cuando está controlado por el Botón.",
       "tapsensitivity": "La sensibilidad del gesto del palmeo que se utiliza para activar y desactivar la marcha. Cuanto más bajo sea el porcentaje, más fuerza tienes que usar para palmear. El 100% es el más sensible y, por lo tanto, necesitas usar menos fuerza para palmear, y el 10% es el menos sensible y, por lo tanto, debe usar más fuerza para palmear.",
@@ -199,6 +202,11 @@
     "pair-smartdrive": "Emparejando SmartDrive",
     "paired-to-smartdrive": "Emparejado con éxito al SmartDrive.",
     "power-assist-buzzer": "Pitido de indicación de asistencia de potencia",
+    "power-assist-timeout": {
+      "title": "Power Assist Timeout",
+      "units-long": "Minutos",
+      "units-short": "Min"
+    },
     "scanning": "Escaneando SmartDrive para emparejar con ...",
     "select-smartdrive": "Seleccione SmartDrive",
     "tap-sensitivity": "La sensibilidad del palmeo",

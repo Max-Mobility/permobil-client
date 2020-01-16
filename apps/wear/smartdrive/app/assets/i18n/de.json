@@ -82,6 +82,7 @@
     "no-smartdrive-paired": "Kein SmartDrive gekoppelt.",
     "no-smartdrives-found": "Kein SmartDrive in der Nähe gefunden.",
     "permissions": "Die Aktion konnte nicht ausgeführt werden. Erforderliche Berechtigungen nicht erteilt.",
+    "power-assist-timeout": "Die Servounterstützung wurde aufgrund von Inaktivität automatisch aufgrund einer Zeitüberschreitung deaktiviert. Weitere Informationen finden Sie in der SmartDrive MX2-Einstellung [Power Assist Timeout].",
     "saving-error": "Speichern von SmartDrive-Fehler fehlgeschlagen.",
     "saving-usage": "Speichern der Nutzungsdaten fehlgeschlagen.",
     "scan": "Konnte nicht scannen.",
@@ -126,6 +127,7 @@
     },
     "sd": {
       "state": {
+        "already-uptodate": "Schon Up to date. Wählen Sie Force, um trotzdem zu aktualisieren.",
         "awaiting-ble-ready": "Warten auf Bluetooth",
         "awaiting-connection": "Auf Verbindung warten",
         "awaiting-mcu-ready": "Warten auf SmartDrive",
@@ -187,6 +189,7 @@
       "controlmode": "MX2+: Die standardmäßige Bedienung des SmartDrive. Im MX2+ Steuermodus startet ein doppeltes Antippen des Greifreifens den Antrieb des Motors durch Hochfahren seiner Drehzahl. Durch einmaliges Antippen des Greifreifens während der Beschleunigung wird ein Tempomat aktiviert. Durch erneutes zweimaliges Antippen schaltet sich der Antrieb in den Stand-by-Modus.\n\nMX2: Im MX2 Steuermodus fährt der SmartDrive los, wenn Sie über die Greifreifen den Rollstuhl antreiben. Durch einmaliges Antippen des Greifreifens deaktivieren Sie das Fahren. Bitte beachten Sie, dass dies eine Legacy-Support-Option ist.\n\nMX1: Im MX1 Steuermodus fährt der SmartDrive los, wenn Sie über die Greifreifen den Rollstuhl antreiben. Durch Bremsen der Greifreifen bzw. durch einmaliges Antippen dieser deaktivieren Sie das Fahren. Bitte beachten Sie, dass dies eine Legacy-Support-Option ist.",
       "maxspeed": "Die maximale Geschwindigkeit, die der SmartDrive fahren kann, wenn er mit Ihrem PushTracker E2 (Smartwatch) gesteuert wird.",
       "powerassistbuzzer": "Wenn diese Option aktiviert ist, piept der SmartDrive jedes Mal, wenn eine Verbindung von einem Remote-Gerät hergestellt wird oder wenn SwitchControl aus dem Standby-Modus entfernt wird.",
+      "powerassisttimeout": "Der SmartDrive MX2 deaktiviert die Servounterstützung nach Ablauf der festgelegten Zeit automatisch, wenn der Benutzer die Servounterstützung aktiviert und mit dem SmartDrive verbunden ist, den Motor jedoch vor Ablauf der Zeit nicht aktiviert hat.\n\nHinweis: Wenn das SmartDrive MX2 nicht mit dem SmartDrive verbunden ist, wird die Energieunterstützung nach 1 Minute automatisch deaktiviert.",
       "switchcontrolmode": "Tote-Mann-Schaltung: Der Standard-SwitchControl-Modus, in dem der SmartDrive den Motor antreibt, indem er seine Geschwindigkeit nur auf die konfigurierte maximale Geschwindigkeit erhöht, während eine der SwitchControls gedrückt gehalten wird. Wenn der gehaltene Knopf losgelassen wird oder beide Knöpfe gedrückt werden, wird das Fahren deaktiviert. Bitte beachten Sie, dass das Gerät beim Deaktivieren nicht in den Standby-Modus versetzt wird.\n\nLatched: In diesem Modus startet der SmartDrive den Antrieb des Motors, indem er seine Geschwindigkeit auf die konfigurierte maximale SwitchControl-Geschwindigkeit erhöht, während eine der SwitchControls gedrückt gehalten wird. Wenn die Taste losgelassen wird, fährt der SmartDrive weiterhin mit der aktuellen Geschwindigkeit, in der die Taste losgelassen wurde. Wenn eine der Tasten gedrückt und wieder losgelassen wird oder beide Tasten gedrückt werden, wird das Fahren deaktiviert. Bitte beachten Sie, dass das Gerät beim Deaktivieren nicht in den Standby-Modus versetzt wird.",
       "switchcontrolspeed": "Die maximale Geschwindigkeit, mit der der SmartDrive fahren kann, wenn er von SwitchControl gesteuert wird.",
       "tapsensitivity": "Die Empfindlichkeit der Tippbewegung, die zum Aktivieren und Deaktivieren des Fahrens verwendet wird. Je niedriger der Prozentsatz, desto schwieriger ist das Antippen. 100% ist am empfindlichsten und daher am einfachsten zu tippen, und 10% ist am unempfindlichsten und daher am schwersten zu tippen.",
@@ -199,6 +202,11 @@
     "pair-smartdrive": "SmartDrive koppeln",
     "paired-to-smartdrive": "Erfolgreich mit dem SmartDrive gekoppelt.",
     "power-assist-buzzer": "Power Assist Beep-Anzeige",
+    "power-assist-timeout": {
+      "title": "Power Assist Timeout",
+      "units-long": "Protokoll",
+      "units-short": "MINDEST"
+    },
     "scanning": "SmartDrive Suche zum Koppeln mit...",
     "select-smartdrive": "Wählen Sie SmartDrive",
     "tap-sensitivity": "Tippen Sie auf Empfindlichkeit",

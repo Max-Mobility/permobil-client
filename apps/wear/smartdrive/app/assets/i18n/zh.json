@@ -82,6 +82,7 @@
     "no-smartdrive-paired": "沒有SmartDrive配對。",
     "no-smartdrives-found": "附近無法找到SmartDrives。",
     "permissions": "無法執行請求的操作。未被授予所需權限。",
+    "power-assist-timeout": "由於不活動，電源輔助功能已通過超時自動禁用。有關更多信息，請查閱SmartDrive MX2設置[Power Assist Timeout]。",
     "saving-error": "保存SmartDrive錯誤訊息失敗。",
     "saving-usage": "保存使用狀況失敗。",
     "scan": "無法掃描。",
@@ -126,6 +127,7 @@
     },
     "sd": {
       "state": {
+        "already-uptodate": "已經是最新的。選擇強制仍然進行更新。",
         "awaiting-ble-ready": "等待BT",
         "awaiting-connection": "等待連接",
         "awaiting-mcu-ready": "等待SD",
@@ -187,6 +189,7 @@
       "controlmode": "MX2+：本機預設控制模式-在MX2+控制模式下，拍打兩次將會啟動馬達與提高速度，再拍打一次將會定速並以當前速度行駛，再次拍打兩次將停止行駛。\n\nMX2：在MX2控制模式下，SmartDrive將在感應到您的推動時開始行駛，並在您輕敲時停駛。請注意，這是既有SmartDrive的控制方式之一。\n\nMX1：在MX1控制模式下，SmartDrive將在感應到您的推動時開始行駛，並在您輕敲或您在握住手扶圈刹車時停駛。請注意，這亦是既有SmartDrive的控制方式之一。",
       "maxspeed": "SmartDrive在智能手錶控制下可以達到的最高速度。",
       "powerassistbuzzer": "啟用後，SmartDrive與遠程設備建立連接時，或者當缐控退出待機狀態時，SmartDrive會發出蜂鳴聲。",
+      "powerassisttimeout": "如果用戶啟用了電源輔助功能並且已連接到SmartDrive，但在超時時間之前未激活電動機，則SmartDrive MX2將在指定的時間後自動停用電源輔助功能。\n\n注意：如果SmartDrive MX2未連接到SmartDrive，則它將在1分鐘後自動停用電源輔助。",
       "switchcontrolmode": "長按行駛：在此預設的線控模式下，當使用者長按線控其中一個按鈕時，SmartDrive將會啟動並將速度提升至線控設置的最大速度。若釋放長按的按鈕(或線控設置為同時按下兩個按鈕時)，SmartDrive將會停駛。請注意，SmartDrive停駛後, 它不會進入待機狀態。\n\n定速行駛：在定速行駛線控模式下，當使用者長按線控其中一個按鈕時，SmartDrive將會啟動並將其速度提升至線控設置的最大速度。當釋放按鈕時，SmartDrive將保持以當前速度行駛。當再次按下並釋放其中一個按鈕時(或線控設置為同時按下兩個按鈕時)，SmartDrive將會停駛。請注意，SmartDrive停駛後, 它不會進入待機狀態。",
       "switchcontrolspeed": "由線控控制時SmartDrive可以行駛的最大速度。",
       "tapsensitivity": "用於激活和停用行駛的敲擊手勢的靈敏度。百分比越低，您需要敲擊的力度越高 -  100%是最敏感的，因此最容易敲擊，10%是最不敏感的，因此最難敲擊。",
@@ -199,6 +202,11 @@
     "pair-smartdrive": "配對SmartDrive",
     "paired-to-smartdrive": "成功與SmartDrive配對。",
     "power-assist-buzzer": "電動輔助系統蜂鳴聲指示",
+    "power-assist-timeout": {
+      "title": "電力輔助超時",
+      "units-long": "分鐘",
+      "units-short": "分"
+    },
     "scanning": "掃描SmartDrive與...配對",
     "select-smartdrive": "選擇SmartDrive",
     "tap-sensitivity": "敲擊靈敏度",

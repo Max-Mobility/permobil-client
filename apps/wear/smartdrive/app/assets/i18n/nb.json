@@ -82,6 +82,7 @@
     "no-smartdrive-paired": "Ingen SmartDrive sammenkoblet.",
     "no-smartdrives-found": "Ingen SmartDrives funnet i nærheten.",
     "permissions": "Kan ikke utføre den forespurte handlingen. Nødvendige tillatelser ble ikke gitt.",
+    "power-assist-timeout": "Strømhjelp ble automatisk deaktivert via timeout på grunn av inaktivitet. Ta kontakt med SmartDrive MX2-innstillingen [Power Assist Timeout] for mer informasjon.",
     "saving-error": "Kunne ikke lagre SmartDrive feilen.",
     "saving-usage": "Kunne ikke lagre bruken.",
     "scan": "Kunne ikke skanne.",
@@ -126,6 +127,7 @@
     },
     "sd": {
       "state": {
+        "already-uptodate": "Allerede oppdatert. Velg Force for å oppdatere uansett.",
         "awaiting-ble-ready": "Venter på BT",
         "awaiting-connection": "Venter på tilkobling",
         "awaiting-mcu-ready": "Venter på SD",
@@ -187,6 +189,7 @@
       "controlmode": "MX2: Standard, og anbefalt betjening av SmartDrive. I MX2 kontrollmodus vil et dobbelt trykk starte motoren ved å øke hastigheten, et enkelt trykk vil starte motoren med gjeldende hastighet, og et dobbelt trykk vil deaktivere kjøringen.\n\nMX2: I MX2-kontrollmodus vil SmartDrive begynne å kjøre når den registrerer din kraft på drivringen, og vil deaktivere kjøringen når du trykker på enheten. Vær oppmerksom på at dette er et alternativ som fanger opp din faktiske hastighet.\n\nMX1: I MX1 kontrollmodus vil SmartDrive begynne å kjøre når den registrerer din kraft på drivringen, og vil slutte å kjøre når du trykker på den, eller når du bremser på drivringene. Vær oppmerksom på at dette er et alternativ som tar opp din hastighet.",
       "maxspeed": "Maksimal hastighet for SmartDrive når den betjenes av smarturet ditt.",
       "powerassistbuzzer": "Når den er aktivert, piper SmartDrive hver gang en tilkobling fra en ekstern enhet opprettes, eller når bryterkontroll tas ut av ventemodus.",
+      "powerassisttimeout": "SmartDrive MX2 vil automatisk deaktivere strømassistansen etter den angitte tiden hvis brukeren har strømassistent aktiv og er koblet til SmartDrive, men ikke har aktivert motoren før tidsavbruddet går ut.\n\nMerk: SmartDrive MX2 vil automatisk deaktivere strømassistansen etter 1 minutt hvis den ikke er koblet til SmartDrive.",
       "switchcontrolmode": "Øyeblikkelig: Ved standard bryterkontrollmodus vil SmartDrive begynne å kjøre motoren ved å stegvis øke hastigheten til den konfigurerte bryterkontrollens maksimale hastighet, men bare når en av bryterne holdes inne. Når den bryteren slippes, eller begge bryterne [hvis tilgjengelig] trykkes, vil kjøringen deaktiveres. Vær oppmerksom på at deaktiveringen ikke setter enheten i ventetilmodus.\n\nLåst: I Låst Switch Control Mode vil SmartDrive begynne å kjøre motoren ved å stegvis øke hastigheten til den konfigurerte bryterkontrollens maksimale hastighet mens en av bryterkontrollknappene holdes inne. Når bryteren slippes, vil SmartDrive fortsette å kjøre med den hastighet som er oppnåd når bryter ble sluppet. Når en av bryterne trykkes og slippes igjen, eller begge bryterne [hvis tilgjengelig] aktiveres, vil kjøringen deaktiveres. Vær oppmerksom på at deaktiveringen ikke setter enheten i ventetilstand.",
       "switchcontrolspeed": "Den maksimale hastigheten SmartDrive kan kjøre, når den styres av bryterenhet.",
       "tapsensitivity": "Følsomheten til trykkbevegelsen som brukes til å aktivere og deaktivere kjøringen. Jo lavere prosentandel er, desto kraftigere må du å trykke - 100% er den mest følsomme og derfor letteste trykket, og 10% er den minst følsomme og derfor hardeste å trykke.",
@@ -199,6 +202,11 @@
     "pair-smartdrive": "Tilkople SmartDrive",
     "paired-to-smartdrive": "Vellykket tilkobling til SmartDrive.",
     "power-assist-buzzer": "Power Assist Beep Indikasjon",
+    "power-assist-timeout": {
+      "title": "Power Assist Timeout",
+      "units-long": "minutter",
+      "units-short": "min"
+    },
     "scanning": "Skanner etter SmartDrive for å tilkople seg med ...",
     "select-smartdrive": "Velg SmartDrive",
     "tap-sensitivity": "Trykk på følsomhet",

@@ -82,6 +82,7 @@
     "no-smartdrive-paired": "Ei SmartDrive-paria.",
     "no-smartdrives-found": "Lähistöllä ei löytynyt SmartDrive-laitteita.",
     "permissions": "Pyydettyä toimintoa ei voida suorittaa. Vaadittuja lupia ei annettu.",
+    "power-assist-timeout": "Virtaapu poistettiin käytöstä poistamisen vuoksi automaattisesti aikakatkaisun kautta. Lisätietoja on SmartDrive MX2 -asetuksessa [Power Assist Timeout].",
     "saving-error": "SmartDrive-virheen tallentaminen epäonnistui.",
     "saving-usage": "Käytön tallentaminen epäonnistui.",
     "scan": "Skannaus epäonnistui.",
@@ -126,6 +127,7 @@
     },
     "sd": {
       "state": {
+        "already-uptodate": "Jo ajan tasalla. Valitse Pakota päivittääksesi kuitenkin.",
         "awaiting-ble-ready": "Odotetaan BT: llä",
         "awaiting-connection": "Odotetaan yhteyttä",
         "awaiting-mcu-ready": "Odotetaan SD: tä",
@@ -187,6 +189,7 @@
       "controlmode": "MX2: SmartDriven oletusarvoinen eleperusteinen toiminta. MX2-ohjaustilassa kaksoisnapautus alkaa ajaa moottoria lisäämällä sen nopeutta, yksi napautus menee rannalle nykyisellä nopeudella ja kaksoisnapautus poistaa käytöstä ajon.\n\nMX2: MX2-ohjaustilassa SmartDrive alkaa ajaa tunteessasi työntösi ja deaktivoi ajamisen, kun napautat. Huomaa, että tämä on vanha tukivaihtoehto.\n\nMX1: MX1-ohjaustilassa SmartDrive alkaa ajaa tunteessasi työntösi ja lopettaa ajamisen, kun napautat tai jarrutat käsipyörää. Huomaa, että tämä on vanha tukivaihtoehto.",
       "maxspeed": "Suurin nopeus, jolla SmartDrive voi ajaa, kun älykellosi sitä ohjaa.",
       "powerassistbuzzer": "Kun asetus on käytössä, SmartDrive antaa äänimerkin aina, kun yhteys etälaitteesta muodostetaan tai kun SwitchControl poistetaan valmiustilasta.",
+      "powerassisttimeout": "SmartDrive MX2 deaktivoi virranohjauksen automaattisesti määritetyn ajan kuluttua, jos käyttäjällä on virranhallintatoiminto aktiivinen ja hän on kytketty SmartDriveen, mutta ei ole aktivoinut moottoria ennen aikakatkaisun päättymistä.\n\nHuomaa: SmartDrive MX2 deaktivoi virranohjauksen automaattisesti yhden minuutin kuluttua, jos sitä ei ole kytketty SmartDriveen.",
       "switchcontrolmode": "Hetkellinen: Oletusarvoinen SwitchControl-tila, jossa SmartDrive alkaa ajaa moottoria lisäämällä nopeuttaan vain määritettyyn SwitchControl-maksiminopeuteen vain samalla kun yhtä SwitchControl-painikkeista pidetään alhaalla. Kun pidä painike vapautetaan tai molemmat painikkeet [jos on] painetaan, ajo kytkeytyy pois päältä. Huomaa, että deaktivoinnin jälkeen se ei aseta laitetta valmiustilaan.\n\nLukittu: Lukitussa SwitchControl-tilassa SmartDrive alkaa ajaa moottoria lisäämällä nopeuttaan määritettyyn SwitchControl-maksiminopeuteen samalla kun yhtä SwitchControl-painikkeista pidetään alhaalla. Kun pidä painike vapautetaan, SmartDrive jatkaa ajamista / rannikkoa nykyisellä nopeudella, kun painike vapautettiin. Kun yhtä painikkeista painetaan ja vapautetaan uudelleen tai molemmat painikkeista [jos on] painetaan, ajo kytkeytyy pois päältä. Huomaa, että deaktivoinnin jälkeen se ei aseta laitetta valmiustilaan.",
       "switchcontrolspeed": "Suurin nopeus, jolla SmartDrive voi ajaa, kun sitä ohjataan SwitchControlilla.",
       "tapsensitivity": "Ajamisen aktivointiin ja deaktivointiin käytetyn napautus eleen herkkyys. Mitä pienempi prosenttiosuus on, sitä vaikeammin sinun täytyy napauttaa - 100% on herkein ja siksi helpoin napauttaa, ja 10% on vähiten herkkä ja siksi vaikeimmin napautettava.",
@@ -199,6 +202,11 @@
     "pair-smartdrive": "Yhdistä SmartDrive",
     "paired-to-smartdrive": "Yhdistäminen onnistuneesti SmartDriveen.",
     "power-assist-buzzer": "Power Assist -äänimerkin ilmaisin",
+    "power-assist-timeout": {
+      "title": "Power Assist -aikakatkaisu",
+      "units-long": "pöytäkirja",
+      "units-short": "min"
+    },
     "scanning": "Skannataan SmartDrive-paria pariksi ...",
     "select-smartdrive": "Valitse SmartDrive",
     "tap-sensitivity": "Napauta Herkkyys",

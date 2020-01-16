@@ -82,6 +82,7 @@
     "no-smartdrive-paired": "Ingen SmartDrive parret.",
     "no-smartdrives-found": "Ingen SmartDrives fundet i nærheden.",
     "permissions": "Kan ikke udføre den anmodede handling. Krævede tilladelser blev ikke tildelt.",
+    "power-assist-timeout": "Power assist blev automatisk deaktiveret via timeout på grund af inaktivitet. Se SmartDrive MX2-indstillingen [Power Assist Timeout] for mere information.",
     "saving-error": "Gem SmartDrive-fejl mislykkedes.",
     "saving-usage": "Gemningen af brug mislykkedes.",
     "scan": "Kunne ikke scanne.",
@@ -126,6 +127,7 @@
     },
     "sd": {
       "state": {
+        "already-uptodate": "Allerede ajour. Vælg Tvung for at opdatere alligevel.",
         "awaiting-ble-ready": "Venter på BT",
         "awaiting-connection": "Venter på forbindelse",
         "awaiting-mcu-ready": "Venter på SD",
@@ -187,6 +189,7 @@
       "controlmode": "MX2+: Standard, gestusbaseret aktivering af SmartDrive. I MX2+ kontroltilstand vil et dobbelttryk starte motoren ved at øge dens hastighed, et enkelt tryk vil holde den aktuelle hastighed, og et dobbelttryk deaktiverer kørslen.\n\nMX2: I MX2-kontroltilstand begynder SmartDrive at køre, når den registrerer dit skub, og deaktiverer kørslen, når du tapper. Bemærk, at dette er en supportindstilling fra tidligere modeller.\n\nMX1: I MX1-kontroltilstand begynder SmartDrive at køre, når den registrerer dit skub, og vil stoppe med at køre, når du tapper, eller når du bremser på drivringene. Bemærk, at dette er en supportindstilling fra tidligere modeller.",
       "maxspeed": "Den maksimale hastighed SmartDrive kan opnå, når den styres af din smartwatch.",
       "powerassistbuzzer": "Når den er aktiveret, bipper SmartDrive, når der oprettes en forbindelse fra en fjernenhed, eller når SwitchControl tages ud af standbytilstand.",
+      "powerassisttimeout": "SmartDrive MX2 vil automatisk deaktivere strømassistenten efter det specificerede tidspunkt, hvis brugeren har strømassistent aktiv og er tilsluttet SmartDrive, men ikke har aktiveret motoren, før timeout udløber.\n\nBemærk: SmartDrive MX2 deaktiverer automatisk strømforsyningen efter 1 minut, hvis den ikke er tilsluttet SmartDrive.",
       "switchcontrolmode": "Øjeblikkelig: Standard SwitchControl tilstand, hvor SmartDrive vil begynde at køre motoren ved at hæve dens hastighed til den konfigurerede SwitchControl max hastighed, når en af SwitchControl knapperne holdes nede. Når den holdte knap frigøres, eller begge knapper [hvis de findes] trykkes, deaktiveres kørslen. Bemærk, at enheden ikke sættes i standbytilstand ved deaktivering.\n\nLåst: I låst SwitchControl tilstand vil SmartDrive begynde at køre motoren ved at hæve dens hastighed til den konfigurerede SwitchControl Max hastighed, når en af SwitchControl knapperne holdes nede. Når den holdte knap frigøres, vil SmartDrive fortsætte med at  køre med den aktuelle hastighed. Når en af knapperne trykkes og frigøres igen, eller begge knapper [hvis til stede] trykkes, deaktiveres kørslen.  Bemærk, at enheden ikke sættes i standbytilstand ved deaktivering.",
       "switchcontrolspeed": "Den maksimale hastighed SmartDrive kan opnå, når den styres af SwitchControl.",
       "tapsensitivity": "Følsomheden for tap-bevægelsen, der bruges til at aktivere og deaktivere kørslen. Jo lavere procent, desto hårdere er du nødt til at trykke - 100% er den mest følsomme og derfor lettest at tappe, og 10% er den mindst følsomme og derfor sværeste at tappe.",
@@ -199,6 +202,11 @@
     "pair-smartdrive": "Par SmartDrive",
     "paired-to-smartdrive": "Parret med SmartDrive.",
     "power-assist-buzzer": "Indikator for strømforsyning bip",
+    "power-assist-timeout": {
+      "title": "Power Assist Timeout",
+      "units-long": "minutter",
+      "units-short": "Min"
+    },
     "scanning": "Scanning efter SmartDrive til parring ...",
     "select-smartdrive": "Vælg SmartDrive",
     "tap-sensitivity": "Tryk på følsomhed",

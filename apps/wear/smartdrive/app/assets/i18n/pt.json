@@ -82,6 +82,7 @@
     "no-smartdrive-paired": "Nenhum SmartDrive emparelhado.",
     "no-smartdrives-found": "Nenhum SmartDrives encontrado nas proximidades.",
     "permissions": "Não foi possível executar a ação solicitada. As permissões necessárias não foram concedidas.",
+    "power-assist-timeout": "O Power Assist foi desativado automaticamente por tempo limite devido à inatividade. Consulte a configuração do SmartDrive MX2 [Tempo limite do assistente de assistência] para obter mais informações.",
     "saving-error": "Falha ao salvar o erro do SmartDrive.",
     "saving-usage": "Falha ao salvar o uso.",
     "scan": "Não foi possível digitalizar.",
@@ -126,6 +127,7 @@
     },
     "sd": {
       "state": {
+        "already-uptodate": "Já atualizado. Selecione Forçar para atualizar de qualquer maneira.",
         "awaiting-ble-ready": "Aguardando BT",
         "awaiting-connection": "Aguardando conexão",
         "awaiting-mcu-ready": "Aguardando em SD",
@@ -187,6 +189,7 @@
       "controlmode": "MX2: a operação padrão baseada em gestos do SmartDrive. No modo de controle MX2, um toque duplo inicia o acionamento do motor, aumentando sua velocidade, um toque simples desliga na velocidade atual e um toque duplo desativa a direção.\n\nMX2: no modo de controle MX2, o SmartDrive começará a dirigir quando detectar seu impulso e desativará a direção quando você tocar. Observe que esta é uma opção de suporte herdado.\n\nMX1: No modo de controle MX1, o SmartDrive começará a dirigir quando detectar o seu empurrão e parará de dirigir quando você tocar ou pisar no freio de mão. Observe que esta é uma opção de suporte herdado.",
       "maxspeed": "A velocidade máxima em que o SmartDrive pode operar quando controlado pelo seu smartwatch.",
       "powerassistbuzzer": "Quando ativado, o SmartDrive emite um bipe sempre que uma conexão de um dispositivo remoto é estabelecida ou quando o SwitchControl é retirado do estado de espera.",
+      "powerassisttimeout": "O SmartDrive MX2 desativará automaticamente o Power Assist após o tempo especificado, se o usuário tiver Power Assist ativo e estiver conectado ao SmartDrive, mas não tiver ativado o motor antes que o tempo limite expire.\n\nNota: o SmartDrive MX2 desativará automaticamente o Power Assist após 1 minuto, se não estiver conectado ao SmartDrive.",
       "switchcontrolmode": "Momentâneo: O Modo SwitchControl padrão no qual o SmartDrive começará a dirigir o motor, aumentando sua velocidade para a Velocidade Máxima do SwitchControl configurada apenas enquanto um dos Botões do SwitchControl estiver pressionado. Quando o botão pressionado for solto, ou os dois botões [se presentes] forem pressionados, a direção será desativada. Observe que, após a desativação, ele não coloca o dispositivo no estado de espera.\n\nTravado: No modo SwitchControl travado, o SmartDrive começará a dirigir o motor aumentando sua velocidade até a velocidade máxima configurada do SwitchControl enquanto um dos botões do SwitchControl estiver pressionado. Quando o botão pressionado é solto, o SmartDrive permanece em movimento / costa na velocidade atual quando o botão foi solto. Quando um dos botões é pressionado e solto novamente, ou os dois botões [se presentes] são pressionados, a direção é desativada. Observe que, após a desativação, ele não coloca o dispositivo no estado de espera.",
       "switchcontrolspeed": "A velocidade máxima em que o SmartDrive pode operar quando controlado pelo SwitchControl.",
       "tapsensitivity": "A sensibilidade do gesto de toque usado para ativar e desativar a direção. Quanto menor a porcentagem, mais difícil você precisa tocar - 100% é o mais sensível e, portanto, mais fácil de tocar, e 10% é o menos sensível e, portanto, mais difícil de tocar.",
@@ -199,6 +202,11 @@
     "pair-smartdrive": "Emparelhar o SmartDrive",
     "paired-to-smartdrive": "Emparelhado com sucesso no SmartDrive.",
     "power-assist-buzzer": "Indicação de bipe do Power Assist",
+    "power-assist-timeout": {
+      "title": "Tempo limite do Power Assist",
+      "units-long": "Minutos",
+      "units-short": "minuto"
+    },
     "scanning": "A procurar SmartDrive para emparelhar com ...",
     "select-smartdrive": "Selecione SmartDrive",
     "tap-sensitivity": "Sensibilidade ao toque",

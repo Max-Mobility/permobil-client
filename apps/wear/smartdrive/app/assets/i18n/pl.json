@@ -82,6 +82,7 @@
     "no-smartdrive-paired": "Nie sparowano SmartDrive.",
     "no-smartdrives-found": "W pobliżu nie znaleziono SmartDrives.",
     "permissions": "Nie można wykonać żądanej akcji. Wymagane uprawnienia nie zostały przyznane.",
+    "power-assist-timeout": "Wspomaganie zasilania zostało automatycznie wyłączone z powodu przekroczenia limitu czasu z powodu braku aktywności. Więcej informacji można znaleźć w ustawieniu SmartDrive MX2 [Limit czasu wspomagania].",
     "saving-error": "Błąd zapisu SmartDrive nie powiódł się.",
     "saving-usage": "Nie udało się zapisać użycia.",
     "scan": "Nie można skanować.",
@@ -126,6 +127,7 @@
     },
     "sd": {
       "state": {
+        "already-uptodate": "Już na bieżąco. Wybierz opcję Wymuś, aby mimo to zaktualizować.",
         "awaiting-ble-ready": "Oczekiwanie na BT",
         "awaiting-connection": "Oczekiwanie na połączenie",
         "awaiting-mcu-ready": "Oczekiwanie na SD",
@@ -187,6 +189,7 @@
       "controlmode": "MX2: Domyślna operacja SmartDrive oparta na gestach. W trybie sterowania MX2 podwójne dotknięcie rozpocznie napędzanie silnika przez zwiększenie jego prędkości, pojedyncze dotknięcie wybiegnie z bieżącą prędkością, a podwójne dotknięcie spowoduje dezaktywację jazdy.\n\nMX2: W trybie sterowania MX2 SmartDrive rozpocznie jazdę po wykryciu naciśnięcia i dezaktywuje jazdę po dotknięciu. Uwaga: jest to opcja obsługi starszych wersji.\n\nMX1: W trybie sterowania MX1 SmartDrive rozpocznie jazdę po wykryciu twojego popchnięcia i przestanie jeździć po stuknięciu lub po hamowaniu uchwytami. Uwaga: jest to opcja obsługi starszych wersji.",
       "maxspeed": "Maksymalna prędkość, z jaką SmartDrive może jeździć, gdy jest kontrolowany przez smartwatch.",
       "powerassistbuzzer": "Po włączeniu SmartDrive wyda sygnał dźwiękowy za każdym razem, gdy zostanie nawiązane połączenie ze zdalnego urządzenia lub gdy SwitchControl zostanie wyłączony ze stanu gotowości.",
+      "powerassisttimeout": "SmartDrive MX2 automatycznie dezaktywuje wspomaganie po określonym czasie, jeśli użytkownik ma aktywne wspomaganie i jest podłączony do SmartDrive, ale nie aktywował silnika przed upływem limitu czasu.\n\nUwaga: SmartDrive MX2 automatycznie dezaktywuje wspomaganie po 1 minucie, jeśli nie jest podłączony do SmartDrive.",
       "switchcontrolmode": "Chwilowy: Domyślny tryb SwitchControl, w którym SmartDrive rozpocznie napędzanie silnika, zwiększając prędkość do skonfigurowanej maksymalnej prędkości SwitchControl tylko podczas przytrzymania jednego z przycisków SwitchControl. Po zwolnieniu przytrzymanego przycisku lub naciśnięciu obu przycisków [jeśli są obecne], jazda zostanie wyłączona. Należy pamiętać, że po dezaktywacji nie powoduje przejścia urządzenia w stan gotowości.\n\nZatrzaśnięty: W trybie zatrzaśniętym SwitchControl SmartDrive zacznie napędzać silnik, zwiększając prędkość do skonfigurowanej maksymalnej prędkości SwitchControl, gdy przytrzymany jest jeden z przycisków SwitchControl. Po zwolnieniu przytrzymanego przycisku SmartDrive będzie jechać / wybiegać z bieżącą prędkością po zwolnieniu przycisku. Po naciśnięciu i zwolnieniu jednego z przycisków lub naciśnięciu obu przycisków [jeśli są obecne] jazda zostanie wyłączona. Należy pamiętać, że po dezaktywacji nie powoduje przejścia urządzenia w stan gotowości.",
       "switchcontrolspeed": "Maksymalna prędkość, z jaką SmartDrive może jechać, gdy jest kontrolowana przez SwitchControl.",
       "tapsensitivity": "Czułość gestu stuknięcia używana do włączania i wyłączania jazdy. Im niższy odsetek, tym trudniej jest dotknąć - 100% jest najbardziej czułe, a zatem najłatwiejsze do dotknięcia, a 10% jest najmniej czułe i dlatego najtrudniejsze do dotknięcia.",
@@ -199,6 +202,11 @@
     "pair-smartdrive": "Sparuj SmartDrive",
     "paired-to-smartdrive": "Pomyślnie sparowano ze SmartDrive.",
     "power-assist-buzzer": "Sygnalizacja dźwiękowa Power Assist",
+    "power-assist-timeout": {
+      "title": "Limit czasu Power Assist",
+      "units-long": "minuty",
+      "units-short": "min"
+    },
     "scanning": "Skanowanie w poszukiwaniu SmartDrive w celu sparowania z ...",
     "select-smartdrive": "Wybierz SmartDrive",
     "tap-sensitivity": "Dotknij opcji Czułość",

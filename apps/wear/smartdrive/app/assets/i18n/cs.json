@@ -82,6 +82,7 @@
     "no-smartdrive-paired": "Nebyl spárován žádný SmartDrive.",
     "no-smartdrives-found": "V okolí nebyly nalezeny žádné jednotky SmartDrives.",
     "permissions": "Požadovanou akci nelze provést. Požadovaná oprávnění nebyla udělena.",
+    "power-assist-timeout": "Funkce Power Assist byla z důvodu nečinnosti automaticky deaktivována pomocí časového limitu. Další informace naleznete v nastavení SmartDrive MX2 [Power Assist Timeout].",
     "saving-error": "Chyba SmartDrive se nezdařila.",
     "saving-usage": "Uložení použití se nezdařilo.",
     "scan": "Nelze skenovat.",
@@ -126,6 +127,7 @@
     },
     "sd": {
       "state": {
+        "already-uptodate": "Již aktuální. Chcete-li přesto provést aktualizaci, vyberte Vynutit.",
         "awaiting-ble-ready": "Čekání na BT",
         "awaiting-connection": "Čekání na připojení",
         "awaiting-mcu-ready": "Čekání na SD",
@@ -187,6 +189,7 @@
       "controlmode": "MX2: Výchozí operace SmartDrive založená na gestach. V režimu ovládání MX2 začne dvojité odbočení řídit motor zvyšováním jeho rychlosti, jediné odbočení se sníží při aktuální rychlosti a dvojité odbočení deaktivuje řízení.\n\nMX2: V režimu ovládání MX2 SmartDrive začne jezdit, jakmile zjistí váš tlak, a po klepnutí deaktivuje jízdu. Vezměte prosím na vědomí, že se jedná o možnost starší podpory.\n\nMX1: V režimu ovládání MX1 začne SmartDrive jízdu, jakmile zjistí váš tlak, a zastaví jízdu, když klepnete na tlačítko nebo když zabrzdíte na držadlech. Vezměte prosím na vědomí, že se jedná o možnost starší podpory.",
       "maxspeed": "Maximální rychlost, kterou SmartDrive dokáže řídit, když je ovládáte pomocí smartwatch.",
       "powerassistbuzzer": "Pokud je povoleno, SmartDrive vydá zvukový signál při každém navázání spojení ze vzdáleného zařízení nebo po přepnutí SwitchControl z pohotovostního stavu.",
+      "powerassisttimeout": "SmartDrive MX2 automaticky deaktivuje posilovač napájení po stanovené době, pokud má uživatel aktivní asistenční napájení a je připojen k SmartDrive, ale neaktivoval motor před vypršením časového limitu.\n\nPoznámka: SmartDrive MX2 automaticky deaktivuje posilovač napájení po 1 minutě, pokud není připojen k SmartDrive.",
       "switchcontrolmode": "Momentary: Výchozí režim SwitchControl, ve kterém SmartDrive začne řídit motor zvyšováním jeho rychlosti na nakonfigurovanou maximální rychlost SwitchControl, pouze pokud je přidrženo jedno z tlačítek SwitchControl. Po uvolnění přidrženého tlačítka nebo po stisknutí obou tlačítek [je-li k dispozici] se jízda deaktivuje. Upozorňujeme, že po deaktivaci nepřepne zařízení do pohotovostního stavu.\n\nZápadka: V režimu Latched SwitchControl SmartDrive začne řídit motor zvyšováním jeho rychlosti na nakonfigurovanou maximální rychlost SwitchControl, zatímco je přidrženo jedno z tlačítek SwitchControl. Po uvolnění podrženého tlačítka zůstane SmartDrive po uvolnění tlačítka v jízdě / doběhu při aktuální rychlosti. Po opětovném stisknutí a uvolnění jednoho z tlačítek nebo po stisknutí obou tlačítek [je-li k dispozici] se řízení deaktivuje. Upozorňujeme, že po deaktivaci nepřepne zařízení do pohotovostního stavu.",
       "switchcontrolspeed": "Maximální rychlost, kterou může SmartDrive řídit při ovládání pomocí SwitchControl.",
       "tapsensitivity": "Citlivost gesta klepnutí použitého k aktivaci a deaktivaci jízdy. Čím nižší je procento, tím těžší je třeba klepnout - 100% je nejcitlivější a proto nejjednodušší klepnout, a 10% je nejméně citlivé, a proto nejtěžší klepnout.",
@@ -199,6 +202,11 @@
     "pair-smartdrive": "Spárujte SmartDrive",
     "paired-to-smartdrive": "Úspěšně spárováno s SmartDrive.",
     "power-assist-buzzer": "Indikace pípání Power Assist",
+    "power-assist-timeout": {
+      "title": "Power Assist Timeout",
+      "units-long": "minut",
+      "units-short": "min"
+    },
     "scanning": "Hledání SmartDrive pro spárování s ...",
     "select-smartdrive": "Vyberte SmartDrive",
     "tap-sensitivity": "Klepněte na Citlivost",
