@@ -612,6 +612,7 @@ export class SmartDrive extends DeviceBase {
                   mcuVersion >= mcuFWVersion
                 ) {
                   this.setOtaActions(['ota.action.force', 'ota.action.cancel']);
+                  this.otaState = SmartDrive.OTAState.already_uptodate;
                 } else {
                   this.otaState = SmartDrive.OTAState.awaiting_mcu_ready;
                 }
@@ -638,7 +639,7 @@ export class SmartDrive extends DeviceBase {
                   'OTADevice',
                   'PacketOTAType',
                   'SmartDrive'
-                ).catch(err => {});
+                ).catch(err => { });
               }
               break;
             case SmartDrive.OTAState.updating_mcu:
@@ -655,8 +656,8 @@ export class SmartDrive extends DeviceBase {
               const nextState = this.doBLEUpdate
                 ? SmartDrive.OTAState.awaiting_ble_ready
                 : this.doMCUUpdate
-                ? SmartDrive.OTAState.rebooting_mcu
-                : SmartDrive.OTAState.complete;
+                  ? SmartDrive.OTAState.rebooting_mcu
+                  : SmartDrive.OTAState.complete;
 
               if (this.doMCUUpdate) {
                 // we need to reboot after the OTA
@@ -706,7 +707,7 @@ export class SmartDrive extends DeviceBase {
                   .then(() => {
                     // this.ableToSend = true;
                   })
-                  .catch(err => {});
+                  .catch(err => { });
               }
               break;
             case SmartDrive.OTAState.updating_ble:
@@ -767,7 +768,7 @@ export class SmartDrive extends DeviceBase {
                   .then(() => {
                     // this.ableToSend = true;
                   })
-                  .catch(err => {});
+                  .catch(err => { });
               }
               break;
             case SmartDrive.OTAState.rebooting_mcu:
@@ -790,7 +791,7 @@ export class SmartDrive extends DeviceBase {
                   'OTADevice',
                   'PacketOTAType',
                   'SmartDrive'
-                ).catch(() => {});
+                ).catch(() => { });
               }
               break;
             case SmartDrive.OTAState.verifying_update:
@@ -1082,7 +1083,7 @@ export class SmartDrive extends DeviceBase {
     // now that we're connected, subscribe to the characteristics
     try {
       await this.startNotifyCharacteristics(SmartDrive.Characteristics);
-    } catch (err) {}
+    } catch (err) { }
   }
 
   public async handleDisconnect() {
@@ -1094,7 +1095,7 @@ export class SmartDrive extends DeviceBase {
       // now that we're disconnected - make sure we unsubscribe to the characteristics
       await this.stopNotifyCharacteristics(SmartDrive.Characteristics);
       this.sendEvent(SmartDrive.smartdrive_disconnect_event);
-    } catch (err) {}
+    } catch (err) { }
   }
 
   public handleNotify(args: any) {

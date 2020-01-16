@@ -505,6 +505,7 @@ export class MainViewModel extends Observable {
         this._showingModal = false;
       },
       animated: false,
+      cancelable: false,
       fullscreen: true
     };
     this._showingModal = true;
@@ -1975,6 +1976,7 @@ export class MainViewModel extends Observable {
         this._showingModal = false;
       },
       animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
+      cancelable: false,
       fullscreen: true
     };
     this._showingModal = true;
@@ -2250,7 +2252,7 @@ export class MainViewModel extends Observable {
       this.smartDrive &&
       !this.smartDrive.connected
     ) {
-      setTimeout(this._connectToSavedSmartDrive.bind(this), 5 * 1000);
+      setTimeout(this._connectToSavedSmartDrive.bind(this), 0);
     }
   }
 
@@ -2294,11 +2296,13 @@ export class MainViewModel extends Observable {
       clearInterval(this.rssiIntervalId);
       this.rssiIntervalId = null;
     }
-    // we've connected - set the timeout to be the user-configured
-    // timeout
-    this._restartPowerAssistTimeout(
-      this._settingsService.watchSettings.powerAssistTimeoutMinutes
-    );
+    if (this.powerAssistActive) {
+      // we've connected - set the timeout to be the user-configured
+      // timeout
+      this._restartPowerAssistTimeout(
+        this._settingsService.watchSettings.powerAssistTimeoutMinutes
+      );
+    }
     /*
     this.rssiIntervalId = setInterval(
       this._readSmartDriveSignalStrength.bind(this),
@@ -2333,6 +2337,8 @@ export class MainViewModel extends Observable {
       this.powerAssistState = PowerAssist.State.Disconnected;
       this._updatePowerAssistRing();
       this._retrySmartDriveConnection();
+    } else {
+      this._clearPowerAssistTimeout();
     }
   }
 

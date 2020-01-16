@@ -104,6 +104,7 @@
     },
     "sd": {
       "state": {
+        "already-uptodate": "Already up to date. Select Force to update anyway.",
         "awaiting-ble-ready": "Waiting on BT",
         "awaiting-connection": "Waiting for Connection",
         "awaiting-mcu-ready": "Waiting on SD",

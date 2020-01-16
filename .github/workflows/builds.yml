@@ -1,62 +1,58 @@
-name: CI
+name: App Builds
 
 # Trigger the workflow on push or pull request
 on: [push]
 
 jobs:
-  job1: # App Builds
-    name: App Builds
+  job1:
+    name: PushTracker Mobile iOS
     runs-on: macos-latest
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v1
-
-      - name: Setup SSH-Agent
-        uses: webfactory/ssh-agent@v0.2.0
+      - uses: actions/checkout@v1 # checks out the repo to CI runner
+      - uses: webfactory/ssh-agent@v0.2.0 # sets SSH key for our private-keys repo
         with:
-          ssh-private-key: |
-            ${{ secrets.SSH_PRIVATE_KEY }}
-            ${{ secrets.SQLITE_ENCRYPTED_SSH_TOKEN }}
-            ${{ secrets.SQLITE_COMMERCIAL_SSH_TOKEN }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Build PT.M iOS
+        run: npm run ci.build.pt.mobile.setup && npm run ci.pip.install && npm run ci.pt.m.ios
 
-      - name: Setup JDK 1.8
-        uses: actions/setup-java@v1
+  job2:
+    name: PushTracker Mobile Android
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: webfactory/ssh-agent@v0.2.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - uses: actions/setup-java@v1
         with:
           java-version: 1.8
-
-      - name: Install PIP #PIP needed for iOS builds and for TNS CLI to configure correctly on macOS
-        run: |
-          sudo pip install --upgrade pip
-          sudo pip install six
-
-      - name: Setup Permobil-Client
-        run: |
-          echo no | npm i -g nativescript
-          tns usage-reporting disable
-          tns error-reporting disable
-          npm run global.installs
-          npm i
-          npm run setup.forked.plugins && npm run setup.mobile && npm run setup.@permobil
-
-      - name: Lint
-        run: npm run tslint
-
       - name: Build PT.M Android
-        run: |
-          cd apps/mobile/pushtracker
-          tns build android --env.aot --env.uglify
+        run: npm run ci.build.pt.mobile.setup && npm run tslint && npm run ci.pt.m.android # only linting in one job to avoid duplicating it
 
-      # - name: Build PT.W Android
-      #   run: |
-      #     cd apps/wear/pushtracker
-      #     tns build android --env.uglify
+  job3:
+    name: PushTracker Wear Android
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: webfactory/ssh-agent@v0.2.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build PT.W Android
+        run: npm run ci.build.pt.wear.setup && npm run ci.pt.w.android
 
-      # - name: Build SD.W Android
-      #   run: |
-      #     cd apps/wear/smartdrive
-      #     tns build android --env.uglify
-
-      - name: Build PT.M iOS
-        run: |
-          cd apps/mobile/pushtracker
-          tns build ios --env.aot --env.uglify
+  job4:
+    name: SmartDrive Wear Android
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: webfactory/ssh-agent@v0.2.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build SD.W Android
+        run: npm run ci.build.sd.wear.setup && npm run ci.sd.w.android
