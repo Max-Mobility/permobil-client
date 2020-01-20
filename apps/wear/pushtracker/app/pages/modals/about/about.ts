@@ -57,7 +57,7 @@ export function onShownModally(args: ShownModallyData) {
   // set the pages bindingContext
   page.bindingContext = fromObject(data);
 
-  wearOsLayout = page.getViewById('wearOsLayout');
+  wearOsLayout = page.getViewById('wearOsLayout') as any;
   configureLayout(wearOsLayout);
 
   // load user name / email from appsettings
@@ -105,7 +105,7 @@ function configureLayout(layout: WearOsLayout) {
       data.chinSize = screenWidth - screenHeight;
     }
   }
-  layout.nativeView.setPadding(
+  (layout as any).nativeView.setPadding(
     data.insetPadding,
     data.insetPadding,
     data.insetPadding,

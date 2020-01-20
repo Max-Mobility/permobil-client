@@ -174,7 +174,7 @@ export class MainViewModel extends Observable {
   }
 
   onPagerLoaded(args: EventData) {
-    this.pager = args.object as Pager;
+    this.pager = (<unknown>args.object) as Pager;
   }
 
   customWOLInsetLoaded(args: EventData) {

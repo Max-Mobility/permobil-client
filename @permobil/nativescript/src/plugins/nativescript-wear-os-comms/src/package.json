@@ -47,8 +47,8 @@
   "homepage": "https://github.com/Max-Mobility/permobil-client/@permobil/nativescript/nativescript-wear-os-comms",
   "devDependencies": {
     "nativescript-bluetooth": "file:../../../../../../forked-plugins/nativescript-bluetooth",
-    "tns-core-modules": "^6.2.0",
-    "tns-platform-declarations": "^6.2.0",
+    "@nativescript/core": "^6.3.2",
+    "tns-platform-declarations": "^6.3.2",
     "typescript": "~3.7.4",
     "prompt": "^1.0.0",
     "rimraf": "^2.6.3",
