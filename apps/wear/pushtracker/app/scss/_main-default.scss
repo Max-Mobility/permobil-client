@@ -1,22 +1,17 @@
 @import 'variables';
 
-$distance-color: $permobil-violet;
-$distance-rim-color: $permobil-charcoal;
-$coast-color: $permobil-cousteau;
-$coast-rim-color: $permobil-charcoal;
-
 .distanceCircle {
   background-color: transparent;
   fill-color: transparent;
-  bar-color: $distance-color;
-  rim-color: $distance-rim-color;
+  bar-color: $permobil-violet;
+  rim-color: $permobil-charcoal;
 }
 
 .coastCircle {
   background-color: transparent;
   fill-color: transparent;
-  bar-color: $coast-color;
-  rim-color: $coast-rim-color;
+  bar-color: $permobil-cousteau;
+  rim-color: $permobil-charcoal;
 }
 
 .coast-goal-color {
