@@ -9,7 +9,6 @@
   "scripts": {
     "scss": "node-sass ./app/scss -o ./app/scss",
     "scss-b": "node-sass --watch ./app/scss -o ./app/scss",
-    "t": "tsc --listFiles --traceResolution && webpack --config ./webpack.config.js --env.android --env.verbose --env.report",
     "test.webpack": "rm -rf node_modules && npm i && tsc --listFiles --traceResolution && webpack --config ./webpack.config.js --env.android --env.verbose --env.report"
   },
   "dependencies": {
