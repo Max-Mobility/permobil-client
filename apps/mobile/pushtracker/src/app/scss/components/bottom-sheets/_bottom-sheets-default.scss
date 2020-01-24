@@ -3,34 +3,51 @@
 
 .bottom-sheet-layout {
   @extend .BOTTOM_SHEET_LAYOUT_BASE;
-  @include colorize($background-color: background);
+
+  background-color: #ffffff;
+   .ns-dark  & {
+    background-color: #202125;
+  }
+
   .title {
     color: #202125;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $white;
     }
   }
 
   .description {
     color: #393a3f;
-    @at-root .ns-dark & {
+     .ns-dark  {
       color: darken($color: $white, $amount: 0.2);
     }
   }
 
   .listpicker {
     color: $permobil-primary;
+     .ns-dark  {
+      color: $white;
+    }
   }
 
   .slider-value {
     color: #202125;
+     .ns-dark  {
+      color: $white;
+    }
   }
 
   .cancel-btn {
     color: $permobil-primary;
+     .ns-dark  {
+      color: $permobil-sky;
+    }
   }
 
   .ok-btn {
     color: $permobil-primary;
+     .ns-dark {
+      color: $permobil-sky;
+    }
   }
 }

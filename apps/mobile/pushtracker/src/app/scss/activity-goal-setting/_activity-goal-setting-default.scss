@@ -8,7 +8,7 @@
 
   .set-goal-btn {
     color: $permobil-primary;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $permobil-sky;
     }
     font-size: 16;
@@ -16,14 +16,14 @@
 
   .config-title {
     color: #202125;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $white;
     }
   }
 
   .config-title-description {
     color: #64676c;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $white;
     }
   }
@@ -31,26 +31,26 @@
   .config-circle {
     @extend .CONFIG_CIRCLE_BASE;
     border-color: #e9eaee;
-    @at-root .ns-dark & {
+     .ns-dark & {
       border-color: lighten($color: $white, $amount: 0.2);
     }
 
     button {
       color: $permobil-primary;
-      @at-root .ns-dark & {
+       .ns-dark & {
         color: $permobil-sky;
       }
     }
 
     .config-value {
       color: #3c4043;
-      @at-root .ns-dark & {
+       .ns-dark & {
         color: $white;
       }
     }
     .config-value-sub {
       color: #5f6267;
-      @at-root .ns-dark & {
+       .ns-dark & {
         color: $black;
       }
     }

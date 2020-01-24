@@ -10,7 +10,7 @@
 }
 .date-time-picker-buttons {
   color: #1a73e9;
-  @at-root .ns-dark & {
+   .ns-dark & {
     color: $permobil-sky;
   }
 }
@@ -22,7 +22,7 @@
 .textfield-prefix {
   font-size: 14;
   color: $permobil-primary;
-  @at-root .ns-dark & {
+   .ns-dark & {
     color: $permobil-sky;
   }
 }
@@ -30,7 +30,7 @@
 .textfield-suffix {
   font-size: 14;
   color: $permobil-primary;
-  @at-root .ns-dark & {
+   .ns-dark & {
     color: $permobil-sky;
   }
 }
@@ -42,7 +42,7 @@
   .page-title {
     @extend .PAGE_TITLE_BASE;
     color: #1f2024;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $white;
     }
   }
@@ -50,7 +50,7 @@
   .profile-name {
     @extend .PROFILE_NAME_BASE;
     color: #3c4043;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $white;
     }
   }
@@ -58,7 +58,7 @@
   .profile-email {
     @extend .PROFILE_EMAIL_BASE;
     color: #5f6267;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $white;
     }
   }
@@ -66,7 +66,7 @@
   .privacy-btn {
     @extend .PRIVACY_BUTTON_BASE;
     color: #3c4043;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $white;
     }
   }
@@ -74,7 +74,7 @@
   .section-label {
     @extend .SECTION_LABEL_BASE;
     color: #3c4043;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: #e7e8ec;
     }
   }
@@ -82,13 +82,13 @@
   .avatar-circle {
     @extend .AVATAR_CIRCLE_BASE;
     background-color: $permobil-primary;
-    @at-root .ns-dark & {
+     .ns-dark & {
       background-color: $permobil-sky;
     }
 
     label {
       color: $white;
-      @at-root .ns-dark & {
+       .ns-dark & {
         color: $black;
       }
     }
@@ -96,7 +96,7 @@
 }
 
 .data-box-value {
-  @at-root .ns-dark & {
+   .ns-dark & {
     color: $permobil-sky;
   }
 }
@@ -107,19 +107,19 @@
 }
 .date-time-picker {
   @extend .DATE_TIME_PICKER_BASE;
-  @at-root .ns-dark & {
+   .ns-dark & {
     background-color: $dark-custom-dialog-layout-black;
     color: $white;
   }
 }
 .date-time-picker-spinners {
-  @at-root .ns-dark & {
+   .ns-dark & {
     background-color: $dark-custom-dialog-layout-black;
     color: $white;
   }
 }
 .date-time-picker-buttons {
-  @at-root .ns-dark & {
+   .ns-dark & {
     background-color: $dark-custom-dialog-layout-black;
     color: $permobil-sky;
   }

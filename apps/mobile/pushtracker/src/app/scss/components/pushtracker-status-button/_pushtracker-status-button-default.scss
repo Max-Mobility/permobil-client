@@ -5,7 +5,7 @@
   @extend .PUSHTRACKER_STATUS_BUTTON_LAYOUT_BASE;
   @include colorize($background-color: background);
   color: #3c4043;
-  @at-root .ns-dark & {
+   .ns-dark & {
     color: $white;
   }
 }

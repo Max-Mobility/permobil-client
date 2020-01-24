@@ -17,7 +17,7 @@
   .action-item-btn {
     @extend .ACTION_BAR_BUTTON_BASE;
     color: #3c4043;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $white;
     }
   }

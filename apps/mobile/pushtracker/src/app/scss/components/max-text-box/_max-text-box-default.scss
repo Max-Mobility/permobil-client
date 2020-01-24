@@ -9,19 +9,19 @@
   .max-textbox-label {
     @include colorize($background-color: background);
     color: #696c71;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: #898e94;
     }
   }
 
   GridLayout {
       border-color: #e7e7ea;
-      @at-root .ns-dark & {
+       .ns-dark & {
         border-color:#4c4f54;
       }
     > .max-textbox-value {
       color: #3c4043;
-      @at-root .ns-dark & {
+       .ns-dark & {
         color: $white;
       }
     }
@@ -34,7 +34,7 @@
 
   .max-textbox-label {
     color: #1c72e6;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $permobil-sky;
     }
     @include colorize($background-color: background);
@@ -42,13 +42,13 @@
 
   GridLayout {
     border-color: #1c72e6;
-    @at-root .ns-dark & {
+     .ns-dark & {
       border-color: $permobil-sky;
     }
 
     > .max-textbox-value {
         color: #3c4043;
-        @at-root .ns-dark & {
+         .ns-dark & {
           color: $white;
         }
         @include colorize($background-color: background);

@@ -8,7 +8,7 @@
   .page-title {
     @extend .PAGE_TITLE_BASE;
     color: #1f2024;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $white;
     }
   }
@@ -27,7 +27,7 @@
     font-weight: bold;
     font-family: $os;
     color: $permobil-primary;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color:$permobil-sky;
     }
     padding-left: 10;
@@ -52,7 +52,7 @@
   .cousteau-circle {
     background-color: #bad4ee;
     color: $permobil-primary;
-    @at-root .ns-dark & {
+     .ns-dark & {
       background-color: $permobil-cousteau-light;
       color: $permobil-cousteau-dark;
     }
@@ -77,7 +77,7 @@
   .violet-circle {
     background-color: #cbb3ec;
     color: $permobil-violet;
-    @at-root .ns-dark & {
+     .ns-dark & {
       background-color: $permobil-cousteau-light;
       color: $permobil-cousteau-dark;
     }
@@ -112,7 +112,7 @@
   .action-item-btn {
     @extend .ACTION_BAR_BUTTON_BASE;
     color: #3c4043;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $white;
     }
   }

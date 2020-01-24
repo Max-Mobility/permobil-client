@@ -6,7 +6,7 @@
   @include colorize($background-color: background);
 
   GridLayout {
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $white;
     }
   }
@@ -14,7 +14,7 @@
   .info-btn {
     @extend .INFO_BTN_BASE;
     color: $dark-grey;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $white;
     }
   }
@@ -23,7 +23,7 @@
     @extend .DISTANCE_REMAINING_CIRCLE_BASE;
     // background-image: linear-gradient(to bottom, #606c88, #3f4c6b);
     background-image: linear-gradient(to bottom, #0067a6, #004f7e);
-    @at-root .ns-dark & {
+     .ns-dark & {
       background-image: linear-gradient(to bottom, #3d4b6d, #3f4e6b);
     }
 
@@ -36,16 +36,19 @@
     @extend .PERCENTAGE_DATA_LAYOUT_BASE;
     .value {
       color: $black;
+      .ns-dark & {
+        color: $white;
+      }
     }
     .max-value {
       color: $dark-grey;
-      @at-root .ns-dark & {
+       .ns-dark & {
         color: darken($white, 0.1);
       }
     }
     .description {
       color: $dark-grey;
-      @at-root .ns-dark & {
+       .ns-dark & {
         color: darken($white, 0.1);
       }
     }
@@ -70,21 +73,51 @@
     @extend .CHART_LAYOUT_BASE;
 
     .title {
+      .ns-dark & {
+        color: $white;
+      }
     }
 
-    RadCartesianChart {
+  RadCartesianChart {
       @include colorize($background-color: background);
       color: $black;
-      @at-root .ns-dark & {
+       .ns-dark & {
         color: $white;
       }
     }
   }
   FlexboxLayout {
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $white;
     }
-    
+  }
+  PullToRefresh {
+    background-color: #fff;
+    .ns-dark & {
+      background-color: #202125
+    }
+    color: #0067a6; 
+    .ns-dark & {
+      color: #89d4e3;
+    }
+  }
+
+  BarSeries {
+    fill-color: #0067a6;
+    .ns-dark & {
+      fill-color:#89d4e3; 
+    } 
+    stroke-color: #0067a6;
+    .ns-dark & {
+      stroke-color: #89d4e3;
+    } 
+  }
+
+  ChartGridLineAnnotation {
+    stroke-color: #0067a6;
+    .ns-dark & {
+      stroke-color: #89d4e3;
+    }
   }
   .goal-value {
     font-style: italic;

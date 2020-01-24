@@ -5,7 +5,7 @@
   @extend .DATA_BOX_BASE;
   .data-box-label {
     color:  #4b4d51;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: #898e94;
     }
     @include colorize($background-color: background);
@@ -13,13 +13,13 @@
 
   GridLayout {
     border-color: #e8e9eb;
-    @at-root .ns-dark & {
+     .ns-dark & {
       border-color: #4c4f54;
     }
 
     > .data-box-value {
       color: #3d4144;
-      @at-root .ns-dark & {
+       .ns-dark & {
         color: $white;
       }
     }
@@ -30,14 +30,14 @@
 
     > .data-box-arrow {
       color: #5f6267;
-      @at-root .ns-dark & {
+       .ns-dark & {
         color: $grey;
       }
     }
 
     > .data-box-edit {
       color: #5f6267;
-      @at-root .ns-dark & {
+       .ns-dark & {
         color: $grey;
       }
     }
@@ -48,14 +48,14 @@
   @extend .DATA_BOX_BASE;
   .data-box-label {
     color: $permobil-primary;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $permobil-sky;
     }
   }
 
   GridLayout {
     border-color: $permobil-primary;
-    @at-root .ns-dark & {
+     .ns-dark & {
       border-color: $permobil-sky;
     }
   }

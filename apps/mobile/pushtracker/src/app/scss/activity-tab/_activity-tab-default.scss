@@ -4,16 +4,17 @@
 
 .activity-tab-layout {
   @extend .ACTIVITY_TAB_LAYOUT_BASE;
-  @include colorize($background-color: background);
+  //@include colorize($background-color: background);
 
   GridLayout,
   StackLayout,
   ScrollView {
-    background-color: $white;
-    @at-root .ns-dark & {
-      background-color: $black;
+    background-color: light(background);
+    .ns-dark & {
+      background-color: dark(background);
     }
-  }
+   }
+
   .prev-btn {
     @extend .PREV_BTN_BASE;
   }
@@ -34,7 +35,7 @@
   .chevron-left {
     @extend .CHEVRON_LEFT_BASE;
     color: $permobil-primary;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $permobil-sky;
     }
   }
@@ -46,7 +47,7 @@
   .chart-label {
     @extend .CHART_TITLE_BASE;
     color: #66696e;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $white;
     }
   }
@@ -57,7 +58,7 @@
     @extend .CHART_VIEW_BTN_BASE;
     background-color: $white;
     color: $dark-grey;
-    @at-root .ns-dark & {
+     .ns-dark & {
       background-color: $dark-grey;
       color: $white;
     }
@@ -69,7 +70,7 @@
     @extend .CHART_VIEW_BTN_BASE;
     background-color: #d8e5f2;
     color: $permobil-primary;
-    @at-root .ns-dark & {
+     .ns-dark & {
       background-color: $white;
       color: $black;
     }
@@ -77,7 +78,7 @@
 
   .goal-description {
     @extend .GOAL_DESCRIPTION_BASE;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $white;
     }
     font-size: 16;
@@ -90,11 +91,11 @@
 
   RadCartesianChart {
     background-color: $white;
-    @at-root .ns-dark & {
+     .ns-dark & {
       background-color: $black;
     }
     color: $black;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: $white;
     }
   }
@@ -102,7 +103,7 @@
   BarSeries{
       fill-color: #0067a6;
       stroke-color: #0067a6;
-      @at-root .ns-dark & {
+       .ns-dark & {
         fill-color:#89d4e3;
         stroke-color: #89d4e3;
       } 
@@ -111,7 +112,7 @@
       background-color: $white;
       selected-background-color: $grey;
       color: $black;
-      @at-root .ns-dark & {
+       .ns-dark & {
         selected-background-color: $dark-grey;
         background-color: $black;
         color: $white;
@@ -121,14 +122,14 @@
   
   ChartGridLineAnnotation{
     stroke-color: #0067a6;
-    @at-root .ns-dark & {
+     .ns-dark & {
       stroke-color: #89d4e3;
     }
   }
 
   PullToRefresh {
     color:#0067a6;
-    @at-root .ns-dark & {
+     .ns-dark & {
       color: #89d4e3;
     } 
   }

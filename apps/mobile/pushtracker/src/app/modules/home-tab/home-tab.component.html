@@ -2,8 +2,6 @@
   (loaded)="onHomeTabLoaded($event)"
   (unloaded)="onHomeTabUnloaded($event)"
   (refresh)="refreshPlots($event)"
-  [backgroundColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#fff' : '#202125'"
-  [color]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
 >
   <ScrollView class="home-tab-layout" height="100%">
     <StackLayout horizontalAlignment="center" row="1" col="0">
@@ -114,7 +112,6 @@
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
           <CategoricalAxis
             tkCartesianHorizontalAxis
-            [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'White' : 'Black'"
             lineHidden="true"
             tickHidden="false"
             majorTickInterval="1"
@@ -129,7 +126,6 @@
           <LinearAxis
             tkCartesianVerticalAxis
             id="vAxis"
-            [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'White' : 'Black'"
             horizontalLocation="Right"
             labelMargin="10"
             lineHidden="true"
@@ -141,14 +137,6 @@
 
           <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis" valueProperty="coastTime"> </BarSeries>
 
-          <Palettes>
-            <Palette tkCartesianPalette seriesName="WeeklyActivity">
-              <PaletteEntry tkCartesianPaletteEntry [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
-            </Palette>
-            <Palette tkCartesianPalette seriesName="WeeklyActivity" seriesState="Selected">
-              <PaletteEntry tkCartesianPaletteEntry [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
-            </Palette>
-          </Palettes>
 
           <ChartGridLineAnnotation
             tkCartesianAnnotations
@@ -157,7 +145,6 @@
             [value]="coastTimePlotAnnotationValue"
             zPosition="AboveSeries"
             strokeWidth="2"
-            [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
             strokeDashPattern="3, 3"
           >
           </ChartGridLineAnnotation>
@@ -176,7 +163,6 @@
 
           <CategoricalAxis
             tkCartesianHorizontalAxis
-            [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'White' : 'Black'"
             lineHidden="true"
             tickHidden="false"
             majorTickInterval="1"
@@ -191,7 +177,6 @@
           <LinearAxis
             tkCartesianVerticalAxis
             id="vAxis"
-            [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'White' : 'Black'"
             horizontalLocation="Right"
             labelMargin="10"
             lineHidden="true"
@@ -204,14 +189,6 @@
 
           <BarSeries tkCartesianSeries [items]="usageActivity" seriesName="CoastDistanceUsageActivity" categoryProperty="xAxis" valueProperty="coastDistance"> </BarSeries>
 
-          <Palettes>
-            <Palette tkCartesianPalette seriesName="CoastDistanceUsageActivity">
-              <PaletteEntry tkCartesianPaletteEntry [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
-            </Palette>
-            <Palette tkCartesianPalette seriesName="CoastDistanceUsageActivity" seriesState="Selected">
-              <PaletteEntry tkCartesianPaletteEntry [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
-            </Palette>
-          </Palettes>
 
           <ChartGridLineAnnotation
             tkCartesianAnnotations
@@ -220,7 +197,6 @@
             [value]="distancePlotAnnotationValue"
             zPosition="AboveSeries"
             strokeWidth="2"
-            [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
             strokeDashPattern="3, 3"
           >
           </ChartGridLineAnnotation>
