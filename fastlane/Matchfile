@@ -1,0 +1,11 @@
+git_url("https://github.com/appliedinnovation/ios-certs")
+
+storage_mode("git")
+
+type("development") # The default type
+
+app_identifier("com.max-mobility.PushTracker")
+username("engineering.smartdrive@permobil.com") # Your Apple Developer Portal username
+
+team_id('W6W3N2762U')
+team_name('Max-Mobility')
