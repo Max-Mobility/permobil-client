@@ -3,7 +3,7 @@
 
 .activity-goals-dialog {
   @extend .ACTIVITY_GOALS_DIALOG_BASE;
-  @include colorize($background-color: background);
+  
 
 
   .set-goal-btn {

@@ -3,18 +3,12 @@
 
 .profile-settings-layout-default {
   @extend .PROFILE_SETTINGS_LAYOUT_BASE;
-  @include colorize($background-color: background);
   
-  MockActionBar,
-  ScrollView {
-     .ns-dark & {
-      background-color: $black;
-    }
-  }
+
   .category {
     @extend .CATEGORY_BASE;
     color: $permobil-primary;
-     .ns-dark & {
+    .ns-dark & {
       color: $permobil-sky;
     }
    }

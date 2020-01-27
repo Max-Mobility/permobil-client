@@ -1,3 +1,6 @@
 // customized variables
 @import 'variables';
-@import "~nativescript-theme-core/core";
+//@import "~nativescript-theme-core/core";
+@import '~@nativescript/theme/core';
+@import '~@nativescript/theme/default';
+//@import "~@nativescript/theme/index";
