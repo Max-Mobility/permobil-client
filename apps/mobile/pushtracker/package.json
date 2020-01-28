@@ -54,7 +54,7 @@
     "nativescript-sentry": "file:../../../forked-plugins/nativescript-sentry-1.9.1.tgz",
     "nativescript-theme-core": "~1.0.6",
     "nativescript-themes": "~2.0.1",
-    "nativescript-toasty": "~2.0.1",
+    "nativescript-toasty": "~3.0.0-alpha.2",
     "nativescript-ui-calendar": "~6.0.0",
     "nativescript-ui-chart": "~7.1.1",
     "nativescript-urlhandler": "^1.3.0",
