@@ -2,8 +2,8 @@
   "name": "nativescript-perms",
   "version": "1.0.12",
   "description": "Nativescript Permissions plugin.",
-  "main": "./permissions",
-  "typings": "./permissions.d.ts",
+  "main": "permissions",
+  "typings": "permissions.d.ts",
   "nativescript": {
     "platforms": {
       "android": "6.2.0",
