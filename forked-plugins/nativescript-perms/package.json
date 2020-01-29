@@ -11,9 +11,9 @@
     }
   },
   "devDependencies": {
-    "@nativescript/core": "../../../node_modules/@nativescript/core",
-    "tns-platform-declarations": "../../../node_modules/tns-platform-declarations",
-    "typescript": "../../../node_modules/typescript"
+    "@nativescript/core": "file:../../node_modules/@nativescript/core",
+    "tns-platform-declarations": "file:../../node_modules/tns-platform-declarations",
+    "typescript": "file:../../node_modules/typescript"
   },
   "keywords": [
     "NativeScript",
