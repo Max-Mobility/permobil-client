@@ -2,8 +2,8 @@
   "name": "nativescript-perms",
   "version": "1.0.12",
   "description": "Nativescript Permissions plugin.",
-  "main": "./permissions",
-  "typings": "./permissions.d.ts",
+  "main": "permissions",
+  "typings": "permissions.d.ts",
   "nativescript": {
     "platforms": {
       "android": "6.2.0",
@@ -11,9 +11,9 @@
     }
   },
   "devDependencies": {
-    "@nativescript/core": "../../../node_modules/@nativescript/core",
-    "tns-platform-declarations": "../../../node_modules/tns-platform-declarations",
-    "typescript": "../../../node_modules/typescript"
+    "@nativescript/core": "file:../../node_modules/@nativescript/core",
+    "tns-platform-declarations": "file:../../node_modules/tns-platform-declarations",
+    "typescript": "file:../../node_modules/typescript"
   },
   "keywords": [
     "NativeScript",
