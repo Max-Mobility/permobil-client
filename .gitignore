@@ -130,3 +130,5 @@ apps/**/report/
 
 # SonarQube
 *.scannerwork
+
+tools/*.apks
