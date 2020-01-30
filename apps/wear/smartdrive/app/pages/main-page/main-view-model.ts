@@ -1931,7 +1931,18 @@ export class MainViewModel extends Observable {
       fullscreen: true
     };
     this._showingModal = true;
-    this._scanningView = Frame.topmost().currentPage.showModal(
+
+    // Ensuring that we have the currentPage so this doesn't end up causing a crash to show the scanning dialog
+    const page = Frame.topmost()?.currentPage;
+    if (!page) {
+      const ex = new Error(
+        'The currentPage for the frame was not found, so the scanning modal cannot be opened.'
+      );
+      Sentry.captureException(ex);
+      return;
+    }
+    
+    this._scanningView = page.showModal(
       'pages/modals/scanning/scanning',
       option
     );
