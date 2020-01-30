@@ -1941,7 +1941,7 @@ export class MainViewModel extends Observable {
       Sentry.captureException(ex);
       return;
     }
-    
+
     this._scanningView = page.showModal(
       'pages/modals/scanning/scanning',
       option
