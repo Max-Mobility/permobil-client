@@ -80,31 +80,27 @@
   }
 
   RadCartesianChart {
-    background-color: $white;
-     .ns-dark & {
-      background-color: $black;
-    }
-    color: $black;
-     .ns-dark & {
-      color: $white;
+     color: $black;
+      .ns-dark & {
+       color: $white;
     }
   }
 
   BarSeries{
-      fill-color: #0067a6;
-      stroke-color: #0067a6;
-       .ns-dark & {
-        fill-color:#89d4e3;
-        stroke-color: #89d4e3;
-      } 
+    fill-color: #0067a6;
+    .ns-dark & {
+      fill-color:#89d4e3; 
+    } 
+    stroke-color: #0067a6;
+    .ns-dark & {
+      stroke-color: #89d4e3;
+    } 
   }
   SegmentedBar {
-      background-color: $white;
       selected-background-color: $grey;
       color: $black;
        .ns-dark & {
         selected-background-color: $dark-grey;
-        background-color: $black;
         color: $white;
       }
     margin: 2;

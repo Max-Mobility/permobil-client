@@ -1328,7 +1328,7 @@ export class ActivityComponent implements OnInit {
   }
 
   private async _initMonthViewStyle() {
-    const pageColor =
+    /*const pageColor =
       this.CURRENT_THEME === APP_THEMES.DARK
         ? this._colorBlackCss
         : this._colorWhite;
@@ -1339,40 +1339,40 @@ export class ActivityComponent implements OnInit {
     const textColor =
       this.CURRENT_THEME === APP_THEMES.DARK
         ? this._colorWhite
-        : this._colorBlack;
+        : this._colorBlack;*/
 
     this.monthViewStyle = new CalendarMonthViewStyle();
     this.monthViewStyle.showTitle = false;
     this.monthViewStyle.showWeekNumbers = false;
     this.monthViewStyle.showDayNames = true;
-    this.monthViewStyle.backgroundColor = pageColor;
+    //this.monthViewStyle.backgroundColor = pageColor;
 
     // Today cell style
     const todayCellStyle = new DayCellStyle();
     // make the border / text blue to make it easy to find today
     todayCellStyle.cellBorderColor = this._colorPermobilCousteau;
-    todayCellStyle.cellBackgroundColor = pageColor;
+    //todayCellStyle.cellBackgroundColor = pageColor;
     // todayCellStyle.cellTextSize = 18;
-    todayCellStyle.cellTextColor = textColor;
+   // todayCellStyle.cellTextColor = textColor;
     this.monthViewStyle.todayCellStyle = todayCellStyle;
 
     // Day cell style
     const dayCellStyle = new DayCellStyle();
-    dayCellStyle.cellBackgroundColor = pageColor;
-    dayCellStyle.cellBorderColor = pageColor;
-    dayCellStyle.cellTextColor = textColor;
+    //dayCellStyle.cellBackgroundColor = pageColor;
+    //dayCellStyle.cellBorderColor = pageColor;
+    //dayCellStyle.cellTextColor = textColor;
     this.monthViewStyle.dayCellStyle = dayCellStyle;
 
     // Weekend cell style
     const weekendCellStyle = new DayCellStyle();
-    weekendCellStyle.cellBorderColor = pageColor;
-    weekendCellStyle.cellBackgroundColor = pageColor;
+    //weekendCellStyle.cellBorderColor = pageColor;
+   // weekendCellStyle.cellBackgroundColor = pageColor;
     this.monthViewStyle.weekendCellStyle = weekendCellStyle;
 
     // Selected cell style
     const selectedDayCellStyle = new DayCellStyle();
     selectedDayCellStyle.cellTextSize = 20;
-    selectedDayCellStyle.cellBackgroundColor = pageColor;
+    //selectedDayCellStyle.cellBackgroundColor = pageColor;
     selectedDayCellStyle.cellBorderColor = this._colorPermobilCousteau;
     selectedDayCellStyle.cellTextColor = this._colorPermobilCousteau;
     selectedDayCellStyle.cellTextFontStyle = CalendarFontStyle.Bold;
@@ -1380,16 +1380,17 @@ export class ActivityComponent implements OnInit {
 
     // Week number cell style
     const weekNumberCellStyle = new CellStyle();
-    weekNumberCellStyle.cellTextColor = textColor;
+    //weekNumberCellStyle.cellTextColor = textColor;
     weekNumberCellStyle.cellBorderColor = this._colorWhite;
     this.monthViewStyle.weekNumberCellStyle = weekNumberCellStyle;
 
     // Day name cell style
     const dayNameCellStyle = new CellStyle();
-    dayNameCellStyle.cellBackgroundColor = pageColor;
-    dayNameCellStyle.cellBorderColor = pageColor;
-    dayNameCellStyle.cellTextColor = textColor;
+    //dayNameCellStyle.cellBackgroundColor = pageColor;
+    //dayNameCellStyle.cellBorderColor = pageColor;
+    //dayNameCellStyle.cellTextColor = textColor;
     this.monthViewStyle.dayNameCellStyle = dayNameCellStyle;
+    
   }
 
   private async _initMonthChartTitle() {
