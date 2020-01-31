@@ -14,6 +14,9 @@ $retry-color: #db4537;
   .update-label {
     @extend .UPDATE_LABEL_BASE;
     color: $permobil-primary;
+    .ns-dark & {
+      color: $permobil-sky;
+    }
   }
 
   .update-stack-layout {
@@ -24,18 +27,30 @@ $retry-color: #db4537;
     @extend .UPDATE_BTN_BASE;
     background-color: #d8e5f2;
     color: $permobil-primary;
+    .ns-dark & {
+      background-color: #502980;
+      color: $white;
+    }
   }
 
   .update-circle {
     @extend .UPDATE_CIRCLE_BASE;
     bar-color: $permobil-primary;
     rim-color: $light-grey;
+    .ns-dark & {
+      bar-color: $permobil-sky;
+      rim-color: $dark-custom-dialog-layout-black;
+    }
   }
 
   .update-circle-green {
     @extend .UPDATE_CIRCLE_BASE;
     bar-color: $start-color;
     rim-color: $light-grey;
+    .ns-dark & {
+      bar-color: $start-color;
+      rim-color: $dark-custom-dialog-layout-black;
+    }
   }
 
   .update-status-label {

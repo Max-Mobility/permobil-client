@@ -23,9 +23,7 @@
 
   .section-text {
     @extend .SECTION_TEXT_BASE;
-     .ns-light & {
-       color: lighten($black, 10%);
-     }
+    color: lighten($black, 10%);
     .ns-dark & {
       color: darken($white, 10%);
     }

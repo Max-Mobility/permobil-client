@@ -63,3 +63,65 @@
   horizontal-align: right;
   vertical-align: center;
 }
+
+.title {
+  @extend .TITLE_BASE;
+  width: 70%;
+}
+
+.section-title {
+  @extend .SECTION_TITLE_BASE;
+}
+
+.section-text {
+  @extend .SECTION_TEXT_BASE;
+  color: lighten($black, 10%);
+  .ns-dark & {
+    color: darken($white, 10%);
+  }
+}
+
+.privacy-btn {
+  @extend .PRIVACY_BUTTON_BASE;
+  color: #3c4043;
+  .ns-dark & {
+    color: $white;
+  }
+}
+
+.ok-btn {
+  @extend .OK_BTN_BASE;
+  background-color: $permobil-primary;
+  .ns-dark & {
+    background-color: $permobil-sky;
+    color: $white;
+  }
+}
+
+.cancel-btn {
+  @extend .CANCEL_BTN_BASE;
+  color: #3d4144;
+  text-transform: capitalize;
+}
+
+.setting-switch {
+  @extend .SETTING_SWITCH_BASE;
+  color: $permobil-primary;
+  background: $permobil-sky;
+  .ns-dark & {
+    color: $permobil-sky;
+    background: darken($white, 10%);
+  }
+  off-background-color: $dark-grey;
+}
+
+.inactive-setting-switch {
+  @extend .SETTING_SWITCH_BASE;
+  color: $dark-grey;
+  off-background-color: $grey;
+  .ns-dark & {
+    color: $grey;
+    off-background-color: lighten($grey, 10%);
+  }
+  background: $dark-grey;
+}

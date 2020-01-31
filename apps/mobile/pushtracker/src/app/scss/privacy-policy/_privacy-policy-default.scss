@@ -3,49 +3,5 @@
 
 .privacy-policy-layout {
   @extend .PRIVACY_POLICY_LAYOUT_BASE;
-  background-color: $white;
-
-  .title {
-    @extend .TITLE_BASE;
-    width: 70%;
-  }
-
-  .section-title {
-    @extend .SECTION_TITLE_BASE;
-  }
-
-  .section-text {
-    @extend .SECTION_TEXT_BASE;
-    color: lighten($black, 10%);
-  }
-
-  .privacy-btn {
-    @extend .PRIVACY_BUTTON_BASE;
-    color: #3c4043;
-  }
-
-  .ok-btn {
-    @extend .OK_BTN_BASE;
-    background-color: $permobil-primary;
-  }
-
-  .cancel-btn {
-    @extend .CANCEL_BTN_BASE;
-    color: #3d4144;
-    text-transform: capitalize;
-  }
-
-  .setting-switch {
-    @extend .SETTING_SWITCH_BASE;
-    color: $permobil-primary;
-    background: $permobil-sky;
-    off-background-color: $dark-grey;
-  }
-
-  .inactive-setting-switch {
-    @extend .SETTING_SWITCH_BASE;
-    color: $dark-grey;
-    background: $dark-grey;
-    off-background-color: $grey;
-  }
+ 
 }

@@ -3,7 +3,7 @@
 
 .journey-tab-layout {
   @extend .JOURNEY_TAB_LAYOUT_BASE;
-  @include colorize($background-color: background);
+  //@include colorize($background-color: background);
   
   .page-title {
     @extend .PAGE_TITLE_BASE;

@@ -72,3 +72,108 @@
   padding: 8;
   border-radius: 3;
 }
+.prev-btn {
+  @extend .PREV_BTN_BASE;
+}
+
+.next-btn {
+  @extend .NEXT_BTN_BASE;
+}
+
+.next-btn-disabled {
+  @extend .NEXT_BTN_BASE;
+  color: $grey;
+}
+
+.chart-title {
+  @extend .CHART_TITLE_BASE;
+}
+
+.chevron-left {
+  @extend .CHEVRON_LEFT_BASE;
+  color: $permobil-primary;
+   .ns-dark & {
+    color: $permobil-sky;
+  }
+}
+
+.chart-description {
+  @extend .CHART_DESCRIPTION_BASE;
+}
+
+.chart-label {
+  @extend .CHART_TITLE_BASE;
+  color: #66696e;
+   .ns-dark & {
+    color: $white;
+  }
+}
+
+.coast-time-btn-disabled,
+.push-count-btn-disabled,
+.distance-btn-disabled {
+  @extend .CHART_VIEW_BTN_BASE;
+  background-color: $white;
+  color: $dark-grey;
+   .ns-dark & {
+    background-color: $dark-grey;
+    color: $white;
+  }
+}
+
+.coast-time-btn-enabled,
+.push-count-btn-enabled,
+.distance-btn-enabled {
+  @extend .CHART_VIEW_BTN_BASE;
+  background-color: #d8e5f2;
+  color: $permobil-primary;
+   .ns-dark & {
+    background-color: $white;
+    color: $black;
+  }
+}
+
+.goal-description {
+  @extend .GOAL_DESCRIPTION_BASE;
+  .ns-dark & {
+    color: $white;
+  }
+  font-size: 16;
+}
+
+.no-daily-data {
+  @extend .goal-description;
+  font-size: 16;
+}
+
+
+BarSeries{
+  fill-color: #0067a6;
+  stroke-color: #0067a6;
+  .ns-dark & {
+      fill-color:#89d4e3;
+      stroke-color: #89d4e3;
+  }
+}
+
+SegmentedBar {
+    selected-background-color: $grey;
+     .ns-dark & {
+      selected-background-color: $dark-grey;
+    }
+  margin: 2;
+}
+
+ChartGridLineAnnotation{
+  stroke-color: #0067a6;
+   .ns-dark & {
+    stroke-color: #89d4e3;
+  }
+}
+
+PullToRefresh {
+  color:#0067a6;
+   .ns-dark & {
+    color: #89d4e3;
+  } 
+}

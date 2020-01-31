@@ -4,10 +4,16 @@
 .sign-up-layout {
   @extend .SIGN_UP_LAYOUT_BASE;
   background-color: $white;
+  .ns-dark & {
+    background-color: $black;
+  }
 
   .description-label {
       @extend .DESCRIPTION_LABEL_BASE;
       color: $dark-grey;
+      .ns-dark & {
+        color: $light-grey;
+      }
   }
 
   .submit-btn {
@@ -15,5 +21,8 @@
 
     color: $white;
     background-color: #1c72e6;
+    .ns-dark & {
+      background-color: $permobil-sky;
+    }
   }
 }

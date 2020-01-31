@@ -12,6 +12,9 @@
             placeholder-color: $dark-grey;
 
             border-color: $black;
+            .ns-dark & {
+                border-color: $white;
+            }
         }
 
         .search-btn {
@@ -29,6 +32,9 @@
         .filter-title {
             @extend .FILTER_TITLE_BASE;
             color: $dark-grey;
+            .ns-dark & {
+                color: $light-grey;
+            }
         }
 
         .filter-value {
@@ -42,6 +48,9 @@
         .item-icon {
             @extend .ITEM_ICON_BASE;
             color: $permobil-primary;
+            .ns-dark & {
+                color: $permobil-cousteau;
+            }
         }
 
         .faq-question {
@@ -55,6 +64,9 @@
         .faq-link {
             @extend .FAQ_LINK_BASE;
             color: $permobil-primary;
+            .ns-dark & {
+                color: $permobil-cousteau;
+            }
         }
     }
 }

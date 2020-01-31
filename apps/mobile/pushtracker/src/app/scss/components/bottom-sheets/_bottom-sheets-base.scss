@@ -37,4 +37,51 @@
     text-align: center;
     border-radius: 3;
   }
+
+  background-color: #ffffff;
+  .ns-dark  & {
+   background-color: #202125;
+ }
+
+ .title {
+   color: #202125;
+    .ns-dark & {
+     color: $white;
+   }
+ }
+
+ .description {
+   color: #393a3f;
+    .ns-dark  {
+     color: darken($color: $white, $amount: 0.2);
+   }
+ }
+
+ .listpicker {
+   color: $permobil-primary;
+    .ns-dark  {
+     color: $white;
+   }
+ }
+
+ .slider-value {
+   color: #202125;
+    .ns-dark  {
+     color: $white;
+   }
+ }
+
+ .cancel-btn {
+   color: $permobil-primary;
+    .ns-dark  {
+     color: $permobil-sky;
+   }
+ }
+
+ .ok-btn {
+   color: $permobil-primary;
+    .ns-dark {
+     color: $permobil-sky;
+   }
+ }
 }

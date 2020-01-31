@@ -7,6 +7,9 @@ $sd-rim-color: #f4f5f6;
   fill-color: transparent;
   bar-color: #b288ec;
   rim-color: $sd-rim-color;
+  .ns-dark & {
+    rim-color: $dark-custom-dialog-layout-black;
+  }
 }
 
 #coastTimeCircle {
@@ -14,4 +17,7 @@ $sd-rim-color: #f4f5f6;
   fill-color: transparent;
   bar-color: #96bfe7;
   rim-color: $sd-rim-color;
+  .ns-dark & {
+    rim-color: $dark-custom-dialog-layout-black;
+  }
 }

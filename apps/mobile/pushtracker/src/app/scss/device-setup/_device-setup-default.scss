@@ -32,5 +32,8 @@
 
   .device-setup-status-label {
     color: $black;
+    .ns-dark & {
+      color: $white;
+    }
   }
 }

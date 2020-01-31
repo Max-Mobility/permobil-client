@@ -5,32 +5,56 @@
   @extend .CUSTOM_TEMPLATE_DIALOG_BASE;
 
   background-color: $light-custom-dialog-layout-shadow;
+  .ns-dark & {
+    background-color: $dark-custom-dialog-layout-shadow;
+  }
 
   > StackLayout {
     background-color: $white;
+    .ns-dark & {
+      background-color: $dark-custom-dialog-layout-black;
+    }
 
     .title {
       color: #202125;
+      .ns-dark & {
+        color: $white;
+      }
     }
 
     .description {
       color: #393a3f;
+      .ns-dark & {
+        color: lighten($color: $white, $amount: 0.2);
+      }
     }
 
     .listpicker {
       color: $permobil-primary;
+      .ns-dark & {
+        color: lighten($color: $white, $amount: 0.2);
+      }
     }
 
     .slider-value {
       color: #202125;
+      .ns-dark & {
+        color: $white;
+      }
     }
 
     .cancel-btn {
       color: $permobil-primary;
+      .ns-dark & {
+        color: $permobil-sky;
+      }
     }
 
     .ok-btn {
       color: $permobil-primary;
+      .ns-dark & {
+        color: $permobil-sky;
+      }
     }
   }
 }

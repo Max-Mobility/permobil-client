@@ -3,28 +3,35 @@
 
 .login-layout {
   @extend .LOGIN_LAYOUT_BASE;
-  @include colorize($background-color: background);
   .login-form {
     @extend .LOGIN_FORM_BASE;
-    @include colorize($background-color: background);
    }
 
   .submit-btn {
     @extend .SUBMIT_BTN_BASE;
 
     background-color: #1c72e6;
+    .ns-dark & {
+      background-color: $permobil-sky;
+    }
     color: $white;
   }
 
   .forgot-pw-btn {
     @extend .FORGOT_PW_BTN_BASE;
     color: #3d4144;
+    .ns-dark & {
+      color: $permobil-cousteau-light;
+    }
     text-transform: capitalize;
   }
 
   .register-btn {
     @extend .REGISTER_BTN_BASE;
     color: #3d4144;
+    .ns-dark & {
+      color: $permobil-cousteau-light;
+    }
     text-transform: capitalize;
   }
 }
