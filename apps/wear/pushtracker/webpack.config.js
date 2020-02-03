@@ -333,11 +333,11 @@ module.exports = env => {
       // Copy assets to out dir. Add your own globs as needed.
       new CopyWebpackPlugin(
         [
+          { from: { glob: 'assets/**' } },
           { from: { glob: 'fonts/**' } },
-          { from: { glob: '**/*.jpg' } },
-          { from: { glob: '**/*.png' } },
           { from: { glob: '**/*.css' } },
-          { from: { glob: 'assets/**' } }
+          { from: { glob: '**/*.jpg' } },
+          { from: { glob: '**/*.png' } }
         ],
         { ignore: [`${relative(appPath, appResourcesFullPath)}/**`] }
       ),

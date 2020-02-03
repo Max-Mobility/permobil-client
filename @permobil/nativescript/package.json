@@ -11,7 +11,7 @@
     "nativescript-localstorage": "^2.0.1"
   },
   "peerDependencies": {
-    "tns-core-modules": "^6.3.2"
+    "@nativescript/core": "^6.3.2"
   },
   "devDependencies": {
     "tns-platform-declarations": "^6.3.2"

@@ -302,7 +302,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-            }`,
+          }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -842,7 +842,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
       } catch (permissionsObj) {
@@ -1499,39 +1499,48 @@ export class MainViewModel extends Observable {
     // average every 4 points to get a reading
     if (this._previousData.length === this._previousDataLength) {
       // determine the average acceleration and timestamp
-      const accelerationTotal = this._previousData.reduce((total, e) => {
-        total.accel.x += e.accel.x;
-        total.accel.y += e.accel.y;
-        total.accel.z += e.accel.z;
-        total.timestamp += e.timestamp;
-        return total;
-      }, {
-        accel: { x: 0, y: 0, z: 0 },
-        timestamp: 0
-      });
+      const accelerationTotal = this._previousData.reduce(
+        (total, e) => {
+          total.accel.x += e.accel.x;
+          total.accel.y += e.accel.y;
+          total.accel.z += e.accel.z;
+          total.timestamp += e.timestamp;
+          return total;
+        },
+        {
+          accel: { x: 0, y: 0, z: 0 },
+          timestamp: 0
+        }
+      );
 
       const firstAccel = this._previousData[0].accel;
-      const max = this._previousData.reduce((_max, e) => {
-        _max.x = Math.max(_max.x, e.accel.x);
-        _max.y = Math.max(_max.y, e.accel.y);
-        _max.z = Math.max(_max.z, e.accel.z);
-        return _max;
-      }, {
-        x: firstAccel.x,
-        y: firstAccel.y,
-        z: firstAccel.z
-      });
+      const max = this._previousData.reduce(
+        (_max, e) => {
+          _max.x = Math.max(_max.x, e.accel.x);
+          _max.y = Math.max(_max.y, e.accel.y);
+          _max.z = Math.max(_max.z, e.accel.z);
+          return _max;
+        },
+        {
+          x: firstAccel.x,
+          y: firstAccel.y,
+          z: firstAccel.z
+        }
+      );
 
-      const min = this._previousData.reduce((_min, e) => {
-        _min.x = Math.min(_min.x, e.accel.x);
-        _min.y = Math.min(_min.y, e.accel.y);
-        _min.z = Math.min(_min.z, e.accel.z);
-        return _min;
-      }, {
-        x: firstAccel.x,
-        y: firstAccel.y,
-        z: firstAccel.z
-      });
+      const min = this._previousData.reduce(
+        (_min, e) => {
+          _min.x = Math.min(_min.x, e.accel.x);
+          _min.y = Math.min(_min.y, e.accel.y);
+          _min.z = Math.min(_min.z, e.accel.z);
+          return _min;
+        },
+        {
+          x: firstAccel.x,
+          y: firstAccel.y,
+          z: firstAccel.z
+        }
+      );
 
       // determine whether to use the max or the min of the data
       const signedMaxAccel: Acceleration = {
@@ -1927,7 +1936,18 @@ export class MainViewModel extends Observable {
       fullscreen: true
     };
     this._showingModal = true;
-    this._scanningView = Frame.topmost().currentPage.showModal(
+
+    // Ensuring that we have the currentPage so this doesn't end up causing a crash to show the scanning dialog
+    const page = Frame.topmost()?.currentPage;
+    if (!page) {
+      const ex = new Error(
+        'The currentPage for the frame was not found, so the scanning modal cannot be opened.'
+      );
+      Sentry.captureException(ex);
+      return;
+    }
+
+    this._scanningView = page.showModal(
       'pages/modals/scanning/scanning',
       option
     );
@@ -1968,7 +1988,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -2033,7 +2053,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
@@ -2044,17 +2064,29 @@ export class MainViewModel extends Observable {
     try {
       sentryBreadCrumb('ensuring bluetooth capabilities');
       // ensure we have the permissions
-      await this._askForPermissions();
+      await this._askForPermissions().catch(err => {
+        Sentry.captureException(err);
+      });
       // ensure bluetooth radio is enabled
       // Log.D('checking radio is enabled');
-      const radioEnabled = await this._bluetoothService.radioEnabled();
+      const radioEnabled = await this._bluetoothService
+        .radioEnabled()
+        .catch(err => {
+          Sentry.captureException(err);
+        });
+
       if (!radioEnabled) {
         sentryBreadCrumb('bluetooth is not enabled');
         Log.W('radio is not enabled!');
         // if the radio is not enabled, we should turn it on
-        const didEnable = await this._bluetoothService.enableRadio();
+        const didEnable = await this._bluetoothService
+          .enableRadio()
+          .catch(err => {
+            Sentry.captureException(err);
+          });
         if (!didEnable) {
           // we could not enable the radio!
+          sentryBreadCrumb('Unable to enable the Bluetooth radio.');
           // throw 'BLE OFF';
           return false;
         }
@@ -2065,10 +2097,13 @@ export class MainViewModel extends Observable {
         await promise;
       }
       // ensure bluetoothservice is functional
-      await this._bluetoothService.initialize();
+      await this._bluetoothService.initialize().catch(err => {
+        Sentry.captureException(err);
+      });
+
       return true;
     } catch (err) {
-      sentryBreadCrumb('Error ensuring bluetooth: ' + err);
+      Sentry.captureException(err);
       return false;
     }
   }
@@ -2435,8 +2470,10 @@ export class MainViewModel extends Observable {
       // save state to LS
       this._saveSmartDriveStateToLS();
       // now save to database
-      const driveDistance = args.driveDistance || this.smartDrive?.driveDistance || 0;
-      const coastDistance = args.coastDistance || this.smartDrive?.coastDistance || 0;
+      const driveDistance =
+        args.driveDistance || this.smartDrive?.driveDistance || 0;
+      const coastDistance =
+        args.coastDistance || this.smartDrive?.coastDistance || 0;
       const battery = args.battery || 0;
       if (driveDistance === 0 && coastDistance === 0 && battery === 0) {
         return;
@@ -2460,7 +2497,9 @@ export class MainViewModel extends Observable {
         // creates as needed - but if it encounters an exception then
         // it will not have an id - so we will try to make it again...
         this._todaysUsage = await this._makeTodaysUsage(
-          battery, driveDistance, coastDistance
+          battery,
+          driveDistance,
+          coastDistance
         );
       }
       // update the estimated range (doesn't use weekly usage info -
@@ -2475,18 +2514,24 @@ export class MainViewModel extends Observable {
     }
   }
 
-  private async _makeTodaysUsage(battery?: number, drive?: number, coast?: number) {
+  private async _makeTodaysUsage(
+    battery?: number,
+    drive?: number,
+    coast?: number
+  ) {
     if (!drive || !coast) {
       // try to use our smartdrive's existing drive / coast to
       // initialize the data, fall back on 0 if necessary
       drive = this.smartDrive?.driveDistance || 0;
       coast = this.smartDrive?.coastDistance || 0;
     }
-    const newEntry = SmartDriveData.Info.newInfo(undefined,
+    const newEntry = SmartDriveData.Info.newInfo(
+      undefined,
       new Date(),
       battery,
       drive,
-      coast);
+      coast
+    );
     try {
       const id = await this._sqliteService.insertIntoTable(
         SmartDriveData.Info.TableName,

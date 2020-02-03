@@ -8,11 +8,12 @@
   },
   "scripts": {
     "scss": "node-sass ./app/scss -o ./app/scss",
-    "scss-b": "node-sass --watch ./app/scss -o ./app/scss"
+    "scss-b": "node-sass --watch ./app/scss -o ./app/scss",
+    "test.webpack": "rm -rf node_modules && npm i && tsc --listFiles --traceResolution && webpack --config ./webpack.config.js --env.android --env.verbose --env.report"
   },
   "dependencies": {
     "@maxmobility/nativescript-wear-os-comms": "file:../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/src",
-    "@maxmobility/private-keys": "autochair/maxmobility-private-keys#master",
+    "@maxmobility/private-keys": "github:autochair/maxmobility-private-keys#master",
     "@nativescript/core": "~6.3.2",
     "@permobil/core": "file:../../../@permobil/core",
     "@permobil/nativescript": "file:../../../@permobil/nativescript",
@@ -31,7 +32,6 @@
     "nativescript-sqlite": "~2.3.3",
     "nativescript-theme-core": "~1.0.6",
     "nativescript-themes": "~2.0.1",
-    "nativescript-toasty": "~2.0.1",
     "nativescript-wear-os": "~2.1.1",
     "reflect-metadata": "~0.1.13"
   },
@@ -40,8 +40,8 @@
     "nativescript-dev-webpack": "~1.4.1",
     "nativescript-hook": "~0.2.5",
     "nativescript-worker-loader": "~0.10.0",
-    "node-sass": "^4.13.0",
-    "prompts": "~2.1.0",
+    "node-sass": "~4.13.0",
+    "prompts": "~2.2.1",
     "rimraf": "~2.6.3",
     "sass-loader": "^8.0.0",
     "tns-platform-declarations": "~6.3.2",
