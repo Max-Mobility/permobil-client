@@ -28,7 +28,7 @@
       </GridLayout>
     </wol:WearOsLayout>
 
-    <ScrollView loaded="{{ onScrollViewLoaded }}" scroll="onScrollViewScroll" visibility="{{ isAmbient, !isAmbient ? 'visible':'collapsed' }}" isScrollEnabled="{{ !powerAssistActive && !isTraining }}">
+    <ScrollView loaded="{{ onScrollViewLoaded }}" visibility="{{ isAmbient, !isAmbient ? 'visible':'collapsed' }}" isScrollEnabled="{{ !powerAssistActive && !isTraining }}">
       <StackLayout>
         // Activate Power Assist Screen
         <wol:WearOsLayout disableInsetConstraint="true" width="{{ screenWidth / 1.8 }}" height="{{ screenHeight / 1.8 }}">
@@ -133,9 +133,9 @@
         </wol:WearOsLayout>
 
         // Menu Items
-        <StackLayout id="settingsTitle" loaded="{{ setLeftRightTopPadding }}" tap="{{ toggleSticky }}" backgroundColor="black" style="z-index: 1;">
-          <Label text="{{ L('menu.title') }}" tap="{{ toggleSticky }}" class="chart-title" textWrap="true" />
-          <Label text="" tap="{{ toggleSticky }}" class="hr-blue" />
+        <StackLayout id="settingsTitle" loaded="{{ setLeftRightTopPadding }}" backgroundColor="black" style="z-index: 1;">
+          <Label text="{{ L('menu.title') }}" class="chart-title" textWrap="true" />
+          <Label text="" class="hr-blue" />
         </StackLayout>
         <GridLayout rows="*, *, *, *, *, *" columns="auto, *" loaded="{{ setLeftRightPadding }}" style="z-index: 0;">
           // Settings
