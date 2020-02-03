@@ -174,7 +174,7 @@ export class MainViewModel extends Observable {
   }
 
   onPagerLoaded(args: EventData) {
-    this.pager = args.object as Pager;
+    this.pager = (<unknown>args.object) as Pager;
   }
 
   customWOLInsetLoaded(args: EventData) {
@@ -597,7 +597,11 @@ export class MainViewModel extends Observable {
       const context = application.android.context;
       intent.setClassName(context, 'com.permobil.pushtracker.ActivityService');
       intent.setAction('ACTION_START_SERVICE');
-      context.startService(intent);
+      // The startService() method now throws an IllegalStateException if an app targeting Android 8.0 tries to use that method in a situation when it isn't permitted to create background services.
+      // We target 26+ so changing this to call the `startForegroundService` method should resolve this from throwing.
+      // @link - https://sentry.io/organizations/maxmobility/issues/1135637410/?project=1485857&referrer=github_integration
+      // @link - https://developer.android.com/about/versions/oreo/android-8.0-changes.html#back-all
+      context.startForegroundService(intent);
       sentryBreadCrumb('Activity Service started.');
     } catch (err) {
       Sentry.captureException(err);
