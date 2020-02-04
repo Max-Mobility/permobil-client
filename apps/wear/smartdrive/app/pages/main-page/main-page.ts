@@ -10,6 +10,8 @@ export function onNavigatingTo(args: EventData) {
   vm.onMainPageLoaded(args);
 }
 
+/*
 export function onScrollViewScroll(args: any) {
   vm.onScrollViewScroll(args);
 }
+*/
