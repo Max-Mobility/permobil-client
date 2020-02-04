@@ -12,7 +12,7 @@
     "removeComments": true,
     "noImplicitUseStrict": true,
     "declaration": false,
-    "lib": ["es6", "dom", "es2015.iterable"],
+    "lib": ["es6", "dom", "ES2020", "es2015.iterable"],
     "baseUrl": ".",
     "paths": {
       "~/*": ["app/*"],
@@ -20,7 +20,9 @@
       "@permobil/*": ["../../@permobil/*"],
       "@permobil/core/*": ["../../@permobil/core/*"],
       "@permobil/nativescript/*": ["../../@permobil/nativescript/*"],
-      "nativescript-bluetooth": ["../../forked-plugins/nativescript-bluetooth/*"]
+      "nativescript-bluetooth": [
+        "../../forked-plugins/nativescript-bluetooth/*"
+      ]
     }
   },
   "exclude": [

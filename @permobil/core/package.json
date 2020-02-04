@@ -6,6 +6,6 @@
   "typings": "./src/index.d.ts",
   "author": "Max-Mobility",
   "devDependencies": {
-    "typescript": "~3.7.3"
+    "typescript": "file:../../node_modules/typescript"
   }
 }

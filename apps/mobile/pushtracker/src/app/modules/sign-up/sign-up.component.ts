@@ -1,36 +1,19 @@
-import {
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild,
-  ViewContainerRef
-} from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
-import { preventKeyboardFromShowing } from '@permobil/nativescript';
-import { validate } from 'email-validator';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import { Component, ElementRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ModalDialogService, RouterExtensions } from '@nativescript/angular';
-import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
+import { isAndroid, isIOS, Page, TextField } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { device } from '@nativescript/core/platform';
 import { alert } from '@nativescript/core/ui/dialogs';
-import { Page, TextField, isAndroid, isIOS } from '@nativescript/core';
-import {
-  AppResourceIcons,
-  APP_THEMES,
-  STORAGE_KEYS,
-  DISTANCE_UNITS,
-  HEIGHT_UNITS,
-  WEIGHT_UNITS,
-  CHAIR_MAKE,
-  CHAIR_TYPE,
-  TIME_FORMAT
-} from '../../enums';
-import { LoggingService } from '../../services';
-import { PrivacyPolicyComponent } from '..';
+import { TranslateService } from '@ngx-translate/core';
+import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
+import { APP_KEY, APP_SECRET, preventKeyboardFromShowing } from '@permobil/nativescript';
+import { validate } from 'email-validator';
 import * as Kinvey from 'kinvey-nativescript-sdk';
-import { APP_KEY, APP_SECRET } from '../../utils/kinvey-keys';
+import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
+import { PrivacyPolicyComponent } from '..';
+import { AppResourceIcons, APP_THEMES, DISTANCE_UNITS, HEIGHT_UNITS, STORAGE_KEYS, TIME_FORMAT, WEIGHT_UNITS } from '../../enums';
+import { LoggingService } from '../../services';
 
 @Component({
   selector: 'sign-up',
@@ -210,7 +193,10 @@ export class SignUpComponent implements OnInit {
         consent_to_research = result.consent_to_research || false;
       }
     } catch (err) {
-      this._logService.logBreadCrumb(SignUpComponent.name, 'Error while handling user agreement / privacy policy');
+      this._logService.logBreadCrumb(
+        SignUpComponent.name,
+        'Error while handling user agreement / privacy policy'
+      );
       // this._logService.logException(err);
       return;
     }
