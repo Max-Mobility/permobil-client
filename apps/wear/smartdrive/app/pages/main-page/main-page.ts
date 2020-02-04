@@ -9,9 +9,3 @@ export function onNavigatingTo(args: EventData) {
   page.bindingContext = vm;
   vm.onMainPageLoaded(args);
 }
-
-/*
-export function onScrollViewScroll(args: any) {
-  vm.onScrollViewScroll(args);
-}
-*/
