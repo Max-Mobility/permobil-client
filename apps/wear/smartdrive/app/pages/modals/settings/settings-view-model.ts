@@ -20,6 +20,7 @@ export class SettingsViewModel extends Observable {
   private _settingsService: SettingsService;
   private _SDKinveyService: SmartDriveKinveyService;
   private _showingModal: boolean = false;
+  private _isDownloadingFiles: boolean = false;
 
   constructor(
     page: Page,
@@ -49,7 +50,9 @@ export class SettingsViewModel extends Observable {
 
   onChangeSettingsItemTap(args) {
     if (this._showingModal) {
-      sentryBreadCrumb('already showing modal, not showing change settings');
+      sentryBreadCrumb(
+        'Already showing modal, not showing change settings modal.'
+      );
       return;
     }
     // copy the current settings into temporary store
@@ -102,6 +105,13 @@ export class SettingsViewModel extends Observable {
   }
 
   private async _downloadTranslationFiles() {
+    // make sure we are not already downloading translation files
+    if (this._isDownloadingFiles) {
+      sentryBreadCrumb('Files are being downloaded. Will not execute again.');
+      return;
+    }
+    this._isDownloadingFiles = true;
+
     // make sure we have network before trying to download translation files
     const hasNetwork = isNetworkAvailable();
     if (hasNetwork === false) {
@@ -111,7 +121,7 @@ export class SettingsViewModel extends Observable {
       return;
     }
 
-    // we have network so show the scanning modal component with proper i18n text for this process
+    // Present the scanning modal component with proper i18n text for this process
     const page = Frame.topmost()?.currentPage;
     let vb: ViewBase; // used as ref to close the modal after downloading is complete
     if (page) {
@@ -120,6 +130,7 @@ export class SettingsViewModel extends Observable {
           scanningText: L('settings.syncing-with-server')
         },
         closeCallback: () => {
+          this._isDownloadingFiles = false;
           Log.D('Scanning modal closed after translation file downloads.');
         },
         animated: false,
@@ -140,13 +151,8 @@ export class SettingsViewModel extends Observable {
     const files = await this._SDKinveyService
       .downloadTranslationFiles(defaultLang)
       .catch(err => {
-        Sentry.captureException(err);
         vb.closeModal();
-        alert({
-          title: L('failures.title'),
-          message: L('failures.downloading-translations'),
-          okButtonText: L('buttons.ok')
-        });
+        this._handleDownloadError(err);
       });
 
     // we should get back 1 or 2 files from the query (2 if the current device language is NOT en)
@@ -155,18 +161,24 @@ export class SettingsViewModel extends Observable {
       // need to make sure the downloadUrl of the file uses `https` and not `http` to avoid IOExceptions
       const fileUrl = f._downloadURL.replace(/^http:\/\//i, 'https://');
       await getFile(fileUrl, `${i18nPath}/${f._filename}`).catch(err => {
-        Sentry.captureException(err);
         vb.closeModal();
-        alert({
-          title: L('failures.title'),
-          message: L('failures.downloading-translations'),
-          okButtonText: L('buttons.ok')
-        });
+        this._handleDownloadError(err);
       });
       sentryBreadCrumb(`File: ${f._filename} download successful.`);
     }
 
     // close the scanning modal that's blocking the user when done
-    vb?.closeModal();
+    vb.closeModal();
+    this._isDownloadingFiles = false;
+  }
+
+  private _handleDownloadError(err) {
+    Sentry.captureException(err);
+    alert({
+      title: L('failures.title'),
+      message: L('failures.downloading-translations'),
+      okButtonText: L('buttons.ok')
+    });
+    this._isDownloadingFiles = false;
   }
 }
