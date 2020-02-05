@@ -72,7 +72,8 @@ export class SmartDriveKinveyService extends KinveyService {
     let response = null;
     const query = {
       $or: [{ _filename: 'en.json' }, { _filename: `${currentLanguage}.json` }],
-      app_name: 'smartdrive_wear'
+      app_name: 'smartdrive_wear',
+      translation_file: true
     };
 
     try {
