@@ -10,7 +10,6 @@ import { getDefaultLang, L, Prop } from '@permobil/nativescript';
 import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import * as LS from 'nativescript-localstorage';
-import { Pager } from 'nativescript-pager';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Sentry } from 'nativescript-sentry';
 import { DataBroadcastReceiver } from '../../data-broadcast-receiver';
@@ -38,6 +37,10 @@ declare const com: any;
 
 export class MainViewModel extends Observable {
   // #region "Public Members for UI"
+  @Prop() insetPadding: number = 0;
+  @Prop() chinSize: number = 0;
+  @Prop() screenWidth: number = 100;
+  @Prop() screenHeight: number = 100;
 
   /**
    * Goal progress data.
@@ -90,12 +93,6 @@ export class MainViewModel extends Observable {
   @Prop() currentPushCountDisplay = this.currentPushCount.toFixed(0);
   @Prop() currentHighStressActivityCount: number = 0;
 
-  /**
-   * Layout related data
-   */
-  @Prop() insetPadding: number = 0;
-  @Prop() chinSize: number = 0;
-
   // #endregion "Public Members for UI"
 
   // #region "Private Members"
@@ -104,7 +101,6 @@ export class MainViewModel extends Observable {
 
   private _showingModal: boolean = false;
 
-  private pager: Pager = null;
   private _mainPage: ViewBase = null;
   private _synchronizingModal: string =
     'pages/modals/synchronizing/synchronizing';
@@ -173,14 +169,18 @@ export class MainViewModel extends Observable {
     }
   }
 
-  onPagerLoaded(args: EventData) {
-    this.pager = (<unknown>args.object) as Pager;
-  }
-
-  customWOLInsetLoaded(args: EventData) {
+  setLeftRightTopPadding(args: EventData) {
     (args.object as any).nativeView.setPadding(
       this.insetPadding,
       this.insetPadding,
+      this.insetPadding,
+      0
+    );
+  }
+  setLeftRightPadding(args: EventData) {
+    (args.object as any).nativeView.setPadding(
+      this.insetPadding,
+      0,
       this.insetPadding,
       0
     );
@@ -193,7 +193,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(this.ANDROID_MARKET_SMARTDRIVE_URI));
     application.android.foregroundActivity.startActivity(intent);
@@ -625,7 +625,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => {});
+        await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
         // and return true letting the caller know we got the permissions
@@ -648,27 +648,6 @@ export class MainViewModel extends Observable {
   private _applyTheme(theme?: string) {
     // apply theme
     applyTheme(theme);
-    this._applyStyle();
-  }
-
-  private _applyStyle() {
-    sentryBreadCrumb('applying style');
-    try {
-      if (this.pager) {
-        try {
-          const children = this.pager._childrenViews;
-          for (let i = 0; i < children.size; i++) {
-            const child = children.get(i) as View;
-            child._onCssStateChange();
-          }
-        } catch (err) {
-          Sentry.captureException(err);
-        }
-      }
-    } catch (err) {
-      Sentry.captureException(err);
-    }
-    sentryBreadCrumb('style applied');
   }
 
   /**
@@ -681,7 +660,7 @@ export class MainViewModel extends Observable {
       this._applyTheme('ambient');
     });
 
-    application.on('updateAmbient', () => {});
+    application.on('updateAmbient', () => { });
 
     application.on('exitAmbient', () => {
       sentryBreadCrumb('*** exitAmbient ***');
@@ -958,7 +937,7 @@ export class MainViewModel extends Observable {
     this.currentPushCountDisplay = this.currentPushCount.toFixed(0);
   }
 
-  private _updateSpeedDisplay() {}
+  private _updateSpeedDisplay() { }
 
   /**
    * SmartDrive Associated App Functions
@@ -1151,6 +1130,10 @@ export class MainViewModel extends Observable {
     const isCircleWatch = androidConfig.isScreenRound();
     const widthPixels = screen.mainScreen.widthPixels;
     const heightPixels = screen.mainScreen.heightPixels;
+    const widthDIPs = screen.mainScreen.widthDIPs;
+    const heightDIPs = screen.mainScreen.heightDIPs;
+    this.screenWidth = widthDIPs; // widthPixels;
+    this.screenHeight = heightDIPs; // heightPixels;
     if (isCircleWatch) {
       this.insetPadding = Math.round(0.146467 * widthPixels);
       // if the height !== width then there is a chin!
