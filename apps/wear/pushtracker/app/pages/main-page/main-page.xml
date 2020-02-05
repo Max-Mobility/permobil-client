@@ -1,25 +1,27 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" 
-  xmlns:nac="nativescript-animated-circle" 
-  xmlns:pager="nativescript-pager" 
-  xmlns:box="nativescript-wear-os/packages/box-inset-layout" 
-  xmlns:wol="nativescript-wear-os/packages/wear-os-layout" 
-  xmlns:ui="nativescript-auto-fit-text" navigatingTo="onNavigatedTo" marginBottom="{{ chinSize / 2 }}" actionBarHidden="true">
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+      xmlns:nac="nativescript-animated-circle"
+      xmlns:wol="nativescript-wear-os/packages/wear-os-layout"
+      xmlns:ui="nativescript-auto-fit-text" navigatingTo="onNavigatedTo" marginBottom="{{ chinSize / 2 }}" actionBarHidden="true">
   <GridLayout rows="*" columns="*">
-    <pager:Pager loaded="{{ onPagerLoaded }}" orientation="vertical" height="100%" width="100%" transformer="none" pagesCount="4" showNativePageIndicator="false" disableSwipe="{{ powerAssistActive || isTraining }}">
-
-      // Goal Overview
-      <pager:PagerItem>
-        <wol:WearOsLayout disableInsetConstraint="true">
-          <GridLayout width="100%" height="100%" rows="auto" columns="*">
+    <ScrollView>
+      <StackLayout>
+        // Goal Overview
+        <wol:WearOsLayout disableInsetConstraint="true" width="{{ screenWidth }}" height="{{ screenHeight }}">
+          <GridLayout rows="*" columns="*">
             // Distance Goal Circle
-            <nac:AnimatedCircle row="0" col="0" width="300" height="300" class="distanceCircle" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ distanceGoalCurrentProgress }}">
+            <nac:AnimatedCircle
+                width="100%" height="100%"
+                progress="{{ distanceGoalCurrentProgress }}"
+                class="distanceCircle" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8">
             </nac:AnimatedCircle>
             // Coast Goal Circle
-                                    <!-- TODO: THIS W/H setting is a hack and shouldn't work! -->
-            <nac:AnimatedCircle row="0" col="0" class="coastCircle" width="200" height="200" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ coastGoalCurrentProgress }}">
+            <nac:AnimatedCircle
+                width="90%" height="90%"
+                progress="{{ coastGoalCurrentProgress }}"
+                class="coastCircle" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8">
             </nac:AnimatedCircle>
-
-            <GridLayout height="65%" width="70%" rows="auto, auto, auto, auto, auto" columns="*, auto, *">
+            // center information display
+            <GridLayout height="60%" width="80%" rows="auto, auto, auto, auto, auto" columns="*, auto, *">
               // distance
               <Label row="0" col="0" class="center-label-base ionicon distance-goal-color compact fs34" text="&#xf125;" />
               <Label row="1" col="0" textWrap="true" class="center-label-base compact fs26 bold" text="{{ distanceGoalCurrentValueDisplay }}" />
@@ -34,13 +36,11 @@
             </GridLayout>
           </GridLayout>
         </wol:WearOsLayout>
-      </pager:PagerItem>
 
-      // Coast Time Chart
-      <pager:PagerItem>
-        <box:BoxInsetLayout>
-          <GridLayout width="100%" height="100%" rows="auto, auto, *" columns="*, auto" tap="{{ debugChartTap }}">
-            <ui:AutoFitText height="15" row="0" colSpan="2" text="{{ L('charts.coast.title') }}" class="chart-title" textWrap="true"/>
+        // Coast Time Chart
+        <wol:WearOsLayout width="{{ screenWidth }}" height="{{ screenHeight }}">
+          <GridLayout rows="auto, auto, *" columns="*, auto" tap="{{ debugChartTap }}">
+            <Label row="0" colSpan="2" text="{{ L('charts.coast.title') }}" class="chart-title fs10" textWrap="true"/>
             <Label text="" row="1" col="0" class="hr-blue" />
             <Label text="{{ coastChartMaxValue }}" row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
             // Coast Usage Bar Chart
@@ -61,15 +61,13 @@
               <Label col="6" row="1" text="{{ coastChartData[6].day }}" class="line-label" />
             </GridLayout>
           </GridLayout>
-        </box:BoxInsetLayout>
-      </pager:PagerItem>
+        </wol:WearOsLayout>
 
-      // Distance Traveled Chart
-      <pager:PagerItem>
-        <box:BoxInsetLayout>
-          <GridLayout width="100%" height="100%" rows="auto, auto, *" columns="*, auto" tap="{{ debugChartTap }}">
+        // Distance Traveled Chart
+        <wol:WearOsLayout width="{{ screenWidth }}" height="{{ screenHeight }}">
+          <GridLayout rows="auto, auto, *" columns="*, auto" tap="{{ debugChartTap }}">
             // Chart Title
-            <ui:AutoFitText height="15" row="0" colSpan="8" text="{{ L('charts.distance.title') + ' (' + distanceUnits + ')' }}" class="chart-title" textWrap="true" />
+            <Label row="0" colSpan="2" text="{{ L('charts.distance.title') + ' (' + distanceUnits + ')' }}" class="chart-title fs10" textWrap="true" />
             <Label text="" row="1" col="0" class="hr-blue" />
             <Label text="{{ distanceChartMaxValue }}" row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
             // Distance Traveled Bar Chart
@@ -90,32 +88,26 @@
               <Label col="6" row="1" text="{{ distanceChartData[6].day }}" class="line-label" />
             </GridLayout>
           </GridLayout>
-        </box:BoxInsetLayout>
-      </pager:PagerItem>
-
-      // Menu Items
-      <pager:PagerItem>
-        <wol:WearOsLayout disableInsetConstraint="true" loaded="{{ customWOLInsetLoaded }}" height="100%" width="100%">
-          <StackLayout height="100%">
-            <Label text="{{ L('menu.title') }}" class="chart-title" textWrap="true" />
-            <Label class="hr-blue" />
-            <ScrollView height="100%">
-              <GridLayout rows="*, *, *, *, *, *" columns="auto, *" paddingBottom="{{ insetPadding }}">
-                <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                <Label row="0" col="1" text="{{ L('settings.title') }}" tap="{{ onSettingsTap }}" class="settings-label" textWrap="true" />
-                <Label row="1" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                <Label row="1" col="1" text="{{ L('menu.about') }}" tap="{{ onAboutTap }}" class="settings-label" textWrap="true" />
-                <Label row="2" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                <Label row="2" col="1" text="{{ L('settings.connect-pushtracker') }}" tap="{{ onConnectPushTrackerTap }}" class="settings-label" textWrap="true" />
-                <Label row="3" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" visibility="{{ isSmartDriveAppInstalled ? 'collapsed':'visible' }}" />
-                <Label row="3" col="1" text="{{ L('settings.install-smartdrive') }}" tap="{{ onInstallSmartDriveTap }}" class="settings-label" textWrap="true" visibility="{{ isSmartDriveAppInstalled ? 'collapsed':'visible' }}" />
-              </GridLayout>
-            </ScrollView>
-          </StackLayout>
         </wol:WearOsLayout>
-      </pager:PagerItem>
 
-    </pager:Pager>
-
+        // Menu Items
+        <StackLayout>
+          <StackLayout id="settingsTitle" loaded="{{ setLeftRightTopPadding }}" backgroundColor="black">
+            <Label text="{{ L('menu.title') }}" class="chart-title" textWrap="true" />
+            <Label text="" class="hr-blue" />
+          </StackLayout>
+          <GridLayout rows="*, *, *, *, *, *" columns="auto, *" loaded="{{ setLeftRightPadding }}">
+            <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="0" col="1" text="{{ L('settings.title') }}" tap="{{ onSettingsTap }}" class="settings-label" textWrap="true" />
+            <Label row="1" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="1" col="1" text="{{ L('menu.about') }}" tap="{{ onAboutTap }}" class="settings-label" textWrap="true" />
+            <Label row="2" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" marginBottom="{{ insetPadding }}" />
+            <Label row="2" col="1" text="{{ L('settings.connect-pushtracker') }}" tap="{{ onConnectPushTrackerTap }}" class="settings-label" textWrap="true" marginBottom="{{ insetPadding }}" />
+            <Label row="3" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" visibility="{{ isSmartDriveAppInstalled ? 'collapsed':'visible' }}" marginBottom="{{ insetPadding }}" />
+            <Label row="3" col="1" text="{{ L('settings.install-smartdrive') }}" tap="{{ onInstallSmartDriveTap }}" class="settings-label" textWrap="true" visibility="{{ isSmartDriveAppInstalled ? 'collapsed':'visible' }}" marginBottom="{{ insetPadding }}" />
+          </GridLayout>
+        </StackLayout>
+      </StackLayout>
+    </ScrollView>
   </GridLayout>
 </Page>
