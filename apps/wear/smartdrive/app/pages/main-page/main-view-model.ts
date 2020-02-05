@@ -15,7 +15,6 @@ import clamp from 'lodash/clamp';
 import last from 'lodash/last';
 import once from 'lodash/once';
 import * as LS from 'nativescript-localstorage';
-// import { Pager } from 'nativescript-pager';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
@@ -154,7 +153,6 @@ export class MainViewModel extends Observable {
   private initialized: boolean = false;
   private wakeLock: any = null;
   private scrollView: ScrollView;
-  // private pager: Pager;
   private _vibrator: Vibrate = new Vibrate();
   private _bluetoothService: BluetoothService;
   private _sensorService: SensorService;
@@ -422,11 +420,6 @@ export class MainViewModel extends Observable {
       this.scrollView.scrollToVerticalOffset(0, false);
     }
     this.isTraining = true;
-    /*
-    if (this.pager) {
-      this.pager.scrollToIndexAnimated(0, false);
-    } else sentryBreadCrumb('training activated but pager is null!');
-    */
     this.tapDetector.reset();
     this._maintainCPU();
     this.powerAssistState = PowerAssist.State.Training;
@@ -546,16 +539,11 @@ export class MainViewModel extends Observable {
           this._enablingPowerAssist = false;
           return false;
         }
-        // ensure the pager is on the right page
+        // ensure the scrollview is on the right page
         if (this.scrollView) {
           this.scrollView.scrollToVerticalOffset(0, false);
         }
         this.powerAssistActive = true;
-        /*
-        if (this.pager) {
-          this.pager.scrollToIndexAnimated(0, false);
-        }
-        */
         // vibrate for enabling power assist
         this._vibrator.vibrate(200);
         // now actually set up power assist
@@ -932,27 +920,6 @@ export class MainViewModel extends Observable {
         this._showMainDisplay();
         themes.applyThemeCss(defaultTheme, 'theme-default.css');
       }
-    } catch (err) {
-      Sentry.captureException(err);
-    }
-    this._applyStyle();
-  }
-
-  private _applyStyle() {
-    try {
-      /*
-      if (this.pager) {
-        try {
-          const children = this.pager._childrenViews;
-          for (let i = 0; i < children.size; i++) {
-            const child = children.get(i) as any;
-            child._onCssStateChange();
-          }
-        } catch (err) {
-          Sentry.captureException(err);
-        }
-      }
-      */
     } catch (err) {
       Sentry.captureException(err);
     }
@@ -2866,8 +2833,10 @@ export class MainViewModel extends Observable {
     const isCircleWatch = androidConfig.isScreenRound();
     const widthPixels = screen.mainScreen.widthPixels;
     const heightPixels = screen.mainScreen.heightPixels;
-    this.screenWidth = widthPixels;
-    this.screenHeight = heightPixels;
+    const widthDIPs = screen.mainScreen.widthDIPs;
+    const heightDIPs = screen.mainScreen.heightDIPs;
+    this.screenWidth = widthDIPs;
+    this.screenHeight = heightDIPs;
     if (isCircleWatch) {
       this.insetPadding = Math.round(0.146467 * widthPixels);
       // if the height !== width then there is a chin!

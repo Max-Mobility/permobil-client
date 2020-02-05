@@ -4,7 +4,7 @@
   xmlns:ui="nativescript-auto-fit-text" navigatingTo="onNavigatingTo" marginBottom="{{ chinSize / 2 }}" actionBarHidden="true">
   <GridLayout rows="*" columns="*">
     <wol:WearOsLayout disableInsetConstraint="true"
-                      height="{{ screenHeight / 1.8 }}" width="{{ screenWidth / 1.8 }}"
+                      height="{{ screenHeight }}" width="{{ screenWidth }}"
                       verticalAlignment="center" horizontalAlignment="center"
                       visibility="{{ isAmbient, isAmbient ? 'visible':'collapsed' }}">
       <GridLayout rows="32, auto, *" columns="*, auto, *"
@@ -31,10 +31,10 @@
     <ScrollView loaded="{{ onScrollViewLoaded }}" visibility="{{ isAmbient, !isAmbient ? 'visible':'collapsed' }}" isScrollEnabled="{{ !powerAssistActive && !isTraining }}">
       <StackLayout>
         // Activate Power Assist Screen
-        <wol:WearOsLayout disableInsetConstraint="true" width="{{ screenWidth / 1.8 }}" height="{{ screenHeight / 1.8 }}">
-          <GridLayout rows="32, auto, *" columns="*, auto, *" height="{{ screenHeight / 1.8 }}" width="{{ screenWidth / 1.8 }}">
+        <wol:WearOsLayout disableInsetConstraint="true" width="{{ screenWidth }}" height="{{ screenHeight }}">
+          <GridLayout rows="32, auto, *" columns="*, auto, *">
             // Power Assist Circle
-            <nac:AnimatedCircle id="powerAssistCircle" rowSpan="3" colSpan="3" class="powerAssistCircle" minWidth="100%" minHeight="100%" animated="true" animateFrom="0" rimColor="{{ powerAssistRingColor }}" barColor="{{ powerAssistRingColor }}" clockwise="true" rimWidth="12" progress="100" visibility="{{ ((powerAssistActive || isTraining) && !hasTapped) ? 'visible':'collapsed' }}">
+            <nac:AnimatedCircle id="powerAssistCircle" rowSpan="3" colSpan="3" class="powerAssistCircle" width="100%" height="100%" animated="true" animateFrom="0" rimColor="{{ powerAssistRingColor }}" barColor="{{ powerAssistRingColor }}" clockwise="true" rimWidth="12" progress="100" visibility="{{ ((powerAssistActive || isTraining) && !hasTapped) ? 'visible':'collapsed' }}">
             </nac:AnimatedCircle>
             // Tap indication circle
             <nac:AnimatedCircle id="tapCircle" rowSpan="3" colSpan="3" class="tapCircle" width="100%" height="100%" rimWidth="12" progress="100" animated="true" animateFrom="0" visibility="{{ hasTapped ? 'visible':'collapsed' }}">
@@ -79,7 +79,7 @@
         </wol:WearOsLayout>
 
         // SmartDrive Battery Usage Chat
-        <wol:WearOsLayout width="{{ screenWidth / 1.8 }}" height="{{ screenHeight / 1.8 }}">
+        <wol:WearOsLayout width="{{ screenWidth }}" height="{{ screenHeight }}">
           <GridLayout rows="auto, auto, *" columns="*, auto" tap="{{ handleChartTap }}">
             // Chart Title
             <Label row="0" colSpan="2" text="{{ L('charts.battery.title') }}" class="chart-title fs10" textWrap="true"/>
@@ -106,7 +106,7 @@
         </wol:WearOsLayout>
 
         // SmartDrive Distance Traveled Chart
-        <wol:WearOsLayout width="{{ screenWidth / 1.8 }}" height="{{ screenHeight / 1.8 }}">
+        <wol:WearOsLayout width="{{ screenWidth }}" height="{{ screenHeight }}">
           <GridLayout rows="auto, auto, *" columns="*, auto" tap="{{ handleChartTap }}">
             // Chart Title
             <Label row="0" colSpan="2" text="{{ L('charts.distance.title') + ' (' + distanceUnits + ')' }}" class="chart-title fs10" textWrap="true" />
