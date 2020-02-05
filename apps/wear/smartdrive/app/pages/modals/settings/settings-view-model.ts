@@ -6,7 +6,6 @@ import { Sentry } from 'nativescript-sentry';
 import { WatchSettings } from '../../../models';
 import { SettingsService, SmartDriveKinveyService } from '../../../services';
 import { configureLayout, isNetworkAvailable, sentryBreadCrumb } from '../../../utils';
-} from '@nativescript/core';
 
 export class SettingsViewModel extends Observable {
   @Prop() insetPadding = 0;
