@@ -188,7 +188,6 @@ export class SettingsViewModel extends Observable {
     }
 
     for (f of filesToDownload) {
-      console.log(f);
       // need to make sure the downloadUrl of the file uses `https` and not `http` to avoid IOExceptions
       const fileUrl = f._downloadURL.replace(/^http:\/\//i, 'https://');
       await getFile(fileUrl, `${i18nPath}/${f._filename}`).catch(err => {
