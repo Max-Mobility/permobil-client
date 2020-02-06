@@ -1,4 +1,4 @@
-import { Frame, knownFolders, Observable, Page, path, ShowModalOptions, ViewBase } from '@nativescript/core';
+import { ApplicationSettings, Frame, knownFolders, Observable, Page, path, ShowModalOptions, ViewBase } from '@nativescript/core';
 import { getFile } from '@nativescript/core/http';
 import { Device, Log } from '@permobil/core';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';
@@ -124,6 +124,54 @@ export class SettingsViewModel extends Observable {
     // Present the scanning modal component with proper i18n text for this process
     const page = Frame.topmost()?.currentPage;
     let vb: ViewBase; // used as ref to close the modal after downloading is complete
+
+    // "~/assets/i18n" path to save the files when downloaded with http.getFile()
+    const i18nPath = path.join(
+      knownFolders.currentApp().path,
+      'assets',
+      'i18n'
+    );
+
+    // get the current default language to ensure we query for the correct translation
+    const defaultLang = getDefaultLang();
+    const files = (await this._SDKinveyService
+      .downloadTranslationFiles(defaultLang)
+      .catch(err => {
+        vb.closeModal();
+        this._handleDownloadError(err);
+      })) as any[];
+
+    // grab the highest version number files from the server response
+    const filesToCheck = files.reduce((acc, val) => {
+      const { _filename } = val;
+      const current = acc[_filename];
+      acc[_filename] = !current
+        ? val
+        : val._version > current._version
+        ? val
+        : current;
+      return acc;
+    }, {});
+
+    // check if the highest version number file has already been downloaded to the device
+    let f;
+    let filesToDownload = [];
+    for (f of Object.values(filesToCheck)) {
+      const savedVersion = ApplicationSettings.getNumber(
+        `${f._filename}_version`
+      );
+      if (savedVersion < f._version) {
+        // need to download this one so put into the array
+        filesToDownload.push(f);
+      }
+    }
+
+    if (filesToDownload.length <= 0) {
+      sentryBreadCrumb('Device already has the latest translation files.');
+      return; // at this point we have the latest files
+    }
+
+    // show the modal that blocks the user while the files are actually being downloaded
     if (page) {
       vb = page.showModal('pages/modals/scanning/scanning', {
         context: {
@@ -139,25 +187,8 @@ export class SettingsViewModel extends Observable {
       });
     }
 
-    // "~/assets/i18n" path to save the files when downloaded with http.getFile()
-    const i18nPath = path.join(
-      knownFolders.currentApp().path,
-      'assets',
-      'i18n'
-    );
-
-    // get the current default language to ensure we query for the correct translation
-    const defaultLang = getDefaultLang();
-    const files = await this._SDKinveyService
-      .downloadTranslationFiles(defaultLang)
-      .catch(err => {
-        vb.closeModal();
-        this._handleDownloadError(err);
-      });
-
-    // we should get back 1 or 2 files from the query (2 if the current device language is NOT en)
-    // now we have the files from backend, we need to actually download them
-    for (const f of files) {
+    for (f of filesToDownload) {
+      console.log(f);
       // need to make sure the downloadUrl of the file uses `https` and not `http` to avoid IOExceptions
       const fileUrl = f._downloadURL.replace(/^http:\/\//i, 'https://');
       await getFile(fileUrl, `${i18nPath}/${f._filename}`).catch(err => {
@@ -165,6 +196,8 @@ export class SettingsViewModel extends Observable {
         this._handleDownloadError(err);
       });
       sentryBreadCrumb(`File: ${f._filename} download successful.`);
+      // save the file version of the file to check when this function executes next time
+      ApplicationSettings.setNumber(`${f._filename}_version`, f._version);
     }
 
     // close the scanning modal that's blocking the user when done
