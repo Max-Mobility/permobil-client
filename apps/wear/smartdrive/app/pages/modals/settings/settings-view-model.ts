@@ -155,7 +155,7 @@ export class SettingsViewModel extends Observable {
 
     // check if the highest version number file has already been downloaded to the device
     let f;
-    let filesToDownload = [];
+    const filesToDownload = [];
     for (f of Object.values(filesToCheck)) {
       const savedVersion = ApplicationSettings.getNumber(
         `${f._filename}_version`
