@@ -121,16 +121,14 @@ export class SettingsViewModel extends Observable {
       return;
     }
 
-    // Present the scanning modal component with proper i18n text for this process
-    const page = Frame.topmost()?.currentPage;
-    let vb: ViewBase; // used as ref to close the modal after downloading is complete
-
     // "~/assets/i18n" path to save the files when downloaded with http.getFile()
     const i18nPath = path.join(
       knownFolders.currentApp().path,
       'assets',
       'i18n'
     );
+
+    let vb: ViewBase; // used as ref to close the modal after downloading is complete
 
     // get the current default language to ensure we query for the correct translation
     const defaultLang = getDefaultLang();
@@ -172,6 +170,7 @@ export class SettingsViewModel extends Observable {
     }
 
     // show the modal that blocks the user while the files are actually being downloaded
+    const page = Frame.topmost()?.currentPage;
     if (page) {
       vb = page.showModal('pages/modals/scanning/scanning', {
         context: {
