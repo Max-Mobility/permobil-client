@@ -152,9 +152,13 @@ export class SettingsViewModel extends Observable {
     const files = (await this._SDKinveyService
       .downloadTranslationFiles(defaultLang)
       .catch(err => {
+        this._isDownloadingFiles = false;
         vb.closeModal();
         this._handleDownloadError(err);
       })) as any[];
+    // handle the case that the query failed - don't continue doing
+    // anything, return early
+    if (!this._isDownloadingFiles) return;
 
     // grab the highest version number files from the server response
     const filesToCheck = files.reduce((acc, val) => {
@@ -163,8 +167,8 @@ export class SettingsViewModel extends Observable {
       acc[_filename] = !current
         ? val
         : val._version > current._version
-        ? val
-        : current;
+          ? val
+          : current;
       return acc;
     }, {});
 
@@ -172,11 +176,12 @@ export class SettingsViewModel extends Observable {
     let f;
     const filesToDownload = [];
     for (f of Object.values(filesToCheck)) {
-      const savedVersion = ApplicationSettings.getNumber(
+      const savedVersion = parseFloat(ApplicationSettings.getNumber(
         `${f._filename}_version`,
         0.0
-      );
+      ).toFixed(5));
       if (savedVersion < f._version) {
+        sentryBreadCrumb(`Device needs to download ${f._filename} ${savedVersion} -> ${f._version}`);
         // need to download this one so put into the array
         filesToDownload.push(f);
       }
@@ -193,10 +198,15 @@ export class SettingsViewModel extends Observable {
       // need to make sure the downloadUrl of the file uses `https` and not `http` to avoid IOExceptions
       const fileUrl = f._downloadURL.replace(/^http:\/\//i, 'https://');
       await getFile(fileUrl, `${i18nPath}/${f._filename}`).catch(err => {
+        this._isDownloadingFiles = false;
         vb.closeModal();
         this._handleDownloadError(err);
       });
-      sentryBreadCrumb(`File: ${f._filename} download successful.`);
+      // handle the case that the file download failed - return early
+      // since we should have already closed the modal and updated the
+      // state
+      if (!this._isDownloadingFiles) return;
+      sentryBreadCrumb(`File: ${f._filename} download successful for ${f._version}`);
       // save the file version of the file to check when this function executes next time
       ApplicationSettings.setNumber(`${f._filename}_version`, f._version);
     }
@@ -207,6 +217,7 @@ export class SettingsViewModel extends Observable {
   }
 
   private _handleDownloadError(err) {
+    sentryBreadCrumb(`Error downloading files: ${err}`);
     Sentry.captureException(err);
     alert({
       title: L('failures.title'),
