@@ -118,7 +118,26 @@ export class SettingsViewModel extends Observable {
       sentryBreadCrumb(
         'No network connection available. Unable to download the translation files.'
       );
+      this._isDownloadingFiles = false;
       return;
+    }
+
+    // show the modal that blocks the user while we query the server
+    const page = Frame.topmost()?.currentPage;
+    let vb: ViewBase; // used as ref to close the modal after downloading is complete
+    if (page) {
+      vb = page.showModal('pages/modals/scanning/scanning', {
+        context: {
+          scanningText: L('settings.syncing-with-server')
+        },
+        closeCallback: () => {
+          this._isDownloadingFiles = false;
+          Log.D('Scanning modal closed after translation file downloads.');
+        },
+        animated: false,
+        fullscreen: true,
+        cancelable: false
+      });
     }
 
     // "~/assets/i18n" path to save the files when downloaded with http.getFile()
@@ -127,8 +146,6 @@ export class SettingsViewModel extends Observable {
       'assets',
       'i18n'
     );
-
-    let vb: ViewBase; // used as ref to close the modal after downloading is complete
 
     // get the current default language to ensure we query for the correct translation
     const defaultLang = getDefaultLang();
@@ -146,8 +163,8 @@ export class SettingsViewModel extends Observable {
       acc[_filename] = !current
         ? val
         : val._version > current._version
-          ? val
-          : current;
+        ? val
+        : current;
       return acc;
     }, {});
 
@@ -156,7 +173,8 @@ export class SettingsViewModel extends Observable {
     const filesToDownload = [];
     for (f of Object.values(filesToCheck)) {
       const savedVersion = ApplicationSettings.getNumber(
-        `${f._filename}_version`, 0.0
+        `${f._filename}_version`,
+        0.0
       );
       if (savedVersion < f._version) {
         // need to download this one so put into the array
@@ -166,24 +184,9 @@ export class SettingsViewModel extends Observable {
 
     if (filesToDownload.length <= 0) {
       sentryBreadCrumb('Device already has the latest translation files.');
+      vb.closeModal();
+      this._isDownloadingFiles = false;
       return; // at this point we have the latest files
-    }
-
-    // show the modal that blocks the user while the files are actually being downloaded
-    const page = Frame.topmost()?.currentPage;
-    if (page) {
-      vb = page.showModal('pages/modals/scanning/scanning', {
-        context: {
-          scanningText: L('settings.syncing-with-server')
-        },
-        closeCallback: () => {
-          this._isDownloadingFiles = false;
-          Log.D('Scanning modal closed after translation file downloads.');
-        },
-        animated: false,
-        fullscreen: true,
-        cancelable: false
-      });
     }
 
     for (f of filesToDownload) {
