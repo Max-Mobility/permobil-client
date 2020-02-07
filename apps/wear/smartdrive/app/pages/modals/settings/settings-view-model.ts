@@ -146,8 +146,8 @@ export class SettingsViewModel extends Observable {
       acc[_filename] = !current
         ? val
         : val._version > current._version
-        ? val
-        : current;
+          ? val
+          : current;
       return acc;
     }, {});
 
@@ -156,7 +156,7 @@ export class SettingsViewModel extends Observable {
     const filesToDownload = [];
     for (f of Object.values(filesToCheck)) {
       const savedVersion = ApplicationSettings.getNumber(
-        `${f._filename}_version`
+        `${f._filename}_version`, 0.0
       );
       if (savedVersion < f._version) {
         // need to download this one so put into the array
