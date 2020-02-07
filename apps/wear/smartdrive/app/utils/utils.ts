@@ -6,13 +6,30 @@ import { WearOsLayout } from 'nativescript-wear-os';
 
 declare const com: any;
 
-export function isNetworkAvailable() {
+export function isNetworkAvailable(minBandwidthKbps?: number) {
   let isAvailable = false;
   const networkManager = application.android.context.getSystemService(
     android.content.Context.CONNECTIVITY_SERVICE
   );
-  const networkInfo = networkManager.getActiveNetworkInfo();
+  const activeNetwork = networkManager.getActiveNetwork();
+  const networkInfo = networkManager.getNetworkInfo(activeNetwork);
   isAvailable = networkInfo !== null && networkInfo.isConnected();
+  if (minBandwidthKbps) {
+    const wifiManager = application.android.context.getSystemService(
+      android.content.Context.WIFI_SERVICE
+    );
+    const wifiInfo = wifiManager.getConnectionInfo();
+    const currentNetworkSpeedMbps = wifiInfo.getLinkSpeed()
+    isAvailable = isAvailable && (currentNetworkSpeedMbps * 1024) >= minBandwidthKbps;
+    /* keeping this here in case we decide to move back to it
+    const networkCapabilities = networkManager.getNetworkCapabilities(activeNetwork);
+    const downloadKbps = networkCapabilities.getLinkDownstreamBandwidthKbps();
+    console.log('signalStrength', networkCapabilities.getSignalStrength());
+    console.log('uploadKbps', networkCapabilities.getLinkUpstreamBandwidthKbps());
+    console.log('downloadKbps', downloadKbps);
+    isAvailable = isAvailable && downloadKbps >= minBandwidthKbps;
+    */
+  }
   return isAvailable;
 }
 
@@ -30,7 +47,8 @@ export function getActiveNetworkInfo(
     android.content.Context.CONNECTIVITY_SERVICE
   );
   if (cm != null) {
-    networkInfo = cm.getActiveNetworkInfo();
+    const activeNetwork = cm.getActiveNetwork();
+    networkInfo = cm.getNetworkInfo(activeNetwork);
   }
   return networkInfo;
 }
