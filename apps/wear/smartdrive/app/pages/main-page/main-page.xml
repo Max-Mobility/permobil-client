@@ -28,13 +28,13 @@
       </GridLayout>
     </wol:WearOsLayout>
 
-    <ScrollView loaded="{{ onScrollViewLoaded }}" visibility="{{ isAmbient, !isAmbient ? 'visible':'collapsed' }}" isScrollEnabled="{{ !powerAssistActive && !isTraining }}">
+    <ScrollView loaded="{{ onScrollViewLoaded }}" visibility="{{ isAmbient, !isAmbient ? 'visible':'collapsed' }}" isScrollEnabled="{{ !(powerAssistActive || isTraining) }}">
       <StackLayout>
         // Activate Power Assist Screen
         <wol:WearOsLayout disableInsetConstraint="true" width="{{ screenWidth }}" height="{{ screenHeight }}">
           <GridLayout rows="32, auto, *" columns="*, auto, *">
             // Power Assist Circle
-            <nac:AnimatedCircle id="powerAssistCircle" rowSpan="3" colSpan="3" class="powerAssistCircle" width="100%" height="100%" animated="true" animateFrom="0" rimColor="{{ powerAssistRingColor }}" barColor="{{ powerAssistRingColor }}" clockwise="true" rimWidth="12" progress="100" visibility="{{ ((powerAssistActive || isTraining) && !hasTapped) ? 'visible':'collapsed' }}">
+            <nac:AnimatedCircle id="powerAssistCircle" rowSpan="3" colSpan="3" class="powerAssistCircle" width="100%" height="100%" animated="true" animateFrom="0" rimColor="{{ powerAssistRingColor }}" barColor="{{ powerAssistRingColor }}" clockwise="true" rimWidth="12" progress="100" visibility="{{ (!(powerAssistActive || isTraining) || hasTapped) ? 'collapsed':'visible' }}">
             </nac:AnimatedCircle>
             // Tap indication circle
             <nac:AnimatedCircle id="tapCircle" rowSpan="3" colSpan="3" class="tapCircle" width="100%" height="100%" rimWidth="12" progress="100" animated="true" animateFrom="0" visibility="{{ hasTapped ? 'visible':'collapsed' }}">
@@ -56,9 +56,8 @@
                 <Label class="topValue" horizontalAlignment="center" textWrap="true" text="{{ currentSpeedDisplay }}"/>
                 <ui:AutoFitText class="topValueDescription" text="{{ currentSpeedDescription }}"/>
               </StackLayout>
-              <Button row="3" col="1" class="{{ (disableWearCheck || watchBeingWorn) ? 'powerAssist-deactive':'powerAssist-disabled' }}" height="100%" width="100%" margin="20" padding="0" text="{{ L('power-assist.activate') }}" tap="{{ enablePowerAssist }}" visibility="{{ (!powerAssistActive && !isTraining) ? 'visible':'collapsed' }}"/>
-              <Button row="3" col="1" class="powerAssist-active" text="{{ L('power-assist.deactivate') }}" tap="{{ disablePowerAssist }}" height="100%" width="100%" margin="20" padding="0" visibility="{{ (powerAssistActive && !motorOn) ? 'visible':'collapsed' }}"/>
-              <Button row="3" col="1" class="powerAssist-active" height="100%" width="100%" margin="20" padding="0" text="{{ L('power-assist.stop') }}" tap="{{ stopSmartDrive }}" visibility="{{ motorOn ? 'visible':'collapsed' }}"/>
+              <Button row="3" col="1" class="{{ (disableWearCheck || watchBeingWorn) ? 'powerAssist-deactive':'powerAssist-disabled' }}" height="100%" width="100%" margin="20" padding="0" text="{{ L('power-assist.activate') }}" tap="{{ enablePowerAssist }}" visibility="{{ (powerAssistActive || isTraining) ? 'collapsed':'visible' }}"/>
+              <Button row="3" col="1" class="powerAssist-active" text="{{ L('power-assist.deactivate') }}" tap="{{ disablePowerAssist }}" height="100%" width="100%" margin="20" padding="0" visibility="{{ powerAssistActive ? 'visible':'collapsed' }}"/>
               <Button row="3" col="1" class="powerAssist-training" height="100%" width="100%" margin="20" padding="0" text="{{ L('power-assist.exit-training') }}" tap="{{ onExitTrainingModeTap }}" visibility="{{ isTraining ? 'visible':'collapsed' }}" />
               <StackLayout row="4" col="1" rowSpan="2" tap="{{ toggleTimeDisplay }}" visibility="{{ displayTime ? 'visible':'collapsed' }}">
                 <Label class="currentTime" text="{{ currentTime }}" textWrap="true"/>
