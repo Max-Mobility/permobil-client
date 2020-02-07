@@ -113,15 +113,15 @@
   },
   "devDependencies": {
     "node-fetch": "~2.6.0",
-    "node-sass": "~4.13.0",
+    "node-sass": "~4.13.1",
     "prettier": "^1.19.1",
-    "husky": "^4.0.10",
+    "husky": "^4.2.1",
     "prompt": "^1.0.0",
-    "lint-staged": "^9.5.0",
-    "rimraf": "~3.0.0",
+    "lint-staged": "^10.0.7",
+    "rimraf": "~3.0.1",
     "tns-platform-declarations": "~6.3.2",
-    "tslint": "~5.20.1",
-    "typescript": "~3.7.4"
+    "tslint": "~6.0.0",
+    "typescript": "~3.7.5"
   },
   "husky": {
     "hooks": {

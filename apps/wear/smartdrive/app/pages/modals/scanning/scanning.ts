@@ -12,5 +12,10 @@ export async function onShownModally(args: ShownModallyData) {
   Log.D('scanning-page onShownModally');
   const page = args.object as Page;
   page.bindingContext = fromObject(data);
-  page.bindingContext.set('scanningText', data.message);
+
+  if (args.context?.scanningText) {
+    page.bindingContext.set('scanningText', args.context.scanningText);
+  } else {
+    page.bindingContext.set('scanningText', data.message);
+  }
 }

@@ -1,13 +1,14 @@
 import { device } from '@nativescript/core/platform';
+import { KinveyService } from '@permobil/nativescript/src/services/kinvey.service';
 import { Injectable } from 'injection-js';
 import * as LS from 'nativescript-localstorage';
-import { KinveyService } from '../../../../../@permobil/nativescript/src/services/kinvey.service';
 
 @Injectable()
 export class SmartDriveKinveyService extends KinveyService {
   // for backwards compatibility - see:
   // https://github.com/Max-Mobility/permobil-client/issues/661
-  private static OldUserStorageKey: string = 'com.permobil.smartdrive.wearos.user.data';
+  private static OldUserStorageKey: string =
+    'com.permobil.smartdrive.wearos.user.data';
 
   constructor() {
     super();
@@ -65,5 +66,22 @@ export class SmartDriveKinveyService extends KinveyService {
       response = await this.put(KinveyService.api_settings_db, settings, id);
     else response = await this.post(KinveyService.api_settings_db, settings);
     return response;
+  }
+
+  async downloadTranslationFiles(currentLanguage) {
+    let response = null;
+    const query = {
+      $or: [{ _filename: 'en.json' }, { _filename: `${currentLanguage}.json` }],
+      app_name: 'smartdrive_wear',
+      translation_file: true
+    };
+
+    try {
+      // NOTE: This kinvey service function *DOES NOT REQUIRE USER AUTHENTICATION*, so we don't need to check
+      response = await this.getFile(undefined, query);
+      return response;
+    } catch (err) {
+      throw new Error(`Error downloading translation files: ${err}`);
+    }
   }
 }
