@@ -344,7 +344,8 @@ export class MainViewModel extends Observable {
     const btn = args.object;
     const option: ShowModalOptions = {
       context: {
-        settingsService: this._settingsService
+        settingsService: this._settingsService,
+        sdKinveyService: this._kinveyService
       },
       closeCallback: () => {
         this._showingModal = false;

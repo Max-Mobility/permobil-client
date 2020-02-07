@@ -1,7 +1,7 @@
 import * as TNS_HTTP from '@nativescript/core/http';
 import { Log } from '@permobil/core/src';
+import { APP_KEY } from '@permobil/nativescript';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { APP_KEY } from './kinvey-keys';
 
 const BASE_URL = `https://baas.kinvey.com/appdata/${APP_KEY}/`;
 
