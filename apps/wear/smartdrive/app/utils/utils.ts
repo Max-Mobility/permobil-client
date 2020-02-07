@@ -19,7 +19,7 @@ export function isNetworkAvailable(minBandwidthKbps?: number) {
       android.content.Context.WIFI_SERVICE
     );
     const wifiInfo = wifiManager.getConnectionInfo();
-    const currentNetworkSpeedMbps = wifiInfo.getLinkSpeed()
+    const currentNetworkSpeedMbps = wifiInfo.getLinkSpeed();
     isAvailable = isAvailable && (currentNetworkSpeedMbps * 1024) >= minBandwidthKbps;
     /* keeping this here in case we decide to move back to it
     const networkCapabilities = networkManager.getNetworkCapabilities(activeNetwork);
