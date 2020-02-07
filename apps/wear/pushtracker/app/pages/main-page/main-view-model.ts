@@ -145,7 +145,7 @@ export class MainViewModel extends Observable {
     sentryBreadCrumb('onMainPageLoaded');
     try {
       // apply theme
-      this._applyTheme('default');
+      applyTheme('default');
     } catch (err) {
       Sentry.captureException(err);
       Log.E('theme on startup error:', err);
@@ -193,7 +193,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(this.ANDROID_MARKET_SMARTDRIVE_URI));
     application.android.foregroundActivity.startActivity(intent);
@@ -625,7 +625,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
         // and return true letting the caller know we got the permissions
@@ -645,11 +645,6 @@ export class MainViewModel extends Observable {
     this.kinveyService.watch_serial_number = watchSerialNumber;
   }
 
-  private _applyTheme(theme?: string) {
-    // apply theme
-    applyTheme(theme);
-  }
-
   /**
    * Application lifecycle event handlers
    */
@@ -657,14 +652,14 @@ export class MainViewModel extends Observable {
     // handle ambient mode callbacks
     application.on('enterAmbient', () => {
       sentryBreadCrumb('*** enterAmbient ***');
-      this._applyTheme('ambient');
+      applyTheme('ambient');
     });
 
-    application.on('updateAmbient', () => { });
+    application.on('updateAmbient', () => {});
 
     application.on('exitAmbient', () => {
       sentryBreadCrumb('*** exitAmbient ***');
-      this._applyTheme('default');
+      applyTheme('default');
     });
 
     // Activity lifecycle event handlers
@@ -937,7 +932,7 @@ export class MainViewModel extends Observable {
     this.currentPushCountDisplay = this.currentPushCount.toFixed(0);
   }
 
-  private _updateSpeedDisplay() { }
+  private _updateSpeedDisplay() {}
 
   /**
    * SmartDrive Associated App Functions
