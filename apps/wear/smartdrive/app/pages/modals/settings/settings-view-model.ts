@@ -1,7 +1,7 @@
 import { ApplicationSettings, Frame, knownFolders, Observable, Page, path, ShowModalOptions, ViewBase } from '@nativescript/core';
 import { getFile } from '@nativescript/core/http';
 import { Device, Log } from '@permobil/core';
-import { getDefaultLang, L, Prop } from '@permobil/nativescript';
+import { getDefaultLang, L, performance, Prop } from '@permobil/nativescript';
 import { Sentry } from 'nativescript-sentry';
 import { WatchSettings } from '../../../models';
 import { SettingsService, SmartDriveKinveyService } from '../../../services';
@@ -29,6 +29,8 @@ export class SettingsViewModel extends Observable {
     sdKinveyService: SmartDriveKinveyService
   ) {
     super();
+    performance.now('settings vm constructor');
+
     this._settingsService = settingsService;
     this._settingsService.loadSettings();
     this._SDKinveyService = sdKinveyService;
@@ -46,6 +48,8 @@ export class SettingsViewModel extends Observable {
     // when the user opens the settings we are going to download the translation files and store them if needed
     // @link - https://github.com/Max-Mobility/permobil-client/issues/658
     this._downloadTranslationFiles();
+
+    performance.now('settings vm constructor');
   }
 
   onChangeSettingsItemTap(args) {
@@ -167,8 +171,8 @@ export class SettingsViewModel extends Observable {
       acc[_filename] = !current
         ? val
         : val._version > current._version
-          ? val
-          : current;
+        ? val
+        : current;
       return acc;
     }, {});
 
@@ -176,12 +180,13 @@ export class SettingsViewModel extends Observable {
     let f;
     const filesToDownload = [];
     for (f of Object.values(filesToCheck)) {
-      const savedVersion = parseFloat(ApplicationSettings.getNumber(
-        `${f._filename}_version`,
-        0.0
-      ).toFixed(5));
+      const savedVersion = parseFloat(
+        ApplicationSettings.getNumber(`${f._filename}_version`, 0.0).toFixed(5)
+      );
       if (savedVersion < f._version) {
-        sentryBreadCrumb(`Device needs to download ${f._filename} ${savedVersion} -> ${f._version}`);
+        sentryBreadCrumb(
+          `Device needs to download ${f._filename} ${savedVersion} -> ${f._version}`
+        );
         // need to download this one so put into the array
         filesToDownload.push(f);
       }
@@ -206,7 +211,9 @@ export class SettingsViewModel extends Observable {
       // since we should have already closed the modal and updated the
       // state
       if (!this._isDownloadingFiles) return;
-      sentryBreadCrumb(`File: ${f._filename} download successful for ${f._version}`);
+      sentryBreadCrumb(
+        `File: ${f._filename} download successful for ${f._version}`
+      );
       // save the file version of the file to check when this function executes next time
       ApplicationSettings.setNumber(`${f._filename}_version`, f._version);
     }

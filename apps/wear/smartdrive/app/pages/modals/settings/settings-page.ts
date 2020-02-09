@@ -1,5 +1,6 @@
 import { Page, ShownModallyData } from '@nativescript/core';
 import { Log } from '@permobil/core';
+import { performance } from '@permobil/nativescript/src';
 import { SettingsService, SmartDriveKinveyService } from '../../../services';
 import { SettingsViewModel } from './settings-view-model';
 
@@ -11,6 +12,8 @@ export function onCloseTap() {
 }
 
 export function onShownModally(args: ShownModallyData) {
+  performance.now('settings onShownModally');
+
   Log.D('settings onShownModally');
   const page = args.object as Page;
   const settingsService = args.context.settingsService as SettingsService;
@@ -28,4 +31,6 @@ export function onShownModally(args: ShownModallyData) {
     data,
     sdKinveyService
   );
+
+  performance.now('settings onShownModally');
 }

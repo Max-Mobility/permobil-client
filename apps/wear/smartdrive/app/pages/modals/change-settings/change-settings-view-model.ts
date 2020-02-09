@@ -1,6 +1,6 @@
-import { Device, Log } from '@permobil/core';
-import { L, Prop } from '@permobil/nativescript';
 import { Observable, Page } from '@nativescript/core';
+import { Device, Log } from '@permobil/core';
+import { L, performance, Prop } from '@permobil/nativescript';
 import { WatchSettings } from '../../../models';
 
 export class ChangeSettingsViewModel extends Observable {
@@ -21,6 +21,8 @@ export class ChangeSettingsViewModel extends Observable {
   constructor(page: Page, data, closeCallback) {
     super();
 
+    performance.now('change settings vm constructor');
+
     // copy the settings into temporary storage
     this.tempSettings.copy(data.settings);
     this.tempSwitchControlSettings.copy(data.switchControlSettings);
@@ -34,6 +36,8 @@ export class ChangeSettingsViewModel extends Observable {
     this._updateSettingsValueDisplay();
     // save the close callback to bind to buttons
     this._closeCallback = closeCallback;
+
+    performance.now('change settings vm constructor');
   }
 
   onIncreaseSettingsTap() {
