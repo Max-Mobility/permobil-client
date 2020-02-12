@@ -24,13 +24,8 @@ var modalMap = new Map();
 var TouchListener;
 var DialogFragment;
 
+// enables us to call the theme in the modal creation (perf++) https://github.com/Max-Mobility/permobil-client/issues/749
 var swipeTheme = com.permobil.smartdrive.wearos.R.style.SwipeableActivityTheme;
-
-function performanceNow(label) {
-  console.log(
-    `${label ? label + ': ' : ''}${java.lang.System.nanoTime() / 1000000}`
-  );
-}
 
 function initializeTouchListener() {
   if (TouchListener) {
@@ -104,7 +99,6 @@ function initializeDialogFragment() {
       return global.__native(_this);
     }
     DialogFragmentImpl.prototype.onCreateDialog = function(savedInstanceState) {
-      performanceNow('onCreateDialog');
       var ownerId = this.getArguments().getInt(DOMID);
       var options = getModalOptions(ownerId);
       if (!options) {
@@ -128,9 +122,6 @@ function initializeDialogFragment() {
 
       var theme = this.getTheme();
 
-      // BRAD - note to self: this seems to be where the biggest slow down is in modal creation on SD.W
-      // grabbing the theme should be instant for the swipe theme, right now it's disabled bc we commented out the setters above for the `this.` members
-      // for the options
       if (this._cancelable) {
         // for swipe dismiss modals on WearOS apps
         theme = swipeTheme;
@@ -152,7 +143,6 @@ function initializeDialogFragment() {
         dialog.getWindow().setWindowAnimations(styleAnimationDialog);
       }
       dialog.setCanceledOnTouchOutside(this._cancelable);
-      performanceNow('onCreateDialog');
       return dialog;
     };
     DialogFragmentImpl.prototype.onCreateView = function(
