@@ -107,8 +107,6 @@ function initializeDialogFragment() {
         );
         return;
       }
-
-      // slow down might be in here
       this.owner = options.owner;
       this.owner._dialogFragment = this;
       this._fullscreen = options.fullscreen;
@@ -117,20 +115,15 @@ function initializeDialogFragment() {
       this._stretched = options.stretched;
       this._dismissCallback = options.dismissCallback;
       this._shownCallback = options.shownCallback;
-
       this.setStyle(androidx.fragment.app.DialogFragment.STYLE_NO_TITLE, 0);
-
       var theme = this.getTheme();
-
       if (this._cancelable) {
         // for swipe dismiss modals on WearOS apps
         theme = swipeTheme;
       } else if (this._fullscreen) {
         theme = this.getActivity().getApplicationInfo().theme;
       }
-
       var dialog = new DialogImpl(this, this.getActivity(), theme);
-
       if (!this._fullscreen && !this._stretched) {
         this.owner.horizontalAlignment = 'center';
         this.owner.verticalAlignment = 'middle';
@@ -138,7 +131,6 @@ function initializeDialogFragment() {
         this.owner.horizontalAlignment = 'stretch';
         this.owner.verticalAlignment = 'stretch';
       }
-
       if (this._animated) {
         dialog.getWindow().setWindowAnimations(styleAnimationDialog);
       }
@@ -171,7 +163,6 @@ function initializeDialogFragment() {
       if (owner && !owner.isLoaded) {
         owner.callLoaded();
       }
-
       this._shownCallback();
     };
     DialogFragmentImpl.prototype.onDismiss = function(dialog) {
@@ -201,7 +192,6 @@ function initializeDialogFragment() {
   })(androidx.fragment.app.DialogFragment);
   DialogFragment = DialogFragmentImpl;
 }
-
 function saveModal(options) {
   modalMap.set(options.owner._domId, options);
 }
@@ -560,7 +550,6 @@ var View = (function(_super) {
     initializeDialogFragment();
     var df = new DialogFragment();
     var args = new android.os.Bundle();
-
     args.putInt(DOMID, this._domId);
     df.setArguments(args);
     var cancelable = true;
@@ -585,12 +574,9 @@ var View = (function(_super) {
         return _this.closeModal();
       }
     };
-
     saveModal(dialogOptions);
-
     this._dialogFragment = df;
     this._raiseShowingModallyEvent();
-
     this._dialogFragment.show(
       parent._getRootFragmentManager(),
       this._domId.toString()
