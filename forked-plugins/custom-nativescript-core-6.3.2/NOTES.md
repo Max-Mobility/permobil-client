@@ -20,9 +20,10 @@ if (!options) {
 - Adds a custom android THEME to modals for allowing WearOS swipe back UX
 
 ```javascript
+var swipeTheme = com.permobil.smartdrive.wearos.R.style.SwipeableActivityTheme; // line ~28
 if (this._cancelable) {
   // for swipe dismiss modals on WearOS apps
-  theme = com.permobil.smartdrive.wearos.R.style.SwipeableActivityTheme;
+  theme = swipeTheme;
 } else if (this._fullscreen) {
   theme = this.getActivity().getApplicationInfo().theme;
 }

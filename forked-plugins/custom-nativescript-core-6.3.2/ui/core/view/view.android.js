@@ -23,6 +23,10 @@ var sdkVersion = lazy_1.default(function() {
 var modalMap = new Map();
 var TouchListener;
 var DialogFragment;
+
+// enables us to call the theme in the modal creation (perf++) https://github.com/Max-Mobility/permobil-client/issues/749
+var swipeTheme = com.permobil.smartdrive.wearos.R.style.SwipeableActivityTheme;
+
 function initializeTouchListener() {
   if (TouchListener) {
     return;
@@ -96,7 +100,6 @@ function initializeDialogFragment() {
     }
     DialogFragmentImpl.prototype.onCreateDialog = function(savedInstanceState) {
       var ownerId = this.getArguments().getInt(DOMID);
-      console.log('onCreateDialog ownerId:' + ownerId);
       var options = getModalOptions(ownerId);
       if (!options) {
         console.log(
@@ -116,7 +119,7 @@ function initializeDialogFragment() {
       var theme = this.getTheme();
       if (this._cancelable) {
         // for swipe dismiss modals on WearOS apps
-        theme = com.permobil.smartdrive.wearos.R.style.SwipeableActivityTheme;
+        theme = swipeTheme;
       } else if (this._fullscreen) {
         theme = this.getActivity().getApplicationInfo().theme;
       }
