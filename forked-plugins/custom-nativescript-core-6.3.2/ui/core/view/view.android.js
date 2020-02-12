@@ -24,6 +24,8 @@ var modalMap = new Map();
 var TouchListener;
 var DialogFragment;
 
+var swipeTheme = com.permobil.smartdrive.wearos.R.style.SwipeableActivityTheme;
+
 function performanceNow(label) {
   console.log(
     `${label ? label + ': ' : ''}${java.lang.System.nanoTime() / 1000000}`
@@ -66,8 +68,6 @@ function initializeDialogFragment() {
     return;
   }
   var DialogImpl = (function(_super) {
-    performanceNow('initializeDialogFragment.DialogImpl');
-
     __extends(DialogImpl, _super);
     function DialogImpl(fragment, context, themeResId) {
       var _this = _super.call(this, context, themeResId) || this;
@@ -95,7 +95,6 @@ function initializeDialogFragment() {
         _super.prototype.onBackPressed.call(this);
       }
     };
-    performanceNow('initializeDialogFragment.DialogImpl');
     return DialogImpl;
   })(android.app.Dialog);
   var DialogFragmentImpl = (function(_super) {
@@ -107,68 +106,48 @@ function initializeDialogFragment() {
     DialogFragmentImpl.prototype.onCreateDialog = function(savedInstanceState) {
       performanceNow('onCreateDialog');
       var ownerId = this.getArguments().getInt(DOMID);
-      console.log('onCreateDialog ownerId:' + ownerId);
-
-      performanceNow('getModalOptions');
       var options = getModalOptions(ownerId);
-      performanceNow('getModalOptions');
-
       if (!options) {
         console.log(
           "The options are null for the `onCreateDialog` method so we can't show the dialog"
         );
         return;
       }
-      performanceNow('setting the options');
 
       // slow down might be in here
       this.owner = options.owner;
-
-      performanceNow('setting the _dialogFragment');
       this.owner._dialogFragment = this;
-      performanceNow('setting the _dialogFragment');
-
-      // this._fullscreen = options.fullscreen;
-      // this._animated = options.animated;
-      // this._cancelable = options.cancelable;
-      // this._stretched = options.stretched;
+      this._fullscreen = options.fullscreen;
+      this._animated = options.animated;
+      this._cancelable = options.cancelable;
+      this._stretched = options.stretched;
       this._dismissCallback = options.dismissCallback;
       this._shownCallback = options.shownCallback;
 
-      performanceNow('setStyle');
       this.setStyle(androidx.fragment.app.DialogFragment.STYLE_NO_TITLE, 0);
-      performanceNow('setStyle');
 
-      performanceNow('getting theme for dialog');
       var theme = this.getTheme();
-      performanceNow('getting theme for dialog');
-
-      performanceNow('setting the options');
 
       // BRAD - note to self: this seems to be where the biggest slow down is in modal creation on SD.W
       // grabbing the theme should be instant for the swipe theme, right now it's disabled bc we commented out the setters above for the `this.` members
       // for the options
       if (this._cancelable) {
         // for swipe dismiss modals on WearOS apps
-        theme = com.permobil.smartdrive.wearos.R.style.SwipeableActivityTheme;
+        theme = swipeTheme;
       } else if (this._fullscreen) {
-        performanceNow('this._fullscreen');
         theme = this.getActivity().getApplicationInfo().theme;
-        performanceNow('this._fullscreen');
       }
 
-      performanceNow('new DialogImpl');
       var dialog = new DialogImpl(this, this.getActivity(), theme);
-      performanceNow('new DialogImpl');
 
-      console.log('dialog', dialog);
-      // if (!this._fullscreen && !this._stretched) {
-      //   this.owner.horizontalAlignment = 'center';
-      //   this.owner.verticalAlignment = 'middle';
-      // } else {
-      this.owner.horizontalAlignment = 'stretch';
-      this.owner.verticalAlignment = 'stretch';
-      // }
+      if (!this._fullscreen && !this._stretched) {
+        this.owner.horizontalAlignment = 'center';
+        this.owner.verticalAlignment = 'middle';
+      } else {
+        this.owner.horizontalAlignment = 'stretch';
+        this.owner.verticalAlignment = 'stretch';
+      }
+
       if (this._animated) {
         dialog.getWindow().setWindowAnimations(styleAnimationDialog);
       }
@@ -181,19 +160,14 @@ function initializeDialogFragment() {
       container,
       savedInstanceState
     ) {
-      performanceNow('DialogFragmentImpl.onCreateView');
       var owner = this.owner;
       owner._setupAsRootView(this.getActivity());
       owner._isAddedToNativeVisualTree = true;
-      performanceNow('DialogFragmentImpl.onCreateView');
       return owner.nativeViewProtected;
     };
     DialogFragmentImpl.prototype.onStart = function() {
       _super.prototype.onStart.call(this);
-      performanceNow('DialogFragmentImpl.onStart');
       if (this._fullscreen) {
-        performanceNow('DialogFragmentImpl.onStart _fullscreen');
-
         var window_1 = this.getDialog().getWindow();
         var length_1 = android.view.ViewGroup.LayoutParams.MATCH_PARENT;
         window_1.setLayout(length_1, length_1);
@@ -202,18 +176,13 @@ function initializeDialogFragment() {
             android.graphics.Color.WHITE
           )
         );
-        performanceNow('DialogFragmentImpl.onStart _fullscreen');
       }
       var owner = this.owner;
       if (owner && !owner.isLoaded) {
         owner.callLoaded();
       }
 
-      performanceNow('DialogFragmentImpl._shownCallback');
       this._shownCallback();
-      performanceNow('DialogFragmentImpl._shownCallback');
-
-      performanceNow('DialogFragmentImpl.onStart');
     };
     DialogFragmentImpl.prototype.onDismiss = function(dialog) {
       _super.prototype.onDismiss.call(this, dialog);
@@ -596,20 +565,11 @@ var View = (function(_super) {
     );
   };
   View.prototype._showNativeModalView = function(parent, options) {
-    performanceNow('_showNativeModalView');
     var _this = this;
     _super.prototype._showNativeModalView.call(this, parent, options);
-    performanceNow('initializeDialogFragment');
     initializeDialogFragment();
-    performanceNow('initializeDialogFragment');
-
-    performanceNow('DialogFragment');
     var df = new DialogFragment();
-    performanceNow('DialogFragment');
-
-    performanceNow('Bundle');
     var args = new android.os.Bundle();
-    performanceNow('Bundle');
 
     args.putInt(DOMID, this._domId);
     df.setArguments(args);
@@ -636,19 +596,15 @@ var View = (function(_super) {
       }
     };
 
-    performanceNow('performanceNow');
     saveModal(dialogOptions);
-    performanceNow('performanceNow');
 
     this._dialogFragment = df;
     this._raiseShowingModallyEvent();
 
-    performanceNow('show');
     this._dialogFragment.show(
       parent._getRootFragmentManager(),
       this._domId.toString()
     );
-    performanceNow('show');
   };
   View.prototype._hideNativeModalView = function(parent, whenClosedCallback) {
     var manager = this._dialogFragment.getFragmentManager();
