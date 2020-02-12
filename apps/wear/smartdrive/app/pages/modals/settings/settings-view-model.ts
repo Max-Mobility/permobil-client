@@ -1,7 +1,7 @@
 import { ApplicationSettings, Frame, knownFolders, Observable, Page, path, ShowModalOptions, ViewBase } from '@nativescript/core';
 import { getFile } from '@nativescript/core/http';
 import { Device, Log } from '@permobil/core';
-import { getDefaultLang, L, performance, Prop } from '@permobil/nativescript';
+import { getDefaultLang, L, Prop } from '@permobil/nativescript';
 import { Sentry } from 'nativescript-sentry';
 import { WatchSettings } from '../../../models';
 import { SettingsService, SmartDriveKinveyService } from '../../../services';
@@ -29,8 +29,6 @@ export class SettingsViewModel extends Observable {
     sdKinveyService: SmartDriveKinveyService
   ) {
     super();
-    performance.now('settings vm constructor');
-
     this._settingsService = settingsService;
     this._settingsService.loadSettings();
     this._SDKinveyService = sdKinveyService;
@@ -48,8 +46,6 @@ export class SettingsViewModel extends Observable {
     // when the user opens the settings we are going to download the translation files and store them if needed
     // @link - https://github.com/Max-Mobility/permobil-client/issues/658
     this._downloadTranslationFiles();
-
-    performance.now('settings vm constructor');
   }
 
   onChangeSettingsItemTap(args) {

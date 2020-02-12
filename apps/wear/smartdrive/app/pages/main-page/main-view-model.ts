@@ -8,7 +8,7 @@ import { AnimationCurve } from '@nativescript/core/ui/enums';
 import { ScrollView } from '@nativescript/core/ui/scroll-view';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
-import { getDefaultLang, L, performance, Prop } from '@permobil/nativescript';
+import { getDefaultLang, L, Prop } from '@permobil/nativescript';
 import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
@@ -358,9 +358,7 @@ export class MainViewModel extends Observable {
       fullscreen: true
     };
     this._showingModal = true;
-    performance.now('settings modal open');
     btn.showModal('pages/modals/settings/settings-page', option);
-    performance.now('settings modal open');
   }
 
   onAboutTap(args) {
@@ -390,9 +388,7 @@ export class MainViewModel extends Observable {
       fullscreen: true
     };
     this._showingModal = true;
-    performance.now('about modal open');
     btn.showModal('pages/modals/about/about', option);
-    performance.now('about modal open');
   }
 
   private _enablingTraining: boolean = false;
