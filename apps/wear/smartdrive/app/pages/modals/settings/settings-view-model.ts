@@ -1,6 +1,6 @@
 import { ApplicationSettings, Frame, knownFolders, Observable, Page, path, ShowModalOptions, ViewBase } from '@nativescript/core';
 import { getFile } from '@nativescript/core/http';
-import { Device, Log } from '@permobil/core';
+import { Device, Log, wait } from '@permobil/core';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';
 import { Sentry } from 'nativescript-sentry';
 import { WatchSettings } from '../../../models';
@@ -45,7 +45,9 @@ export class SettingsViewModel extends Observable {
 
     // when the user opens the settings we are going to download the translation files and store them if needed
     // @link - https://github.com/Max-Mobility/permobil-client/issues/658
-    this._downloadTranslationFiles();
+    wait(1000).then(() => {
+      this._downloadTranslationFiles();
+    });
   }
 
   onChangeSettingsItemTap(args) {
