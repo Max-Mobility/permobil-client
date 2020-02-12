@@ -27,6 +27,12 @@ var DialogFragment;
 // enables us to call the theme in the modal creation (perf++) https://github.com/Max-Mobility/permobil-client/issues/749
 var swipeTheme = com.permobil.smartdrive.wearos.R.style.SwipeableActivityTheme;
 
+function performanceNow(label) {
+  console.log(
+    `${label ? label + ': ' : ''}${java.lang.System.nanoTime() / 1000000}`
+  );
+}
+
 function initializeTouchListener() {
   if (TouchListener) {
     return;
@@ -99,6 +105,7 @@ function initializeDialogFragment() {
       return global.__native(_this);
     }
     DialogFragmentImpl.prototype.onCreateDialog = function(savedInstanceState) {
+      performanceNow('onCreateDialog');
       var ownerId = this.getArguments().getInt(DOMID);
       var options = getModalOptions(ownerId);
       if (!options) {
@@ -123,18 +130,23 @@ function initializeDialogFragment() {
       } else if (this._fullscreen) {
         theme = this.getActivity().getApplicationInfo().theme;
       }
+
+      performanceNow('newDialog');
       var dialog = new DialogImpl(this, this.getActivity(), theme);
-      if (!this._fullscreen && !this._stretched) {
-        this.owner.horizontalAlignment = 'center';
-        this.owner.verticalAlignment = 'middle';
-      } else {
-        this.owner.horizontalAlignment = 'stretch';
-        this.owner.verticalAlignment = 'stretch';
-      }
+      performanceNow('newDialog');
+
+      // if (!this._fullscreen && !this._stretched) {
+      this.owner.horizontalAlignment = 'center';
+      this.owner.verticalAlignment = 'middle';
+      // } else {
+      //   this.owner.horizontalAlignment = 'stretch';
+      //   this.owner.verticalAlignment = 'stretch';
+      // }
       if (this._animated) {
         dialog.getWindow().setWindowAnimations(styleAnimationDialog);
       }
       dialog.setCanceledOnTouchOutside(this._cancelable);
+      performanceNow('onCreateDialog');
       return dialog;
     };
     DialogFragmentImpl.prototype.onCreateView = function(
@@ -164,6 +176,7 @@ function initializeDialogFragment() {
         owner.callLoaded();
       }
       this._shownCallback();
+      performanceNow('showncallback');
     };
     DialogFragmentImpl.prototype.onDismiss = function(dialog) {
       _super.prototype.onDismiss.call(this, dialog);

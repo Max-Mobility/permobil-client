@@ -1,5 +1,13 @@
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
-import { Color, EventData, Frame, GridLayout, Observable, ShowModalOptions, StackLayout } from '@nativescript/core';
+import {
+  Color,
+  EventData,
+  Frame,
+  GridLayout,
+  Observable,
+  ShowModalOptions,
+  StackLayout
+} from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
@@ -8,7 +16,7 @@ import { AnimationCurve } from '@nativescript/core/ui/enums';
 import { ScrollView } from '@nativescript/core/ui/scroll-view';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
-import { getDefaultLang, L, Prop } from '@permobil/nativescript';
+import { getDefaultLang, L, performance, Prop } from '@permobil/nativescript';
 import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
@@ -20,9 +28,23 @@ import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
 import { Vibrate } from 'nativescript-vibrate';
 import { DataKeys } from '../../enums';
-import { Acceleration, SmartDrive, SmartDriveException, StoredAcceleration, TapDetector } from '../../models';
+import {
+  Acceleration,
+  SmartDrive,
+  SmartDriveException,
+  StoredAcceleration,
+  TapDetector
+} from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
-import { BluetoothService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SmartDriveKinveyService, SqliteService } from '../../services';
+import {
+  BluetoothService,
+  SensorChangedEventData,
+  SensorService,
+  SERVICES,
+  SettingsService,
+  SmartDriveKinveyService,
+  SqliteService
+} from '../../services';
 import { isNetworkAvailable, sentryBreadCrumb } from '../../utils';
 import { updatesViewModel } from '../modals/updates/updates-page';
 
@@ -336,12 +358,12 @@ export class MainViewModel extends Observable {
    * Main Menu Button Tap Handlers
    */
 
-  onSettingsTap(args) {
+  onSettingsTap() {
     if (this._showingModal) {
       sentryBreadCrumb('already showing modal, not showing settings');
       return;
     }
-    const btn = args.object;
+    // const btn = args.object;
     const option: ShowModalOptions = {
       context: {
         settingsService: this._settingsService,
@@ -354,11 +376,16 @@ export class MainViewModel extends Observable {
         this._updateSpeedDisplay();
         this._updateChartData();
       },
-      animated: false,
+      animated: true,
       fullscreen: true
     };
     this._showingModal = true;
-    btn.showModal('pages/modals/settings/settings-page', option);
+    performance.now('settings_modal');
+    Frame.topmost().currentPage.showModal(
+      'pages/modals/settings/settings-page',
+      option
+    );
+    performance.now('settings_modal');
   }
 
   onAboutTap(args) {
