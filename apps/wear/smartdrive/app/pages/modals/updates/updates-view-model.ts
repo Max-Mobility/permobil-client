@@ -90,6 +90,11 @@ export class UpdatesViewModel extends Observable {
 
   constructor() {
     super();
+    // debounced function to keep people from pressing it too frequently
+    this._debouncedCloseModal = debounce(this.closeModal, 500, {
+      leading: true,
+      trailing: false
+    });
   }
 
   get SmartDriveWakeLock() {
@@ -112,12 +117,6 @@ export class UpdatesViewModel extends Observable {
 
   async init() {
     sentryBreadCrumb('Updates-View-Model init.');
-
-    // debounced function to keep people from pressing it too frequently
-    this._debouncedCloseModal = debounce(this.closeModal, 500, {
-      leading: true,
-      trailing: false
-    });
 
     sentryBreadCrumb('Initializing WakeLock...');
     console.time('Init_SmartDriveWakeLock');
@@ -267,7 +266,7 @@ export class UpdatesViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => {});
+        await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
         this.updateSerialNumber();
       } catch (permissionsObj) {
@@ -747,6 +746,7 @@ export class UpdatesViewModel extends Observable {
 
     if (doCancelOta && this.smartDrive) {
       if (this._otaStarted) {
+        sentryBreadCrumb('Updates view model: ota was started, waiting for it to stop');
         await new Promise((resolve, reject) => {
           this.smartDrive.once(
             SmartDrive.smartdrive_ota_stopped_event,
@@ -755,7 +755,11 @@ export class UpdatesViewModel extends Observable {
           this.smartDrive.cancelOTA();
           setTimeout(resolve, 10000);
         });
+      } else {
+        sentryBreadCrumb('Updates view model: ota was not started');
       }
+    } else {
+      sentryBreadCrumb('Updates view model: no smartdrive or not told to cancel ota');
     }
     this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
       label: L('ota.action.close'),
