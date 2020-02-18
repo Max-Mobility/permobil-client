@@ -2,7 +2,7 @@
   "extends": "../wear_apps_tsconfig.json",
   "paths": {
     "@nativescript/core": [
-      "../../forked-plugins/custom-nativescript-core-6.3.2/*"
+      "../../../forked-plugins/custom-nativescript-core-6.3.2/*"
     ]
   }
 }
