@@ -13,7 +13,7 @@
     "ci.pt.w.android": "cd apps/wear/pushtracker && tns build android --env.uglify",
     "ci.sd.w.android": "cd apps/wear/smartdrive && tns build android --env.uglify",
     "*************************** /end GITHUB ACTIONS CI SPECIFIC SCRIPTS": "***************************",
-    "tslint": "tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\"  --exclude \"**/platforms/**\"  --exclude \"**/hooks/**\" --exclude \"**/typings/**\" --exclude \"**/*d.ts\"",
+    "tslint": "tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\"  --exclude \"**/platforms/**\"  --exclude \"**/hooks/**\" --exclude \"**/typings/**\" --exclude \"**/*d.ts\" --exclude \"**/forked-plugins/custom-nativescript-core-6.3.2/**\"",
     "global.installs": "npm i -g rimraf && npm i -g typescript",
     "pretty-baby": "prettier --write '@(apps|@permobil|forked-plugins)/**/*.@(scss|component.html|xml|ts|md|js|json)'",
     "*************************** SETUP": "***************************",
