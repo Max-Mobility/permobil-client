@@ -130,6 +130,7 @@ forked-plugins/custom-nativescript-core-6.3.2/node_modules
 forked-plugins/custom-nativescript-core-6.3.2/**/*.js
 
 ################################ DO NOT IGNORE ################################
+!forked-plugins/custom-nativescript-core-6.3.2/**/*.d.ts
 !forked-plugins/nativescript-bluetooth/base64.js
 !**/references.d.ts
 !**/typings/**/*.d.ts
