@@ -154,6 +154,7 @@ function initializeDialogFragment() {
       savedInstanceState: android.os.Bundle
     ): android.app.Dialog {
       perfNow('onCreateDialog');
+
       const ownerId = this.getArguments().getInt(DOMID);
       const options = getModalOptions(ownerId);
       if (!options) {
@@ -177,9 +178,7 @@ function initializeDialogFragment() {
       let theme = this.getTheme();
       if (this._cancelable) {
         // for swipe dismiss modals on WearOS apps
-        perfNow('set_swipe_theme');
         theme = swipeTheme;
-        perfNow('set_swipe_theme');
       } else if (this._fullscreen) {
         theme = this.getActivity().getApplicationInfo().theme;
       }
@@ -207,6 +206,7 @@ function initializeDialogFragment() {
 
       dialog.setCanceledOnTouchOutside(this._cancelable);
 
+      perfNow('onCreateDialog');
       return dialog;
     }
 

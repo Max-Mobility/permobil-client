@@ -1,40 +1,22 @@
 // Types
-import {
-    unsetValue, Style,
-    CssProperty, CssAnimationProperty,
-    ShorthandProperty, InheritedCssProperty,
-    makeValidator, makeParser
-} from "../core/properties";
-import {
-    Transformation,
-    TransformationValue,
-    TransformFunctionsInfo,
-} from "../animation/animation";
-
-import { dip, px, percent } from "../core/view";
-
 import { Color } from "../../color";
-import { Font, parseFont, FontStyle, FontWeight } from "./font";
-import { layout, hasDuplicates } from "../../utils/utils";
-import { Background } from "./background";
-import { isIOS } from "../../platform";
-
-import { radiansToDegrees } from "../../utils/number-utils";
-
-import {
-    decompose2DTransformMatrix,
-    getTransformMatrix,
-    matrixArrayToCssMatrix,
-    multiplyAffine2d,
-} from "../../matrix";
-import {
-    write as traceWrite,
-    categories as traceCategories,
-    messageType as traceMessageType,
-} from "../../trace";
-
 import * as parser from "../../css/parser";
+import { decompose2DTransformMatrix, getTransformMatrix, matrixArrayToCssMatrix, multiplyAffine2d } from "../../matrix";
+import { isIOS } from "../../platform";
+import { categories as traceCategories, messageType as traceMessageType, write as traceWrite } from "../../trace";
+import { radiansToDegrees } from "../../utils/number-utils";
+import { hasDuplicates, layout } from "../../utils/utils";
+import { Transformation, TransformationValue, TransformFunctionsInfo } from "../animation/animation";
+import { CssAnimationProperty, CssProperty, InheritedCssProperty, makeParser, makeValidator, ShorthandProperty, Style, unsetValue } from "../core/properties";
+import { dip, percent, px } from "../core/view";
+import { Background } from "./background";
+import { Font, FontStyle, FontWeight, parseFont } from "./font";
 import { LinearGradient } from "./linear-gradient";
+
+
+
+
+
 
 export type LengthDipUnit = { readonly unit: "dip", readonly value: dip };
 export type LengthPxUnit = { readonly unit: "px", readonly value: px };

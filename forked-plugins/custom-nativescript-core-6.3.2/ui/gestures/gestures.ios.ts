@@ -1,6 +1,6 @@
 // Definitions.
+import { GestureEventData, PanGestureEventData, PinchGestureEventData, RotationGestureEventData, SwipeGestureEventData } from ".";
 import { EventData, View } from "../core/view";
-import { GestureEventData, PanGestureEventData, PinchGestureEventData, RotationGestureEventData, SwipeGestureEventData } from "../gestures";
 // Types.
 import { GesturesObserverBase, GestureStateTypes, GestureTypes, SwipeDirection, toString, TouchAction } from "./gestures-common";
 

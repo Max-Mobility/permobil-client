@@ -1,5 +1,5 @@
-﻿import { CSSType, Property, View } from "../core/view";
-import { HtmlView as HtmlViewDefinition } from "../html-view";
+﻿import { HtmlView as HtmlViewDefinition } from ".";
+import { CSSType, Property, View } from "../core/view";
 
 export * from "../core/view";
 

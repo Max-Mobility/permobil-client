@@ -1,8 +1,8 @@
 // Types.
+import { Animation as AnimationBaseDefinition, CubicBezierAnimationCurve as CubicBezierAnimationCurveDefinition } from ".";
 // Requires.
 import { Color } from "../../color";
 import { categories as traceCategories, isEnabled as traceEnabled, messageType as traceType, write as traceWrite } from "../../trace";
-import { Animation as AnimationBaseDefinition, CubicBezierAnimationCurve as CubicBezierAnimationCurveDefinition } from "../animation";
 import { PercentLength } from "../styling/style-properties";
 import { AnimationDefinition, AnimationPromise as AnimationPromiseDefinition, Pair, PropertyAnimation } from "./animation-interfaces";
 

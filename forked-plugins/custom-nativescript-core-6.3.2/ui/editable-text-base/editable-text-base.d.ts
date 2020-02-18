@@ -57,7 +57,12 @@ export class EditableTextBase extends TextBase {
      */
     dismissSoftInput(): void;
 
-    
+    //@private
+    /**
+     * @private
+     */
+    public _setInputType(inputType: number): void;
+    //@endprivate
 }
 
 export type KeyboardType = "datetime" | "phone" | "number" | "url" | "email";
@@ -75,6 +80,11 @@ export const hintProperty: Property<EditableTextBase, string>;
 export const placeholderColorProperty: CssProperty<Style, Color>;
 export const maxLengthProperty: Property<EditableTextBase, number>;
 
-
+//@private
+/**
+ * @private
+ */
+export function _updateCharactersInRangeReplacementString(formattedText: FormattedString, rangeLocation: number, rangeLength: number, replacementString: string): void;
+//@endprivate
 
 export * from "../text-base";

@@ -112,8 +112,7 @@ tools/*.apks
 
 # project specifics
 ################################ IGNORE ################################
-forked-plugins/custom-nativescript-core-6.3.2/node_modules
-forked-plugins/custom-nativescript-core-6.3.2/**/*.js
+
 platforms/
 hooks/
 *~
@@ -127,6 +126,8 @@ package-lock.json
 nativescript-bluetooth/**/*.js
 apps/**/report/
 *.d.ts
+forked-plugins/custom-nativescript-core-6.3.2/node_modules
+forked-plugins/custom-nativescript-core-6.3.2/**/*.js
 
 ################################ DO NOT IGNORE ################################
 !forked-plugins/nativescript-bluetooth/base64.js

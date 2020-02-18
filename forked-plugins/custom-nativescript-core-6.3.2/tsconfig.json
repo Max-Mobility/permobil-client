@@ -12,7 +12,7 @@
     "diagnostics": true,
     "sourceMap": true,
     "lib": ["es6", "dom"],
-    "types": ["node"],
+    "types": ["node", "chai", "mocha"],
     "baseUrl": ".",
     "paths": {
       "@nativescript/core/*": ["nativescript-core/*"]

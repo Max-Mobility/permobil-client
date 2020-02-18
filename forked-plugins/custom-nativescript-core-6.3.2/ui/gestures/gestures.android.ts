@@ -1,9 +1,9 @@
 // Definitions.
+import { GestureEventData, PanGestureEventData, RotationGestureEventData, SwipeGestureEventData } from ".";
 import * as timer from "../../timer";
 // Import layout from utils directly to avoid circular references
 import { layout } from "../../utils/utils";
 import { EventData, View } from "../core/view";
-import { GestureEventData, PanGestureEventData, RotationGestureEventData, SwipeGestureEventData } from "../gestures";
 // Types.
 import { GesturesObserverBase, GestureStateTypes, GestureTypes, SwipeDirection, toString, TouchAction } from "./gestures-common";
 

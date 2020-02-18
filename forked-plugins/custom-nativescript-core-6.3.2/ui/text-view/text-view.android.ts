@@ -1,5 +1,5 @@
-﻿import { CSSType, EditableTextBase } from "../editable-text-base";
-import { TextView as TextViewDefinition } from "../text-view";
+﻿import { TextView as TextViewDefinition } from ".";
+import { EditableTextBase, CSSType } from "../editable-text-base";
 
 export * from "../text-base";
 

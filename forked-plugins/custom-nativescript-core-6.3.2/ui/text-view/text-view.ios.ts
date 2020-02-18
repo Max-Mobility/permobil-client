@@ -1,11 +1,17 @@
-import { profile } from "../../profiling";
-import { ios } from "../../utils/utils";
-import { borderBottomWidthProperty, borderLeftWidthProperty, borderRightWidthProperty, borderTopWidthProperty, Color, colorProperty, CSSType, editableProperty, EditableTextBase, hintProperty, layout, Length, paddingBottomProperty, paddingLeftProperty, paddingRightProperty, paddingTopProperty, placeholderColorProperty, textProperty, _updateCharactersInRangeReplacementString } from "../editable-text-base";
 import { ScrollEventData } from "../scroll-view";
-import { TextView as TextViewDefinition } from "../text-view";
+import { TextView as TextViewDefinition } from ".";
+import {
+    EditableTextBase, editableProperty, hintProperty, textProperty, colorProperty, placeholderColorProperty,
+    borderTopWidthProperty, borderRightWidthProperty, borderBottomWidthProperty, borderLeftWidthProperty,
+    paddingTopProperty, paddingRightProperty, paddingBottomProperty, paddingLeftProperty,
+    Length, _updateCharactersInRangeReplacementString, Color, layout,
+    CSSType
+} from "../editable-text-base";
 
 export * from "../editable-text-base";
 
+import { profile } from "../../profiling";
+import { ios } from "../../utils/utils";
 
 const majorVersion = ios.MajorVersion;
 
