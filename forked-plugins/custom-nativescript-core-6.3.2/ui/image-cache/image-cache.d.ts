@@ -102,7 +102,16 @@ export class Cache extends Observable {
      */
     on(event: "downloadError", callback: (args: DownloadError) => void, thisArg?: any);
 
-    
+    //@private
+    /**
+     * @private
+     */
+    _downloadCore(request: DownloadRequest);
+    /**
+     * @private
+     */
+    _onDownloadCompleted(key: string, image: any);
+    //@endprivate
     /**
      * @private
      */

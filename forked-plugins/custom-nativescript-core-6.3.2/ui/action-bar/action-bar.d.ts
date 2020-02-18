@@ -63,7 +63,16 @@ export class ActionBar extends View {
      */
     update();
 
-    
+    //@private
+    /**
+     * @private
+     */
+    _isEmpty(): boolean;
+    /**
+     * @private
+     */
+    _getActualSize?: { width: number, height: number };
+    //@endprivate
 }
 
 /**
@@ -136,7 +145,12 @@ export class ActionItem extends ViewBase {
      */
     on(event: "tap", callback: (args: EventData) => void);
 
-    
+    //@private
+    /**
+     * @private
+     */
+    _raiseTap(): void;
+    //@endprivate
 
     /**
      * Gets the iOS specific options of the action item.
@@ -242,7 +256,12 @@ export interface AndroidActionBarSettings {
  * Represents the navigation (a.k.a. "back") button.
  */
 export class NavigationButton extends ActionItem {
-    
+    //@private
+    /**
+     * @private
+     */
+    _navigationItem?: any
+    //@endprivate
 }
 
 /** @internal */

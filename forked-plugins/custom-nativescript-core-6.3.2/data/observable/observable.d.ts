@@ -151,7 +151,25 @@ export class Observable {
      */
     hasListeners(eventName: string): boolean;
 
-    
+    //@private
+    /**
+     * This method is intended to be overriden by inheritors to provide additional implementation.
+     * @private
+     */
+    _createPropertyChangeData(name: string, value: any, oldValue?: any): PropertyChangeData;
+
+    //@private
+    /**
+     * Filed to use instead of instanceof ViewBase.
+     * @private
+     */
+    public _isViewBase: boolean;
+
+    /**
+     * @private
+     */
+    _emit(eventNames: string);
+    //@endprivate
 }
 
 /**

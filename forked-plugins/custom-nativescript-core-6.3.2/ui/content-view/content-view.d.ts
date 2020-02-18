@@ -17,7 +17,15 @@ export class ContentView extends View implements AddChildFromBuilder {
      */
     content: View;
 
-    
+    //@private
+    /**
+     * Called when the content property has changed.
+     * @private
+     * @param oldView The previous content.
+     * @param newView The new content.
+     */
+    _onContentChanged(oldView: View, newView: View);
+    //@endprivate
 
     _addChildFromBuilder(name: string, value: any): void;
 

@@ -136,7 +136,24 @@ export class GridLayout extends LayoutBase {
      */
     public getRows(): Array<ItemSpec>;
 
-    
+    //@private
+    /**
+     * @private
+     */
+    public _onRowAdded(itemSpec: ItemSpec): void;
+    /**
+     * @private
+     */
+    public _onColumnAdded(itemSpec: ItemSpec): void;
+    /**
+     * @private
+     */
+    public _onRowRemoved(itemSpec: ItemSpec, index: number): void;
+    /**
+     * @private
+     */
+    public _onColumnRemoved(itemSpec: ItemSpec, index: number): void;
+    //@endprivate
 }
 
 /**

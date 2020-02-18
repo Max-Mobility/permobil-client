@@ -9,7 +9,15 @@ export * from "./mainthread-helper"
 export const RESOURCE_PREFIX: string;
 export const FILE_PREFIX: string;
 
-
+//@private
+/**
+ * Used by various android event listener implementations.
+ * @private
+ */
+interface Owned {
+    owner: any;
+}
+//@endprivate
 
 /**
  * Utility module related to layout.

@@ -2,6 +2,6 @@
  * @module "http/http-request"
  */ /** */
 
-import { HttpRequestOptions, HttpResponse, Headers } from "..";
+import { Headers, HttpRequestOptions, HttpResponse } from "../../http";
 export const request: (options: HttpRequestOptions) => Promise<HttpResponse>;
 export function addHeader(headers: Headers, key: string, value: string): void;

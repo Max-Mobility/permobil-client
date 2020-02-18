@@ -1,45 +1,13 @@
 {
-  "_from": "@nativescript/core@~6.3.2",
-  "_id": "@nativescript/core@6.3.2",
-  "_inBundle": false,
-  "_integrity": "sha512-y4Xg0O3zEYUInt2OuzmMsopRT0nr+j/x0hInA8b7bvFnEvNtohhQkOw1c42dUUsOi2PMruZ6SuaY5Wucp/h4wg==",
-  "_location": "/@nativescript/core",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "range",
-    "registry": true,
-    "raw": "@nativescript/core@~6.3.2",
-    "name": "@nativescript/core",
-    "escapedName": "@nativescript%2fcore",
-    "scope": "@nativescript",
-    "rawSpec": "~6.3.2",
-    "saveSpec": null,
-    "fetchSpec": "~6.3.2"
-  },
-  "_requiredBy": [
-    "/"
-  ],
-  "_resolved": "https://registry.npmjs.org/@nativescript/core/-/core-6.3.2.tgz",
-  "_shasum": "ea5b8e20af0688edc59c597bdf9c7cb15ac1f848",
-  "_spec": "@nativescript/core@~6.3.2",
-  "_where": "/Users/bradmartin/projects/permobil-client",
-  "bugs": {
-    "url": "https://github.com/NativeScript/NativeScript/issues"
-  },
-  "bundleDependencies": false,
-  "dependencies": {
-    "css-tree": "^1.0.0-alpha.37",
-    "nativescript-hook": "0.2.5",
-    "reduce-css-calc": "^2.1.6",
-    "semver": "6.3.0",
-    "tns-core-modules-widgets": "6.3.2",
-    "tslib": "1.10.0"
-  },
-  "deprecated": false,
+  "name": "@nativescript/core",
+  "main": "index",
+  "types": "index.d.ts",
   "description": "Telerik NativeScript Core Modules",
-  "devDependencies": {
-    "@types/node": "~10.12.18",
-    "tns-platform-declarations": "next"
+  "version": "6.3.2",
+  "homepage": "https://www.nativescript.org",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NativeScript/NativeScript"
   },
   "files": [
     "**/*.d.ts",
@@ -48,10 +16,24 @@
     "**/package.json",
     "!org.nativescript.widgets.d.ts"
   ],
-  "homepage": "https://www.nativescript.org",
   "license": "Apache-2.0",
-  "main": "index",
-  "name": "@nativescript/core",
+  "dependencies": {
+    "nativescript-hook": "0.2.5",
+    "reduce-css-calc": "^2.1.6",
+    "css-tree": "^1.0.0-alpha.37",
+    "semver": "6.3.0",
+    "tns-core-modules-widgets": "next",
+    "tslib": "1.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "~10.12.18",
+    "tns-platform-declarations": "next"
+  },
+  "scripts": {
+    "version": "conventional-changelog -p angular -i ../CHANGELOG.md -s && git add ../CHANGELOG.md",
+    "postinstall": "node cli-hooks/postinstall.js",
+    "preuninstall": "node cli-hooks/preuninstall.js"
+  },
   "nativescript": {
     "platforms": {
       "ios": "6.0.0",
@@ -66,15 +48,6 @@
       }
     ]
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/NativeScript/NativeScript.git"
-  },
-  "scripts": {
-    "postinstall": "node cli-hooks/postinstall.js",
-    "preuninstall": "node cli-hooks/preuninstall.js",
-    "version": "conventional-changelog -p angular -i ../CHANGELOG.md -s && git add ../CHANGELOG.md"
-  },
   "snapshot": {
     "android": {
       "tns-java-classes": {
@@ -84,7 +57,5 @@
         ]
       }
     }
-  },
-  "types": "index.d.ts",
-  "version": "6.3.2"
+  }
 }

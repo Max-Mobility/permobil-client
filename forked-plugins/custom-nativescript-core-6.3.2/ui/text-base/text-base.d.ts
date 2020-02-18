@@ -95,7 +95,23 @@ export class TextBase extends View implements AddChildFromBuilder {
      */
     _addChildFromBuilder(name: string, value: any): void;
 
-    
+    //@private
+    /**
+     * Called when the text property is changed to request layout.
+     * @private
+     */
+    _requestLayoutOnTextChanged(): void;
+
+    /**
+     * @private
+     */
+    _setNativeText(reset?: boolean): void;
+
+    /**
+     * @private
+     */
+    _isSingleLine: boolean;
+    //@endprivate
 }
 
 export const textProperty: Property<TextBase, string>;
