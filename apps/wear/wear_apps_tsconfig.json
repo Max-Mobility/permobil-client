@@ -5,7 +5,7 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "diagnostics": true,
+    "diagnostics": false,
     "noEmitHelpers": true,
     "noEmitOnError": false,
     "skipLibCheck": true,
