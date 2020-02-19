@@ -128,7 +128,47 @@ export class Page extends ContentView {
      * Raised when navigation from the page has finished.
      */
     public on(event: "navigatedFrom", callback: (args: NavigatedData) => void, thisArg?: any): void;
-    
+    //@private
+
+    /**
+     * @private
+     */
+    hasActionBar: boolean;
+    /**
+     * @private
+     */
+    _frame: Frame;
+
+    /**
+     * A method called before navigating to the page.
+     * @private
+     * @param context - The data passed to the page through the NavigationEntry.context property.
+     * @param isBackNavigation - True if the Page is being navigated from using the Frame.goBack() method, false otherwise.
+     * @param bindingContext - An object to become the binding context of the page navigating to. Optional.
+     */
+    public onNavigatingTo(context: any, isBackNavigation: boolean, bindingContext?: any): void;
+
+    /**
+     * A method called after navigated to the page.
+     * @private
+     * @param isBackNavigation - True if the Page is being navigated from using the Frame.goBack() method, false otherwise.
+     */
+    public onNavigatedTo(isBackNavigation: boolean): void;
+
+    /**
+     * A method called before navigating from the page.
+     * @private
+     * @param isBackNavigation - True if the Page is being navigated from using the Frame.goBack() method, false otherwise.
+     */
+    public onNavigatingFrom(isBackNavigation: boolean): void;
+
+    /**
+     * A method called after navigated from the page.
+     * @private
+     * @param isBackNavigation - True if the Page is being navigated from using the Frame.goBack() method, false otherwise.
+     */
+    public onNavigatedFrom(isBackNavigation: boolean): void;
+    //@endprivate
 }
 
 /**

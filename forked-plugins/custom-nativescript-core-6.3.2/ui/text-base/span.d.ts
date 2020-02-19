@@ -51,5 +51,10 @@ export class Span extends ViewBase {
      */
     public text: string;
 
-    
+    //@private
+    /**
+     * @private
+     */
+    _setTextInternal(value: string): void;
+    //@endprivate
 }

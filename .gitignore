@@ -100,8 +100,19 @@ Thumbs.db
 *.ipa
 *.cer
 
+# VS Code workspace
+*.code-workspace
+.vscode
+
+# SonarQube
+*.scannerwork
+
+# Tools
+tools/*.apks
+
 # project specifics
 ################################ IGNORE ################################
+
 platforms/
 hooks/
 *~
@@ -115,22 +126,14 @@ package-lock.json
 nativescript-bluetooth/**/*.js
 apps/**/report/
 *.d.ts
+forked-plugins/custom-nativescript-core-6.3.2/node_modules
+forked-plugins/custom-nativescript-core-6.3.2/**/*.js
 
 ################################ DO NOT IGNORE ################################
+!forked-plugins/custom-nativescript-core-6.3.2/**/*.d.ts
 !forked-plugins/nativescript-bluetooth/base64.js
-!forked-plugins/custom-nativescript-core-6.3.2/**
-forked-plugins/custom-nativescript-core-6.3.2/node_modules
 !**/references.d.ts
 !**/typings/**/*.d.ts
 !@permobil/core/src/packet/packet_bindings.js
 !**/webpack.config.js
 !**/android-release.js
-
-# VS Code workspace
-*.code-workspace
-.vscode
-
-# SonarQube
-*.scannerwork
-
-tools/*.apks

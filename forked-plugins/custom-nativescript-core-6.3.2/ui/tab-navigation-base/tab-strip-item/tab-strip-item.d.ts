@@ -36,7 +36,23 @@ export class TabStripItem extends View {
      */
     public static tapEvent: string;
 
-    
+    //@private
+
+    /**
+     * @private
+     */
+    _index: number;
+
+    /**
+     * @private
+     */
+    static selectEvent: string;
+
+    /**
+     * @private
+     */
+    static unselectEvent: string;
+    //@endprivate
 
     /**
      * A basic method signature to hook an event listener (shortcut alias to the addEventListener method).

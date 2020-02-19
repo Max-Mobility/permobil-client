@@ -630,7 +630,117 @@ export abstract class View extends ViewBase {
      */
     public eachChildView(callback: (view: View) => boolean): void;
 
-    
+    //@private
+    /**
+     * @private
+     */
+    _modalParent?: View;
+    /**
+     * @private
+     */
+    isLayoutRequired: boolean;
+    /**
+     * @private
+     */
+    _gestureObservers: any;
+    /**
+     * @private
+     * androidx.fragment.app.FragmentManager
+     */
+    _manager: any;
+    /**
+     * @private
+     */
+    _setNativeClipToBounds(): void;
+    /**
+     * Called by measure method to cache measureSpecs.
+     * @private
+     */
+    _setCurrentMeasureSpecs(widthMeasureSpec: number, heightMeasureSpec: number): boolean;
+    /**
+     * Called by layout method to cache view bounds.
+     * @private
+     */
+    _setCurrentLayoutBounds(left: number, top: number, right: number, bottom: number): { boundsChanged: boolean, sizeChanged: boolean };
+    /**
+     * Return view bounds.
+     * @private
+     */
+    _getCurrentLayoutBounds(): { left: number; top: number; right: number; bottom: number };
+    /**
+     * @private
+     */
+    _goToVisualState(state: string);
+    /**
+     * @private
+     */
+    _setNativeViewFrame(nativeView: any, frame: any): void;
+    // _onStylePropertyChanged(property: dependencyObservable.Property): void;
+    /**
+     * @private
+     */
+    _updateEffectiveLayoutValues(
+        parentWidthMeasureSize: number,
+        parentWidthMeasureMode: number,
+        parentHeightMeasureSize: number,
+        parentHeightMeasureMode: number): void
+    /**
+     * @private
+     */
+    _currentWidthMeasureSpec: number;
+    /**
+     * @private
+     */
+    _currentHeightMeasureSpec: number;
+    /**
+     * @private
+     */
+    _setMinWidthNative(value: Length): void;
+    /**
+     * @private
+     */
+    _setMinHeightNative(value: Length): void;
+    /**
+     * @private
+     */
+    _redrawNativeBackground(value: any): void;
+    /**
+     * @private
+     */
+    _removeAnimation(animation: Animation): boolean;
+    /**
+     * @private
+     */
+    _onLivesync(context?: { type: string, path: string }): boolean;
+    /**
+     * @private
+     */
+    _getFragmentManager(): any; /* androidx.fragment.app.FragmentManager */
+    _handleLivesync(context?: { type: string, path: string }): boolean;
+
+    /**
+     * Updates styleScope or create new styleScope.
+     * @param cssFileName
+     * @param cssString
+     * @param css
+     */
+    _updateStyleScope(cssFileName?: string, cssString?: string, css?: string): void;
+
+    /**
+     * Called in android when native view is attached to window.
+     */
+    _onAttachedToWindow(): void;
+
+    /**
+     * Called in android when native view is dettached from window.
+     */
+    _onDetachedFromWindow(): void;
+
+    /**
+     * Checks whether the current view has specific view for an ancestor.
+     */
+    _hasAncestorView(ancestorView: View): boolean;
+    //@endprivate
 
     /**
      * __Obsolete:__ There is a new property system that does not rely on _getValue.
@@ -657,7 +767,20 @@ export class ContainerView extends View {
  * Base class for all UI components that implement custom layouts.
  */
 export class CustomLayoutView extends ContainerView {
-    
+    //@private
+    /**
+     * @private
+     */
+    _updateNativeLayoutParams(child: View): void;
+    /**
+     * @private
+     */
+    _setChildMinWidthNative(child: View): void;
+    /**
+     * @private
+     */
+    _setChildMinHeightNative(child: View): void;
+    //@endprivate
 }
 
 /**

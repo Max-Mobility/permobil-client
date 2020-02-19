@@ -135,7 +135,49 @@ export abstract class ViewBase extends Observable {
      */
     _moduleName?: string;
 
-    
+    //@private
+    /**
+     * @private
+     */
+    _oldLeft: number;
+    /**
+     * @private
+     */
+    _oldTop: number;
+    /**
+     * @private
+     */
+    _oldRight: number;
+    /**
+     * @private
+     */
+    _oldBottom: number;
+    /**
+     * @private
+     */
+    _defaultPaddingTop: number;
+    /**
+     * @private
+     */
+    _defaultPaddingRight: number;
+    /**
+     * @private
+     */
+    _defaultPaddingBottom: number;
+    /**
+     * @private
+     */
+    _defaultPaddingLeft: number;
+
+    /**
+     * A property bag holding suspended native updates.
+     * Native setters that had to execute while there was no native view,
+     * or the view was detached from the visual tree etc. will accumulate in this object,
+     * and will be applied when all prerequisites are met.
+     * @private
+     */
+    _suspendedUpdates: { [propertyName: string]: Property<ViewBase, any> | CssProperty<Style, any> | CssAnimationProperty<Style, any> };
+    //@endprivate
 
     /**
      * Shows the View contained in moduleName as a modal view.
@@ -385,7 +427,64 @@ export abstract class ViewBase extends Observable {
      */
     public ensureDomNode();
 
-    
+    //@private
+    /**
+     * @private
+     */
+    public recycleNativeView: "always" | "never" | "auto";
+    /**
+     * @private
+     */
+    public _isPaddingRelative: boolean;
+    public _styleScope: any;
+
+    /**
+     * @private
+     */
+    public _automaticallyAdjustsScrollViewInsets: boolean;
+    /**
+     * @private
+     */
+    _isStyleScopeHost: boolean;
+
+    /**
+     * @private
+     */
+    public _layoutParent(): void;
+
+    /**
+     * Determines the depth of suspended updates.
+     * When the value is 0 the current property updates are not batched nor scoped and must be immediately applied.
+     * If the value is 1 or greater, the current updates are batched and does not have to provide immediate update.
+     * Do not set this field, the _batchUpdate method is responsible to keep the count up to date,
+     * as well as adding/rmoving the view to/from the visual tree.
+     */
+    public _suspendNativeUpdatesCount: number;
+
+    /**
+     * Allow multiple updates to be performed on the instance at once.
+     */
+    public _batchUpdate<T>(callback: () => T): T;
+    /**
+     * @private
+     */
+    _setupAsRootView(context: any): void;
+
+    /**
+     * @private
+     */
+    _inheritStyleScope(styleScope: any /* StyleScope */): void;
+
+    /**
+     * @private
+     */
+    callLoaded(): void;
+
+    /**
+     * @private
+     */
+    callUnloaded(): void;
+    //@endprivate
 }
 
 export class Binding {

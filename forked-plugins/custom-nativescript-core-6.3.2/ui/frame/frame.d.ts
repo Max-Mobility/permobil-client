@@ -126,7 +126,81 @@ export class Frame extends View {
      */
     ios: iOSFrame;
 
-    
+    //@private
+    /**
+     * @private
+     * @param entry to check
+     */
+    isCurrent(entry: BackstackEntry): boolean;
+
+    /**
+     * @private
+     * @param entry to set as current
+     * @param navigationType
+     */
+    setCurrent(entry: BackstackEntry, navigationType: NavigationType): void;
+    /**
+     * @private
+     */
+    navigationQueueIsEmpty(): boolean;
+    /**
+     * @private
+     */
+    navigationBarHeight: number;
+    /**
+     * @private
+     */
+    _currentEntry: BackstackEntry;
+    /**
+     * @private
+     */
+    _executingContext: NavigationContext;
+    /**
+     * @private
+     */
+    _processNavigationQueue(page: Page);
+    /**
+     * @private
+     */
+    _getIsAnimatedNavigation(entry: NavigationEntry): boolean;
+    /**
+     * @private
+     */
+    _getNavigationTransition(entry: NavigationEntry): NavigationTransition;
+    /**
+     * @private
+     */
+    _updateActionBar(page?: Page, disableNavBarAnimation?: boolean);
+    /**
+     * @private
+     * @param navigationContext
+     */
+    public performNavigation(navigationContext: NavigationContext): void;
+    /**
+     * @private
+     */
+    _getNavBarVisible(page: Page): boolean;
+    /**
+     * @private
+     */
+    _findEntryForTag(fragmentTag: string): BackstackEntry;
+    /**
+     * @private
+     */
+    _updateBackstack(entry: BackstackEntry, navigationType: NavigationType): void;
+    /**
+     * @private
+     */
+    _pushInFrameStack();
+    /**
+     * @private
+     */
+    _pushInFrameStackRecursive();
+    /**
+     * @private
+     */
+    _removeFromFrameStack();
+    //@endprivate
 
     /**
      * A basic method signature to hook an event listener (shortcut alias to the addEventListener method).
@@ -164,7 +238,14 @@ export function topmost(): Frame;
  */
 export function goBack();
 
-
+//@private
+/**
+ * @deprecated Use Frame._stack() instead.
+ * 
+ * @private
+ */
+export function _stack(): Array<Frame>;
+//@endprivate
 
 /**
  * Represents an entry to be used to create a view or load it form file
@@ -281,7 +362,32 @@ export interface BackstackEntry {
     entry: NavigationEntry;
     resolvedPage: Page;
 
-    
+    //@private
+    /**
+     * @private
+     */
+    navDepth: number;
+    /**
+     * @private
+     */
+    fragmentTag: string;
+    /**
+     * @private
+     */
+    fragment?: any;
+    /**
+     * @private
+     */
+    viewSavedState?: any;
+    /**
+     * @private
+     */
+    frameId?: number;
+    /**
+     * @private
+     */
+    recreated?: boolean;
+    //@endprivate
 }
 
 /**
@@ -369,8 +475,24 @@ export interface iOSFrame {
      */
     navBarVisibility: "auto" | "never" | "always";
 
-    
+    //@private
+    /**
+     * @private
+     */
+    _disableNavBarAnimation: boolean;
+    //@endprivate
 }
 
 export function setActivityCallbacks(activity: any /*androidx.appcompat.app.AppCompatActivity*/): void;
-
+//@private
+/**
+ * @deprecated Use Frame.reloadPage() instead.
+ * 
+ * @private
+ */
+export function reloadPage(context?: ModuleContext): void;
+/**
+ * @private
+ */
+export function setFragmentCallbacks(fragment: any /*androidx.fragment.app.Fragment*/): void;
+//@endprivate
