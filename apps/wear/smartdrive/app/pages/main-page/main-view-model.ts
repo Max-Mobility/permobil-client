@@ -1,5 +1,5 @@
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
-import { Color, EventData, Frame, GridLayout, Observable, ShowModalOptions, StackLayout } from '@nativescript/core';
+import { Color, EventData, Frame, GridLayout, Label, Observable, ShowModalOptions, StackLayout } from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
@@ -24,6 +24,7 @@ import { Acceleration, SmartDrive, SmartDriveException, StoredAcceleration, TapD
 import { PowerAssist, SmartDriveData } from '../../namespaces';
 import { BluetoothService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SmartDriveKinveyService, SqliteService } from '../../services';
 import { isNetworkAvailable, sentryBreadCrumb } from '../../utils';
+import { close, show } from '../../utils/android-dialog.util';
 import { updatesViewModel } from '../modals/updates/updates-page';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
@@ -307,7 +308,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-            }`,
+          }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -341,24 +342,46 @@ export class MainViewModel extends Observable {
       sentryBreadCrumb('already showing modal, not showing settings');
       return;
     }
-    const btn = args.object;
-    const option: ShowModalOptions = {
-      context: {
-        settingsService: this._settingsService,
-        sdKinveyService: this._kinveyService
-      },
-      closeCallback: () => {
-        this._showingModal = false;
-        // we dont do anything with the about to return anything
-        // now update any display that needs settings:
-        this._updateSpeedDisplay();
-        this._updateChartData();
-      },
-      animated: false,
-      fullscreen: true
-    };
-    this._showingModal = true;
-    btn.showModal('pages/modals/settings/settings-page', option);
+
+    const x = new StackLayout();
+    x.backgroundColor = new Color('yellow');
+    const l = new Label();
+    l.text = 'Hello SmartDrive';
+    l.color = new Color('blue');
+    l.backgroundColor = new Color('yellow');
+    x.addChild(l);
+
+    show({
+      title: 'test',
+      nativeView: x.android
+    })
+      .then(res => {
+        console.log(res, 'show called then');
+        setTimeout(() => {
+          close();
+        }, 3000);
+      })
+      .catch(err => {
+        console.log('err', err);
+      });
+    // const btn = args.object;
+    // const option: ShowModalOptions = {
+    //   context: {
+    //     settingsService: this._settingsService,
+    //     sdKinveyService: this._kinveyService
+    //   },
+    //   closeCallback: () => {
+    //     this._showingModal = false;
+    //     // we dont do anything with the about to return anything
+    //     // now update any display that needs settings:
+    //     this._updateSpeedDisplay();
+    //     this._updateChartData();
+    //   },
+    //   animated: false,
+    //   fullscreen: true
+    // };
+    // this._showingModal = true;
+    // btn.showModal('pages/modals/settings/settings-page', option);
   }
 
   onAboutTap(args) {
@@ -848,7 +871,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
       } catch (permissionsObj) {
@@ -1984,7 +2007,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -2049,7 +2072,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
