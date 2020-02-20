@@ -215,16 +215,27 @@ function initializeDialogFragment() {
       container: android.view.ViewGroup,
       savedInstanceState: android.os.Bundle
     ): android.view.View {
+      perfNow('onCreateView');
       const owner = this.owner;
-      owner._setupAsRootView(this.getActivity());
-      owner._isAddedToNativeVisualTree = true;
+      perfNow('getActivity');
+      const act = this.getActivity();
+      perfNow('getActivity');
 
+      perfNow('_setupAsRootView');
+      owner._setupAsRootView(act);
+      perfNow('_setupAsRootView');
+
+      owner._isAddedToNativeVisualTree = true;
+      perfNow('onCreateView');
       return owner.nativeViewProtected;
     }
 
     public onStart(): void {
+      perfNow('onStart');
       super.onStart();
       if (this._fullscreen) {
+        console.log('needing fullscreen during onstart method');
+        perfNow('onStart_fullscreen');
         const window = this.getDialog().getWindow();
         const length = android.view.ViewGroup.LayoutParams.MATCH_PARENT;
         window.setLayout(length, length);
@@ -234,6 +245,7 @@ function initializeDialogFragment() {
             android.graphics.Color.WHITE
           )
         );
+        perfNow('onStart_fullscreen');
       }
 
       const owner = this.owner;
@@ -242,6 +254,7 @@ function initializeDialogFragment() {
       }
 
       this._shownCallback();
+      perfNow('onStart');
     }
 
     public onDismiss(dialog: android.content.DialogInterface): void {
@@ -354,12 +367,13 @@ export class View extends ViewCommon {
   }
 
   public _getRootFragmentManager(): androidx.fragment.app.FragmentManager {
+    perfNow('_getRootFragmentManager');
     if (!this._rootManager && this._context) {
       this._rootManager = (<androidx.fragment.app.FragmentActivity>(
         this._context
       )).getSupportFragmentManager();
     }
-
+    perfNow('_getRootFragmentManager');
     return this._rootManager;
   }
 
@@ -734,8 +748,11 @@ export class View extends ViewCommon {
     return result | (childMeasuredState & layout.MEASURED_STATE_MASK);
   }
   protected _showNativeModalView(parent: View, options: ShowModalOptions) {
+    perfNow('_showNativeModalView');
     super._showNativeModalView(parent, options);
+    perfNow('initializeDialogFragment');
     initializeDialogFragment();
+    perfNow('initializeDialogFragment');
 
     const df = new DialogFragment();
     const args = new android.os.Bundle();
@@ -751,8 +768,10 @@ export class View extends ViewCommon {
       );
     }
 
+    perfNow('cancelable');
     cancelable =
       options.cancelable !== undefined ? !!options.cancelable : cancelable;
+    perfNow('cancelable');
 
     const dialogOptions: DialogOptions = {
       owner: this,
@@ -764,15 +783,21 @@ export class View extends ViewCommon {
       dismissCallback: () => this.closeModal()
     };
 
+    perfNow('saveModal');
     saveModal(dialogOptions);
+    perfNow('saveModal');
 
     this._dialogFragment = df;
     this._raiseShowingModallyEvent();
 
+    perfNow('_dialogFragment_show');
     this._dialogFragment.show(
       parent._getRootFragmentManager(),
       this._domId.toString()
     );
+    perfNow('_dialogFragment_show');
+
+    perfNow('_showNativeModalView');
   }
 
   protected _hideNativeModalView(parent: View, whenClosedCallback: () => void) {
