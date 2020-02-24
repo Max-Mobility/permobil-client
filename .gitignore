@@ -131,6 +131,7 @@ forked-plugins/nativescript-core-6.4.1/**/*.js
 
 ################################ DO NOT IGNORE ################################
 !forked-plugins/nativescript-core-6.4.1/**/*.d.ts
+!forked-plugins/nativescript-core-6.4.1/cli-hooks/**.js
 !forked-plugins/nativescript-bluetooth/base64.js
 !**/references.d.ts
 !**/typings/**/*.d.ts
