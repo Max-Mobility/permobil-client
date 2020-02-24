@@ -112,28 +112,35 @@ tools/*.apks
 
 # project specifics
 ################################ IGNORE ################################
-
-platforms/
+apps/mobile/pushtracker/platforms/
+apps/mobile/smart-eval/platforms/
+apps/wear/smartdrive/platforms/
+apps/wear/pushtracker/platforms/
+@permobil/**/*.d.ts
+forked-plugins/nativescript-perms/**/*.d.ts
+forked-plugins/nativescript-animated-circle/**/*.d.ts
 hooks/
-*~
 package-lock.json
 *.js
 **/*.js
 **/*.css
 .DS_Store
-**/platforms/
-/**/platforms/
 nativescript-bluetooth/**/*.js
 apps/**/report/
-*.d.ts
-forked-plugins/custom-nativescript-core-6.3.2/node_modules
-forked-plugins/custom-nativescript-core-6.3.2/**/*.js
+forked-plugins/nativescript-core-6.4.1/node_modules
+forked-plugins/nativescript-core-6.4.1/**/*.js
 
 ################################ DO NOT IGNORE ################################
-!forked-plugins/custom-nativescript-core-6.3.2/**/*.d.ts
+!forked-plugins/nativescript-core-6.4.1/**/*.d.ts
+!forked-plugins/nativescript-core-6.4.1/cli-hooks/**.js
+!forked-plugins/nativescript-core-6.4.1/js-libs/**/*.js
+!forked-plugins/nativescript-core-6.4.1/css-value/**/*.js
+!forked-plugins/nativescript-core-6.4.1/css/**/*.js
+!forked-plugins/nativescript-core-6.4.1/fetch/**/*.js
+!forked-plugins/nativescript-core-6.4.1/platforms/**
 !forked-plugins/nativescript-bluetooth/base64.js
+!@permobil/core/src/packet/packet_bindings.js
 !**/references.d.ts
 !**/typings/**/*.d.ts
-!@permobil/core/src/packet/packet_bindings.js
 !**/webpack.config.js
 !**/android-release.js

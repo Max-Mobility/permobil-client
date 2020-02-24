@@ -33,40 +33,44 @@ const hashSalt = Date.now().toString();
 
 module.exports = env => {
   // Add your custom Activities, Services and other Android app components here.
-  const appComponents = [
-    '@nativescript/core/ui/frame',
-    '@nativescript/core/ui/frame/activity',
-    resolve(
-      __dirname,
-      'node_modules/@maxmobility/nativescript-wear-os-comms/android/ResultReceiver'
-    ),
-    resolve(
-      __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_AdvertiseCallback'
-    ),
-    resolve(
-      __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_BluetoothGattCallback'
-    ),
-    resolve(
-      __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_BluetoothGattServerCallback'
-    ),
-    resolve(
-      __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_BroadcastReceiver'
-    ),
-    resolve(
-      __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_LeScanCallback'
-    ),
-    resolve(
-      __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_ScanCallback'
-    )
-  ];
+  const appComponents = env.appComponents || [];
+  appComponents.push(
+    ...[
+      '@nativescript/core/ui/frame',
+      '@nativescript/core/ui/frame/activity',
+      resolve(
+        __dirname,
+        'node_modules/@maxmobility/nativescript-wear-os-comms/android/ResultReceiver'
+      ),
+      resolve(
+        __dirname,
+        'node_modules/nativescript-bluetooth/android/TNS_AdvertiseCallback'
+      ),
+      resolve(
+        __dirname,
+        'node_modules/nativescript-bluetooth/android/TNS_BluetoothGattCallback'
+      ),
+      resolve(
+        __dirname,
+        'node_modules/nativescript-bluetooth/android/TNS_BluetoothGattServerCallback'
+      ),
+      resolve(
+        __dirname,
+        'node_modules/nativescript-bluetooth/android/TNS_BroadcastReceiver'
+      ),
+      resolve(
+        __dirname,
+        'node_modules/nativescript-bluetooth/android/TNS_LeScanCallback'
+      ),
+      resolve(
+        __dirname,
+        'node_modules/nativescript-bluetooth/android/TNS_ScanCallback'
+      )
+    ]
+  );
 
-  const platform = env && ((env.android && 'android') || (env.ios && 'ios'));
+  const platform =
+    env && ((env.android && 'android') || (env.ios && 'ios') || env.platform);
   if (!platform) {
     throw new Error('You need to provide a target platform!');
   }
@@ -115,11 +119,8 @@ module.exports = env => {
     projectDir: projectRoot
   });
   let coreModulesPackageName = 'tns-core-modules';
-  const alias = {
-    '~': appFullPath,
-    'nativescript-angular': '@nativescript/angular',
-    'tns-core-modules': '@nativescript/core'
-  };
+  const alias = env.alias || {};
+  alias['~'] = appFullPath;
 
   const compilerOptions = getCompilerOptionsFromTSConfig(tsConfigPath);
   if (hasRootLevelScopedModules) {
@@ -136,7 +137,9 @@ module.exports = env => {
   const appResourcesFullPath = resolve(projectRoot, appResourcesPath);
   const entryModule = `${nsWebpack.getEntryModule(appFullPath, platform)}.ts`;
   const entryPath = `.${sep}${entryModule}`;
-  const entries = { bundle: entryPath };
+  const entries = env.entries || {};
+  entries.bundle = entryPath;
+
   const areCoreModulesExternal =
     Array.isArray(env.externals) &&
     env.externals.some(e => e.indexOf('tns-core-modules') > -1);

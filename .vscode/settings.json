@@ -6,10 +6,9 @@
     "**/hooks/**": true,
     "**/platforms/**": true,
     "**/node_modules/**": true,
-    "maxmobility/node_modules/**": true,
-    "maxmobility/apps/smart-eval-app/node_modules/**": true,
-    "maxmobility/nativescript-bluetooth/node_modules/**": true,
-    "maxmobility/nativescript-bluetooth/typings/**": true
+    "apps/mobile/smart-eval-app/node_modules/**": true,
+    "forked-plugins/nativescript-bluetooth/node_modules/**": true,
+    "nativescript-bluetooth/typings/**": true
   },
   "[html]": {
     "editor.formatOnSave": false
