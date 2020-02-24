@@ -113,24 +113,24 @@ tools/*.apks
 ################################ DO NOT IGNORE ################################
 !forked-plugins/nativescript-core-6.4.1/**/*.d.ts
 !forked-plugins/nativescript-core-6.4.1/cli-hooks/**.js
-!forked-plugins/nativescript-core-6.4.1/platforms/
+!forked-plugins/nativescript-core-6.4.1/platforms/**
 !forked-plugins/nativescript-bluetooth/base64.js
+!@permobil/core/src/packet/packet_bindings.js
 !**/references.d.ts
 !**/typings/**/*.d.ts
-!@permobil/core/src/packet/packet_bindings.js
 !**/webpack.config.js
 !**/android-release.js
 
 # project specifics
 ################################ IGNORE ################################
-
 apps/mobile/pushtracker/platforms/
 apps/mobile/smart-eval/platforms/
 apps/wear/smartdrive/platforms/
 apps/wear/pushtracker/platforms/
-
+@permobil/**/*.d.ts
+forked-plugins/nativescript-perms/**/*.d.ts
+forked-plugins/nativescript-animated-circle/**/*.d.ts
 hooks/
-*~
 package-lock.json
 *.js
 **/*.js
@@ -138,6 +138,5 @@ package-lock.json
 .DS_Store
 nativescript-bluetooth/**/*.js
 apps/**/report/
-*.d.ts
 forked-plugins/nativescript-core-6.4.1/node_modules
 forked-plugins/nativescript-core-6.4.1/**/*.js
