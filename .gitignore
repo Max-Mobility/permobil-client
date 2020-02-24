@@ -110,17 +110,6 @@ Thumbs.db
 # Tools
 tools/*.apks
 
-################################ DO NOT IGNORE ################################
-!forked-plugins/nativescript-core-6.4.1/**/*.d.ts
-!forked-plugins/nativescript-core-6.4.1/cli-hooks/**.js
-!forked-plugins/nativescript-core-6.4.1/platforms/**
-!forked-plugins/nativescript-bluetooth/base64.js
-!@permobil/core/src/packet/packet_bindings.js
-!**/references.d.ts
-!**/typings/**/*.d.ts
-!**/webpack.config.js
-!**/android-release.js
-
 # project specifics
 ################################ IGNORE ################################
 apps/mobile/pushtracker/platforms/
@@ -140,3 +129,15 @@ nativescript-bluetooth/**/*.js
 apps/**/report/
 forked-plugins/nativescript-core-6.4.1/node_modules
 forked-plugins/nativescript-core-6.4.1/**/*.js
+
+################################ DO NOT IGNORE ################################
+!forked-plugins/nativescript-core-6.4.1/**/*.d.ts
+!forked-plugins/nativescript-core-6.4.1/cli-hooks/**.js
+!forked-plugins/nativescript-core-6.4.1/js-libs/**/*.js
+!forked-plugins/nativescript-core-6.4.1/platforms/**
+!forked-plugins/nativescript-bluetooth/base64.js
+!@permobil/core/src/packet/packet_bindings.js
+!**/references.d.ts
+!**/typings/**/*.d.ts
+!**/webpack.config.js
+!**/android-release.js
