@@ -1,5 +1,6 @@
 import { Component, NgZone, ViewContainerRef } from '@angular/core';
 import { ModalDialogService, RouterExtensions } from '@nativescript/angular';
+import { setTimeout } from '@nativescript/core/timer';
 import { Color, EventData, ImageSource, Label, Page, StackLayout } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { isAndroid, screen } from '@nativescript/core/platform';

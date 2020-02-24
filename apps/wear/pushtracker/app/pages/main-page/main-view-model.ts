@@ -4,6 +4,7 @@ import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
 import { alert } from '@nativescript/core/ui/dialogs';
+import { setTimeout } from '@nativescript/core/timer';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';

@@ -376,7 +376,7 @@ export class PushTracker extends DeviceBase {
           if (cancelOTA) {
             return;
           } else if (paused) {
-            setTimeout(() => {
+            timer.setTimeout(() => {
               writeFirmwareSector(fwSector, characteristic, nextState);
             }, 100);
           } else if (index < fileSize) {
@@ -390,7 +390,7 @@ export class PushTracker extends DeviceBase {
                 .then(_ => {
                   index += payloadSize;
                   if (isIOS) {
-                    setTimeout(() => {
+                    timer.setTimeout(() => {
                       writeFirmwareSector(fwSector, characteristic, nextState);
                     }, 30);
                   } else {
@@ -398,19 +398,19 @@ export class PushTracker extends DeviceBase {
                   }
                 })
                 .catch(_ => {
-                  setTimeout(() => {
+                  timer.setTimeout(() => {
                     writeFirmwareSector(fwSector, characteristic, nextState);
                   }, 100);
                 });
             } else {
-              setTimeout(() => {
+              timer.setTimeout(() => {
                 writeFirmwareSector(fwSector, characteristic, nextState);
               }, 500);
             }
           } else {
             // we are done with the sending change
             // state to the next state
-            setTimeout(() => {
+            timer.setTimeout(() => {
               // wait for a little bit
               this.otaState = nextState;
             }, 1500);

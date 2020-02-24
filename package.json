@@ -13,7 +13,7 @@
     "ci.pt.w.android": "cd apps/wear/pushtracker && tns build android --env.uglify",
     "ci.sd.w.android": "cd apps/wear/smartdrive && tns build android --env.uglify",
     "*************************** /end GITHUB ACTIONS CI SPECIFIC SCRIPTS": "***************************",
-    "tslint": "tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\"  --exclude \"**/platforms/**\"  --exclude \"**/hooks/**\" --exclude \"**/typings/**\" --exclude \"**/*d.ts\" --exclude \"**/forked-plugins/custom-nativescript-core-6.3.2/**\"",
+    "tslint": "tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\"  --exclude \"**/platforms/**\"  --exclude \"**/hooks/**\" --exclude \"**/typings/**\" --exclude \"**/*d.ts\" --exclude \"**/forked-plugins/nativescript-core-6.4.1/**\"",
     "global.installs": "npm i -g rimraf && npm i -g typescript",
     "pretty-baby": "prettier --write '@(apps|@permobil|forked-plugins)/**/*.@(scss|component.html|xml|ts|md|js|json)'",
     "*************************** SETUP": "***************************",
@@ -34,7 +34,7 @@
     "setup.ns.animated.circle": "cd forked-plugins/nativescript-animated-circle && npm i && tsc",
     "setup.ns.bluetooth": "cd forked-plugins/nativescript-bluetooth && npm i && tsc",
     "setup.ns.perms": "cd forked-plugins/nativescript-perms && npm i && tsc",
-    "setup.ns.core": "cd forked-plugins/custom-nativescript-core-6.3.2 && npm i && tsc",
+    "setup.ns.core": "cd forked-plugins/nativescript-core-6.4.1 && npm i && tsc",
     "setup.wearoscomms": "cd @permobil/nativescript/src/plugins/nativescript-wear-os-comms/src && npm i && tsc",
     "*************************** end SETUP": "***************************",
     "*************************** CLEAN SECTION": "***************************",
@@ -52,7 +52,7 @@
     "clean.forked.plugins": "npm run clean.ns.bluetooth && npm run clean.ns.animated.circle && npm run clean.ns.core",
     "clean.ns.bluetooth": "cd forked-plugins/nativescript-bluetooth && rimraf hooks node_modules",
     "clean.ns.animated.circle": "cd forked-plugins/nativescript-animated-circle && rimraf hooks node_modules",
-    "clean.ns.core": "cd forked-plugins/custom-nativescript-core-6.3.2 && rimraf hooks node_modules",
+    "clean.ns.core": "cd forked-plugins/nativescript-core-6.4.1 && rimraf hooks node_modules",
     "nuki": "npm run clean.all && npm run setup.all",
     "*************************** end CLEAN SECTION": "***************************",
     "*************************** PushTracker Mobile ***************************": "***************************",
@@ -111,17 +111,17 @@
     "//************************** end PushTracker Wear": "***************************"
   },
   "dependencies": {
-    "@nativescript/core": "~6.3.2"
+    "@nativescript/core": "~6.4.1"
   },
   "devDependencies": {
     "node-fetch": "~2.6.0",
     "node-sass": "~4.13.1",
     "prettier": "^1.19.1",
-    "husky": "^4.2.1",
+    "husky": "^4.2.3",
     "prompt": "^1.0.0",
     "lint-staged": "^10.0.7",
-    "rimraf": "~3.0.1",
-    "tns-platform-declarations": "~6.3.2",
+    "rimraf": "~3.0.2",
+    "tns-platform-declarations": "~6.4.1",
     "tslint": "~6.0.0",
     "typescript": "~3.7.5"
   },

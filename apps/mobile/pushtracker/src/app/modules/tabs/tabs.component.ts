@@ -1,6 +1,13 @@
 import { Component, NgZone } from '@angular/core';
 import { RouterExtensions } from '@nativescript/angular';
-import { BottomNavigation, isAndroid, isIOS, Page, SelectedIndexChangedEventData } from '@nativescript/core';
+import { setTimeout } from '@nativescript/core/timer';
+import {
+  BottomNavigation,
+  isAndroid,
+  isIOS,
+  Page,
+  SelectedIndexChangedEventData
+} from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { action, alert, confirm } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
@@ -13,7 +20,15 @@ import throttle from 'lodash/throttle';
 import * as LS from 'nativescript-localstorage';
 import { APP_LANGUAGES, CONFIGURATIONS } from '../../enums';
 import { PushTracker, PushTrackerUser } from '../../models';
-import { ActivityService, BluetoothService, LoggingService, PushTrackerUserService, SettingsService, SmartDriveErrorsService, SmartDriveUsageService } from '../../services';
+import {
+  ActivityService,
+  BluetoothService,
+  LoggingService,
+  PushTrackerUserService,
+  SettingsService,
+  SmartDriveErrorsService,
+  SmartDriveUsageService
+} from '../../services';
 import { debounceRight, enableDefaultTheme, YYYY_MM_DD } from '../../utils';
 
 // added deferred settings object for providing a way for multiple
@@ -160,7 +175,7 @@ export class TabsComponent {
       if (
         this.user &&
         this.user.data.control_configuration ===
-        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
       ) {
         this._logService.logBreadCrumb(
           TabsComponent.name,
@@ -612,7 +627,7 @@ export class TabsComponent {
     if (
       this.user &&
       this.user.data.control_configuration ===
-      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
     ) {
       if (args.data.status === 'authorized') {
         // we can advertise now
