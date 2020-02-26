@@ -1,5 +1,5 @@
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
-import { Color, EventData, Frame, GridLayout, Observable, ShowModalOptions, StackLayout } from '@nativescript/core';
+import { Color, EventData, Frame, GridLayout, Observable, ObservableArray, ShowModalOptions, StackLayout } from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
@@ -50,10 +50,10 @@ export class MainViewModel extends Observable {
   // #region "Public Members for UI"
   @Prop() insetPadding: number = 0;
   @Prop() chinSize: number = 0;
-  @Prop() screenWidth: number = 100;
-  @Prop() screenHeight: number = 100;
+  // @Prop() screenWidth: number = 100;
+  // @Prop() screenHeight: number = 100;
   // battery display
-  @Prop() smartDriveCurrentBatteryPercentage: number = 0;
+  // @Prop() smartDriveCurrentBatteryPercentage: number = 0;
   @Prop() watchCurrentBatteryPercentage: number = 0;
   @Prop() powerAssistRingColor: Color = PowerAssist.InactiveRingColor;
   // smartdrive data display
@@ -65,10 +65,10 @@ export class MainViewModel extends Observable {
   @Prop() currentSpeedDescription: string = '';
   // time display
   @Prop() displayTime: boolean = true;
-  @Prop() currentTime: string = '';
-  @Prop() currentTimeMeridiem: string = '';
-  @Prop() currentDay: string = '';
-  @Prop() currentYear: string = '';
+  // @Prop() currentTime: string = '';
+  // @Prop() currentTimeMeridiem: string = '';
+  // @Prop() currentDay: string = '';
+  // @Prop() currentYear: string = '';
   // state variables
   @Prop() isAmbient: boolean = false;
   @Prop() watchBeingWorn: boolean = false;
@@ -85,16 +85,17 @@ export class MainViewModel extends Observable {
   /**
    * Data to bind to the Battery Usage Chart repeater.
    */
-  @Prop() batteryChartData: any[];
-  @Prop() batteryChartMaxValue: string;
+  // @Prop() batteryChartData: any[];
+  // @Prop() batteryChartMaxValue: string;
 
   /**
    * Data to bind to the Distance Chart repeater.
    */
   @Prop() distanceChartData: any[];
-  @Prop() distanceChartMaxValue: string;
+  // @Prop() distanceChartMaxValue: string;
   @Prop() distanceUnits: string = 'mi';
   @Prop() numTaps: number = 0;
+  @Prop() listArray: ObservableArray<unknown>;
   // #endregion "Public Members for UI"
 
   // #region "Private Members"
@@ -189,12 +190,12 @@ export class MainViewModel extends Observable {
   private PHONE_ANDROID_PACKAGE_NAME = 'com.permobil.pushtracker';
   private PHONE_IOS_APP_STORE_URI =
     'https://itunes.apple.com/us/app/pushtracker/id1121427802';
-
   // #endregion "Private Members"
 
   constructor() {
     super();
     sentryBreadCrumb('Main-View-Model constructor.');
+
     // determine inset padding
     this._setupInsetChin();
   }
@@ -222,6 +223,22 @@ export class MainViewModel extends Observable {
   }
 
   // #region "Public Functions"
+
+  selectItemTemplate(item, index, items) {
+    console.log('select item template', index);
+    switch (index) {
+      case 0:
+        return 'power_assist';
+      case 1:
+        return 'battery_chart';
+      case 2:
+        return 'distance_chart';
+      case 3:
+        return 'menu_items';
+      default:
+        return 'power_assist';
+    }
+  }
 
   async onMainPageLoaded(args: EventData) {
     sentryBreadCrumb('onMainPageLoaded');
@@ -307,7 +324,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-            }`,
+          }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -328,9 +345,9 @@ export class MainViewModel extends Observable {
     this._ambientTimeView = args.object as StackLayout;
   }
 
-  onPowerAssistViewLoaded(args: EventData) {
-    this._powerAssistView = args.object as GridLayout;
-  }
+  // onPowerAssistViewLoaded(args: EventData) {
+  //   this._powerAssistView = args.object as GridLayout;
+  // }
 
   /**
    * Main Menu Button Tap Handlers
@@ -669,6 +686,62 @@ export class MainViewModel extends Observable {
       return;
     }
 
+    const screenHeight = screen.mainScreen.heightDIPs;
+    const screenWidth = screen.mainScreen.widthDIPs;
+
+    // create list items
+    this.listArray = new ObservableArray();
+    this.listArray.push([
+      {
+        text: 'Hello',
+        screenHeight,
+        screenWidth,
+        powerAssistRingColor: PowerAssist.InactiveRingColor,
+        onPowerAssistViewLoaded(args: EventData) {
+          this._powerAssistView = args.object as GridLayout;
+        },
+        toggleTimeDisplay: this.toggleTimeDisplay.bind(this),
+        currentTime: null,
+        currentTimeMeridiem: null,
+        currentDay: null,
+        currentYear: null
+      },
+      {
+        currentSpeedDisplay: '494.09',
+        screenHeight,
+        screenWidth,
+        handleChartTap: this.handleChartTap.bind(this),
+        battery_title: L('charts.battery.title'),
+        batteryChartMaxValue: null,
+        batteryChartData: null
+      },
+      {
+        screenHeight,
+        screenWidth,
+        handleChartTap: this.handleChartTap.bind(this),
+        distance_title: L('charts.distance.title') + this.distanceUnits,
+        distanceChartMaxValue: null
+      },
+      {
+        setLeftRightTopPadding: this.setLeftRightTopPadding.bind(this),
+        setLeftRightPadding: this.setLeftRightPadding.bind(this),
+        onSettingsTap: this.onSettingsTap.bind(this),
+        onAboutTap: this.onAboutTap.bind(this),
+        onTrainingTap: this.onTrainingTap.bind(this),
+        onUpdatesTap: this.onUpdatesTap.bind(this),
+        onPairingTap: this.onPairingTap.bind(this),
+        onConnectPushTrackerTap: this.onConnectPushTrackerTap.bind(this),
+        title: L('menu.title'),
+        settings: L('menu.settings'),
+        about: L('menu.about'),
+        training: L('menu.training'),
+        updates: L('menu.updates'),
+        pair_smartdrive: L('settings.pair-smartdrive'),
+        connect_pushtracker: L('settings.connect-pushtracker'),
+        insetPadding: this.insetPadding
+      }
+    ]);
+
     // init sentry - DNS key for permobil-wear Sentry project
     Sentry.init(
       'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1376181'
@@ -848,7 +921,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
       } catch (permissionsObj) {
@@ -1015,7 +1088,9 @@ export class MainViewModel extends Observable {
       this.smartDrive.fromObject(savedSd);
     }
     // update the displayed smartdrive data
-    this.smartDriveCurrentBatteryPercentage =
+    // this.smartDriveCurrentBatteryPercentage =
+    //   (this.smartDrive && this.smartDrive.battery) || 0;
+    this.listArray[0].smartDriveCurrentBatteryPercentage =
       (this.smartDrive && this.smartDrive.battery) || 0;
   }
 
@@ -1239,7 +1314,8 @@ export class MainViewModel extends Observable {
       // it's a new day, reset smartdrive battery to 0
       this.smartDrive.battery = 0;
       // update displayed battery percentage
-      this.smartDriveCurrentBatteryPercentage = this.smartDrive.battery;
+      // this.smartDriveCurrentBatteryPercentage = this.smartDrive.battery;
+      this.listArray[0].smartDriveCurrentBatteryPercentage = this.smartDrive.battery;
       // and save it
       this._saveSmartDriveStateToLS();
     }
@@ -1277,14 +1353,22 @@ export class MainViewModel extends Observable {
       context
     );
     if (is24HourFormat) {
-      this.currentTime = this._format(now, 'HH:mm');
-      this.currentTimeMeridiem = ''; // in 24 hour format we don't need AM/PM
+      // this.currentTime = this._format(now, 'HH:mm');
+      this.listArray[0].currentTime = this._format(now, 'HH:mm');
+
+      // this.currentTimeMeridiem = ''; // in 24 hour format we don't need AM/PM
+      this.listArray[0].currentTimeMeridiem = '';
     } else {
-      this.currentTime = this._format(now, 'h:mm');
-      this.currentTimeMeridiem = this._format(now, 'A');
+      // this.currentTime = this._format(now, 'h:mm');
+      this.listArray[0].currentTime = this._format(now, 'h:mm');
+
+      // this.currentTimeMeridiem = this._format(now, 'A');
+      this.listArray[0].currentTimeMeridiem = this._format(now, 'A');
     }
-    this.currentDay = this._format(now, 'ddd MMM D');
-    this.currentYear = this._format(now, 'YYYY');
+    // this.currentDay = this._format(now, 'ddd MMM D');
+    this.listArray[0].currentDat = this._format(now, 'ddd MMM D');
+    // this.currentYear = this._format(now, 'YYYY');
+    this.listArray[0].currentYear = this._format(now, 'YYYY');
   }
 
   private async _updateAuthorization() {
@@ -1718,8 +1802,12 @@ export class MainViewModel extends Observable {
         };
       });
       // sentryBreadCrumb('Highest Battery Value:', maxBattery);
-      this.batteryChartMaxValue = maxBattery.toFixed(0);
-      this.batteryChartData = batteryData;
+
+      // this.batteryChartMaxValue = maxBattery.toFixed(0);
+      this.listArray[1].batteryChartMaxValue = maxBattery.toFixed(0);
+
+      // this.batteryChartData = batteryData;
+      this.listArray[1].batteryChartData = batteryData;
     } catch (err) {
       Sentry.captureException(err);
     }
@@ -1763,9 +1851,11 @@ export class MainViewModel extends Observable {
       });
       // sentryBreadCrumb('Highest Distance Value:', maxDist);
       if (this._settingsService.settings.units === 'Metric') {
-        this.distanceChartMaxValue = (maxDist * 1.609).toFixed(1);
+        // this.distanceChartMaxValue = (maxDist * 1.609).toFixed(1);
+        this.listArray[3].distanceChartMaxValue = (maxDist * 1.609).toFixed(1);
       } else {
-        this.distanceChartMaxValue = maxDist.toFixed(1);
+        // this.distanceChartMaxValue = maxDist.toFixed(1);
+        this.listArray[3].distanceChartMaxValue = maxDist.toFixed(1);
       }
       this.distanceChartData = distanceData;
     } catch (err) {
@@ -1806,8 +1896,10 @@ export class MainViewModel extends Observable {
         );
       }
       // estimated distance is always in miles
+      // this.estimatedDistance =
+      //   this.smartDriveCurrentBatteryPercentage * rangeFactor;
       this.estimatedDistance =
-        this.smartDriveCurrentBatteryPercentage * rangeFactor;
+        this.listArray[0].smartDriveCurrentBatteryPercentage * rangeFactor;
       // save the updated estimated range for complication use
       appSettings.setNumber(
         DataKeys.SD_ESTIMATED_RANGE,
@@ -1849,19 +1941,39 @@ export class MainViewModel extends Observable {
     );
     // update speed display
     this.currentSpeedDisplay = this.currentSpeed.toFixed(1);
-    this.currentSpeedDescription = `${L('power-assist.speed')} (${speedUnits})`;
+    this.listArray[0].currentSpeedDisplay = this.currentSpeed.toFixed(1);
+
+    // this.currentSpeedDescription = `${L('power-assist.speed')} (${speedUnits})`;
+    this.listArray[0].currentSpeedDescription = `${L(
+      'power-assist.speed'
+    )} (${speedUnits})`;
+
     // update estimated range display
-    this.estimatedDistanceDisplay = this.estimatedDistance.toFixed(1);
-    this.estimatedDistanceDescription = `${L(
+    // this.estimatedDistanceDisplay = this.estimatedDistance.toFixed(1);
+    this.listArray[0].estimatedDistanceDisplay = `${L(
+      'power-assist.speed'
+    )} (${speedUnits})`;
+    // this.estimatedDistanceDescription = `${L(
+    //   'power-assist.estimated-range'
+    // )} (${this.distanceUnits})`;
+    this.listArray[0].estimatedDistanceDescription = `${L(
       'power-assist.estimated-range'
     )} (${this.distanceUnits})`;
+
     if (this._settingsService.settings.units === 'Metric') {
       // update estimated speed display
-      this.currentSpeedDisplay = (this.currentSpeed * 1.609).toFixed(1);
+      // this.currentSpeedDisplay = (this.currentSpeed * 1.609).toFixed(1);
+      this.listArray[0].currentSpeedDisplay = (
+        this.currentSpeed * 1.609
+      ).toFixed(1);
+
       // update estimated range display
-      this.estimatedDistanceDisplay = (this.estimatedDistance * 1.609).toFixed(
-        1
-      );
+      // this.estimatedDistanceDisplay = (this.estimatedDistance * 1.609).toFixed(
+      //   1
+      // );
+      this.listArray[0].estimatedDistanceDisplay = (
+        this.estimatedDistance * 1.609
+      ).toFixed(1);
     }
     // don't show 0.0 - show '--'
     if (this.estimatedDistanceDisplay === '0.0') {
@@ -1984,7 +2096,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -2049,7 +2161,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
@@ -2366,8 +2478,11 @@ export class MainViewModel extends Observable {
     }
     this.motorOn = this.smartDrive.driving;
     // determine if we've used more battery percentage
+    // const batteryChange =
+    //   this.smartDriveCurrentBatteryPercentage - this.smartDrive.battery;
     const batteryChange =
-      this.smartDriveCurrentBatteryPercentage - this.smartDrive.battery;
+      this.listArray[0].smartDriveCurrentBatteryPercentage -
+      this.smartDrive.battery;
     // only check against 1 so that we filter out charging and only
     // get decreases due to driving / while connected
     if (batteryChange === 1) {
@@ -2379,7 +2494,8 @@ export class MainViewModel extends Observable {
       });
     }
     // update battery percentage
-    this.smartDriveCurrentBatteryPercentage = this.smartDrive.battery;
+    // this.smartDriveCurrentBatteryPercentage = this.smartDrive.battery;
+    this.listArray[0].smartDriveCurrentBatteryPercentage = this.smartDrive.battery;
     // save the updated smartdrive battery
     appSettings.setNumber(DataKeys.SD_BATTERY, this.smartDrive.battery);
     // update speed display
@@ -2836,10 +2952,6 @@ export class MainViewModel extends Observable {
     const isCircleWatch = androidConfig.isScreenRound();
     const widthPixels = screen.mainScreen.widthPixels;
     const heightPixels = screen.mainScreen.heightPixels;
-    const widthDIPs = screen.mainScreen.widthDIPs;
-    const heightDIPs = screen.mainScreen.heightDIPs;
-    this.screenWidth = widthDIPs;
-    this.screenHeight = heightDIPs;
     if (isCircleWatch) {
       this.insetPadding = Math.round(0.146467 * widthPixels);
       // if the height !== width then there is a chin!
