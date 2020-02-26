@@ -2,7 +2,6 @@ import { Frame, Page, ShownModallyData } from '@nativescript/core';
 import { Log } from '@permobil/core';
 import { SettingsViewModel } from './settings-view-model';
 
-let closeCallback;
 
 // Closes the modal
 export function onCloseTap() {

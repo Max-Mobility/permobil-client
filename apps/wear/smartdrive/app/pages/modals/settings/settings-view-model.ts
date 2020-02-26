@@ -33,7 +33,6 @@ export class SettingsViewModel extends Observable {
     this._settingsService = injector.get(SettingsService);
     this._settingsService.loadSettings();
     this._SDKinveyService = injector.get(SmartDriveKinveyService);
-    
   }
 
   onLoaded() {

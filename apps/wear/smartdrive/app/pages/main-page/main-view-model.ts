@@ -341,7 +341,7 @@ export class MainViewModel extends Observable {
    */
 
   onSettingsTap(args) {
-    console.log('settings tap')
+    console.log('settings tap');
     // if (this._showingModal) {
     //   sentryBreadCrumb('already showing modal, not showing settings');
     //   return;
