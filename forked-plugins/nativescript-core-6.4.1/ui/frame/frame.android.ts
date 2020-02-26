@@ -1,34 +1,19 @@
 // Definitions.
-import {
-    AndroidFrame as AndroidFrameDefinition, AndroidActivityCallbacks,
-    AndroidFragmentCallbacks, BackstackEntry, NavigationTransition
-} from ".";
-import { TransitionState } from "./frame-common";
-import { Page } from "../page";
-
+import { AndroidActivityCallbacks, AndroidFragmentCallbacks, AndroidFrame as AndroidFrameDefinition, BackstackEntry, NavigationTransition } from ".";
 // Types.
 import * as application from "../../application";
-
-import {
-    _stack, FrameBase, NavigationType, Observable,
-    traceCategories, traceEnabled, traceError, traceWrite, View, Color
-} from "./frame-common";
-
-import {
-    _setAndroidFragmentTransitions, _getAnimatedEntries,
-    _updateTransitions, _reverseTransitions, _clearEntry, _clearFragment, addNativeTransitionListener
-} from "./fragment.transitions";
-
-// TODO: Remove this and get it from global to decouple builder for angular
-import { Builder } from "../builder";
-import {
-    CLASS_PREFIX,
-    getSystemCssClasses,
-    pushToSystemCssClasses,
-    ROOT_VIEW_CSS_CLASS
-} from "../../css/system-classes";
+import { CLASS_PREFIX, getSystemCssClasses, pushToSystemCssClasses, ROOT_VIEW_CSS_CLASS } from "../../css/system-classes";
 import { device } from "../../platform/platform";
 import { profile } from "../../profiling";
+// TODO: Remove this and get it from global to decouple builder for angular
+import { Builder } from "../builder";
+import { Page } from "../page";
+import { addNativeTransitionListener, _clearEntry, _clearFragment, _getAnimatedEntries, _reverseTransitions, _setAndroidFragmentTransitions, _updateTransitions } from "./fragment.transitions";
+import { Color, FrameBase, NavigationType, Observable, traceCategories, traceEnabled, traceError, traceWrite, TransitionState, View, _stack } from "./frame-common";
+
+
+
+
 
 export * from "./frame-common";
 
@@ -444,7 +429,7 @@ export class Frame extends FrameBase {
             //transaction.setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         }
 
-        transaction.replace(this.containerViewId, newFragment, newFragmentTag);
+        transaction.add(this.containerViewId, newFragment, newFragmentTag);
         transaction.commitAllowingStateLoss();
     }
 

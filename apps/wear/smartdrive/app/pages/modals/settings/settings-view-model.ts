@@ -1,7 +1,8 @@
-import { ApplicationSettings, Frame, knownFolders, Observable, Page, path, ShowModalOptions, ViewBase } from '@nativescript/core';
+import { ApplicationSettings, Frame, knownFolders, Observable, path, ShowModalOptions, ViewBase } from '@nativescript/core';
 import { getFile } from '@nativescript/core/http';
 import { Device, Log, wait } from '@permobil/core';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';
+import { ReflectiveInjector } from 'injection-js';
 import { Sentry } from 'nativescript-sentry';
 import { WatchSettings } from '../../../models';
 import { SettingsService, SmartDriveKinveyService } from '../../../services';
@@ -22,17 +23,23 @@ export class SettingsViewModel extends Observable {
   private _showingModal: boolean = false;
   private _isDownloadingFiles: boolean = false;
 
-  constructor(
-    page: Page,
-    settingsService: SettingsService,
-    data,
-    sdKinveyService: SmartDriveKinveyService
-  ) {
+  constructor() {
     super();
-    this._settingsService = settingsService;
+    const injector = ReflectiveInjector.resolveAndCreate([
+      SettingsService,
+      SmartDriveKinveyService
+    ]);
+
+    this._settingsService = injector.get(SettingsService);
     this._settingsService.loadSettings();
-    this._SDKinveyService = sdKinveyService;
-    const wearOsLayout: any = page.getViewById('wearOsLayout');
+    this._SDKinveyService = injector.get(SmartDriveKinveyService);
+    
+  }
+
+  onLoaded() {
+    const wearOsLayout: any = Frame.topmost().currentPage.getViewById(
+      'wearOsLayout'
+    );
     const res = configureLayout(wearOsLayout);
     this.chinSize = res.chinSize;
     this.insetPadding = res.insetPadding;

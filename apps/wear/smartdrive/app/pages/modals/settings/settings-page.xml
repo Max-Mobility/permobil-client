@@ -1,5 +1,5 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" 
-  xmlns:wol="nativescript-wear-os/packages/wear-os-layout" shownModally="onShownModally" actionBarHidden="true">
+  xmlns:wol="nativescript-wear-os/packages/wear-os-layout" navigatingTo="onShownModally" navigatedTo="{{ onLoaded }}" actionBarHidden="true">
   <wol:WearOsLayout id="wearOsLayout" disableInsetConstraint="true" height="100%" width="100%">
     <StackLayout height="100%">
       <Label text="{{ L('settings.title') }}" class="chart-title" textWrap="true" />
