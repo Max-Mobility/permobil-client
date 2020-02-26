@@ -7,37 +7,37 @@
       <ScrollView height="100%" marginBottom="{{ chinSize / 2 }}">
         <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *" paddingBottom="{{ insetPadding }}">
           // Back
-          <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
+          <Label row="0" col="0" text="&#xe907;" class="bullet-list-icon" fontSize="18" fontWeight="bold" textWrap="true" />
           <Label row="0" col="1" text="{{ L('buttons.back') }}" tap="onCloseTap" class="settings-label" textWrap="true" />
           // Max Speed
-          <Label row="1" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+          <Label row="1" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
           <Label row="1" col="1" text="{{ L('settings.max-speed') }}" class="settings-label" textWrap="true" id="maxSpeed" tap="{{ onChangeSettingsItemTap }}" />
           // Acceleration
-          <Label row="2" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+          <Label row="2" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
           <Label row="2" col="1" text="{{ L('settings.acceleration') }}" class="settings-label" textWrap="true" id="acceleration" tap="{{ onChangeSettingsItemTap }}" />
           // Tap Sensitivity
-          <Label row="3" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+          <Label row="3" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
           <Label row="3" col="1" text="{{ L('settings.tap-sensitivity') }}" class="settings-label" textWrap="true" id="tapSensitivity" tap="{{ onChangeSettingsItemTap }}" />
           // Power Assist Beep Indication
-          <Label row="4" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+          <Label row="4" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
           <Label row="4" col="1" text="{{ L('settings.power-assist-buzzer') }}" class="settings-label" textWrap="true" id="powerAssistBuzzer" tap="{{ onChangeSettingsItemTap }}" />
           // Control Mode
-          <Label row="5" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+          <Label row="5" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
           <Label row="5" col="1" text="{{ L('settings.control-mode') }}" class="settings-label" textWrap="true" id="controlMode" tap="{{ onChangeSettingsItemTap }}" />
           // Units
-          <Label row="6" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+          <Label row="6" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
           <Label row="6" col="1" text="{{ L('settings.units') }}" class="settings-label" textWrap="true" id="units" tap="{{ onChangeSettingsItemTap }}" />
           // Switch Control Mode
-          <Label row="7" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+          <Label row="7" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
           <Label row="7" col="1" text="{{ L('switch-control.mode') }}" class="settings-label" textWrap="true" id="switchControlMode" tap="{{ onChangeSettingsItemTap }}" />
           // Switch Control Max Speed
-          <Label row="8" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+          <Label row="8" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
           <Label row="8" col="1" text="{{ L('switch-control.max-speed') }}" class="settings-label" textWrap="true" id="switchControlSpeed" tap="{{ onChangeSettingsItemTap }}" />
           // Check for Wrist
-          <Label row="9" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+          <Label row="9" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
           <Label row="9" col="1" text="{{ L('settings.watch-required.title') }}" class="settings-label" textWrap="true" id="wearCheck" tap="{{ onChangeSettingsItemTap }}" />
           // Power Assist Timeout
-          <Label row="10" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+          <Label row="10" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
           <Label row="10" col="1" text="{{ L('settings.power-assist-timeout.title') }}" class="settings-label" textWrap="true" id="powerAssistTimeout" tap="{{ onChangeSettingsItemTap }}" />
         </GridLayout>
       </ScrollView>

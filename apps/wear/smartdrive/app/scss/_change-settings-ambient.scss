@@ -2,7 +2,6 @@
 
 /** Change Settings Page **/
 .change-settings-page {
-
   .increase-btn {
     @extend .circle-image-btn;
     color: $ambient-white;
@@ -37,17 +36,17 @@
     color: $white;
 
     .info-icon {
-        font-size: 20;
-        font-family: $ionicon;
-        color: $ambient-white;
-        vertical-align: $center;
-        horizontal-align: $center;
-        margin: 0;
-        padding: 0;
+      font-size: 20;
+      font-family: $icomoon;
+      color: $ambient-white;
+      vertical-align: $center;
+      horizontal-align: $center;
+      margin: 0;
+      padding: 0;
     }
 
     .changeSettingsTitle {
-        width: 90%;
+      width: 90%;
       color: $ambient-white;
       text-align: $center;
       horizontal-align: $center;
@@ -56,7 +55,7 @@
 
     .changeSettingsValue {
       color: $ambient-white;
-        width: 60%;
+      width: 60%;
       font-weight: bold;
       text-align: $center;
       horizontal-align: $center;

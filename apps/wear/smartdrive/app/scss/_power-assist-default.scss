@@ -23,8 +23,8 @@ $tap-color: #db4537;
 }
 
 .tapCircle {
-	bar-color: $tap-color;
-	rim-color: $tap-color;
+  bar-color: $tap-color;
+  rim-color: $tap-color;
   background-color: transparent;
   fill-color: transparent;
   width: 100%;
@@ -73,25 +73,25 @@ $tap-color: #db4537;
 }
 
 .powerAssist-active {
-    @extend .power-assist-btn;
+  @extend .power-assist-btn;
   color: $white;
   background-color: $activated-color;
 }
 
 .powerAssist-disabled {
-    @extend .power-assist-btn;
+  @extend .power-assist-btn;
   color: $white;
   background-color: $disabled-color;
 }
 
 .powerAssist-deactive {
-    @extend .power-assist-btn;
+  @extend .power-assist-btn;
   color: $white;
   background-color: $deactivated-color;
 }
 
 .powerAssist-training {
-    @extend .power-assist-btn;
+  @extend .power-assist-btn;
   color: $white;
   background-color: $training-color;
 }
