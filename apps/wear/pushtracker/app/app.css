@@ -6,13 +6,13 @@ Page {
   background-color: #000;
 }
 
-.ionicon {
-  font-family: ionicons, 'ionicons', Ionicons, 'Ionicons';
+.icomoon {
+  font-family: icomoon, 'icomoon', 'icomoon Regular';
 }
 
 .back-icon {
-  font-family: ionicons, 'ionicons', Ionicons, 'Ionicons';
-  font-size: 11;
+  font-family: icomoon, 'icomoon', 'icomoon Regular';
+  font-size: 14;
   font-weight: bold;
   vertical-align: center;
   horizontal-align: center;
@@ -59,7 +59,7 @@ Page {
 #changeSettingsPage .decrease-btn StackLayout label,
 #changeSettingsPage .cancel-btn StackLayout label,
 #changeSettingsPage .confirm-btn StackLayout label {
-  font-family: ionicons, 'ionicons', Ionicons, 'Ionicons';
+  font-family: icomoon, 'icomoon', 'icomoon Regular';
   font-size: 36;
   vertical-align: center;
   horizontal-align: center;
@@ -291,7 +291,7 @@ Page {
 /** Fonts **/
 .bullet-list-icon {
   font-size: 8;
-  font-family: ionicons, 'ionicons', Ionicons, 'Ionicons';
+  font-family: icomoon, 'icomoon', 'icomoon Regular';
   color: #fff;
   vertical-align: center;
   horizontal-align: center;

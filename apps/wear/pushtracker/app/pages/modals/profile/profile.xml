@@ -6,11 +6,11 @@
             <Label row="1" colSpan="2" class="hr-blue" />
             <ScrollView height="100%" marginBottom="{{ chinSize / 2 }}">
                 <GridLayout rows="*, *, *" columns="auto, *" paddingBottom="{{ insetPadding }}">
-                    <Label row="0" col="0" text="&#xf107;" class="back-icon" textWrap="true" />
+                    <Label row="0" col="0" text="&#xe907;" class="back-icon" textWrap="true" />
                     <Label row="0" col="1" text="{{ L('buttons.back') }}" tap="onCloseTap" class="settings-label" textWrap="true" />
-                    <Label row="1" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                    <Label row="1" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
                     <Label row="1" col="1" text="{{ L('settings.weight.title') }}" id="weight" tap="onChangeSettingsItemTap" class="settings-label" textWrap="true" />
-                    <Label row="2" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                    <Label row="2" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
                     <Label row="2" col="1" text="{{ L('settings.height.title') }}" id="height" tap="onChangeSettingsItemTap" class="settings-label" textWrap="true" />
                 </GridLayout>
             </ScrollView>
