@@ -9,8 +9,6 @@ import { format } from 'date-fns';
 import debounce from 'lodash/debounce';
 import flatten from 'lodash/flatten';
 import last from 'lodash/last';
-import throttle from 'lodash/throttle';
-import { AnimatedCircle } from 'nativescript-animated-circle';
 import * as LS from 'nativescript-localstorage';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Sentry } from 'nativescript-sentry';
@@ -40,8 +38,6 @@ const dateLocales = {
 };
 
 export class UpdatesViewModel extends Observable {
-  @Prop() updateProgressCircle: AnimatedCircle;
-  @Prop() smartDriveOtaProgress: number = 0;
   @Prop() smartDriveOtaState: string = null;
   @Prop() smartDriveOtaActions = new ObservableArray();
   @Prop() watchSerialNumber: string = '---';
@@ -84,7 +80,7 @@ export class UpdatesViewModel extends Observable {
     } catch (error) {
       Sentry.captureException(error);
     }
-  }
+  };
 
   private _otaStarted: boolean = false;
 
@@ -104,7 +100,7 @@ export class UpdatesViewModel extends Observable {
       // initialize the wake lock here
       const powerManager = application.android.context.getSystemService(
         android.content.Context.POWER_SERVICE
-      );
+      ) as android.os.PowerManager;
       this.wakeLock = powerManager.newWakeLock(
         // android.os.PowerManager.PARTIAL_WAKE_LOCK, // - best battery life, but allows ambient mode
         android.os.PowerManager.SCREEN_DIM_WAKE_LOCK, // - moderate battery life, buttons still active
@@ -173,6 +169,7 @@ export class UpdatesViewModel extends Observable {
       Log.E('theme on startup error:', err);
       Sentry.captureException(err);
     }
+
     // now init the ui
     try {
       await this.init();
@@ -180,16 +177,7 @@ export class UpdatesViewModel extends Observable {
       sentryBreadCrumb('updates init error: ' + err);
       Sentry.captureException(err);
     }
-    // get child references
-    try {
-      // get references to update circle to control spin state
-      this.updateProgressCircle = this._updatesPage.getViewById(
-        'updateProgressCircle'
-      );
-    } catch (err) {
-      sentryBreadCrumb('onUpdatesPageLoaded::error: ' + err);
-      Sentry.captureException(err);
-    }
+
     try {
       await this.checkForUpdates();
     } catch (err) {
@@ -266,7 +254,7 @@ export class UpdatesViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this.updateSerialNumber();
       } catch (permissionsObj) {
@@ -425,7 +413,6 @@ export class UpdatesViewModel extends Observable {
       };
     });
     // now set the renderable bound data
-    this.smartDriveOtaProgress = progress;
     this.smartDriveOtaActions.splice(
       0,
       this.smartDriveOtaActions.length,
@@ -477,7 +464,6 @@ export class UpdatesViewModel extends Observable {
   async checkForUpdates() {
     sentryBreadCrumb('Checking for updates');
     // update display of update progress
-    this.smartDriveOtaProgress = 0;
     this.smartDriveOtaState = L('updates.checking-for-updates');
     // @ts-ignore
     this.updateProgressCircle.spin();
@@ -543,25 +529,6 @@ export class UpdatesViewModel extends Observable {
       sentryBreadCrumb('downloading firmwares');
       // update progress text
       this.smartDriveOtaState = L('updates.downloading-new-firmwares');
-      // reset ota progress to 0 to show downloading progress
-      this.smartDriveOtaProgress = 0;
-      // update progress circle
-      const progresses = fileMetaDatas.reduce((p, fmd) => {
-        p[fmd['_filename']] = 0;
-        return p;
-      }, {});
-      const progressKeys = Object.keys(progresses);
-      SmartDriveData.Firmwares.setDownloadProgressCallback(
-        throttle((file, progress) => {
-          // Log.D(file['_filename'] + ': ' + progress * 100.0);
-          progresses[file['_filename']] = progress * 100.0;
-          this.smartDriveOtaProgress =
-            progressKeys.reduce((total, k) => {
-              return total + progresses[k];
-            }, 0) / progressKeys.length;
-          // Log.D('progress: ', this.smartDriveOtaProgress);
-        }, 400)
-      );
       // now download the files
       try {
         for (const fmd of fileMetaDatas) {
@@ -617,8 +584,6 @@ export class UpdatesViewModel extends Observable {
     const mcuVersion = this.currentVersions['SmartDriveMCU.ota'].version;
 
     // the smartdrive is not up to date, so we need to update it.
-    // reset the ota progress to 0 (since downloaing may have used it)
-    this.smartDriveOtaProgress = 0;
     // get info out to tell the user
     const version = SmartDriveData.Firmwares.versionByteToString(
       Math.max(mcuVersion, bleVersion)
@@ -746,7 +711,9 @@ export class UpdatesViewModel extends Observable {
 
     if (doCancelOta && this.smartDrive) {
       if (this._otaStarted) {
-        sentryBreadCrumb('Updates view model: ota was started, waiting for it to stop');
+        sentryBreadCrumb(
+          'Updates view model: ota was started, waiting for it to stop'
+        );
         await new Promise((resolve, reject) => {
           this.smartDrive.once(
             SmartDrive.smartdrive_ota_stopped_event,
@@ -759,7 +726,9 @@ export class UpdatesViewModel extends Observable {
         sentryBreadCrumb('Updates view model: ota was not started');
       }
     } else {
-      sentryBreadCrumb('Updates view model: no smartdrive or not told to cancel ota');
+      sentryBreadCrumb(
+        'Updates view model: no smartdrive or not told to cancel ota'
+      );
     }
     this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
       label: L('ota.action.close'),
