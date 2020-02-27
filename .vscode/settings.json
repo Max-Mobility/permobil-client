@@ -20,7 +20,10 @@
     "translate-y",
     "translate-x",
     "text-wrap",
-    "off-background-color"
+    "off-background-color",
+    "fill-color",
+    "bar-color",
+    "rim-color"
   ],
   "css.lint.validProperties": [
     "horizontal-align",
@@ -29,7 +32,10 @@
     "translate-y",
     "translate-x",
     "text-wrap",
-    "off-background-color"
+    "off-background-color",
+    "fill-color",
+    "bar-color",
+    "rim-color"
   ],
   "prettier.disableLanguages": []
 }

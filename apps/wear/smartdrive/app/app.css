@@ -1,170 +1,224 @@
-/** Fonts **/
-/** Fonts **/
-/** Fonts **/
-.ionicon {
-  font-family: ionicons, "ionicons", Ionicons, "Ionicons"; }
+.icomoon {
+  font-family: icomoon, 'icomoon', 'icomoon Regular';
+}
 
 Page {
-  background-color: #000; }
+  background-color: #000;
+}
 
 .page {
-  background-color: #000; }
-
-.back-icon {
-  font-size: 11;
-  font-weight: bold; }
+  background-color: #000;
+}
 
 /** Buttons **/
-.power-assist-btn, .powerAssist-active, .powerAssist-disabled, .powerAssist-deactive, .powerAssist-training {
+.power-assist-btn,
+.powerAssist-active,
+.powerAssist-disabled,
+.powerAssist-deactive,
+.powerAssist-training {
   border-radius: 50%;
   horizontal-align: center;
-  vertical-align: center; }
+  vertical-align: center;
+}
 
-.updates-btn, .action-start, .action-pause, .action-resume, .action-close,
-.action-cancel, .action-back, .action-force, .action-retry {
+.updates-btn,
+.action-start,
+.action-pause,
+.action-resume,
+.action-close,
+.action-cancel,
+.action-back,
+.action-force,
+.action-retry {
   font-size: 15;
   border-radius: 50%;
   width: 60%;
   height: 25%;
   horizontal-align: center;
   vertical-align: center;
-  margin: 0, 0, 0, 0; }
+  margin: 0, 0, 0, 0;
+}
 
-.circle-image-btn, .change-settings-page .increase-btn, .change-settings-page .decrease-btn, .change-settings-page .cancel-btn, .change-settings-page .confirm-btn {
+.circle-image-btn,
+.change-settings-page .increase-btn,
+.change-settings-page .decrease-btn,
+.change-settings-page .cancel-btn,
+.change-settings-page .confirm-btn {
   height: 48;
   width: 48;
   border-radius: 24;
   vertical-align: center;
-  horizontal-align: center; }
-  .circle-image-btn StackLayout, .change-settings-page .increase-btn StackLayout, .change-settings-page .decrease-btn StackLayout, .change-settings-page .cancel-btn StackLayout, .change-settings-page .confirm-btn StackLayout {
-    height: 48;
-    width: 48;
-    border-radius: 24;
-    height: 100%;
-    width: 100%;
-    vertical-align: center;
-    horizontal-align: center; }
-    .circle-image-btn StackLayout label, .change-settings-page .increase-btn StackLayout label, .change-settings-page .decrease-btn StackLayout label, .change-settings-page .cancel-btn StackLayout label, .change-settings-page .confirm-btn StackLayout label {
-      font-family: ionicons, "ionicons", Ionicons, "Ionicons";
-      font-size: 36;
-      vertical-align: center;
-      horizontal-align: center; }
+  horizontal-align: center;
+}
+.circle-image-btn StackLayout,
+.change-settings-page .increase-btn StackLayout,
+.change-settings-page .decrease-btn StackLayout,
+.change-settings-page .cancel-btn StackLayout,
+.change-settings-page .confirm-btn StackLayout {
+  height: 48;
+  width: 48;
+  border-radius: 24;
+  height: 100%;
+  width: 100%;
+  vertical-align: center;
+  horizontal-align: center;
+}
+.circle-image-btn StackLayout label,
+.change-settings-page .increase-btn StackLayout label,
+.change-settings-page .decrease-btn StackLayout label,
+.change-settings-page .cancel-btn StackLayout label,
+.change-settings-page .confirm-btn StackLayout label {
+  font-family: icomoon, 'icomoon', 'icomoon Regular';
+  font-size: 36;
+  vertical-align: center;
+  horizontal-align: center;
+}
 
 .center-label-base {
   horizontal-align: center;
   vertical-align: center;
   text-align: center;
-  text-wrap: true; }
+  text-wrap: true;
+}
 
 .ambient-show {
-  color: #888888; }
+  color: #888888;
+}
 
 .ambient-hide {
-  color: #000; }
+  color: #000;
+}
 
 .no-margin {
-  margin: 0, 0, 0, 0; }
+  margin: 0, 0, 0, 0;
+}
 
 .no-padding {
-  padding: 0, 0, 0, 0; }
+  padding: 0, 0, 0, 0;
+}
 
 /** Label Line Chart Styles **/
 .chart-title {
   horizontal-align: center;
   text-align: center;
-  font-size: 13; }
+  font-size: 13;
+}
 
 /** Battery Icon on Main page for Power Assist **/
 .batteryIcon {
-  background-color: #000; }
+  background-color: #000;
+}
 
 .bold {
-  font-weight: bold; }
+  font-weight: bold;
+}
 
 .fs10 {
-  font-size: 10; }
+  font-size: 10;
+}
 
 .fs12 {
-  font-size: 12; }
+  font-size: 12;
+}
 
 .fs14 {
-  font-size: 14; }
+  font-size: 14;
+}
 
 .fs16 {
-  font-size: 16; }
+  font-size: 16;
+}
 
 .fs18 {
-  font-size: 18; }
+  font-size: 18;
+}
 
 .fs20 {
-  font-size: 20; }
+  font-size: 20;
+}
 
 .fs22 {
-  font-size: 22; }
+  font-size: 22;
+}
 
 .fs24 {
-  font-size: 24; }
+  font-size: 24;
+}
 
 .fs26 {
-  font-size: 26; }
+  font-size: 26;
+}
 
 .fs28 {
-  font-size: 28; }
+  font-size: 28;
+}
 
 .fs30 {
-  font-size: 30; }
+  font-size: 30;
+}
 
 .fs32 {
-  font-size: 32; }
+  font-size: 32;
+}
 
 /** Fonts **/
 /** Label Line Chart Styles **/
 .chart-stack {
   vertical-align: bottom;
-  horizontal-align: center; }
+  horizontal-align: center;
+}
 
 .chart-max-line {
-  background-color: #89d4e3; }
+  background-color: #89d4e3;
+}
 
 .chart-max-value {
   font-size: 8;
   color: #fff;
-  vertical-align: top; }
+  vertical-align: top;
+}
 
 .battery-line {
   vertical-align: bottom;
   horizontal-align: center;
   background-color: #009ac7;
-  width: 5; }
+  width: 5;
+}
 
 .distance-line {
   vertical-align: bottom;
   horizontal-align: center;
   background-color: #009ac7;
-  width: 5; }
+  width: 5;
+}
 
 .line-label {
   text-align: center;
   horizontal-align: center;
   vertical-align: top;
   color: #fff;
-  font-size: 12; }
+  font-size: 12;
+}
 
 /** Fonts **/
 /** Change Settings Page **/
 .change-settings-page .increase-btn {
-  color: #fff; }
+  color: #fff;
+}
 
 .change-settings-page .decrease-btn {
-  color: #fff; }
+  color: #fff;
+}
 
 .change-settings-page .cancel-btn {
   color: #fff;
-  background-color: gray; }
+  background-color: gray;
+}
 
 .change-settings-page .confirm-btn {
   color: #fff;
-  background-color: #009ac7; }
+  background-color: #009ac7;
+}
 
 .change-settings-page .value-circle {
   height: 100;
@@ -173,30 +227,35 @@ Page {
   horizontal-align: center;
   vertical-align: center;
   background-color: #004f7e;
-  color: #fff; }
-  .change-settings-page .value-circle .changeSettingsTitle {
-    color: #fff;
-    width: 90%;
-    text-align: center;
-    horizontal-align: center;
-    vertical-align: center; }
-  .change-settings-page .value-circle .changeSettingsValue {
-    color: #fff;
-    width: 60%;
-    font-weight: bold;
-    text-align: center;
-    horizontal-align: center;
-    vertical-align: center; }
+  color: #fff;
+}
+.change-settings-page .value-circle .changeSettingsTitle {
+  color: #fff;
+  width: 90%;
+  text-align: center;
+  horizontal-align: center;
+  vertical-align: center;
+}
+.change-settings-page .value-circle .changeSettingsValue {
+  color: #fff;
+  width: 60%;
+  font-weight: bold;
+  text-align: center;
+  horizontal-align: center;
+  vertical-align: center;
+}
 
 /** Fonts **/
 .batteryIconStack {
-  background-color: #000; }
+  background-color: #000;
+}
 
 .powerAssistCircle {
   background-color: transparent;
   fill-color: transparent;
   width: 100%;
-  height: 100%; }
+  height: 100%;
+}
 
 .tapCircle {
   bar-color: #db4537;
@@ -204,7 +263,8 @@ Page {
   background-color: transparent;
   fill-color: transparent;
   width: 100%;
-  height: 100%; }
+  height: 100%;
+}
 
 .sdBatteryCircle {
   background-color: transparent;
@@ -212,7 +272,8 @@ Page {
   width: 90%;
   height: 90%;
   bar-color: #89d4e3;
-  rim-color: #414042; }
+  rim-color: #414042;
+}
 
 .watchBatteryCircle {
   background-color: transparent;
@@ -220,19 +281,22 @@ Page {
   width: 80%;
   height: 80%;
   bar-color: #009ac7;
-  rim-color: #414042; }
+  rim-color: #414042;
+}
 
 .topValue {
   color: #fff;
   font-size: 18;
   horizontal-align: center;
-  vertical-align: top; }
+  vertical-align: top;
+}
 
 .topValueDescription {
   color: #fff;
   font-size: 10;
   horizontal-align: center;
-  vertical-align: top; }
+  vertical-align: top;
+}
 
 .centerMessage {
   color: #fff;
@@ -240,45 +304,52 @@ Page {
   horizontal-align: center;
   vertical-align: center;
   text-align: center;
-  text-wrap: true; }
+  text-wrap: true;
+}
 
 .powerAssist-active {
   color: #fff;
-  background-color: #db4537; }
+  background-color: #db4537;
+}
 
 .powerAssist-disabled {
   color: #fff;
-  background-color: #414042; }
+  background-color: #414042;
+}
 
 .powerAssist-deactive {
   color: #fff;
-  background-color: #00a73c; }
+  background-color: #00a73c;
+}
 
 .powerAssist-training {
   color: #fff;
-  background-color: #00a73c; }
+  background-color: #00a73c;
+}
 
 .currentTime {
   color: #fff;
   font-size: 18;
   horizontal-align: center;
-  vertical-align: bottom; }
+  vertical-align: bottom;
+}
 
 .currentTimeMeridiem {
   color: #fff;
   font-size: 10;
   horizontal-align: center;
-  vertical-align: bottom; }
+  vertical-align: bottom;
+}
 
-/** Fonts **/
 /** Settings List on Main-Page **/
 .bullet-list-icon {
   font-size: 8;
-  font-family: ionicons, "ionicons", Ionicons, "Ionicons";
+  font-family: icomoon, 'icomoon', 'icomoon Regular';
   color: #fff;
   vertical-align: center;
   horizontal-align: center;
-  margin: 5 5 5 0; }
+  margin: 5 5 5 0;
+}
 
 .settings-label {
   font-size: 18;
@@ -286,7 +357,8 @@ Page {
   color: #fff;
   vertical-align: center;
   margin: 0;
-  padding: 10; }
+  padding: 10;
+}
 
 /** Fonts **/
 .updateProgressCircle {
@@ -296,7 +368,8 @@ Page {
   height: 100%;
   bar-color: #009ac7;
   rim-color: #696969;
-  spin-bar-color: #009ac7; }
+  spin-bar-color: #009ac7;
+}
 
 .action-label {
   font-size: 15;
@@ -305,64 +378,77 @@ Page {
   color: #fff;
   vertical-align: center;
   horizontal-align: center;
-  margin: 2 0 2 0; }
+  margin: 2 0 2 0;
+}
 
 .update-status-label {
   color: #fff;
   font-size: 18;
   vertical-align: bottom;
   text-align: center;
-  horizontal-align: center; }
+  horizontal-align: center;
+}
 
 .action-start {
   color: #fff;
-  background-color: #00a73c; }
+  background-color: #00a73c;
+}
 
 .action-pause {
   color: #fff;
-  background-color: #ff8900; }
+  background-color: #ff8900;
+}
 
 .action-resume {
   color: #fff;
-  background-color: #00a73c; }
+  background-color: #00a73c;
+}
 
 .action-close,
 .action-cancel {
   color: #fff;
-  background-color: #db4537; }
+  background-color: #db4537;
+}
 
 .action-back {
   height: 25%;
   color: #fff;
   background-color: #db4537;
   margin: 5 0 0 0;
-  padding: 0; }
+  padding: 0;
+}
 
 .action-force {
   color: #fff;
-  background-color: #ff8900; }
+  background-color: #ff8900;
+}
 
 .action-retry {
   color: #fff;
-  background-color: #00a73c; }
+  background-color: #00a73c;
+}
 
 .currentTime {
   color: #fff;
   font-size: 18;
   horizontal-align: center;
-  vertical-align: bottom; }
+  vertical-align: bottom;
+}
 
 .currentTimeMeridiem {
   color: #fff;
   font-size: 10;
   horizontal-align: center;
-  vertical-align: bottom; }
+  vertical-align: bottom;
+}
 
 label {
-  color: #fff; }
+  color: #fff;
+}
 
 .hr-blue {
   background-color: #336699;
   width: 100%;
   height: 2;
-  margin: 0; }
+  margin: 0;
+}
