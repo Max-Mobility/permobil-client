@@ -6,28 +6,28 @@
             <Label text="" class="hr-blue" />
             <ScrollView height="100%" marginBottom="{{ chinSize / 2 }}">
                 <GridLayout rows="*, *, *, *, *, *" columns="auto, *" paddingBottom="{{ insetPadding }}">
-                    <Label row="0" col="0" text="&#xf107;" class="back-icon" textWrap="true" />
+                    <Label row="0" col="0" text="&#xe907;" class="back-icon" textWrap="true" />
                     <Label row="0" col="1" text="{{ L('buttons.back') }}" tap="onCloseTap" class="settings-label" textWrap="true" />
 
                     <!--
-                    <Label row="1" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                    <Label row="1" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
                     <Label row="1" col="1" text="{{ L('settings.edit-profile') }}" id="editProfile" tap="{{ onEditProfileTap }}" class="settings-label" textWrap="true" />
                     -->
 
-                    <Label row="1" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                    <Label row="1" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
                     <Label row="1" col="1" text="{{ L('settings.distancegoal.title') }}" id="distanceGoal" tap="{{ onChangeSettingsItemTap }}" class="settings-label" textWrap="true" />
 
-                    <Label row="2" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                    <Label row="2" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
                     <Label row="2" col="1" text="{{ L('settings.coastgoal.title') }}" id="coastGoal" tap="{{ onChangeSettingsItemTap }}" class="settings-label" textWrap="true" />
 
-                    <Label row="3" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                    <Label row="3" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
                     <Label row="3" col="1" text="{{ L('settings.units.title') }}" id="units" tap="{{ onChangeSettingsItemTap }}" class="settings-label" textWrap="true" />
 
-                    <Label row="4" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                    <Label row="4" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
                     <Label row="4" col="1" text="{{ L('settings.pushsensitivity.title') }}" id="pushsensitivity" tap="{{ onChangeSettingsItemTap }}" class="settings-label" textWrap="true" />
 
                     <!--
-                    <Label row="5" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                    <Label row="5" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
                     <Label row="5" col="1" text="{{ L('settings.watchrequired.title') }}" id="watchrequired" tap="{{ onChangeSettingsItemTap }}" class="settings-label" textWrap="true" />
                     -->
                 </GridLayout>
