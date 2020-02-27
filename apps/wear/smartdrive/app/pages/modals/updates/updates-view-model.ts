@@ -18,6 +18,10 @@ import { SmartDrive, SmartDriveException } from '../../../models';
 import { SmartDriveData } from '../../../namespaces';
 import { BluetoothService, SmartDriveKinveyService, SqliteService } from '../../../services';
 import { sentryBreadCrumb } from '../../../utils';
+  SmartDriveKinveyService,
+  SqliteService
+} from '../../../services';
+import { sentryBreadCrumb } from '../../../utils';
 
 const ambientTheme = require('../../../scss/theme-ambient.css').toString();
 const defaultTheme = require('../../../scss/theme-default.css').toString();
