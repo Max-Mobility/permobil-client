@@ -175,14 +175,16 @@ export class UpdatesViewModel extends Observable {
       sentryBreadCrumb('updates init error: ' + err);
       Sentry.captureException(err);
     });
+
+    // now check for updates
+    await this.checkForUpdates().catch(err => {
+      sentryBreadCrumb('checkForUpdates::error: ' + err);
+    });
   }
 
   async onUpdateProgressCircleLoaded(args: EventData) {
+    Log.D('onUpdateProgressCircleLoaded: ' + args.object);
     this.updateProgressCircle = args.object as AnimatedCircle;
-
-    await this.checkForUpdates().catch(err => {
-      sentryBreadCrumb('onUpdatesPageLoaded::error: ' + err);
-    });
   }
 
   applyTheme(theme?: string) {
@@ -250,7 +252,7 @@ export class UpdatesViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => {});
+        await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
         this.updateSerialNumber();
       } catch (permissionsObj) {
