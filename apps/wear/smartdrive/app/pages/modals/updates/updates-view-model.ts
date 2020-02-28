@@ -82,7 +82,7 @@ export class UpdatesViewModel extends Observable {
     } catch (error) {
       Sentry.captureException(error);
     }
-  }
+  };
 
   private _otaStarted: boolean = false;
 
@@ -175,14 +175,14 @@ export class UpdatesViewModel extends Observable {
       sentryBreadCrumb('updates init error: ' + err);
       Sentry.captureException(err);
     });
+  }
+
+  async onUpdateProgressCircleLoaded(args: EventData) {
+    this.updateProgressCircle = args.object as AnimatedCircle;
 
     await this.checkForUpdates().catch(err => {
       sentryBreadCrumb('onUpdatesPageLoaded::error: ' + err);
     });
-  }
-
-  onUpdateProgressCircleLoaded(args: EventData) {
-    this.updateProgressCircle = args.object as AnimatedCircle;
   }
 
   applyTheme(theme?: string) {
