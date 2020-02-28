@@ -83,7 +83,7 @@ export class UpdatesViewModel extends Observable {
     } catch (error) {
       Sentry.captureException(error);
     }
-  };
+  }
 
   private _otaStarted: boolean = false;
 
