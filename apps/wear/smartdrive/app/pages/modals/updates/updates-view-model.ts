@@ -600,6 +600,9 @@ export class UpdatesViewModel extends Observable {
     const mcuVersion = this.currentVersions['SmartDriveMCU.ota'].version;
 
     // the smartdrive is not up to date, so we need to update it.
+    // reset the ota progress to 0 (since downloaing may have used it)
+    this.smartDriveOtaProgress = 0;
+
     // get info out to tell the user
     const version = SmartDriveData.Firmwares.versionByteToString(
       Math.max(mcuVersion, bleVersion)
@@ -616,8 +619,6 @@ export class UpdatesViewModel extends Observable {
       okButtonText: L('buttons.ok')
     });
     sentryBreadCrumb('Beginning SmartDrive update');
-    // reset the ota progress to 0 (since downloaing may have used it)
-    this.smartDriveOtaProgress = 0;
 
     const bleFw = new Uint8Array(
       this.currentVersions['SmartDriveBLE.ota'].data
