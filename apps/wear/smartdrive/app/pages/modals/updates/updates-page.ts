@@ -10,7 +10,6 @@ export function onShownModally(args: ShownModallyData) {
   closeCallback = args.closeCallback;
 
   updatesViewModel.onUpdatesPageLoaded(
-    page,
     args.context.bluetoothService,
     args.context.kinveyService,
     args.context.sqliteService,

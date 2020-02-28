@@ -1,4 +1,4 @@
-import { Observable, ObservableArray, Page } from '@nativescript/core';
+import { EventData, Observable, ObservableArray } from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { alert } from '@nativescript/core/ui/dialogs';
@@ -69,7 +69,6 @@ export class UpdatesViewModel extends Observable {
   private _savedSmartDriveAddress: string = null;
   private initialized: boolean = false;
   private wakeLock: any = null;
-  private _updatesPage: Page;
   private hasAppliedTheme: boolean = false;
 
   private _bluetoothService: BluetoothService;
@@ -83,7 +82,7 @@ export class UpdatesViewModel extends Observable {
     } catch (error) {
       Sentry.captureException(error);
     }
-  }
+  };
 
   private _otaStarted: boolean = false;
 
@@ -142,7 +141,6 @@ export class UpdatesViewModel extends Observable {
   }
 
   async onUpdatesPageLoaded(
-    page: Page,
     _bluetoothService: BluetoothService,
     _kinveyService: SmartDriveKinveyService,
     _sqliteService: SqliteService,
@@ -150,7 +148,6 @@ export class UpdatesViewModel extends Observable {
   ) {
     sentryBreadCrumb('onUpdatesPageLoaded');
 
-    this._updatesPage = page;
     this._bluetoothService = _bluetoothService;
     this._kinveyService = _kinveyService;
     this._sqliteService = _sqliteService;
@@ -174,29 +171,18 @@ export class UpdatesViewModel extends Observable {
     }
 
     // now init the ui
-    try {
-      await this.init();
-    } catch (err) {
+    await this.init().catch(err => {
       sentryBreadCrumb('updates init error: ' + err);
       Sentry.captureException(err);
-    }
+    });
 
-    // get child references
-    try {
-      // get references to update circle to control spin state
-      this.updateProgressCircle = this._updatesPage.getViewById(
-        'updateProgressCircle'
-      );
-    } catch (err) {
+    await this.checkForUpdates().catch(err => {
       sentryBreadCrumb('onUpdatesPageLoaded::error: ' + err);
-      Sentry.captureException(err);
-    }
+    });
+  }
 
-    try {
-      await this.checkForUpdates();
-    } catch (err) {
-      sentryBreadCrumb('onUpdatesPageLoaded::error: ' + err);
-    }
+  onUpdateProgressCircleLoaded(args: EventData) {
+    this.updateProgressCircle = args.object as AnimatedCircle;
   }
 
   applyTheme(theme?: string) {
@@ -205,13 +191,9 @@ export class UpdatesViewModel extends Observable {
     sentryBreadCrumb('applying theme');
     try {
       if (theme === 'ambient' || this.isAmbient) {
-        // Log.D('applying ambient theme');
         themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
-        // this.showAmbientTime();
       } else {
-        // Log.D('applying default theme');
         themes.applyThemeCss(defaultTheme, 'theme-default.scss');
-        // this.showMainDisplay();
       }
     } catch (err) {
       Log.E('apply theme error:', err);
@@ -426,7 +408,9 @@ export class UpdatesViewModel extends Observable {
         class: actionClass
       };
     });
+
     // now set the renderable bound data
+    this.smartDriveOtaProgress = progress;
     this.smartDriveOtaActions.splice(
       0,
       this.smartDriveOtaActions.length,
@@ -478,6 +462,7 @@ export class UpdatesViewModel extends Observable {
   async checkForUpdates() {
     sentryBreadCrumb('Checking for updates');
     // update display of update progress
+    this.smartDriveOtaProgress = 0;
     this.smartDriveOtaState = L('updates.checking-for-updates');
     // @ts-ignore
     this.updateProgressCircle.spin();
