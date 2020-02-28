@@ -9,6 +9,7 @@ import { format } from 'date-fns';
 import debounce from 'lodash/debounce';
 import flatten from 'lodash/flatten';
 import last from 'lodash/last';
+import { AnimatedCircle } from 'nativescript-animated-circle';
 import * as LS from 'nativescript-localstorage';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Sentry } from 'nativescript-sentry';
@@ -38,6 +39,8 @@ const dateLocales = {
 };
 
 export class UpdatesViewModel extends Observable {
+  @Prop() updateProgressCircle: AnimatedCircle;
+  @Prop() smartDriveOtaProgress: number = 0;
   @Prop() smartDriveOtaState: string = null;
   @Prop() smartDriveOtaActions = new ObservableArray();
   @Prop() watchSerialNumber: string = '---';
@@ -80,7 +83,7 @@ export class UpdatesViewModel extends Observable {
     } catch (error) {
       Sentry.captureException(error);
     }
-  }
+  };
 
   private _otaStarted: boolean = false;
 
@@ -175,6 +178,17 @@ export class UpdatesViewModel extends Observable {
       await this.init();
     } catch (err) {
       sentryBreadCrumb('updates init error: ' + err);
+      Sentry.captureException(err);
+    }
+
+    // get child references
+    try {
+      // get references to update circle to control spin state
+      this.updateProgressCircle = this._updatesPage.getViewById(
+        'updateProgressCircle'
+      );
+    } catch (err) {
+      sentryBreadCrumb('onUpdatesPageLoaded::error: ' + err);
       Sentry.captureException(err);
     }
 
@@ -529,6 +543,8 @@ export class UpdatesViewModel extends Observable {
       sentryBreadCrumb('downloading firmwares');
       // update progress text
       this.smartDriveOtaState = L('updates.downloading-new-firmwares');
+      // reset ota progress to 0 to show downloading progress
+      this.smartDriveOtaProgress = 0;
       // now download the files
       try {
         for (const fmd of fileMetaDatas) {
@@ -600,6 +616,9 @@ export class UpdatesViewModel extends Observable {
       okButtonText: L('buttons.ok')
     });
     sentryBreadCrumb('Beginning SmartDrive update');
+    // reset the ota progress to 0 (since downloaing may have used it)
+    this.smartDriveOtaProgress = 0;
+
     const bleFw = new Uint8Array(
       this.currentVersions['SmartDriveBLE.ota'].data
     );
