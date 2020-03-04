@@ -1,70 +1,17 @@
 // Definitions.
-import { Point, CustomLayoutView as CustomLayoutViewDefinition, dip } from '.';
-import { GestureTypes, GestureEventData } from '../../gestures';
-// Types.
-import {
-  ViewCommon,
-  layout,
-  isEnabledProperty,
-  originXProperty,
-  originYProperty,
-  automationTextProperty,
-  isUserInteractionEnabledProperty,
-  traceEnabled,
-  traceWrite,
-  traceCategories,
-  traceNotifyEvent,
-  paddingLeftProperty,
-  paddingTopProperty,
-  paddingRightProperty,
-  paddingBottomProperty,
-  Color,
-  EventData,
-  ShowModalOptions
-} from './view-common';
-
-import {
-  perspectiveProperty,
-  Length,
-  PercentLength,
-  Visibility,
-  HorizontalAlignment,
-  VerticalAlignment,
-  visibilityProperty,
-  opacityProperty,
-  horizontalAlignmentProperty,
-  verticalAlignmentProperty,
-  minWidthProperty,
-  minHeightProperty,
-  widthProperty,
-  heightProperty,
-  marginLeftProperty,
-  marginTopProperty,
-  marginRightProperty,
-  marginBottomProperty,
-  rotateProperty,
-  rotateXProperty,
-  rotateYProperty,
-  scaleXProperty,
-  scaleYProperty,
-  translateXProperty,
-  translateYProperty,
-  zIndexProperty,
-  backgroundInternalProperty,
-  androidElevationProperty,
-  androidDynamicElevationOffsetProperty
-} from '../../styling/style-properties';
-
-import { Background, ad as androidBackground } from '../../styling/background';
+import { CustomLayoutView as CustomLayoutViewDefinition, dip, Point } from '.';
+import { android as androidApp, AndroidActivityBackPressedEventData } from '../../../application';
+import { device, screen } from '../../../platform';
 import { profile } from '../../../profiling';
-import { topmost } from '../../frame/frame-stack';
-import { screen } from '../../../platform';
-import {
-  AndroidActivityBackPressedEventData,
-  android as androidApp
-} from '../../../application';
-import { device } from '../../../platform';
 import lazy from '../../../utils/lazy';
+import { topmost } from '../../frame/frame-stack';
+import { GestureEventData, GestureTypes } from '../../gestures';
+import { ad as androidBackground, Background } from '../../styling/background';
+import { androidDynamicElevationOffsetProperty, androidElevationProperty, backgroundInternalProperty, heightProperty, HorizontalAlignment, horizontalAlignmentProperty, Length, marginBottomProperty, marginLeftProperty, marginRightProperty, marginTopProperty, minHeightProperty, minWidthProperty, opacityProperty, PercentLength, perspectiveProperty, rotateProperty, rotateXProperty, rotateYProperty, scaleXProperty, scaleYProperty, translateXProperty, translateYProperty, VerticalAlignment, verticalAlignmentProperty, Visibility, visibilityProperty, widthProperty, zIndexProperty } from '../../styling/style-properties';
+// Types.
+import { automationTextProperty, EventData, isEnabledProperty, isUserInteractionEnabledProperty, layout, originXProperty, originYProperty, paddingBottomProperty, paddingLeftProperty, paddingRightProperty, paddingTopProperty, ShowModalOptions, traceCategories, traceEnabled, traceNotifyEvent, traceWrite, ViewCommon } from './view-common';
+
+
 
 export * from './view-common';
 
@@ -84,8 +31,16 @@ let TouchListener: TouchListener;
 let DialogFragment: DialogFragment;
 
 // enables us to call the theme in the modal creation (perf++) https://github.com/Max-Mobility/permobil-client/issues/749
-const swipeTheme = (com as any).permobil.smartdrive.wearos.R.style
-  .SwipeableActivityTheme;
+const styleClass = java.lang.Class.forName(
+  'com.permobil.smartdrive.wearos.R$style'
+); //$ for the inner stuff .id
+const prop = android.util.Property.of(
+  styleClass,
+  java.lang.Integer.class,
+  'SwipeableActivityTheme'
+);
+// for swipe dismiss modals on WearOS apps
+const swipeTheme = prop.get(null).intValue();
 
 function perfNow(label: string) {
   console.log(
