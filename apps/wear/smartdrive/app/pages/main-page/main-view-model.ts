@@ -26,8 +26,8 @@ import { BluetoothService, SensorChangedEventData, SensorService, SERVICES, Sett
 import { isNetworkAvailable, sentryBreadCrumb } from '../../utils';
 import { updatesViewModel } from '../modals/updates/updates-page';
 
-const ambientTheme = require('../../scss/theme-ambient.scss').toString();
-const defaultTheme = require('../../scss/theme-default.scss').toString();
+const ambientTheme = require('../../scss/theme-ambient.scss');
+const defaultTheme = require('../../scss/theme-default.scss');
 
 const dateLocales = {
   da: require('date-fns/locale/da'),
@@ -921,10 +921,10 @@ export class MainViewModel extends Observable {
     try {
       if (theme === 'ambient' || this.isAmbient) {
         this._showAmbientTime();
-        themes.applyThemeCss(ambientTheme, 'theme-ambient.css');
+        themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
       } else {
         this._showMainDisplay();
-        themes.applyThemeCss(defaultTheme, 'theme-default.css');
+        themes.applyThemeCss(defaultTheme, 'theme-default.scss');
       }
     } catch (err) {
       Sentry.captureException(err);
