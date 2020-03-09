@@ -20,6 +20,9 @@
       "@permobil/*": ["../../@permobil/*"],
       "@permobil/core/*": ["../../@permobil/core/*"],
       "@permobil/nativescript/*": ["../../@permobil/nativescript/*"],
+      "@nativescript/core": [
+        "../../../forked-plugins/nativescript-core-3-9-2020/*"
+      ],
       "nativescript-bluetooth": [
         "../../forked-plugins/nativescript-bluetooth/*"
       ]
