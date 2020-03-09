@@ -76,3 +76,8 @@ this.owner.verticalAlignment = 'middle';
 //   this.owner.verticalAlignment = 'stretch';
 // }
 ```
+
+
+4. ui/core/styling/style-scope.ts 
+
+- Implement pending PR https://github.com/NativeScript/NativeScript/pull/8380/files to fix changing scss/theme at runtime
