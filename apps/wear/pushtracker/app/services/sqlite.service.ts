@@ -20,11 +20,10 @@ export class SqliteService {
       if (this._db) {
         return Promise.resolve(this._db);
       } else {
-        return new Sqlite(SqliteService.DatabaseName)
-          .then((db: any) => {
-            this._db = db;
-            return this._db;
-          });
+        return new Sqlite(SqliteService.DatabaseName).then((db: any) => {
+          this._db = db;
+          return this._db;
+        });
       }
     } catch (err) {
       return Promise.reject(err);
