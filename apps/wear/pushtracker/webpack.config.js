@@ -307,7 +307,10 @@ module.exports = env => {
 
         {
           test: /\.scss$/,
-          use: ['nativescript-dev-webpack/css2json-loader', 'sass-loader']
+          use: [
+            { loader: 'css-loader', options: { url: false } },
+            'sass-loader'
+          ]
         },
 
         {
