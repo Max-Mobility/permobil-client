@@ -1,15 +1,66 @@
 // Definitions.
 import { CustomLayoutView as CustomLayoutViewDefinition, dip, Point } from '.';
-import { android as androidApp, AndroidActivityBackPressedEventData } from '../../../application';
+import {
+  android as androidApp,
+  AndroidActivityBackPressedEventData
+} from '../../../application';
 import { device, screen } from '../../../platform';
 import { profile } from '../../../profiling';
 import lazy from '../../../utils/lazy';
 import { topmost } from '../../frame/frame-stack';
 import { GestureEventData, GestureTypes } from '../../gestures';
 import { ad as androidBackground, Background } from '../../styling/background';
-import { androidDynamicElevationOffsetProperty, androidElevationProperty, backgroundInternalProperty, heightProperty, HorizontalAlignment, horizontalAlignmentProperty, Length, marginBottomProperty, marginLeftProperty, marginRightProperty, marginTopProperty, minHeightProperty, minWidthProperty, opacityProperty, PercentLength, perspectiveProperty, rotateProperty, rotateXProperty, rotateYProperty, scaleXProperty, scaleYProperty, translateXProperty, translateYProperty, VerticalAlignment, verticalAlignmentProperty, Visibility, visibilityProperty, widthProperty, zIndexProperty } from '../../styling/style-properties';
+import {
+  androidDynamicElevationOffsetProperty,
+  androidElevationProperty,
+  backgroundInternalProperty,
+  heightProperty,
+  HorizontalAlignment,
+  horizontalAlignmentProperty,
+  Length,
+  marginBottomProperty,
+  marginLeftProperty,
+  marginRightProperty,
+  marginTopProperty,
+  minHeightProperty,
+  minWidthProperty,
+  opacityProperty,
+  PercentLength,
+  perspectiveProperty,
+  rotateProperty,
+  rotateXProperty,
+  rotateYProperty,
+  scaleXProperty,
+  scaleYProperty,
+  translateXProperty,
+  translateYProperty,
+  VerticalAlignment,
+  verticalAlignmentProperty,
+  Visibility,
+  visibilityProperty,
+  widthProperty,
+  zIndexProperty
+} from '../../styling/style-properties';
 // Types.
-import { automationTextProperty, EventData, isEnabledProperty, isUserInteractionEnabledProperty, layout, originXProperty, originYProperty, paddingBottomProperty, paddingLeftProperty, paddingRightProperty, paddingTopProperty, ShowModalOptions, traceCategories, traceEnabled, traceNotifyEvent, traceWrite, ViewCommon } from './view-common';
+import {
+  automationTextProperty,
+  EventData,
+  isEnabledProperty,
+  isUserInteractionEnabledProperty,
+  layout,
+  originXProperty,
+  originYProperty,
+  paddingBottomProperty,
+  paddingLeftProperty,
+  paddingRightProperty,
+  paddingTopProperty,
+  ShowModalOptions,
+  traceCategories,
+  traceEnabled,
+  traceNotifyEvent,
+  traceWrite,
+  ViewCommon
+} from './view-common';
 
 export * from './view-common';
 
@@ -29,24 +80,28 @@ let TouchListener: TouchListener;
 let DialogFragment: DialogFragment;
 
 // enables us to call the theme in the modal creation (perf++) https://github.com/Max-Mobility/permobil-client/issues/749
-const getSwipeTheme = () => {
-  if ((com as any).permobil?.smartdrive?.wearos) {
+function getSwipeTheme() {
+  if ((com as any)?.permobil?.smartdrive?.wearos) {
     const styleClass = java.lang.Class.forName(
       'com.permobil.smartdrive.wearos.R$style'
     ); //$ for the inner stuff .id
 
-    const prop = android.util.Property.of(
-      styleClass,
-      java.lang.Integer.class,
-      'SwipeableActivityTheme'
-    );
+    if (styleClass) {
+      const prop = android.util.Property.of(
+        styleClass,
+        java.lang.Integer.class,
+        'SwipeableActivityTheme'
+      );
 
-    // for swipe dismiss modals on WearOS apps
-    return prop.get(null).intValue();
+      // for swipe dismiss modals on WearOS apps
+      return prop.get(null).intValue();
+    } else {
+      return null;
+    }
   } else {
     return null;
   }
-};
+}
 const swipeTheme = getSwipeTheme();
 
 function perfNow(label: string) {
