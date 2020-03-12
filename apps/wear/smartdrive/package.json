@@ -14,7 +14,7 @@
   "dependencies": {
     "@maxmobility/nativescript-wear-os-comms": "file:../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/src",
     "@maxmobility/private-keys": "github:autochair/maxmobility-private-keys#master",
-    "@nativescript/core": "file:../../../forked-plugins/nativescript-core-6.4.1",
+    "@nativescript/core": "file:../../../forked-plugins/nativescript-core-3-9-2020",
     "@permobil/core": "file:../../../@permobil/core",
     "@permobil/nativescript": "file:../../../@permobil/nativescript",
     "buffer": "~5.2.1",
