@@ -35,10 +35,10 @@
     },
     "sd": {
       "2_0": [
-        "\"Tilføjet dynamisk SwitchControl-knapindikation, så knap-LED(er) viser strømforsyning og kørselstilstand\n - Hvis PushTracker / E2 er tilsluttet og / eller SwitchControl er aktiveret, blinker LED(er) i forskellige mønstre.\n - Hvis motoren kører, vil LED(er) have konstant lys.\"",
-        "\"SmartDrive kan konfigureres til Momentary eller Latched SwitchControl-tilstande\n - I standardtilstanden (Momentary) starter SmartDrive motoren med at øge dens hastighed til den konfigurerede SwitchControl Max Speed, mens en af knapperne holdes nede.\n - I låst tilstand, (Latched)  starter SmartDrive med at øge hastigheden op til den konfigurerede SwitchControl Max Speed, mens en af knapperne holdes nede. Når den holdte knap slippes, bliver SmartDrive ved med at køre med den aktuelle hastighed. Deaktiver kørslen ved at trykke på en knap.\"",
+        "Tilføjet dynamisk SwitchControl-knapindikation, så knap-LED(er) viser strømforsyning og kørselstilstand\n - Hvis PushTracker / E2 er tilsluttet og / eller SwitchControl er aktiveret, blinker LED(er) i forskellige mønstre.\n - Hvis motoren kører, vil LED(er) have konstant lys.",
+        "SmartDrive kan konfigureres til Momentary eller Latched SwitchControl-tilstande\n - I standardtilstanden (Momentary) starter SmartDrive motoren med at øge dens hastighed til den konfigurerede SwitchControl Max Speed, mens en af knapperne holdes nede.\n - I låst tilstand, (Latched)  starter SmartDrive med at øge hastigheden op til den konfigurerede SwitchControl Max Speed, mens en af knapperne holdes nede. Når den holdte knap slippes, bliver SmartDrive ved med at køre med den aktuelle hastighed. Deaktiver kørslen ved at trykke på en knap.",
         "SmartDrive SwitchControl har sin egen konfigurerbare Max Speed indstilling, som er uafhængig af Max Speed indstillingen for PushTracker / E2",
-        "\"SmartDrive er nu konfigureret til at bippe en gang, hver gang dens status ændres til strømforsyning TIL\n - Denne statusændring kan være fra en PushTracker / E2- og SwitchControl-knap (er).\n - Denne statusindstilling kan deaktiveres enten via SmartDrive MX2+ -appen på din PushTracker E2 eller ved hjælp af PushTracker Mobile-appen på din smartphone, hvis du ikke har en E2. \""
+        "SmartDrive er nu konfigureret til at bippe en gang, hver gang dens status ændres til strømforsyning TIL\n - Denne statusændring kan være fra en PushTracker / E2- og SwitchControl-knap (er).\n - Denne statusindstilling kan deaktiveres enten via SmartDrive MX2+ -appen på din PushTracker E2 eller ved hjælp af PushTracker Mobile-appen på din smartphone, hvis du ikke har en E2."
       ]
     }
   },
@@ -76,14 +76,14 @@
     },
     "connect": "Kunne ikke oprette forbindelse til SmartDrive.",
     "could-not-enable-tap-sensor": "Kunne ikke aktivere tryk sensor.",
-    "downloading-translations": "Kunne ikke downloade sprogfilerne til din enhed.",
+    "downloading-translations": "Kunne ikke hente de opdaterede sprogfiler.",
     "getting-error": "Kunne ikke modtage SmartDrive-fejl.",
     "must-wear-watch": "[Kontroller for håndled] Indstillingen er aktiveret, derfor skal smarturet bæres for at kontrollere din SmartDrive.",
     "no-network": "Forbindelse til skyen er ikke tilgængelig. Sørg for, at din smartwatch er tilsluttet internettet enten via Wi-Fi eller din telefon.",
     "no-smartdrive-paired": "Ingen SmartDrive parret.",
     "no-smartdrives-found": "Ingen SmartDrives fundet i nærheden.",
     "permissions": "Kan ikke udføre den anmodede handling. Krævede tilladelser blev ikke tildelt.",
-    "power-assist-timeout": "Power assist blev automatisk deaktiveret via timeout på grund af inaktivitet. Se SmartDrive MX2-indstillingen [Power Assist Timeout] for mere information.",
+    "power-assist-timeout": "For at hjælpe med at spare på batteriet blev strømassistenten automatisk slukket på grund af inaktivitet. Se \"Power Assist Timeout\" i SmartDrive-indstillingsmenuen for mere information.",
     "saving-error": "Gem SmartDrive-fejl mislykkedes.",
     "saving-usage": "Gemningen af brug mislykkedes.",
     "scan": "Kunne ikke scanne.",
@@ -92,7 +92,7 @@
     "too-many-smartdrives-found": "Flere SmartDrives fundet. Sørg for, at der kun er en SmartDrive på i nærheden, når du parrer."
   },
   "languages": {
-    "cs": "tjekkisk",
+    "cs": "Tjekkisk",
     "da": "Dansk",
     "de": "Tysk",
     "en": "Engelsk",
@@ -105,7 +105,7 @@
     "nb": "Norsk [bokmål]",
     "nl": "Hollandsk",
     "pl": "Polere",
-    "pt": "portugisisk",
+    "pt": "Portugisisk",
     "sv": "Svensk",
     "zh": "Kinesisk [traditionelt]"
   },
@@ -128,7 +128,7 @@
     },
     "sd": {
       "state": {
-        "already-uptodate": "Allerede ajour. Vælg Tvung for at opdatere alligevel.",
+        "already-uptodate": "Allerede opdateret. Vælg Tvung for at opdatere alligevel.",
         "awaiting-ble-ready": "Venter på BT",
         "awaiting-connection": "Venter på forbindelse",
         "awaiting-mcu-ready": "Venter på SD",
@@ -190,11 +190,11 @@
       "controlmode": "MX2+: Standard, gestusbaseret aktivering af SmartDrive. I MX2+ kontroltilstand vil et dobbelttryk starte motoren ved at øge dens hastighed, et enkelt tryk vil holde den aktuelle hastighed, og et dobbelttryk deaktiverer kørslen.\n\nMX2: I MX2-kontroltilstand begynder SmartDrive at køre, når den registrerer dit skub, og deaktiverer kørslen, når du tapper. Bemærk, at dette er en supportindstilling fra tidligere modeller.\n\nMX1: I MX1-kontroltilstand begynder SmartDrive at køre, når den registrerer dit skub, og vil stoppe med at køre, når du tapper, eller når du bremser på drivringene. Bemærk, at dette er en supportindstilling fra tidligere modeller.",
       "maxspeed": "Den maksimale hastighed SmartDrive kan opnå, når den styres af din smartwatch.",
       "powerassistbuzzer": "Når den er aktiveret, bipper SmartDrive, når der oprettes en forbindelse fra en fjernenhed, eller når SwitchControl tages ud af standbytilstand.",
-      "powerassisttimeout": "SmartDrive MX2 vil automatisk deaktivere strømassistenten efter det specificerede tidspunkt, hvis brugeren har strømassistent aktiv og er tilsluttet SmartDrive, men ikke har aktiveret motoren, før timeout udløber.\n\nBemærk: SmartDrive MX2 deaktiverer automatisk strømforsyningen efter 1 minut, hvis den ikke er tilsluttet SmartDrive.",
+      "powerassisttimeout": "Når den er tilsluttet SmartDrive med strømforsyning TIL, hvis motoren ikke er blevet kørt i den valgte tidsperiode, slukker den automatisk strømforsyningen.\n\nHvis strømforsyning er TIL, men den ikke er tilsluttet SmartDrive, slukker den automatisk for strømforsyning efter 1 minut.",
       "switchcontrolmode": "Øjeblikkelig: Standard SwitchControl tilstand, hvor SmartDrive vil begynde at køre motoren ved at hæve dens hastighed til den konfigurerede SwitchControl max hastighed, når en af SwitchControl knapperne holdes nede. Når den holdte knap frigøres, eller begge knapper [hvis de findes] trykkes, deaktiveres kørslen. Bemærk, at enheden ikke sættes i standbytilstand ved deaktivering.\n\nLåst: I låst SwitchControl tilstand vil SmartDrive begynde at køre motoren ved at hæve dens hastighed til den konfigurerede SwitchControl Max hastighed, når en af SwitchControl knapperne holdes nede. Når den holdte knap frigøres, vil SmartDrive fortsætte med at  køre med den aktuelle hastighed. Når en af knapperne trykkes og frigøres igen, eller begge knapper [hvis til stede] trykkes, deaktiveres kørslen.  Bemærk, at enheden ikke sættes i standbytilstand ved deaktivering.",
       "switchcontrolspeed": "Den maksimale hastighed SmartDrive kan opnå, når den styres af SwitchControl.",
       "tapsensitivity": "Følsomheden for tap-bevægelsen, der bruges til at aktivere og deaktivere kørslen. Jo lavere procent, desto hårdere er du nødt til at trykke - 100% er den mest følsomme og derfor lettest at tappe, og 10% er den mindst følsomme og derfor sværeste at tappe.",
-      "units": "Enhedssystemet eller måleenhederne til at vise hastighed og afstand inden for brugergrænsefladerne. Vælg enten Imperial [mil og mph] eller Metric [km og km/t].",
+      "units": "Enhedssystemet eller måleenhederne til at vise hastighed og afstand inden for brugergrænsefladerne. Vælg enten Imperial [mil og mph] eller Metric [km og km / t].",
       "wearcheck": "Når det er aktiveret, skal smarturet være på håndleddet for at tænde strømforsyningen. Hvis strømforsyningen er TIL, og smarturet opdager, at det ikke længere er på håndleddet, slukker det automatisk strømforsyningen."
     },
     "error-history": "Fejlhistorik",
@@ -210,7 +210,7 @@
     },
     "scanning": "Scanning efter SmartDrive til parring ...",
     "select-smartdrive": "Vælg SmartDrive",
-    "syncing-with-server": "Synkronisering med server",
+    "syncing-with-server": "Synkronisering med server ...",
     "tap-sensitivity": "Tryk på følsomhed",
     "title": "SmartDrive indstillinger",
     "units": "Enheder",
@@ -235,7 +235,7 @@
     "metric": "Metrisk",
     "speed": {
       "english": "mph",
-      "metric": "km/t"
+      "metric": "km / t"
     }
   },
   "updates": {
@@ -254,7 +254,7 @@
       "timeout": "SmartDrive-opdateringer er afbrudt."
     },
     "failed": "SmartDrive opdateringer mislykkedes.",
-    "initializing": "Henter opdateringer…",
+    "initializing": "Henter opdateringer ...",
     "status": "Opdateringsstatus",
     "success": "SmartDrive opdateringer afsluttet med succes!",
     "timeout": "SmartDrive opdateringer er udløbet.",

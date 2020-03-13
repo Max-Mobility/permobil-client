@@ -6,7 +6,7 @@
     "sd-serial-number": "Numer seryjny SmartDrive",
     "smartdrive-serial-number-info": "Aby uzyskać dostęp do numeru seryjnego SmartDrive, musisz połączyć się z aplikacją mobilną PushTracker.",
     "title": "Informacje",
-    "version": "Wersja aplikacji SmartDrive MX2 Wear OS (SW)",
+    "version": "Wersja aplikacji SmartDrive MX2+ Wear OS (SW)",
     "watch-serial-number": "Numer seryjny smartwatcha"
   },
   "app-connection": {
@@ -35,10 +35,10 @@
     },
     "sd": {
       "2_0": [
-        "„Dodano dynamiczne wskazanie przycisku SwitchControl, więc diody LED przycisków wskazują wspomaganie i stan jazdy\n - Jeśli PushTracker / E2 jest podłączony i / lub włączone jest sterowanie przełącznikiem, diody LED będą migać w różnych wzorach.\n - Jeśli silnik jedzie, diody LED będą świecić. ”",
-        "„SmartDrive można skonfigurować na tryby chwilowego lub zatrzaskowego przełączania sterowania\n - W domyślnym trybie chwilowym SmartDrive rozpocznie napędzanie silnika, zwiększając prędkość do skonfigurowanej maksymalnej prędkości SwitchControl tylko podczas przytrzymania jednego z przycisków.\n - W trybie zatrzaśniętym SmartDrive zacznie zwiększać prędkość do skonfigurowanej maksymalnej prędkości SwitchControl, gdy jeden z przycisków zostanie przytrzymany. Po zwolnieniu przytrzymanego przycisku SmartDrive będzie jechał z aktualną prędkością. Dezaktywuj jazdę, naciskając przycisk. ”",
+        "Dodano dynamiczne wskazanie przycisku SwitchControl, więc diody LED przycisków wskazują wspomaganie i stan jazdy\n - Jeśli PushTracker / E2 jest podłączony i / lub włączone jest sterowanie przełącznikiem, diody LED będą migać w różnych wzorach.\n - Jeśli silnik jedzie, diody LED będą świecić.",
+        "SmartDrive można skonfigurować na tryby chwilowego lub zatrzaskowego przełączania sterowania\n - W domyślnym trybie chwilowym SmartDrive rozpocznie napędzanie silnika, zwiększając prędkość do skonfigurowanej maksymalnej prędkości SwitchControl tylko podczas przytrzymania jednego z przycisków.\n - W trybie zatrzaśniętym SmartDrive zacznie zwiększać prędkość do skonfigurowanej maksymalnej prędkości SwitchControl, gdy jeden z przycisków zostanie przytrzymany. Po zwolnieniu przytrzymanego przycisku SmartDrive będzie jechał z aktualną prędkością. Dezaktywuj jazdę, naciskając przycisk.",
         "SmartDrive SwitchControl ma własne konfigurowalne ustawienie prędkości maksymalnej, które jest niezależne od ustawienia prędkości maksymalnej dla PushTracker / E2",
-        "„SmartDrive jest teraz skonfigurowany do wydawania jednego sygnału dźwiękowego za każdym razem, gdy jego stan zostanie zmieniony na włączenie wspomagania zasilania\n - Ta zmiana stanu może nastąpić za pomocą przycisków PushTracker / E2 i SwitchControl.\n - To ustawienie wskazania można wyłączyć za pomocą aplikacji SmartDrive MX2 na urządzeniu PushTracker E2 lub za pomocą aplikacji mobilnej PushTracker na smartfonie, jeśli nie masz E2. ”"
+        "SmartDrive jest teraz skonfigurowany do wydawania jednego sygnału dźwiękowego za każdym razem, gdy jego stan zostanie zmieniony na włączenie wspomagania zasilania\n - Ta zmiana stanu może nastąpić za pomocą przycisków PushTracker / E2 i SwitchControl.\n - To ustawienie wskazania można wyłączyć za pomocą aplikacji SmartDrive MX2+ na urządzeniu PushTracker E2 lub za pomocą aplikacji mobilnej PushTracker na smartfonie, jeśli nie masz E2."
       ]
     }
   },
@@ -64,7 +64,7 @@
       "overcurrent": "[ERR: 003] SD Current Spike",
       "overtemperature": "[ERR: 004] Przegrzanie SD"
     },
-    "loading": "Ładuję...",
+    "loading": "Ładuję ...",
     "no-errors": "Żadne błędy SmartDrive nie zostały zarejestrowane ani odebrane.",
     "title": "Historia błędów SmartDrive"
   },
@@ -112,7 +112,7 @@
   "menu": {
     "about": "O",
     "settings": "Ustawienia",
-    "title": "Menu SmartDrive MX2",
+    "title": "Menu SmartDrive MX2+",
     "training": "Stuknij opcję Trening",
     "updates": "Aktualizacje bezprzewodowe"
   },
@@ -187,7 +187,7 @@
     "control-mode": "Tryb sterowania",
     "description": {
       "acceleration": "Przyspieszenie lub prędkość rampy SmartDrive.",
-      "controlmode": "MX2: Domyślna operacja SmartDrive oparta na gestach. W trybie sterowania MX2 podwójne dotknięcie rozpocznie napędzanie silnika przez zwiększenie jego prędkości, pojedyncze dotknięcie wybiegnie z bieżącą prędkością, a podwójne dotknięcie spowoduje dezaktywację jazdy.\n\nMX2: W trybie sterowania MX2 SmartDrive rozpocznie jazdę po wykryciu naciśnięcia i dezaktywuje jazdę po dotknięciu. Uwaga: jest to opcja obsługi starszych wersji.\n\nMX1: W trybie sterowania MX1 SmartDrive rozpocznie jazdę po wykryciu twojego popchnięcia i przestanie jeździć po stuknięciu lub po hamowaniu uchwytami. Uwaga: jest to opcja obsługi starszych wersji.",
+      "controlmode": "MX2+: Domyślna operacja SmartDrive oparta na gestach. W trybie sterowania MX2+ podwójne dotknięcie rozpocznie napędzanie silnika przez zwiększenie jego prędkości, pojedyncze dotknięcie wybiegnie z bieżącą prędkością, a podwójne dotknięcie spowoduje dezaktywację jazdy.\n\nMX2: W trybie sterowania MX2 SmartDrive rozpocznie jazdę po wykryciu naciśnięcia i dezaktywuje jazdę po dotknięciu. Uwaga: jest to opcja obsługi starszych wersji.\n\nMX1: W trybie sterowania MX1 SmartDrive rozpocznie jazdę po wykryciu twojego popchnięcia i przestanie jeździć po stuknięciu lub po hamowaniu uchwytami. Uwaga: jest to opcja obsługi starszych wersji.",
       "maxspeed": "Maksymalna prędkość, z jaką SmartDrive może jeździć, gdy jest kontrolowany przez smartwatch.",
       "powerassistbuzzer": "Po włączeniu SmartDrive wyda sygnał dźwiękowy za każdym razem, gdy zostanie nawiązane połączenie ze zdalnego urządzenia lub gdy SwitchControl zostanie wyłączony ze stanu gotowości.",
       "powerassisttimeout": "SmartDrive MX2 automatycznie dezaktywuje wspomaganie po określonym czasie, jeśli użytkownik ma aktywne wspomaganie i jest podłączony do SmartDrive, ale nie aktywował silnika przed upływem limitu czasu.\n\nUwaga: SmartDrive MX2 automatycznie dezaktywuje wspomaganie po 1 minucie, jeśli nie jest podłączony do SmartDrive.",

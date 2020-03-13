@@ -35,10 +35,10 @@
     },
     "sd": {
       "2_0": [
-        "\"Dynamische Knoppenbesturing-indicatie toegevoegd, zoals de LED ('s) in de knoppen power assist en rijstatus aangeven\n - Als PushTracker / E2 is aangesloten en / of schakelbesturing is ingeschakeld, knipperen LED ('s) in verschillende patronen.\n - Als de motor aan het rijden is, branden de LED ('s) continu. \"",
-        "\"SmartDrive kan worden geconfigureerd voor Direct of Geschakeld knoppenbesturing mode \n - In de Direct-mode start de SmartDrive de motor bij het indrukken en vasthouden van een van de knoppen door de snelheid op te voeren naar de ingestelde Max Snelheid Knoppenbesturing. Deactiveer het rijden door de knop los te laten. \n - In de vergrendelde modus zal de SmartDrive bij het indrukken en vasthouden van een van de knoppen zijn snelheid verhogen naar de ingestelde Max Snelheid Knoppenbesturing. Wanneer de vastgehouden knop wordt losgelaten, blijft de SmartDrive rijden met de huidige snelheid. Deactiveer het rijden door op een knop te drukken.\"",
-        "SmartDrive Knoppenbesturing heeft zijn eigen instelbare  Maximum Snelheid instelling die onafhankelijk is van de Maximum Snelheid instelling voor de PushTracker / E2",
-        "\"SmartDrive is nu geconfigureerd om één keer te piepen wanneer de status wordt gewijzigd in Power Assist ON\n - Deze statusverandering kan van een PushTracker / E2 en Knoppenbesturing zijn.\n - Deze indicatie-instelling kan worden uitgeschakeld via de SmartDrive MX2 + -app op uw PushTracker E2 of via de PushTracker Mobile-app op uw smartphone als u geen E2 hebt. \""
+        "Dynamische Knoppenbesturing-indicatie toegevoegd, zoals de LED ('s) in de knoppen power assist en rijstatus aangeven\n - Als PushTracker / E2 is aangesloten en / of schakelbesturing is ingeschakeld, knipperen LED ('s) in verschillende patronen.\n - Als de motor aan het rijden is, branden de LED ('s) continu.",
+        "SmartDrive kan worden geconfigureerd voor Direct of Geschakeld knoppenbesturing mode \n - In de Direct-mode start de SmartDrive de motor bij het indrukken en vasthouden van een van de knoppen door de snelheid op te voeren naar de ingestelde Max Snelheid Knoppenbesturing. Deactiveer het rijden door de knop los te laten. \n - In de Geschakelde-mode zal de SmartDrive bij het indrukken en vasthouden van een van de knoppen zijn snelheid verhogen naar de ingestelde Max Snelheid Knoppenbesturing. Wanneer de vastgehouden knop wordt losgelaten, blijft de SmartDrive rijden met de huidige snelheid. Deactiveer het rijden door op een knop te drukken.",
+        "SmartDrive Knoppenbesturing heeft zijn eigen instelbare Maximum Snelheid instelling die onafhankelijk is van de Maximum Snelheid instelling voor de PushTracker / E2",
+        "SmartDrive is nu geconfigureerd om één keer te piepen wanneer de status wordt gewijzigd in Power Assist ON\n - Deze statusverandering kan van een PushTracker / E2 en Knoppenbesturing zijn.\n - Deze indicatie-instelling kan worden uitgeschakeld via de SmartDrive MX2 + -app op uw PushTracker E2 of via de PushTracker Mobile-app op uw smartphone als u geen E2 hebt."
       ]
     }
   },
@@ -51,8 +51,8 @@
     }
   },
   "complications": {
-    "battery-level": "Kilometerteller",
-    "odometer": "Batterijniveau"
+    "battery-level": "Batterijniveau",
+    "odometer": "Kilometerteller"
   },
   "error-history": {
     "errors": {
@@ -75,15 +75,15 @@
       "timeout": "Er is een time-out voor de App-verbinding opgetreden."
     },
     "connect": "Kan geen verbinding maken met SmartDrive.",
-    "could-not-enable-tap-sensor": "Kon tapsensor niet inschakelen.",
-    "downloading-translations": "Het downloaden van de taalbestanden voor uw apparaat is mislukt.",
+    "could-not-enable-tap-sensor": "Tapsensor kan niet ingeschakeld worden.",
+    "downloading-translations": "Downloaden van de bijgewerkte taalbestanden is mislukt.",
     "getting-error": "Ophalen SmartDrive fout mislukt.",
     "must-wear-watch": "[Controleer positie op pols] Instellingen is vrijgegeven, daarom moet de Smartwatch om uw pols worden gedragen om uw SmartDrive te bedienen.",
     "no-network": "Verbinding met de cloud is niet beschikbaar. Zorg ervoor dat uw smartwatch verbinding heeft met internet via wifi of uw telefoon.",
     "no-smartdrive-paired": "Geen SmartDrive gekoppeld.",
     "no-smartdrives-found": "Geen SmartDrives gevonden in de buurt.",
     "permissions": "Kan de gevraagde actie niet uitvoeren. Vereiste rechten zijn niet verleend.",
-    "power-assist-timeout": "Power assist werd automatisch uitgeschakeld via time-out vanwege inactiviteit. Raadpleeg de SmartDrive MX2-instelling [Power Assist Timeout] voor meer informatie.",
+    "power-assist-timeout": "Om batterij te sparen, werd de SmartDrive automatisch uitgeschakeld wegens inactiviteit. Zie \"Power Assist Timeout\" in het instellingenmenu van SmartDrive voor meer informatie.",
     "saving-error": "Opslaan van SmartDrive fout mislukt.",
     "saving-usage": "Opslaan van gebruiksgegevens mislukt.",
     "scan": "Kon niet scannen.",
@@ -189,8 +189,8 @@
       "acceleration": "De acceleratie van de SmartDrive.",
       "controlmode": "MX2+: De standaard instelling is op tikken gebaseerde werking van de SmartDrive. In de MX2+ besturingsmodus gaat na een dubbele tik de SmartDrive rijden en versnellen. Met een enkele tik wordt de huidige snelheid vastgezet. Met een dubbele tik wordt rijden gedeactiveerd.\n\nMX2: In de MX2 besturingsmodus begint de SmartDrive te rijden door de hoepels te bewegen. Met een enkele tik wordt rijden  gedeactiveerd.\nHoud er rekening mee dat dit een oudere besturingsmode is.\n\nMX1: In de MX1 besturingsmodus begint de SmartDrive te rijden door de hoepels te bewegen.\nMet een enkele tik of remmen met de hoepels wordt rijden gedeactiveerd.",
       "maxspeed": "De maximale snelheid waarmee de SmartDrive kan rijden wanneer deze wordt bestuurd door uw Smartwatch.",
-      "powerassistbuzzer": "Indien ingeschakeld, piept de SmartDrive telkens wanneer een verbinding vanaf een extern apparaat tot stand wordt gebracht of wanneer SwitchControl uit de stand-by status wordt gehaald.",
-      "powerassisttimeout": "De SmartDrive MX2 deactiveert de stuurbekrachtiging automatisch na de opgegeven tijd als de gebruiker de stuurbekrachtiging actief heeft en is verbonden met de SmartDrive maar de motor niet heeft geactiveerd voordat de time-out is verstreken.\n\nOpmerking: de SmartDrive MX2 schakelt de ondersteuning automatisch uit na 1 minuut als deze niet is verbonden met de SmartDrive.",
+      "powerassistbuzzer": "Indien ingeschakeld, piept de SmartDrive telkens wanneer een verbinding vanaf een extern apparaat tot stand wordt gebracht of wanneer Schakelaarbesturung uit de stand-by status wordt gehaald.",
+      "powerassisttimeout": "Als de SmartDrive is ingeschakeld, maar er wordt gedurende de ingestelde tijd niet gereden zal de SmartDrive automatisch worden uitgeschakeld.\n\nAls der Smartdrive wordt ingeschakeld maar komt er geen verbinding gemaakt worden met de SmartDrive dan schakelt deze na 1 minuut automatisch uit",
       "switchcontrolmode": "Direct rijden: De standaard besturingsmode waarbij de SmartDrive gaat rijden door het indrukken en vasthouden van één van beide knoppen tot de maximaal geconfigureerde snelheid. Wanneer de ingehouden knop wordt losgelaten, of wanneer beide knoppen [indien aanwezig] worden ingedrukt, wordt het rijden gedeactiveerd. Houd er rekening mee dat het apparaat na deactivering niet in de standby-mode wordt gezet.\n\nGeschakeld rijden: In de modus geschakeld rijden begint de SmartDrive na het indrukken van één knop te rijden en te versnellen. Na het loslaten van de knop wordt de huidige snelheid vastgezet. Wanneer een van de knoppen opnieuw wordt ingedrukt en losgelaten, of wanneer beide knoppen [indien aanwezig] worden ingedrukt, wordt de aandrijving gedeactiveerd. Houd er rekening mee dat het apparaat na deactivering niet in de standby-mode wordt gezet.",
       "switchcontrolspeed": "De maximale snelheid waarmee de SmartDrive kan rijden wanneer deze wordt bediend door knoppen.",
       "tapsensitivity": "De gevoeligheid van het tikken dat wordt gebruikt om het rijden te activeren en te deactiveren. Hoe lager het percentage is, hoe harder je moet tikken. \n100% is het meest gevoelig en daarom het gemakkelijkst te tikken.\n10% is het minst gevoelig en daarom het moeilijkst te tikken.",
@@ -204,13 +204,13 @@
     "paired-to-smartdrive": "Met succes gekoppeld aan SmartDrive.",
     "power-assist-buzzer": "SmartDrive pieptoon indicatie ",
     "power-assist-timeout": {
-      "title": "Power Assist Timeout",
-      "units-long": "Notulen",
+      "title": "SmartDrive Timeout",
+      "units-long": "Minuten",
       "units-short": "min"
     },
     "scanning": "Scannen naar SmartDrive om te koppelen met ...",
     "select-smartdrive": "Selecteer SmartDrive",
-    "syncing-with-server": "Synchroniseren met server",
+    "syncing-with-server": "Synchroniseren met server ...",
     "tap-sensitivity": "Tik gevoeligheid",
     "title": "SmartDrive instellingen",
     "units": "Eenheden",
@@ -254,7 +254,7 @@
       "timeout": "SmartDrive-updates zijn verlopen."
     },
     "failed": "SmartDrive updates zijn mislukt.",
-    "initializing": "Updates initialiseren ...",
+    "initializing": "Updates initialiseren...",
     "status": "Updates Status",
     "success": "SmartDrive updates met succes voltooid!",
     "timeout": "Er is een time-out opgetreden voor SmartDrive updates.",

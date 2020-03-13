@@ -6,7 +6,7 @@
     "sd-serial-number": "SmartDrive serienummer",
     "smartdrive-serial-number-info": "For å få tilgang til SmartDrive-serienummeret, som kan være nyttig for støtte og garantiformål, må du koble deg til PushTracker Mobile-appen.",
     "title": "Om informasjon",
-    "version": "SmartDrive MX2 Wear OS App (SW) versjon",
+    "version": "SmartDrive MX2+ Wear OS App (SW) versjon",
     "watch-serial-number": "Smartwatch serienummer"
   },
   "app-connection": {
@@ -35,10 +35,10 @@
     },
     "sd": {
       "2_0": [
-        "\"Lagt til dynamisk SwitchControl-knappindikasjon slik at LED-(er) indikerer kjøreassistanse og kjøretilstand\n - Hvis PushTracker / E2 er tilkoblet og / eller bryterkontroll er aktivert, vil LED (er) blinke i forskjellige mønstre.\n - Hvis motoren kjører vil LED (er) lyse konstant. \"",
-        "\"Smart kan konfigureres til å Momentan eller Vekslende Switch Modes\n  - I standard Momentan Mode vil SmartDrive begynne å kjøre motoren ved å gradvis øke hastigheten til den konfigurerte SwitchControl maksimale hastighet bare mens en av knappene holdes inne.\n  - I låst modus, vil Smart starte den gradvis økende hastigheten til den konfigurerte Switch Maksimal hastighet mens en av knappene blir holdt. Når den holdte knappen slippes, vil SmartDrive fortsette å kjøre med satte hastighet. Deaktiver kjøringen ved å trykke på en knapp. \"",
+        "Lagt til dynamisk SwitchControl-knappindikasjon slik at LED (er) indikerer kjøreassistanse og kjøretilstand\n - Hvis PushTracker / E2 er tilkoblet og / eller bryterkontroll er aktivert, vil LED (er) blinke i forskjellige mønstre.\n - Hvis motoren kjører vil LED (er) lyse konstant.",
+        "SmartDrive kan konfigureres til å Momentan eller Vekslende SwitchControl Modes\n  - I standard Momentan Mode vil SmartDrive begynne å kjøre motoren ved å gradvis øke hastigheten til den konfigurerte SwitchControl maksimale hastighet bare mens en av knappene holdes inne.\n  - I låst modus, vil Smart starte den gradvis økende hastigheten til den konfigurerte SwitchControl Maksimal hastighet mens en av knappene blir holdt. Når den holdte knappen slippes, vil SmartDrive fortsette å kjøre med satte hastighet. Deaktiver kjøringen ved å trykke på en knapp.",
         "SmartDrive SwitchControl har en egen konfigurerbar innstilling for maks hastighet som er uavhengig av innstillingen for maks hastighet for PushTracker / E2",
-        "\"SmartDrive er nå konfigurert til å bippe en gang når tilstanden blir endret til kjøre/motor assistranse er PÅ\n  - Denne endringen kan foretas fra en PushTracker / E2 og SwitchControl-knapp (er).\n  - Denne indikasjonsinnstillingen kan deaktiveres enten via SmartDrive MX2+ appen på PushTracker E2 eller ved å bruke PushTracker Mobile-appen på smarttelefonen din, hvis du ikke har en E2. \""
+        "SmartDrive er nå konfigurert til å bippe en gang når tilstanden blir endret til kjøre/motor assistranse er PÅ\n  - Denne endringen kan foretas fra en PushTracker / E2 og SwitchControl-knapp (er).\n  - Denne indikasjonsinnstillingen kan deaktiveres enten via SmartDrive MX2+ appen på PushTracker E2 eller ved å bruke PushTracker Mobile-appen på smarttelefonen din, hvis du ikke har en E2."
       ]
     }
   },
@@ -51,8 +51,8 @@
     }
   },
   "complications": {
-    "battery-level": "Kilometerteller",
-    "odometer": "Batterinivå"
+    "battery-level": "Batterinivå",
+    "odometer": "Kilometerteller"
   },
   "error-history": {
     "errors": {
@@ -76,14 +76,14 @@
     },
     "connect": "Kunne ikke koble til SmartDrive.",
     "could-not-enable-tap-sensor": "Kunne ikke aktivere trykke sensor.",
-    "downloading-translations": "Kunne ikke laste ned språkfilene for enheten din.",
+    "downloading-translations": "Kunne ikke laste ned de oppdaterte språkfilene.",
     "getting-error": "Kunne ikke lese av SmartDrive feilen.",
     "must-wear-watch": "[Kontroller om håndleddet] Innstillingen er aktivert. Smarturet må brukes for å kontrollere SmartDrive.",
     "no-network": "Tilkobling til skyen er ikke tilgjengelig. Forsikre deg om at smartwatch er tilkoblet internett enten via Wi-Fi eller telefonen.",
     "no-smartdrive-paired": "Ingen SmartDrive sammenkoblet.",
     "no-smartdrives-found": "Ingen SmartDrives funnet i nærheten.",
     "permissions": "Kan ikke utføre den forespurte handlingen. Nødvendige tillatelser ble ikke gitt.",
-    "power-assist-timeout": "Strømhjelp ble automatisk deaktivert via timeout på grunn av inaktivitet. Ta kontakt med SmartDrive MX2-innstillingen [Power Assist Timeout] for mer informasjon.",
+    "power-assist-timeout": "For å spare på batteriet ble strømhjelpen automatisk slått AV på grunn av inaktivitet. Se \"Timeout for strømassistanse\" i SmartDrive-innstillingsmenyen for mer informasjon.",
     "saving-error": "Kunne ikke lagre SmartDrive feilen.",
     "saving-usage": "Kunne ikke lagre bruken.",
     "scan": "Kunne ikke skanne.",
@@ -112,7 +112,7 @@
   "menu": {
     "about": "Om",
     "settings": "Innstillinger",
-    "title": "SmartDrive MX2 Meny",
+    "title": "SmartDrive MX2+ Meny",
     "training": "Trykk på Trening",
     "updates": "Trådløse oppdateringer"
   },
@@ -187,10 +187,10 @@
     "control-mode": "Kontrollmodus",
     "description": {
       "acceleration": "Akselerasjonen eller hastighetsøkningen for SmartDrive.",
-      "controlmode": "MX2: Standard, og anbefalt betjening av SmartDrive. I MX2 kontrollmodus vil et dobbelt trykk starte motoren ved å øke hastigheten, et enkelt trykk vil starte motoren med gjeldende hastighet, og et dobbelt trykk vil deaktivere kjøringen.\n\nMX2: I MX2-kontrollmodus vil SmartDrive begynne å kjøre når den registrerer din kraft på drivringen, og vil deaktivere kjøringen når du trykker på enheten. Vær oppmerksom på at dette er et alternativ som fanger opp din faktiske hastighet.\n\nMX1: I MX1 kontrollmodus vil SmartDrive begynne å kjøre når den registrerer din kraft på drivringen, og vil slutte å kjøre når du trykker på den, eller når du bremser på drivringene. Vær oppmerksom på at dette er et alternativ som tar opp din hastighet.",
+      "controlmode": "MX2+: Standard, og anbefalt betjening av SmartDrive. I MX2+ kontrollmodus vil et dobbelt trykk starte motoren ved å øke hastigheten, et enkelt trykk vil starte motoren med gjeldende hastighet, og et dobbelt trykk vil deaktivere kjøringen.\n\nMX2: I MX2-kontrollmodus vil SmartDrive begynne å kjøre når den registrerer din kraft på drivringen, og vil deaktivere kjøringen når du trykker på enheten. Vær oppmerksom på at dette er et alternativ som fanger opp din faktiske hastighet.\n\nMX1: I MX1 kontrollmodus vil SmartDrive begynne å kjøre når den registrerer din kraft på drivringen, og vil slutte å kjøre når du trykker på den, eller når du bremser på drivringene. Vær oppmerksom på at dette er et alternativ som tar opp din hastighet.",
       "maxspeed": "Maksimal hastighet for SmartDrive når den betjenes av smarturet ditt.",
       "powerassistbuzzer": "Når den er aktivert, piper SmartDrive hver gang en tilkobling fra en ekstern enhet opprettes, eller når bryterkontroll tas ut av ventemodus.",
-      "powerassisttimeout": "SmartDrive MX2 vil automatisk deaktivere strømassistansen etter den angitte tiden hvis brukeren har strømassistent aktiv og er koblet til SmartDrive, men ikke har aktivert motoren før tidsavbruddet går ut.\n\nMerk: SmartDrive MX2 vil automatisk deaktivere strømassistansen etter 1 minutt hvis den ikke er koblet til SmartDrive.",
+      "powerassisttimeout": "Hvis den er koblet til SmartDrive med strømstøtte PÅ, vil motoren automatisk slå AV av hvis motoren ikke har blitt kjørt i den valgte tidsperioden.\n\nHvis strømstøtten er PÅ, men den ikke er koblet til SmartDrive, vil den automatisk slå AV-hjelpen etter 1 minutt.",
       "switchcontrolmode": "Øyeblikkelig: Ved standard bryterkontrollmodus vil SmartDrive begynne å kjøre motoren ved å stegvis øke hastigheten til den konfigurerte bryterkontrollens maksimale hastighet, men bare når en av bryterne holdes inne. Når den bryteren slippes, eller begge bryterne [hvis tilgjengelig] trykkes, vil kjøringen deaktiveres. Vær oppmerksom på at deaktiveringen ikke setter enheten i ventetilmodus.\n\nLåst: I Låst Switch Control Mode vil SmartDrive begynne å kjøre motoren ved å stegvis øke hastigheten til den konfigurerte bryterkontrollens maksimale hastighet mens en av bryterkontrollknappene holdes inne. Når bryteren slippes, vil SmartDrive fortsette å kjøre med den hastighet som er oppnåd når bryter ble sluppet. Når en av bryterne trykkes og slippes igjen, eller begge bryterne [hvis tilgjengelig] aktiveres, vil kjøringen deaktiveres. Vær oppmerksom på at deaktiveringen ikke setter enheten i ventetilstand.",
       "switchcontrolspeed": "Den maksimale hastigheten SmartDrive kan kjøre, når den styres av bryterenhet.",
       "tapsensitivity": "Følsomheten til trykkbevegelsen som brukes til å aktivere og deaktivere kjøringen. Jo lavere prosentandel er, desto kraftigere må du å trykke - 100% er den mest følsomme og derfor letteste trykket, og 10% er den minst følsomme og derfor hardeste å trykke.",
@@ -210,7 +210,7 @@
     },
     "scanning": "Skanner etter SmartDrive for å tilkople seg med ...",
     "select-smartdrive": "Velg SmartDrive",
-    "syncing-with-server": "Synkronisering med server",
+    "syncing-with-server": "Synkroniserer med server ...",
     "tap-sensitivity": "Trykk på følsomhet",
     "title": "SmartDrive innstillinger",
     "units": "Enheter",
@@ -254,7 +254,7 @@
       "timeout": "SmartDrive-oppdateringene er avbrutt."
     },
     "failed": "SmartDrive oppdateringer mislyktes.",
-    "initializing": "Henter oppdateringer…",
+    "initializing": "Henter oppdateringer ...",
     "status": "Oppdateringsstatus",
     "success": "SmartDrive oppdateringer fullført!",
     "timeout": "SmartDrive oppdateringer gikk i tidsavbrudd.",

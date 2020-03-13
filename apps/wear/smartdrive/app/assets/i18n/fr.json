@@ -6,7 +6,7 @@
     "sd-serial-number": "Numéro de série de la SmartDrive",
     "smartdrive-serial-number-info": "Pour accéder à votre numéro de série SmartDrive, qui peut être utile à des fins de support et de garantie, vous devez vous connecter à l'application PushTracker Mobile.",
     "title": "À propos de",
-    "version": "Version de l'application SmartDrive MX2 Wear OS (SW)",
+    "version": "Version de l'application SmartDrive MX2+ Wear OS (SW)",
     "watch-serial-number": "Numéro de série du PushTracker E2"
   },
   "app-connection": {
@@ -29,30 +29,30 @@
   "change-notes": {
     "pt": {
       "2_0": [
-        "Ajouté la possibilité d'afficher la dernière puissance de connexion Bluetooth SmartDrive dans le menu de configuration \"A propos de\"",
-        "\"\nAjout de la prise en charge de l'envoi et de la réception des configurations SmartDrive SwitchControl vers et depuis l'application PushTracker Mobile app et SmartDrive\""
+        "Ajouter la possibilité d'afficher la puissance de signal de la dernière connexion Bluetooth de la SmartDrive dans le menu de configuration \"A propos de\"",
+        "Ajout d'un support pour l'envoi et la réception de configurations des boutons de tierce personne de la SmartDrive vers / depuis l'application PushTracker Mobile et SmartDrive"
       ]
     },
     "sd": {
       "2_0": [
-        "\"Ajout d'une indication dynamique sur les LEDs des boutons de tierce personnes pour signaler l'assistance électrique et l'état de conduite\n - Si PushTracker / E2 est connecté et / ou si les boutons de tierce personne sont activées, les LEDs clignoteront selon différents motifs.\n - Si le moteur tourne, les LEDs seront allumées.\"",
-        "\"SmartDrive peut être configuré en mode momentané ou maintenu sur les bouton de commande tierce personnes\n - En mode Momentané par défaut, la SmartDrive démarre le moteur en augmentant sa vitesse jusqu'à la vitesse maximale configurée sur les boutons de tierce personne tout en maintenant un des boutons enfoncé.\n - En mode maintenu, la SmartDrive commence à augmenter sa vitesse jusqu'à la vitesse maximale configurée des bouton de tierce personne pendant que l'un des boutons est maintenu enfoncé. Lorsque vous relâchez le bouton, la SmartDrive continue à rouler à la vitesse actuelle. Désactivez la conduite en appuyant sur un bouton.\"",
+        "Ajout d'une indication dynamique sur les LEDs des boutons de tierce personnes pour signaler l'assistance électrique et l'état de conduite\n - Si PushTracker / E2 est connecté et / ou si les boutons de tierce personne sont activées, les LEDs clignoteront selon différents motifs.\n - Si le moteur tourne, les LEDs seront allumées.",
+        "SmartDrive peut être configuré en mode momentané ou maintenu sur les bouton de commande tierce personnes\n - En mode Momentané par défaut, la SmartDrive démarre le moteur en augmentant sa vitesse jusqu'à la vitesse maximale configurée sur les boutons de tierce personne tout en maintenant un des boutons enfoncé.\n - En mode maintenu, la SmartDrive commence à augmenter sa vitesse jusqu'à la vitesse maximale configurée des bouton de tierce personne pendant que l'un des boutons est maintenu enfoncé. Lorsque vous relâchez le bouton, la SmartDrive continue à rouler à la vitesse actuelle. Désactivez la conduite en appuyant sur un bouton.",
         "Les boutons de tierce personne de la SmartDrive ont leur propre réglage de vitesse maximum configurable qui est indépendant du réglage de vitesse maximum pour le PushTracker / E2",
-        "\"SmartDrive est maintenant configuré pour émettre un bip sonore chaque fois que son état est modifié pour que l'assistance d'alimentation soit activée\n - Ce changement d'état peut provenir d'un PushTracker / E2 et d'un ou plusieurs boutons de commande tierce personnes.\n - Ce réglage d'indication peut être désactivé soit via l'application SmartDrive MX2+ sur votre PushTracker E2, soit via l'application PushTracker Mobile sur votre smartphone si vous n'avez pas de E2.\""
+        "SmartDrive est maintenant configuré pour émettre un bip sonore chaque fois que son état est modifié pour activer l'assistance motorisée:\n - Ce changement d'état peut provenir d'un PushTracker / E2 et d'un ou plusieurs boutons de commande tierce personnes.\n - Ce réglage d'indication peut être désactivé soit via l'application SmartDrive MX2+ sur votre PushTracker E2, soit via l'application PushTracker Mobile sur votre smartphone si vous n'avez pas de E2."
       ]
     }
   },
   "charts": {
     "battery": {
-      "title": "Utilisation quotidienne de la batterie SmartDrive (%)"
+      "title": "Usage quotidienne de la batterie SmartDrive (%)"
     },
     "distance": {
       "title": "Distance quotidienne parcourue"
     }
   },
   "complications": {
-    "battery-level": "Odomètre",
-    "odometer": "Niveau de batterie"
+    "battery-level": "Niveau de batterie",
+    "odometer": "Odomètre"
   },
   "error-history": {
     "errors": {
@@ -76,14 +76,14 @@
     },
     "connect": "Impossible de se connecter à la SmartDrive.",
     "could-not-enable-tap-sensor": "Impossible d'activer le capteur de tape.",
-    "downloading-translations": "Impossible de télécharger les fichiers de langue pour votre appareil.",
+    "downloading-translations": "Impossible de télécharger les fichiers de langue mis à jour.",
     "getting-error": "Échec de réception des codes erreurs.",
     "must-wear-watch": "Le paramètre [Vérifier le poignet] est activé. Vous devez porter obligatoirement le Pushtracker E2  pour contrôler votre SmartDrive.",
     "no-network": "La connexion au Cloud n'est pas disponible. Assurez-vous que votre PushTracker E2 est connecté à Internet via Wi-Fi ou à votre téléphone.",
     "no-smartdrive-paired": "Pas de SmartDrive jumelée.",
     "no-smartdrives-found": "Aucune SmartDrive trouvée à proximité.",
     "permissions": "Impossible d'effectuer l'action demandée. Les autorisations requises n'ont pas été acceptées.",
-    "power-assist-timeout": "L'assistance électrique a été automatiquement désactivée via un délai d'attente en raison de l'inactivité. Veuillez consulter le paramètre SmartDrive MX2 [Power Assist Timeout] pour plus d'informations.",
+    "power-assist-timeout": "Pour économiser la batterie, l'assistance électrique a été automatiquement désactivée pour cause d'inactivité. Pour plus d'informations, voir la section \"Délai d'assistance\" dans le menu des paramètres du SmartDrive.",
     "saving-error": "Échec d'enregistrement des erreurs SmartDrive.",
     "saving-usage": "Échec de la sauvegarde de l'utilisation.",
     "scan": "Recherche impossible.",
@@ -92,21 +92,21 @@
     "too-many-smartdrives-found": "Plusieurs SmartDrives trouvées. Assurez-vous qu’il n’y a qu’une seule SmartDrive à proximité lors du couplage."
   },
   "languages": {
-    "cs": "tchèque",
+    "cs": "Tchèque",
     "da": "Danois",
     "de": "Allemand",
     "en": "Anglais",
     "es": "Espagnol",
-    "fi": "finlandais",
+    "fi": "Finlandais",
     "fr": "Français",
     "it": "Italien",
     "ja": "Japonais",
     "ko": "Coréen",
     "nb": "Norvégien [Bokmål]",
     "nl": "Néerlandais",
-    "pl": "polonais",
+    "pl": "Polonais",
     "pt": "Portugais",
-    "sv": "suédois",
+    "sv": "Ssuédois",
     "zh": "Chinois [traditionnel]"
   },
   "menu": {
@@ -183,15 +183,15 @@
   },
   "settings": {
     "acceleration": "Accélération",
-    "connect-pushtracker": "Application mobile Connect PushTracker",
+    "connect-pushtracker": "Application mobile PushTracker",
     "control-mode": "Mode de contrôle",
     "description": {
       "acceleration": "Réglage du niveau d'accélération de la SmartDrive.",
-      "controlmode": "MX2+: Paramètre par défaut basé sur les mouvements de la montre. En mode de contrôle MX2+, une double tape active le moteur en augmentant sa vitesse puis une simple tape valide et maintient la vitesse. Et enfin une double tape désactive la conduite.\n\nMX2: En mode de contrôle MX2, la SmartDrive démarre lorsqu'elle détecte votre impulsion et se désactive lorsqu'une tape est détectée.\n\nMX1: En mode de contrôle MX1, la SmartDrive démarre lorsqu'elle détecte votre impulsion, et se désactive lorsqu'une tape est détectée ou lorsque vous freinez sur les mains courantes.",
+      "controlmode": "MX2+: Paramètre par défaut basé sur les mouvements de la montre. En mode de contrôle MX2+, une double tape active le moteur en augmentant sa vitesse puis une simple tape valide et maintient la vitesse. Et enfin une double tape désactive la conduite.\n\nMX2: En mode de contrôle MX2, la SmartDrive démarre lorsqu'elle détecte votre impulsion et se désactive lorsqu'une tape est détectée.\n\nMX1: En mode de contrôle MX1, la SmartDrive démarre lorsqu'elle détecte votre impulsion, et se désactive lorsqu'une tape est détectée ou lorsque vous freinez sur les mains courantes.  Veuillez noter qu'il s'agit d'une option de soutien légal.",
       "maxspeed": "La vitesse maximale à laquelle la SmartDrive peut rouler lorsqu'elle est contrôlée par votre montre.",
       "powerassistbuzzer": "Lorsqu'elle est activée, la SmartDrive émet un bip à chaque fois qu'une connexion est établie avec le PushTracker E2 ou lorsque vous la démarrez par les boutons de tierce personne.",
-      "powerassisttimeout": "Le SmartDrive MX2 désactivera automatiquement l'assistance électrique après le temps spécifié si l'utilisateur a l'assistance électrique active et est connecté au SmartDrive mais n'a pas activé le moteur avant l'expiration du délai.\n\nRemarque: le SmartDrive MX2 désactivera automatiquement l'assistance électrique après 1 minute s'il n'est pas connecté au SmartDrive.",
-      "switchcontrolmode": "Discontinu: Mode de contrôle par défaut avec lequel la SmartDrive active le moteur en augmentant sa vitesse jusqu'à la vitesse maximale tant que l'un des boutons de commande est enfoncé. Lorsque vous relâchez le bouton maintenu ou que vous appuyez sur les deux boutons simultanément [le cas échéant], la conduite est désactivée. Veuillez noter que lors de la désactivation, l'appareil ne se met pas en veille.\n\nMaintenu: En mode de contrôle maintenu, la SmartDrive active le moteur en augmentant sa vitesse jusqu'à la vitesse maximale tant que l'un des boutons est maintenu enfoncé. Lorsque le bouton maintenu est relâché, la SmartDrive continuera à rouler / à suivre la vitesse actuelle au moment où le bouton a été relâché. Lorsque vous appuyez sur l'un des boutons ou les deux boutons simultanément [le cas échéant], la conduite est désactivée. Veuillez noter que lors de la désactivation, l'appareil ne se met pas en veille.",
+      "powerassisttimeout": "Lorsque le Pushtracker E2 est connecté à la SmartDrive et que l'assistance électrique est activée, si le moteur n'a pas été entraîné pendant la durée sélectionnée, l'assistance électrique se désactivera automatiquement.\n\nSi l'assistance électrique est activée mais qu'elle n'est pas connectée au SmartDrive, elle désactivera automatiquement l'assistance électrique après 1 minute.",
+      "switchcontrolmode": "Momentané: Mode de contrôle par défaut avec lequel la SmartDrive active le moteur en augmentant sa vitesse jusqu'à la vitesse maximale tant que l'un des boutons de tierce personne est appuyé. Lorsque vous relâchez le bouton ou que vous appuyez sur les deux boutons simultanément [le cas échéant], la conduite est désactivée. Veuillez noter que lors de la désactivation, l'appareil ne se met pas en veille.\n\nMaintenu: En mode de contrôle maintenu, la SmartDrive active le moteur en augmentant sa vitesse jusqu'à la vitesse maximale tant que l'un des boutons est maintenu enfoncé. Lorsque le bouton maintenu est relâché, la SmartDrive continuera à rouler / à suivre la vitesse actuelle au moment où le bouton a été relâché. Lorsque vous appuyez sur l'un des boutons ou les deux boutons simultanément [le cas échéant], la conduite est désactivée. Veuillez noter que lors de la désactivation, l'appareil ne se met pas en veille.",
       "switchcontrolspeed": "La vitesse maximale à laquelle la SmartDrive peut rouler lorsqu'elle est contrôlée par les boutons de tierce personne.",
       "tapsensitivity": "Réglage de la sensibilité du geste de tape utilisé pour activer et désactiver la conduite. Plus le pourcentage est bas, plus il est difficile de taper - 100% est le plus sensible, donc le plus facile à utiliser, et 10%, le moins sensible et donc le plus difficile à utiliser.",
       "units": "Unités de mesure: la vitesse et les distances dans les interfaces utilisateur. Sélectionnez soit Impérial [mi et mph] ou Métrique [km et km/h].",
@@ -204,13 +204,13 @@
     "paired-to-smartdrive": "Couplage réussi.",
     "power-assist-buzzer": "Bip d'assistance",
     "power-assist-timeout": {
-      "title": "Délai d’assistance électrique",
+      "title": "Temps d'arrêt de l’assistance électrique",
       "units-long": "Minutes",
       "units-short": "Min"
     },
     "scanning": "Recherche de SmartDrive ...",
     "select-smartdrive": "Sélectionner la SmartDrive",
-    "syncing-with-server": "Synchronisation avec le serveur",
+    "syncing-with-server": "Synchronisation avec le serveur ...",
     "tap-sensitivity": "Sensibilité de tape",
     "title": "Paramètres SmartDrive",
     "units": "Unités de mesures",
@@ -224,7 +224,7 @@
   },
   "switch-control": {
     "max-speed": "Réglage vitesse max sur boutons",
-    "mode": "Changer de mode de contrôle"
+    "mode": "Changer le mode de contrôle des Boutons"
   },
   "units": {
     "distance": {
@@ -251,10 +251,10 @@
       "downloading": "Erreur lors du téléchargement des mises à jour.",
       "getting": "Erreur lors de la recherche de mises à jour.",
       "saving": "Erreur lors de l'enregistrement des données de mises à jour.",
-      "timeout": "Les mises à jour de SmartDrive ont expirés."
+      "timeout": "Les mises à jour de la SmartDrive ont expirés."
     },
     "failed": "Echec des mises à jour de la SmartDrive.",
-    "initializing": "Activation des mises à jour...",
+    "initializing": "Activation des mises à jour ...",
     "status": "État des mises à jour",
     "success": "Mises à jour de la SmartDrive réussies !",
     "timeout": "Les mises à jour de la SmartDrive ont expiré.",

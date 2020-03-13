@@ -5,8 +5,8 @@
     "sd-mcu-version": "Verze SmartDrive MCU (SD)",
     "sd-serial-number": "Sériové číslo SmartDrive",
     "smartdrive-serial-number-info": "Chcete-li získat přístup k sériovému číslu SmartDrive, musíte se připojit k mobilní aplikaci PushTracker.",
-    "title": "informace",
-    "version": "Verze aplikace SmartDrive MX2 Wear OS (SW)",
+    "title": "Informace",
+    "version": "Verze aplikace SmartDrive MX2+ Wear OS (SW)",
     "watch-serial-number": "Sériové číslo Smartwatch"
   },
   "app-connection": {
@@ -19,7 +19,7 @@
   "buttons": {
     "allow": "Dovolit",
     "back": "Zadní",
-    "cancel": "zrušení",
+    "cancel": "Zrušení",
     "deny": "Odmítnout",
     "disable": "Zakázat",
     "dismiss": "Propustit",
@@ -35,10 +35,10 @@
     },
     "sd": {
       "2_0": [
-        "„Přidaná indikace dynamického tlačítka SwitchControl tak, že LED diody tlačítka indikují podporu napájení a stav jízdy\n - Je-li připojen PushTracker / E2 a je-li zapnuto ovládání přepínačů, LED diody blikají různými vzory.\n - Pokud motor běží, LED diody budou trvale svítit. \"",
-        "„SmartDrive lze nakonfigurovat na režimy Momentary nebo Latched SwitchControl\n - Ve výchozím okamžitém režimu SmartDrive začne řídit motor zvyšováním jeho rychlosti na nakonfigurovanou maximální rychlost SwitchControl, pouze pokud je přidrženo jedno z tlačítek.\n - V režimu blokování začne SmartDrive během přidržování jednoho z tlačítek zvyšovat svou rychlost na nakonfigurovanou maximální rychlost SwitchControl. Po uvolnění přidrženého tlačítka SmartDrive zůstane v jízdě aktuální rychlostí. Stisknutím tlačítka deaktivujte jízdu. “",
+        "Přidaná indikace dynamického tlačítka SwitchControl tak, že LED diody tlačítka indikují podporu napájení a stav jízdy\n - Je-li připojen PushTracker / E2 a je-li zapnuto ovládání přepínačů, LED diody blikají různými vzory.\n - Pokud motor běží, LED diody budou trvale svítit.",
+        "SmartDrive lze nakonfigurovat na režimy Momentary nebo Latched SwitchControl\n - Ve výchozím okamžitém režimu SmartDrive začne řídit motor zvyšováním jeho rychlosti na nakonfigurovanou maximální rychlost SwitchControl, pouze pokud je přidrženo jedno z tlačítek.\n - V režimu blokování začne SmartDrive během přidržování jednoho z tlačítek zvyšovat svou rychlost na nakonfigurovanou maximální rychlost SwitchControl. Po uvolnění přidrženého tlačítka SmartDrive zůstane v jízdě aktuální rychlostí. Stisknutím tlačítka deaktivujte jízdu.",
         "SmartDrive SwitchControl má vlastní konfigurovatelné nastavení maximální rychlosti, které je nezávislé na nastavení maximální rychlosti pro PushTracker / E2",
-        "„SmartDrive je nyní nakonfigurován tak, aby zapípal jednou, kdykoli se jeho stav změní na zapnutí napájení\n - Tuto změnu stavu lze provést pomocí tlačítek PushTracker / E2 a SwitchControl.\n - Toto nastavení indikace lze deaktivovat prostřednictvím aplikace SmartDrive MX2 ve vašem PushTracker E2 nebo pomocí aplikace PushTracker Mobile ve vašem smartphonu, pokud nemáte E2. \""
+        "SmartDrive je nyní nakonfigurován tak, aby zapípal jednou, kdykoli se jeho stav změní na zapnutí napájení\n - Tuto změnu stavu lze provést pomocí tlačítek PushTracker / E2 a SwitchControl.\n - Toto nastavení indikace lze deaktivovat prostřednictvím aplikace SmartDrive MX2+ ve vašem PushTracker E2 nebo pomocí aplikace PushTracker Mobile ve vašem smartphonu, pokud nemáte E2."
       ]
     }
   },
@@ -51,7 +51,7 @@
     }
   },
   "complications": {
-    "battery-level": "stav baterie",
+    "battery-level": "Stav baterie",
     "odometer": "Počítadlo kilometrů"
   },
   "error-history": {
@@ -64,7 +64,7 @@
       "overcurrent": "[ERR: 003] Aktuální proud SD",
       "overtemperature": "[ERR: 004] Přehřátí SD"
     },
-    "loading": "Načítání...",
+    "loading": "Načítání ...",
     "no-errors": "Nebyly zaznamenány ani přijaty žádné chyby SmartDrive.",
     "title": "Historie chyb SmartDrive"
   },
@@ -112,7 +112,7 @@
   "menu": {
     "about": "O",
     "settings": "NASTAVENÍ",
-    "title": "Nabídka SmartDrive MX2",
+    "title": "Nabídka SmartDrive MX2+",
     "training": "Klepněte na Školení",
     "updates": "Bezdrátové aktualizace"
   },
@@ -124,7 +124,7 @@
       "pause": "Pauza",
       "resume": "Životopis",
       "retry": "Opakujte",
-      "start": "START"
+      "start": "Start"
     },
     "sd": {
       "state": {
@@ -187,7 +187,7 @@
     "control-mode": "Režim ovládání",
     "description": {
       "acceleration": "Zrychlení nebo rychlostní rampa SmartDrive.",
-      "controlmode": "MX2: Výchozí operace SmartDrive založená na gestach. V režimu ovládání MX2 začne dvojité odbočení řídit motor zvyšováním jeho rychlosti, jediné odbočení se sníží při aktuální rychlosti a dvojité odbočení deaktivuje řízení.\n\nMX2: V režimu ovládání MX2 SmartDrive začne jezdit, jakmile zjistí váš tlak, a po klepnutí deaktivuje jízdu. Vezměte prosím na vědomí, že se jedná o možnost starší podpory.\n\nMX1: V režimu ovládání MX1 začne SmartDrive jízdu, jakmile zjistí váš tlak, a zastaví jízdu, když klepnete na tlačítko nebo když zabrzdíte na držadlech. Vezměte prosím na vědomí, že se jedná o možnost starší podpory.",
+      "controlmode": "MX2+: Výchozí operace SmartDrive založená na gestach. V režimu ovládání MX2 začne dvojité odbočení řídit motor zvyšováním jeho rychlosti, jediné odbočení se sníží při aktuální rychlosti a dvojité odbočení deaktivuje řízení.\n\nMX2: V režimu ovládání MX2 SmartDrive začne jezdit, jakmile zjistí váš tlak, a po klepnutí deaktivuje jízdu. Vezměte prosím na vědomí, že se jedná o možnost starší podpory.\n\nMX1: V režimu ovládání MX1 začne SmartDrive jízdu, jakmile zjistí váš tlak, a zastaví jízdu, když klepnete na tlačítko nebo když zabrzdíte na držadlech. Vezměte prosím na vědomí, že se jedná o možnost starší podpory.",
       "maxspeed": "Maximální rychlost, kterou SmartDrive dokáže řídit, když je ovládáte pomocí smartwatch.",
       "powerassistbuzzer": "Pokud je povoleno, SmartDrive vydá zvukový signál při každém navázání spojení ze vzdáleného zařízení nebo po přepnutí SwitchControl z pohotovostního stavu.",
       "powerassisttimeout": "SmartDrive MX2 automaticky deaktivuje posilovač napájení po stanovené době, pokud má uživatel aktivní asistenční napájení a je připojen k SmartDrive, ale neaktivoval motor před vypršením časového limitu.\n\nPoznámka: SmartDrive MX2 automaticky deaktivuje posilovač napájení po 1 minutě, pokud není připojen k SmartDrive.",
@@ -198,7 +198,7 @@
       "wearcheck": "Je-li tato funkce povolena, musí být chytré hodinky na zápěstí, aby bylo možné zapnout napájení. Pokud je funkce Power Assist zapnutá a inteligentní hodinky zjistí, že již není na zápěstí, automaticky vypne funkci Power Assist."
     },
     "error-history": "Historie chyb",
-    "information": "informace",
+    "information": "Informace",
     "max-speed": "Maximální rychlost",
     "pair-smartdrive": "Spárujte SmartDrive",
     "paired-to-smartdrive": "Úspěšně spárováno s SmartDrive.",
@@ -210,7 +210,7 @@
     },
     "scanning": "Hledání SmartDrive pro spárování s ...",
     "select-smartdrive": "Vyberte SmartDrive",
-    "syncing-with-server": "Synchronizace se serverem",
+    "syncing-with-server": "Synchronizace se serverem ...",
     "tap-sensitivity": "Klepněte na Citlivost",
     "title": "Nastavení SmartDrive",
     "units": "Jednotky",
@@ -229,7 +229,7 @@
   "units": {
     "distance": {
       "english": "mi",
-      "metric": "Km"
+      "metric": "km"
     },
     "english": "Císařský",
     "metric": "Metrický",
@@ -254,7 +254,7 @@
       "timeout": "Aktualizace SmartDrive vypršela."
     },
     "failed": "Aktualizace SmartDrive selhala.",
-    "initializing": "Inicializace aktualizací",
+    "initializing": "Inicializace aktualizací ...",
     "status": "Aktualizuje stav",
     "success": "Aktualizace SmartDrive byla úspěšně dokončena!",
     "timeout": "Aktualizace SmartDrive vypršela.",

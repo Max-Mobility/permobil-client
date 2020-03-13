@@ -35,10 +35,10 @@
     },
     "sd": {
       "2_0": [
-        "\"Dynamisk SwitchControl-knappindikering, LED-lampor indikerar effektstöd och körläge\n - Om PushTracker / E2 är ansluten och / eller SwitchControl är aktiverad kommer LED -lampor att blinka i olika mönster.\n - Om motorn kör kommer LED-indikeringen att vara ett fast ljus.\"",
-        "\"SmartDrive med SwitchControl kan konfigureras till läge Momentary eller Latched\n - I standardmomentläget (Momentary) kommer SmartDrive att börja köra motorn genom att höja hastigheten upp till den konfigurerade Max hastigheten endast medan en av knapparna hålls intryckt\n - I låst läge (Latched) kommer SmartDrive att börja höja hastigheten till den konfigurerade Max hastigheten medan en av knapparna hålls intryckt. När den hållna knappen släpps kommer SmartDrive att fortsätta köra med aktuell hastighet. Deaktivera körningen genom att trycka på en knapp. \"",
+        "Dynamisk SwitchControl-knappindikering, LED-lampor indikerar effektstöd och körläge\n - Om PushTracker / E2 är ansluten och / eller SwitchControl är aktiverad kommer LED-lampor att blinka i olika mönster.\n - Om motorn kör kommer LED-indikeringen att vara ett fast ljus.",
+        "SmartDrive med SwitchControl kan konfigureras till läge Momentary eller Latched\n - I standardmomentläget (Momentary) kommer SmartDrive att börja köra motorn genom att höja hastigheten upp till den konfigurerade Max hastigheten endast medan en av knapparna hålls intryckt.\n - I låst läge (Latched) kommer SmartDrive att börja höja hastigheten till den konfigurerade Max hastigheten medan en av knapparna hålls intryckt. När den hållna knappen släpps kommer SmartDrive att fortsätta köra med aktuell hastighet. Deaktivera körningen genom att trycka på en knapp.",
         "SmartDrive SwitchControl har en egen konfigurerbar inställning för Max hastighet som är oberoende av inställningen Max hastigheten för PushTracker / E2",
-        "\"SmartDrive är nu konfigurerat för att pipa en gång när dess status ändras till  Smartdrive PÅ\n - Denna statusändring kan komma från en PushTracker / E2- och SwitchControl-knappar.\n - Denna indikationsinställning kan avaktiveras antingen via SmartDrive MX2+ appen på din PushTracker E2 eller med PushTracker Mobil appen på din smartphone om du inte har en E2. \""
+        "SmartDrive är nu konfigurerat för att pipa en gång när dess status ändras till  Smartdrive PÅ\n - Denna statusändring kan komma från en PushTracker / E2- och SwitchControl-knappar.\n - Denna indikationsinställning kan avaktiveras antingen via SmartDrive MX2+ appen på din PushTracker E2 eller med PushTracker Mobil appen på din smartphone om du inte har en E2."
       ]
     }
   },
@@ -51,8 +51,8 @@
     }
   },
   "complications": {
-    "battery-level": "Distansmätare",
-    "odometer": "Batterinivå"
+    "battery-level": "Batterinivå",
+    "odometer": "Distansmätare"
   },
   "error-history": {
     "errors": {
@@ -76,20 +76,20 @@
     },
     "connect": "Det gick inte att ansluta till SmartDrive.",
     "could-not-enable-tap-sensor": "Det gick inte att aktivea enhetens sensor.",
-    "downloading-translations": "Det gick inte att ladda ner språkfilerna för din enhet.",
+    "downloading-translations": "Det gick inte att ladda ner de uppdaterade språkfilerna.",
     "getting-error": "Det gick inte att få  fram SmartDrive felet.",
     "must-wear-watch": "[Kontrollera för handled] Inställningen är aktiverad, därför måste klockan bäras för att styra din SmartDrive.",
     "no-network": "Anslutning till molnet är inte tillgänglig. Se till att din smartwatch är anslutet till internet antingen via Wi-Fi eller din telefon.",
     "no-smartdrive-paired": "Ingen SmartDrive är parkopplad.",
     "no-smartdrives-found": "Ingen SmartDrives hittades i närheten.",
     "permissions": "Det gick inte att utföra den begärda åtgärden. Erforderliga behörigheter beviljades inte.",
-    "power-assist-timeout": "Strömhjälp inaktiverades automatiskt via timeout på grund av inaktivitet. Se SmartDrive MX2-inställningen [Power Assist Timeout] för mer information.",
+    "power-assist-timeout": "För att hjälpa till att spara batteri stängdes elstödet automatiskt av på grund av inaktivitet. Se \"Power Assist Timeout\" i SmartDrive-inställningsmenyn för mer information.",
     "saving-error": "Det gick inte att spara SmartDrive felet.",
     "saving-usage": "Det gick inte att spara användningen.",
     "scan": "Det gick inte att skanna.",
     "send-settings": "Det gick inte att skicka inställningar till SmartDrive.",
     "title": "Meddelande",
-    "too-many-smartdrives-found": "Flera SmartDrives hittade. Se till att det bara finns en SmartDrive på i närheten när du par kopplar."
+    "too-many-smartdrives-found": "Flera SmartDrives hittade. Se till att det bara finns en SmartDrive på i närheten när du par-kopplar."
   },
   "languages": {
     "cs": "tjeck",
@@ -120,7 +120,7 @@
     "action": {
       "cancel": "Avbryta",
       "close": "Stäng",
-      "force": "Styrka",
+      "force": "Tvinga",
       "pause": "Pausa",
       "resume": "Återuppta",
       "retry": "Försök igen",
@@ -128,15 +128,15 @@
     },
     "sd": {
       "state": {
-        "already-uptodate": "Redan uppdaterad. Välj Tvinga ändå.",
+        "already-uptodate": "Redan uppdaterad. Välj Tvinga för att uppdatera ändå.",
         "awaiting-ble-ready": "Väntar på BT",
         "awaiting-connection": "Väntar på anslutning",
         "awaiting-mcu-ready": "Väntar på SD",
         "awaiting-versions": "Väntar på versioner",
-        "canceled": "Avbokad",
+        "canceled": "Avbruten",
         "canceling": "Avbryta",
         "comm-failure": "Kommunikationsfel - SmartDrive-omstart krävs",
-        "complete": "Komplett",
+        "complete": "Lyckades",
         "failed": "Misslyckades",
         "not-started": "Ej påbörjad",
         "rebooting-ble": "Starta om BT",
@@ -153,7 +153,7 @@
     "phone-state": "VALFRITT: För att få tillgång till din klockans serienummer, som kan vara användbart för support- och garantisyfte, måste du tillåta telefontillstånd [READ_PHONE_STATE] på en av följande skärmar. Från denna tillåtelse kommer Permobil inte att få åtkomst till ditt telefonnummer, mobilnätinformation eller annan information utom klockans serienummer."
   },
   "permissions-request": {
-    "title": "Tillståndsmeddelande"
+    "title": "Tillåtelse medgivande"
   },
   "power-assist": {
     "activate": "Slå på enhet",
@@ -176,8 +176,8 @@
     },
     "switch-settings": {
       "mode": {
-        "latching": "Låst",
-        "momentary": "Tillfällig"
+        "latching": "Latched=Låst",
+        "momentary": "Momentary=Tillfällig"
       }
     }
   },
@@ -190,9 +190,9 @@
       "controlmode": "MX2+: Standard driftsläge för SmartDrive. I MX2+ driftläge kommer en dubbelknackning/klapp på drivringen för att starta motorn genom att höja hastigheten, en enda knackning/klapp på drivring kommer att låsa den aktuell hastighet och en dubbelknackning/klapp på drivring stannar motorn.\n\nMX2: I MX2 driftsläge kommer SmartDrive att börja köra när du trycker på knappen och den känner av din ökning och avaktiverar körningen när du trycker på. Observera att detta är ett val-support alternativ.\n\nMX1: I MX1-kontrollläge kommer SmartDrive att börja köra när du trycker på knappen och den känner av din ökning och kommer att sluta köra när du knackar eller när du bromsar på drivringarna. Observera att detta är ett val-support alternativ.",
       "maxspeed": "Den maximala hastigheten som SmartDrive kan köra på när den styrs av din klocka.",
       "powerassistbuzzer": "När den är aktiverad piper SmartDrive varje gång en anslutning från en fjärrenhet upprättas, eller när SwitchControl tas ur vänteläget.",
-      "powerassisttimeout": "SmartDrive MX2 inaktiverar automatiskt strömhjälpen efter den angivna tiden om användaren har strömassistent aktiv och är ansluten till SmartDrive men inte har aktiverat motorn innan timeout löper ut.\n\nObs: SmartDrive MX2 inaktiverar automatiskt strömförsörjningen efter 1 minut om den inte är ansluten till SmartDrive.",
-      "switchcontrolmode": "Moment: Förinställt värde för SwitchControl, SmartDrive börjar köras med att man hålla in knappen. Hastigheten höjs till den konfigurerade SwitchControl maxhastighet och endast när en av omkopplarstyrknapparna hålls intryckta. När knappen släpps, eller om båda knapparna [om de finns] trycks in, kommer körningen att inaktiveras. Observera att vid avaktivering sätter den inte enheten i vänteläge.\n\nLåst: I låst standarddriftsläget kommer SmartDrive att börja köra motorn genom att höja hastigheten till den konfigurerade maxhastighet medan en av knapparna för SwitchControl hålls in. När knappen släpps kommer SmartDrive att förbli den aktuella hastigheten som enheten hade när knappen släpptes. När en av knapparna trycks ned och släpps igen, eller om båda knapparna [om de finns] trycks in, kommer körningen att inaktiveras. Observera att vid avaktivering sätter den inte enheten i vänteläge.",
-      "switchcontrolspeed": "Den maximala hastigheten som SmartDrive kan köra på när den styrs av klockan.",
+      "powerassisttimeout": "När den är ansluten till SmartDrive med strömassistent ON, om motorn inte har körts under den valda tiden kommer den automatiskt att stänga av strömassistenten.\n\nOm strömhjälpen är PÅ men den inte är ansluten till SmartDrive stängs den automatiskt av efter 1 minut.",
+      "switchcontrolmode": "Moment: Förinställt värde för SwitchControl, SmartDrive börjar köras med att man hålla in knappen. Hastigheten höjs till den konfigurerade SwitchControl maxhastighet och endast när en av SwitchContrrol knapparna hålls intryckt. När knappen släpps, eller om båda knapparna [om de finns] trycks in, kommer körningen att inaktiveras. Observera att vid avaktivering sätter den inte enheten i vänteläge.\n\nLåst: I låst standarddriftsläget kommer SmartDrive att börja köra motorn genom att höja hastigheten till den konfigurerade maxhastighet medan en av knapparna för SwitchControl hålls in. När knappen släpps kommer SmartDrive att förbli den aktuella hastigheten som enheten hade när knappen släpptes. När en av knapparna trycks ned och släpps igen, eller om båda knapparna [om de finns] trycks in, kommer körningen att inaktiveras. Observera att vid avaktivering sätter den inte enheten i vänteläge.",
+      "switchcontrolspeed": "Den maximala hastigheten som SmartDrive kan köra på när den styrs av SwitchControl knapparna.",
       "tapsensitivity": "Känsligheten för knackningen som används för att aktivera och inaktivera körningen. Ju lägre procenten är desto hårdare behöver du knacka - 100% är den mest känsliga och därför lättast att knacka, och 10% är den minst känsliga och därför svårast att knacka/klappa på.",
       "units": "Enhetssystemet eller måttenheterna för att visa hastighet och avstånd inom användargränssnitten. Välj antingen Imperial [mi och mph] eller Metric [km och km/t].",
       "wearcheck": "När det är aktiverat måste klockan vara på handleden för att slå på körläge. Om körläget är PÅ och klockan känner av att det inte längre finns på handleden, stänger den automatiskt av körläget."
@@ -210,7 +210,7 @@
     },
     "scanning": "Skannar efter SmartDrive för att parakoppla med ...",
     "select-smartdrive": "Välj SmartDrive",
-    "syncing-with-server": "Synkronisering med servern",
+    "syncing-with-server": "Synkroniserar med servern ...",
     "tap-sensitivity": "Klappkänslighet",
     "title": "SmartDrive Inställningar",
     "units": "Enheter",
@@ -223,8 +223,8 @@
     }
   },
   "switch-control": {
-    "max-speed": "Stömbrytare Max hastighet",
-    "mode": "Strömbrytare Kontrolläge"
+    "max-speed": "SwitchControl Max hastighet",
+    "mode": "SwitchControl kontrolläge"
   },
   "units": {
     "distance": {
@@ -254,9 +254,9 @@
       "timeout": "SmartDrive uppdatering har avbrutits."
     },
     "failed": "SmartDrive uppdateringar misslyckades.",
-    "initializing": "Hämtar uppdateringar…",
+    "initializing": "Hämtar uppdateringar ...",
     "status": "Status uppdateringar",
-    "success": "SmartDrive-uppdateringar avslutade framgångsrikt!",
+    "success": "SmartDrive-uppdateringar lyckades!",
     "timeout": "SmartDrive uppdateringar avbrutits.",
     "up-to-date": "SmartDrive är uppdaterad!",
     "version": "Version"

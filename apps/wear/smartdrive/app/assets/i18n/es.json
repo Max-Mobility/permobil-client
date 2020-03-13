@@ -30,15 +30,15 @@
     "pt": {
       "2_0": [
         "Se ha añadido poder ver la fuerza de conexión Bluetooth SmartDrive más reciente al menú de configuración \"Acerca de\"",
-        "Agregado soporte  para enviar y recibir configuraciones de control de interruptor de / al SmartDrive desde las aplicaciones móviles PushTracker y SmartDrive"
+        "Agregado soporte para enviar y recibir configuraciones de control de interruptor de / al SmartDrive desde las aplicaciones móviles PushTracker y SmartDrive"
       ]
     },
     "sd": {
       "2_0": [
-        "\"Se agregó una indicación dinámica del botón SwitchControl para que los LED del botón indiquen la asistencia eléctrica y el estado de conducción\n - Si el PushTracker / E2 está conectado y / o el control del interruptor está habilitado, los LED parpadearán en diferentes patrones.\n - Si el motor está en marcha, los LED estarán encendidos.\"",
-        "\"SmartDrive se puede configurar en modos de control de interruptor momentáneo o bloqueado\n - En el modo Momentáneo predeterminado, el SmartDrive iniciará la marcha y el motor irá aumentando su velocidad a la velocidad máxima configurada de SwitchControl, solo mientras se mantiene presionado uno de los botones.\n - En el modo fijo, el SmartDrive comenzará a aumentar su velocidad a la velocidad máxima configurada de SwitchControl mientras se mantiene presionado uno de los botones. Cuando se suelta el botón retenido, el SmartDrive seguirá continuará la marcha a la velocidad actual. Desactive la conducción presionando un botón.\"",
+        "Se agregó una indicación dinámica del botón SwitchControl para que los LED del botón indiquen la asistencia eléctrica y el estado de conducción\n - Si el PushTracker / E2 está conectado y / o el control del interruptor está habilitado, los LED parpadearán en diferentes patrones.\n - Si el motor está en marcha, los LED estarán encendidos.",
+        "SmartDrive se puede configurar en modos de control de interruptor momentáneo o bloqueado\n - En el modo Momentáneo predeterminado, el SmartDrive iniciará la marcha y el motor irá aumentando su velocidad a la velocidad máxima configurada de SwitchControl, solo mientras se mantiene presionado uno de los botones.\n - En el modo fijo, el SmartDrive comenzará a aumentar su velocidad a la velocidad máxima configurada de SwitchControl mientras se mantiene presionado uno de los botones. Cuando se suelta el botón retenido, el SmartDrive seguirá continuará la marcha a la velocidad actual. Desactive la conducción presionando un botón.",
         "SmartDrive SwitchControl tiene su propia configuración de velocidad máxima configurable, que es independiente de la configuración de velocidad máxima para PushTracker / E2",
-        "\"SmartDrive ahora está configurado para emitir un pitido cada vez que cambia su estado a encendido \n - Este cambio de estado puede ser desde la PushTracker / E2 y desde el botón SwitchControl.\n - Esta configuración de indicación se puede deshabilitar a través de la aplicación SmartDrive MX2+ en su PushTracker E2 o usando la aplicación PushTracker Mobile en su teléfono inteligente si no tiene un E2.\""
+        "SmartDrive ahora está configurado para emitir un pitido cada vez que cambia su estado a encendido \n - Este cambio de estado puede ser desde la PushTracker / E2 y desde el botón SwitchControl.\n - Esta configuración de indicación se puede deshabilitar a través de la aplicación SmartDrive MX2+ en su PushTracker E2 o usando la aplicación PushTracker Mobile en su teléfono inteligente si no tiene un E2."
       ]
     }
   },
@@ -51,8 +51,8 @@
     }
   },
   "complications": {
-    "battery-level": "Cuentakilómetros",
-    "odometer": "Nivel de bateria"
+    "battery-level": "Nivel de bateria",
+    "odometer": "Cuentakilómetros"
   },
   "error-history": {
     "errors": {
@@ -76,14 +76,14 @@
     },
     "connect": "No se puede conectar al SmartDrive.",
     "could-not-enable-tap-sensor": "No se pudo habilitar el sensor de palmeo.",
-    "downloading-translations": "Error al descargar los archivos de idioma para su dispositivo.",
+    "downloading-translations": "Error al descargar los archivos de idioma actualizados.",
     "getting-error": "No se puede obtener el error del SmartDrive.",
     "must-wear-watch": "El ajuste [Verificar muñeca] está habilitado, por lo tanto, el reloj inteligente (PushTracker E2) debe usarse para controlar su SmartDrive.",
     "no-network": "La conexión a la nube no está disponible. Asegúrese de que su reloj inteligente esté conectado a Internet a través de Wi-Fi o su teléfono.",
     "no-smartdrive-paired": "SmartDrive no emparejado.",
     "no-smartdrives-found": "No se han encontrado otros SmartDrives cerca.",
     "permissions": "No se puede realizar la acción solicitada. No se otorgaron los permisos requeridos.",
-    "power-assist-timeout": "La asistencia eléctrica se deshabilitó automáticamente a través del tiempo de espera debido a la inactividad. Consulte la configuración de SmartDrive MX2 [Tiempo de espera de asistencia de energía] para obtener más información.",
+    "power-assist-timeout": "Para ayudar a conservar la batería, la asistencia de energía se apagó automáticamente debido a la inactividad. Consulte \"Tiempo de espera de asistencia de energía\" en el menú de configuración de SmartDrive para obtener más información.",
     "saving-error": "No se pudo guardar el error del SmartDrive.",
     "saving-usage": "No se pudieron guardar los datos del uso del SmartDrive.",
     "scan": "No se pudo escanear.",
@@ -190,7 +190,7 @@
       "controlmode": "MX2+: La operación predeterminada basada en gestos de SmartDrive. En el modo de control MX2+, con una doble palmada se iniciará la marcha aumentando la velocidad, con una palmada mantendrá la velocidad actual y haciendo una doble palmada desactivará el motor.\n\nMX2: En el modo de control MX2, el SmartDrive iniciará la marcha cuando detecte su impulso y se desactivará el motor cuando realize una palmada. Tenga en cuenta que esta es una opción de soporte heredada.\n\nMX1: En el modo de control MX1, el SmartDrive iniciará la marcha cuando detecte su impulso, y se desactivará el motor cuando realize una palmada o cuando frene los aros con la mano. Tenga en cuenta que esta es una opción de soporte heredado.",
       "maxspeed": "Velocidad máxima a la que puede conducir el SmartDrive cuando lo controla con su reloj inteligente (PushTracker E2).",
       "powerassistbuzzer": "Cuando está encendido, el SmartDrive emitirá un pitido cada vez que se establezca una conexión desde un dispositivo remoto, o cuando el Botón del interruptor salga del estado de espera.",
-      "powerassisttimeout": "El SmartDrive MX2 desactivará automáticamente la asistencia eléctrica después del tiempo especificado si el usuario tiene activada la asistencia eléctrica y está conectado al SmartDrive pero no ha activado el motor antes de que expire el tiempo de espera.\n\nNota: el SmartDrive MX2 desactivará automáticamente la asistencia de potencia después de 1 minuto si no está conectado al SmartDrive.",
+      "powerassisttimeout": "Cuando se conecta al SmartDrive con la asistencia de energía ENCENDIDA, si el motor no se ha accionado en la cantidad de tiempo seleccionada, se apagará automáticamente.\n\nSi la asistencia de energía está ENCENDIDA pero no está conectada al SmartDrive, la APAGARÁ automáticamente después de 1 minuto.",
       "switchcontrolmode": "Momentáneo: el modo de control de Botón del SmartDrive,  iniciará la marcha  aumentando su velocidad a la velocidad máxima de control del Botón solo si se mantiene presionado uno de los Botones. Cuando se suelta el Botón retenido, o se presionan ambos Botones [si están presentes], el motor se desactivará. Tenga en cuenta que, tras la desactivación,  el dispositivo no se pone en modo de espera.\n\nEnganchado: en el modo de control de Botón, el SmartDrive iniciará la marcha aumentando su velocidad a la velocidad máxima de control del Botón mientras se mantiene presionado uno de los Botones de control. Cuando se suelta el Botón retenido, el SmartDrive seguirá  la marcha a la velocidad actual cuando se suelte el Botón. Cuando se presiona y suelte uno de los Botones nuevamente, o si se presionan ambos Botones [si está presente], el motor se desactivará. Tenga en cuenta que, tras la desactivación, el dispositivo no se pone en modo de espera.",
       "switchcontrolspeed": "La velocidad máxima a la que puede conducir el SmartDrive cuando está controlado por el Botón.",
       "tapsensitivity": "La sensibilidad del gesto del palmeo que se utiliza para activar y desactivar la marcha. Cuanto más bajo sea el porcentaje, más fuerza tienes que usar para palmear. El 100% es el más sensible y, por lo tanto, necesitas usar menos fuerza para palmear, y el 10% es el menos sensible y, por lo tanto, debe usar más fuerza para palmear.",
@@ -210,7 +210,7 @@
     },
     "scanning": "Escaneando SmartDrive para emparejar con ...",
     "select-smartdrive": "Seleccione SmartDrive",
-    "syncing-with-server": "Sincronizando con el servidor",
+    "syncing-with-server": "Sincronizando con el servidor ...",
     "tap-sensitivity": "La sensibilidad del palmeo",
     "title": "Configuraciones del SmartDrive",
     "units": "Unidades",
@@ -254,7 +254,7 @@
       "timeout": "Se agotó el tiempo para las actualizaciones de SmartDrive."
     },
     "failed": "Las actualizaciones de SmartDrive fallaron.",
-    "initializing": "Iniciando actualizaciones…",
+    "initializing": "Iniciando actualizaciones ...",
     "status": "Estado de actualizaciones",
     "success": "¡Actualizaciones de SmartDrive completadas con éxito!",
     "timeout": "Las actualizaciones del SmartDrive caducaron.",

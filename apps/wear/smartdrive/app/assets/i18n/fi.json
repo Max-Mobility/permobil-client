@@ -1,7 +1,7 @@
 {
   "about": {
     "database": "Tietokannan tunnus",
-    "sd-ble-version": "SmartDrive Bluetooth (BT) -versio",
+    "sd-ble-version": "SmartDrive Bluetooth (BT) versio",
     "sd-mcu-version": "SmartDrive MCU (SD) -versio",
     "sd-serial-number": "SmartDrive-sarjanumero",
     "smartdrive-serial-number-info": "Sinun on muodostanut yhteys PushTracker-mobiilisovellukseen, jotta voit käyttää SmartDrive-sarjanumeroasi, josta voi olla hyötyä tuki- ja takuutarkoituksissa.",
@@ -20,11 +20,11 @@
     "allow": "Sallia",
     "back": "Takaisin",
     "cancel": "Peruuttaa",
-    "deny": "kieltää",
+    "deny": "Kieltää",
     "disable": "Poista käytöstä",
-    "dismiss": "erottaa",
-    "enable": "ota käyttöön",
-    "ok": "kunnossa"
+    "dismiss": "Erottaa",
+    "enable": "Ota käyttöön",
+    "ok": "Kunnossa"
   },
   "change-notes": {
     "pt": {
@@ -35,10 +35,10 @@
     },
     "sd": {
       "2_0": [
-        "\"Lisätty dynaaminen SwitchControl-painikkeen ilmaisin, jotta painikkeen merkkivalot osoittavat voima-apua ja ajon tilaa\n - Jos PushTracker / E2 on kytketty ja / tai kytkimen ohjaus on käytössä, LED (t) vilkkuvat erilaisissa kuvioissa.\n - Jos moottori ajaa, merkkivalot palavat. \"",
-        "\"SmartDrive voidaan määrittää hetkelliseen tai lukittuun SwitchControl-tilaan\n - Oletusmomenttihetkellä SmartDrive alkaa ajaa moottoria lisäämällä nopeutta vain määritettyyn SwitchControl-maksiminopeuteen vain yhden painikkeen ollessa painettuna.\n - Latched-tilassa SmartDrive alkaa kasvattaa nopeuttaan määritettyyn SwitchControl-maksiminopeuteen, kun yhtä painikkeista pidetään alhaalla. Kun pidä painike vapautetaan, SmartDrive jatkaa ajamista nykyisellä nopeudella. Poista ajo käytöstä painamalla painiketta. \"",
+        "Lisätty dynaaminen SwitchControl-painikkeen ilmaisin, jotta painikkeen merkkivalot osoittavat voima-apua ja ajon tilaa\n - Jos PushTracker / E2 on kytketty ja / tai kytkimen ohjaus on käytössä, LED (t) vilkkuvat erilaisissa kuvioissa.\n - Jos moottori ajaa, merkkivalot palavat.",
+        "SmartDrive voidaan määrittää hetkelliseen tai lukittuun SwitchControl-tilaan\n - Oletusmomenttihetkellä SmartDrive alkaa ajaa moottoria lisäämällä nopeutta vain määritettyyn SwitchControl-maksiminopeuteen vain yhden painikkeen ollessa painettuna.\n - Latched-tilassa SmartDrive alkaa kasvattaa nopeuttaan määritettyyn SwitchControl-maksiminopeuteen, kun yhtä painikkeista pidetään alhaalla. Kun pidä painike vapautetaan, SmartDrive jatkaa ajamista nykyisellä nopeudella. Poista ajo käytöstä painamalla painiketta.",
         "SmartDrive SwitchControlilla on oma määritettävissä oleva maksiminopeuden asetus, joka on riippumaton PushTracker / E2: n maksiminopeuden asetuksesta.",
-        "\"SmartDrive on nyt määritetty piippaamaan kerran, kun sen tila vaihdetaan virranohjauksen päälle\n - Tämä tilamuutos voi tapahtua PushTracker / E2- ja SwitchControl-painikkeilla.\n - Tämä osoitusasetus voidaan poistaa käytöstä joko PushTracker E2: n SmartDrive MX2 -sovelluksella tai älypuhelimen PushTracker-mobiilisovelluksella, jos sinulla ei ole E2: ta. \""
+        "SmartDrive on nyt määritetty piippaamaan kerran, kun sen tila vaihdetaan virranohjauksen päälle\n - Tämä tilamuutos voi tapahtua PushTracker / E2- ja SwitchControl-painikkeilla.\n - Tämä osoitusasetus voidaan poistaa käytöstä joko PushTracker E2: n SmartDrive MX2 -sovelluksella tai älypuhelimen PushTracker-mobiilisovelluksella, jos sinulla ei ole E2: ta."
       ]
     }
   },
@@ -64,7 +64,7 @@
       "overcurrent": "[ERR: 003] SD-virtapiikki",
       "overtemperature": "[ERR: 004] SD-ylikuumeneminen"
     },
-    "loading": "Ladataan...",
+    "loading": "Ladataan ...",
     "no-errors": "Mitään SmartDrive-virheitä ei ole tallennettu tai vastaanotettu.",
     "title": "SmartDrive-virhehistoria"
   },
@@ -92,26 +92,26 @@
     "too-many-smartdrives-found": "Löydetty useita SmartDrive-koneita. Varmista, että lähellä on vain yksi SmartDrive-laite pariliitoksen muodostamisen aikana."
   },
   "languages": {
-    "cs": "czech",
+    "cs": "Czech",
     "da": "Tanskan kieli",
     "de": "Saksan kieli",
     "en": "Englanti",
     "es": "Espanja",
     "fi": "Suomalainen",
     "fr": "Ranskan kieli",
-    "it": "italialainen",
-    "ja": "japanilainen",
+    "it": "Italialainen",
+    "ja": "Japanilainen",
     "ko": "Korealainen",
     "nb": "Norjalainen [bokmål]",
     "nl": "Hollannin kieli",
     "pl": "Kiillottaa",
     "pt": "Portugalin kieli",
     "sv": "Ruotsin kieli",
-    "zh": "Kiinalainen perinteinen]"
+    "zh": "Kiinalainen [perinteinen]"
   },
   "menu": {
     "about": "Noin",
-    "settings": "asetukset",
+    "settings": "Asetukset",
     "title": "SmartDrive MX2 -valikko",
     "training": "Napauta Training",
     "updates": "Langattomat päivitykset"
@@ -119,11 +119,11 @@
   "ota": {
     "action": {
       "cancel": "Peruuttaa",
-      "close": "kiinni",
+      "close": "Kiinni",
       "force": "Pakottaa",
       "pause": "Tauko",
       "resume": "Jatkaa",
-      "retry": "yritä uudelleen",
+      "retry": "Yritä uudelleen",
       "start": "Alkaa"
     },
     "sd": {
@@ -133,18 +133,18 @@
         "awaiting-connection": "Odotetaan yhteyttä",
         "awaiting-mcu-ready": "Odotetaan SD: tä",
         "awaiting-versions": "Odotetaan versioita",
-        "canceled": "peruttu",
-        "canceling": "peruuttaminen",
+        "canceled": "Peruttu",
+        "canceling": "Peruuttaminen",
         "comm-failure": "Viestintävirhe - SmartDrive-käynnistys vaaditaan uudelleen",
         "complete": "Saattaa loppuun",
-        "failed": "epäonnistui",
+        "failed": "Epäonnistui",
         "not-started": "Ei alkanut",
         "rebooting-ble": "Käynnistä BT uudelleen",
         "rebooting-mcu": "Käynnistä SD",
         "timeout": "Aikalisä",
         "updating-ble": "Päivitetään BT",
         "updating-mcu": "Päivitetään SD",
-        "verifying": "tarkistaminen"
+        "verifying": "Tarkistaminen"
       }
     }
   },
@@ -170,7 +170,7 @@
         "enabled": "Käytössä"
       },
       "units": {
-        "english": "keisarillinen",
+        "english": "Keisarillinen",
         "metric": "Metrinen"
       }
     },
@@ -182,7 +182,7 @@
     }
   },
   "settings": {
-    "acceleration": "kiihtyvyys",
+    "acceleration": "Kiihtyvyys",
     "connect-pushtracker": "Yhdistä PushTracker-mobiilisovellus",
     "control-mode": "Ohjaustila",
     "description": {
@@ -190,7 +190,7 @@
       "controlmode": "MX2: SmartDriven oletusarvoinen eleperusteinen toiminta. MX2-ohjaustilassa kaksoisnapautus alkaa ajaa moottoria lisäämällä sen nopeutta, yksi napautus menee rannalle nykyisellä nopeudella ja kaksoisnapautus poistaa käytöstä ajon.\n\nMX2: MX2-ohjaustilassa SmartDrive alkaa ajaa tunteessasi työntösi ja deaktivoi ajamisen, kun napautat. Huomaa, että tämä on vanha tukivaihtoehto.\n\nMX1: MX1-ohjaustilassa SmartDrive alkaa ajaa tunteessasi työntösi ja lopettaa ajamisen, kun napautat tai jarrutat käsipyörää. Huomaa, että tämä on vanha tukivaihtoehto.",
       "maxspeed": "Suurin nopeus, jolla SmartDrive voi ajaa, kun älykellosi sitä ohjaa.",
       "powerassistbuzzer": "Kun asetus on käytössä, SmartDrive antaa äänimerkin aina, kun yhteys etälaitteesta muodostetaan tai kun SwitchControl poistetaan valmiustilasta.",
-      "powerassisttimeout": "SmartDrive MX2 deaktivoi virranohjauksen automaattisesti määritetyn ajan kuluttua, jos käyttäjällä on virranhallintatoiminto aktiivinen ja hän on kytketty SmartDriveen, mutta ei ole aktivoinut moottoria ennen aikakatkaisun päättymistä.\n\nHuomaa: SmartDrive MX2 deaktivoi virranohjauksen automaattisesti yhden minuutin kuluttua, jos sitä ei ole kytketty SmartDriveen.",
+      "powerassisttimeout": "SmartDrive deaktivoi virranohjauksen automaattisesti määritetyn ajan kuluttua, jos käyttäjällä on virranhallintatoiminto aktiivinen ja hän on kytketty SmartDriveen, mutta ei ole aktivoinut moottoria ennen aikakatkaisun päättymistä.\n\nHuomaa: SmartDrive deaktivoi virranohjauksen automaattisesti yhden minuutin kuluttua, jos sitä ei ole kytketty SmartDriveen.",
       "switchcontrolmode": "Hetkellinen: Oletusarvoinen SwitchControl-tila, jossa SmartDrive alkaa ajaa moottoria lisäämällä nopeuttaan vain määritettyyn SwitchControl-maksiminopeuteen vain samalla kun yhtä SwitchControl-painikkeista pidetään alhaalla. Kun pidä painike vapautetaan tai molemmat painikkeet [jos on] painetaan, ajo kytkeytyy pois päältä. Huomaa, että deaktivoinnin jälkeen se ei aseta laitetta valmiustilaan.\n\nLukittu: Lukitussa SwitchControl-tilassa SmartDrive alkaa ajaa moottoria lisäämällä nopeuttaan määritettyyn SwitchControl-maksiminopeuteen samalla kun yhtä SwitchControl-painikkeista pidetään alhaalla. Kun pidä painike vapautetaan, SmartDrive jatkaa ajamista / rannikkoa nykyisellä nopeudella, kun painike vapautettiin. Kun yhtä painikkeista painetaan ja vapautetaan uudelleen tai molemmat painikkeista [jos on] painetaan, ajo kytkeytyy pois päältä. Huomaa, että deaktivoinnin jälkeen se ei aseta laitetta valmiustilaan.",
       "switchcontrolspeed": "Suurin nopeus, jolla SmartDrive voi ajaa, kun sitä ohjataan SwitchControlilla.",
       "tapsensitivity": "Ajamisen aktivointiin ja deaktivointiin käytetyn napautus eleen herkkyys. Mitä pienempi prosenttiosuus on, sitä vaikeammin sinun täytyy napauttaa - 100% on herkein ja siksi helpoin napauttaa, ja 10% on vähiten herkkä ja siksi vaikeimmin napautettava.",
@@ -210,10 +210,10 @@
     },
     "scanning": "Skannataan SmartDrive-paria pariksi ...",
     "select-smartdrive": "Valitse SmartDrive",
-    "syncing-with-server": "Synkronointi palvelimen kanssa",
+    "syncing-with-server": "Synkronointi palvelimen kanssa ...",
     "tap-sensitivity": "Napauta Herkkyys",
     "title": "SmartDrive-asetukset",
-    "units": "yksiköt",
+    "units": "Yksiköt",
     "watch-required": {
       "title": "Tarkista ranne",
       "values": {
@@ -231,7 +231,7 @@
       "english": "mi",
       "metric": "km"
     },
-    "english": "keisarillinen",
+    "english": "Keisarillinen",
     "metric": "Metrinen",
     "speed": {
       "english": "mph",
@@ -254,16 +254,16 @@
       "timeout": "SmartDrive-päivitykset ovat vanhentuneet."
     },
     "failed": "SmartDrive-päivitykset epäonnistuivat.",
-    "initializing": "Päivitysten alustaminen",
+    "initializing": "Päivitysten alustaminen ...",
     "status": "Päivitysten tila",
     "success": "SmartDrive-päivitykset onnistui!",
     "timeout": "SmartDrive-päivitykset ovat vanhentuneet.",
     "up-to-date": "SmartDrive on ajan tasalla!",
-    "version": "versio"
+    "version": "Versio"
   },
   "warnings": {
     "saved-settings": {
-      "message": "VAROITUS: sinun on Tutustu SmartDrive-käyttöoppaaseen kuinka asetusten muuttaminen vaikuttaa laitteen toimintaan ja suorituskykyyn.",
+      "message": "VAROITUS: Sinun on Tutustu SmartDrive-käyttöoppaaseen kuinka asetusten muuttaminen vaikuttaa laitteen toimintaan ja suorituskykyyn.",
       "title": "Muutetut asetukset"
     },
     "title": {

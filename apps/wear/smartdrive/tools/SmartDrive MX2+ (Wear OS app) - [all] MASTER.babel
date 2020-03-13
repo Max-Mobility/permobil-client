@@ -3472,7 +3472,7 @@
                             </translation>
                             <translation>
                                 <language>en-US</language>
-                                <approved>false</approved>
+                                <approved>true</approved>
                             </translation>
                             <translation>
                                 <language>es-ES</language>
@@ -3983,7 +3983,7 @@
                             </translation>
                             <translation>
                                 <language>en-US</language>
-                                <approved>false</approved>
+                                <approved>true</approved>
                             </translation>
                             <translation>
                                 <language>es-ES</language>
@@ -6547,7 +6547,7 @@
                                         <name>already-uptodate</name>
                                         <definition_loaded>false</definition_loaded>
                                         <description></description>
-                                        <comment></comment>
+                                        <comment>See "ota.action.force" for consistency.</comment>
                                         <default_text></default_text>
                                         <translations>
                                             <translation>
@@ -6564,7 +6564,7 @@
                                             </translation>
                                             <translation>
                                                 <language>en-US</language>
-                                                <approved>false</approved>
+                                                <approved>true</approved>
                                             </translation>
                                             <translation>
                                                 <language>es-ES</language>
@@ -9468,7 +9468,7 @@
                                     </translation>
                                     <translation>
                                         <language>en-US</language>
-                                        <approved>false</approved>
+                                        <approved>true</approved>
                                     </translation>
                                     <translation>
                                         <language>es-ES</language>
@@ -10349,7 +10349,7 @@
                                     </translation>
                                     <translation>
                                         <language>en-US</language>
-                                        <approved>false</approved>
+                                        <approved>true</approved>
                                     </translation>
                                     <translation>
                                         <language>es-ES</language>
@@ -10422,7 +10422,7 @@
                                     </translation>
                                     <translation>
                                         <language>en-US</language>
-                                        <approved>false</approved>
+                                        <approved>true</approved>
                                     </translation>
                                     <translation>
                                         <language>es-ES</language>
@@ -10495,7 +10495,7 @@
                                     </translation>
                                     <translation>
                                         <language>en-US</language>
-                                        <approved>false</approved>
+                                        <approved>true</approved>
                                     </translation>
                                     <translation>
                                         <language>es-ES</language>
@@ -10716,7 +10716,7 @@
                             </translation>
                             <translation>
                                 <language>en-US</language>
-                                <approved>false</approved>
+                                <approved>true</approved>
                             </translation>
                             <translation>
                                 <language>es-ES</language>
