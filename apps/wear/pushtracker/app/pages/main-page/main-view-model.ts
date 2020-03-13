@@ -682,7 +682,8 @@ export class MainViewModel extends Observable {
 
   private format(d: Date, fmt: string) {
     return format(d, fmt, {
-      locale: dateLocales[getDefaultLang()] || dateLocales['en']
+      // THIS IS FOR PRODCUTION RELEASE ONLY - at launch PT.M will only support english
+      locale: dateLocales['en'] // getDefaultLang()] || dateLocales['en']
     });
   }
 

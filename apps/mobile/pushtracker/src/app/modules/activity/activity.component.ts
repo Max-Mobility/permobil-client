@@ -134,8 +134,8 @@ export class ActivityComponent implements OnInit {
   private MAX_COMMIT_INTERVAL_MS: number = 1 * 500;
 
   public static api_base = PushTrackerKinveyKeys.HOST_URL;
-  public static api_app_key = PushTrackerKinveyKeys.DEV_KEY;
-  public static api_app_secret = PushTrackerKinveyKeys.DEV_SECRET;
+  public static api_app_key = PushTrackerKinveyKeys.PROD_KEY;
+  public static api_app_secret = PushTrackerKinveyKeys.PROD_SECRET;
   private _weeklyActivityFromKinvey: any;
   private _dailyActivityFromKinvey: any;
   private _weeklyUsageFromKinvey: any;

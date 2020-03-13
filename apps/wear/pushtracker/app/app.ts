@@ -8,8 +8,9 @@ console.time('App_Start_Time');
 
 // load inital files
 console.time('load language files');
-load(getDefaultLang());
-use(getDefaultLang());
+// THIS IS FOR PRODCUTION RELEASE ONLY - at launch PT.M will only support english
+load('en'); // getDefaultLang());
+use('en'); // getDefaultLang());
 console.timeEnd('load language files');
 
 // setup application level events
