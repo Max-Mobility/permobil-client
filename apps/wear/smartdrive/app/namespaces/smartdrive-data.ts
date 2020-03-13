@@ -1,7 +1,6 @@
-import { File, knownFolders, path } from '@nativescript/core';
+import { File, Http, knownFolders, path } from '@nativescript/core';
 import { device } from '@nativescript/core/platform';
 import { eachDay, format, subDays } from 'date-fns';
-import { DownloadProgress } from 'nativescript-download-progress';
 
 export namespace SmartDriveData {
   export namespace Info {
@@ -320,13 +319,6 @@ export namespace SmartDriveData {
       });
     }
 
-    export type ProgressCallback = (file: any, progress: number) => void;
-    let progressCallback: ProgressCallback = null;
-
-    export function setDownloadProgressCallback(cb: ProgressCallback) {
-      progressCallback = cb;
-    }
-
     export async function download(f: any) {
       let url = f['_downloadURL'];
       // make sure they're https!
@@ -335,9 +327,9 @@ export namespace SmartDriveData {
       }
       console.log('Downloading FW update', f['_filename']);
 
-      const downloader = new DownloadProgress();
-      downloader.addProgressCallback(progressCallback.bind(null, f));
-      return downloader.downloadFile(url).then(file => {
+      console.log('starting http get file...');
+      return Http.getFile(url).then(file => {
+        console.log('http get file:', file);
         const fileData = File.fromPath(file.path).readSync();
         return {
           version: SmartDriveData.Firmwares.versionStringToByte(f['version']),

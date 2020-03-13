@@ -3,9 +3,9 @@ import { ModalDialogParams, ModalDialogService } from '@nativescript/angular';
 import { Color, isAndroid, isIOS, Page } from '@nativescript/core';
 import * as app from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
+import { connectionType, getConnectionType } from '@nativescript/core/connectivity';
 import { screen } from '@nativescript/core/platform';
 import { confirm } from '@nativescript/core/ui/dialogs';
-import { connectionType, getConnectionType } from '@nativescript/core/connectivity';
 import { TranslateService } from '@ngx-translate/core';
 import { Files as KinveyFiles, Query as KinveyQuery } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
@@ -91,7 +91,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this.checkForPushTrackerUpdates();
   }
 
-  ngAfterViewInit() { }
+  ngAfterViewInit() {}
 
   onMoreBtnTap() {
     this._logService.logBreadCrumb(
@@ -176,7 +176,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       versions = JSON.parse(
         appSettings.getString(SmartDriveData.Firmwares.TableName, '{}')
       );
-    } catch (err) { }
+    } catch (err) {}
 
     const objs = [];
     for (const key in versions) {
@@ -249,12 +249,18 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       appSettings.getString(SmartDriveData.Firmwares.TableName, '{}')
     );
     if (this.currentVersions['SmartDriveMCU.ota']) {
-      this.currentVersions['SmartDriveMCU.ota'].data =
-        SmartDriveData.Firmwares.loadFromFileSystem(this.currentVersions['SmartDriveMCU.ota']);
+      this.currentVersions[
+        'SmartDriveMCU.ota'
+      ].data = SmartDriveData.Firmwares.loadFromFileSystem(
+        this.currentVersions['SmartDriveMCU.ota']
+      );
     }
     if (this.currentVersions['SmartDriveBLE.ota']) {
-      this.currentVersions['SmartDriveBLE.ota'].data =
-        SmartDriveData.Firmwares.loadFromFileSystem(this.currentVersions['SmartDriveBLE.ota']);
+      this.currentVersions[
+        'SmartDriveBLE.ota'
+      ].data = SmartDriveData.Firmwares.loadFromFileSystem(
+        this.currentVersions['SmartDriveBLE.ota']
+      );
     }
     // console.log('Loaded from FS', this.currentVersions);
   }
@@ -290,7 +296,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       return;
     }
 
-
     const kinveyQuery = new KinveyQuery();
     kinveyQuery.equalTo('firmware_file', true);
     kinveyQuery.equalTo('_filename', 'SmartDriveBLE.ota');
@@ -307,7 +312,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         const mds = kinveyResponse;
         let promises = [];
         // get the max firmware version for each firmware
-        const maxes = mds.reduce((maxes, md) => {
+        const reducedMaxes = mds.reduce((maxes, md) => {
           const v = SmartDriveData.Firmwares.versionStringToByte(md['version']);
           const fwName = md['_filename'];
           if (!maxes[fwName]) maxes[fwName] = 0;
@@ -322,7 +327,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           const fwName = f['_filename'];
           const current = this.currentVersions[fwName];
           const currentVersion = current && current.version;
-          const isMax = v === maxes[fwName];
+          const isMax = v === reducedMaxes[fwName];
           return isMax && (!current || v > currentVersion);
         });
 
@@ -337,10 +342,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         let files = null;
         try {
           files = await Promise.all(promises);
-        } catch (err) {
+        } catch (err1) {
           this._logService.logBreadCrumb(
             WirelessUpdatesComponent.name,
-            'Failed to download SmartDrive firmware files'
+            'Failed to download SmartDrive firmware files' + '\n ' + err1
           );
         }
 
@@ -352,12 +357,12 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         }
         try {
           await Promise.all(promises);
-        } catch (err) {
+        } catch (err2) {
           this._logService.logBreadCrumb(
             WirelessUpdatesComponent.name,
-            'Failed to save SmartDrive firmware files to disk'
+            'Failed to save SmartDrive firmware files to disk' + '\n' + err2
           );
-          // this._logService.logException(err);
+          // this._logService.logException(err2);
         }
 
         // Now perform the SmartDrive updates if we need to
@@ -366,18 +371,18 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           if (this.smartDrive) {
             this.smartDrive.disconnect();
           }
-        } catch (err) {
+        } catch (err3) {
           if (this.smartDrive) {
             this.smartDrive.cancelOTA();
           }
-          this._logService.logException(err);
+          this._logService.logException(err3);
         }
       })
-      .catch(async err => {
+      .catch(async () => {
         try {
           await this._loadSmartDriveFirmwareFromFileSystem();
-        } catch (err) {
-          this._logService.logException(err);
+        } catch (err4) {
+          this._logService.logException(err4);
         }
         // Now perform the SmartDrive updates if we need to
         try {
@@ -385,11 +390,11 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           if (this.smartDrive) {
             this.smartDrive.disconnect();
           }
-        } catch (err) {
+        } catch (err5) {
           if (this.smartDrive) {
             this.smartDrive.cancelOTA();
           }
-          this._logService.logException(err);
+          this._logService.logException(err5);
         }
       });
   }
@@ -473,7 +478,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       `Got version: ${version}`
     );
     // show dialog to user informing them of the version number and changes
-    Object.keys(this.currentVersions).forEach(k => this.currentVersions[k].changes);
+    Object.keys(this.currentVersions).forEach(
+      k => this.currentVersions[k].changes
+    );
     let bleFw = null;
     let mcuFw = null;
     if (isAndroid) {
@@ -488,7 +495,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this.currentVersions['SmartDriveBLE.ota'].data.getBytes(tmp);
       bleFw = new Uint8Array(tmp);
       // mcu fw
-      len = this.currentVersions['SmartDriveMCU.ota'].data.length;
       tmp = new ArrayBuffer(
         this.currentVersions['SmartDriveMCU.ota'].data.length
       );
@@ -567,13 +573,15 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     // https://github.com/Max-Mobility/permobil-client/issues/521
     if (otaState !== this._previousSmartDriveOtaState) {
       this._previousSmartDriveOtaState = otaState;
-      if (otaState === SmartDrive.OTAState.canceled ||
+      if (
+        otaState === SmartDrive.OTAState.canceled ||
         otaState === SmartDrive.OTAState.comm_failure ||
         otaState === SmartDrive.OTAState.complete ||
         otaState === SmartDrive.OTAState.failed ||
         otaState === SmartDrive.OTAState.not_started ||
         otaState === SmartDrive.OTAState.detected_sd ||
-        otaState === SmartDrive.OTAState.timeout) {
+        otaState === SmartDrive.OTAState.timeout
+      ) {
         this.smartDrive.canBackNavigate = true;
       } else {
         this.smartDrive.canBackNavigate = false;
@@ -624,7 +632,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       versions = JSON.parse(
         appSettings.getString(PushTrackerData.Firmware.TableName, '{}')
       );
-    } catch (err) { }
+    } catch (err) {}
 
     const objs = [];
     for (const key in versions) {
@@ -699,8 +707,11 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       appSettings.getString(PushTrackerData.Firmware.TableName, '{}')
     );
     if (this.currentPushTrackerVersions['PushTracker.ota']) {
-      this.currentPushTrackerVersions['PushTracker.ota'].data =
-        PushTrackerData.Firmware.loadFromFileSystem(this.currentPushTrackerVersions['PushTracker.ota']);
+      this.currentPushTrackerVersions[
+        'PushTracker.ota'
+      ].data = PushTrackerData.Firmware.loadFromFileSystem(
+        this.currentPushTrackerVersions['PushTracker.ota']
+      );
     }
   }
 
@@ -979,12 +990,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     // https://github.com/Max-Mobility/permobil-client/issues/521
     if (otaState !== this._previousPushTrackerOtaState) {
       this._previousPushTrackerOtaState = otaState;
-      if (otaState === PushTracker.OTAState.canceled ||
+      if (
+        otaState === PushTracker.OTAState.canceled ||
         otaState === PushTracker.OTAState.complete ||
         otaState === PushTracker.OTAState.failed ||
         otaState === PushTracker.OTAState.not_started ||
         otaState === PushTracker.OTAState.detected_pt ||
-        otaState === PushTracker.OTAState.timeout) {
+        otaState === PushTracker.OTAState.timeout
+      ) {
         this.pushTracker.canBackNavigate = true;
       } else {
         this.pushTracker.canBackNavigate = false;

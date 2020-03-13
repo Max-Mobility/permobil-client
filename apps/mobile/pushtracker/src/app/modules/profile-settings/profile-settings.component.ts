@@ -1,5 +1,6 @@
 import { Component, NgZone, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ModalDialogParams } from '@nativescript/angular';
+import { setTimeout } from '@nativescript/core/timer';
 import { ObservableArray, Page, PropertyChangeData, Switch } from '@nativescript/core';
 import { device } from '@nativescript/core/platform';
 import * as appSettings from '@nativescript/core/application-settings';

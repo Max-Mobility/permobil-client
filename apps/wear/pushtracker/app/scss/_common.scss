@@ -9,13 +9,13 @@ Page {
   background-color: $black;
 }
 
-.ionicon {
-  font-family: $ionicon;
+.icomoon {
+  font-family: $icomoon;
 }
 
 .back-icon {
-  font-family: $ionicon;
-  font-size: 11;
+  font-family: $icomoon;
+  font-size: 14;
   font-weight: bold;
   vertical-align: $center;
   horizontal-align: $center;
@@ -50,7 +50,7 @@ Page {
     horizontal-align: center;
 
     label {
-      font-family: $ionicon;
+      font-family: $icomoon;
       font-size: 36;
       vertical-align: center;
       horizontal-align: center;

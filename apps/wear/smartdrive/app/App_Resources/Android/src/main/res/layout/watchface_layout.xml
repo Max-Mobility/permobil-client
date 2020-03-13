@@ -127,7 +127,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:textAlignment="viewEnd"
+                        android:gravity="right|bottom"
                         android:textSize="18sp" />
 
                     <TextView
@@ -136,7 +136,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:text="@string/colon"
-                        android:textAlignment="center"
+                        android:gravity="center_horizontal|bottom"
                         android:textSize="18sp" />
 
                     <TextView
@@ -144,8 +144,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:textAlignment="viewStart"
+                        android:gravity="left|bottom"
                         android:textSize="18sp" />
+                    <TextView
+                        android:id="@+id/amPmTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:gravity="right|bottom"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
             </TableRow>
@@ -153,15 +160,14 @@
             <TableRow
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center">
+                android:gravity="center_horizontal|top">
 
                 <TextView
-                    android:id="@+id/amPmTextView"
+                    android:id="@+id/dateTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
                     android:gravity="center"
-                    android:textAlignment="center"
                     android:textSize="12sp" />
             </TableRow>
 

@@ -1332,10 +1332,6 @@ export class ActivityComponent implements OnInit {
       this.CURRENT_THEME === APP_THEMES.DARK
         ? this._colorBlackCss
         : this._colorWhite;
-    const selectedColor =
-      this.CURRENT_THEME === APP_THEMES.DARK
-        ? this._colorWhite
-        : this._colorBlackCss;
     const textColor =
       this.CURRENT_THEME === APP_THEMES.DARK
         ? this._colorWhite

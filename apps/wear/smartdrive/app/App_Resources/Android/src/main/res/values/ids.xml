@@ -7,6 +7,7 @@
   <item name="colonTextView" type="id"/>
   <item name="minuteTextView" type="id"/>
   <item name="amPmTextView" type="id"/>
+  <item name="dateTextView" type="id"/>
   <item name="spaceTableRow" type="id"/>
 
   <item name="top_complication_background" type="id"/>

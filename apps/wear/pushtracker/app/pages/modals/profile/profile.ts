@@ -35,7 +35,7 @@ export function onShownModally(args: ShownModallyData) {
 
   page.bindingContext = fromObject(data);
 
-  wearOsLayout = page.getViewById('wearOsLayout');
+  wearOsLayout = page.getViewById('wearOsLayout') as any;
   configureLayout(wearOsLayout);
 }
 
@@ -89,7 +89,7 @@ function configureLayout(layout: WearOsLayout) {
       data.chinSize = screenWidth - screenHeight;
     }
   }
-  layout.nativeView.setPadding(
+  (layout as any).nativeView.setPadding(
     data.insetPadding,
     data.insetPadding,
     data.insetPadding,

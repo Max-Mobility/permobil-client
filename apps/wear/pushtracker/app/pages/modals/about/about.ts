@@ -1,4 +1,4 @@
-import { Observable, Page, ShownModallyData } from '@nativescript/core';
+import { Page, ShownModallyData } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { fromObject } from '@nativescript/core/data/observable';
 import { screen } from '@nativescript/core/platform';
@@ -55,9 +55,9 @@ export function onShownModally(args: ShownModallyData) {
   Log.D('data', data);
 
   // set the pages bindingContext
-  page.bindingContext = fromObject(data) as Observable;
+  page.bindingContext = fromObject(data);
 
-  wearOsLayout = page.getViewById('wearOsLayout');
+  wearOsLayout = page.getViewById('wearOsLayout') as any;
   configureLayout(wearOsLayout);
 
   // load user name / email from appsettings
@@ -84,6 +84,7 @@ export async function onSerialNumberTap(_: any) {
       kinveyService.watch_serial_number = watchSerialNumber;
     } catch (err) {}
   } else {
+    Log.D('Already has permission.');
   }
 }
 
@@ -104,7 +105,7 @@ function configureLayout(layout: WearOsLayout) {
       data.chinSize = screenWidth - screenHeight;
     }
   }
-  layout.nativeView.setPadding(
+  (layout as any).nativeView.setPadding(
     data.insetPadding,
     data.insetPadding,
     data.insetPadding,

@@ -13,7 +13,7 @@
     "skipLibCheck": true,
     "noImplicitUseStrict": true,
     "declaration": false,
-    "lib": ["es6", "dom", "es2015.iterable"],
+    "lib": ["es6", "dom", "ES2020", "es2015.iterable"],
     "baseUrl": ".",
     "paths": {
       "~/*": ["src/*"],
@@ -25,11 +25,16 @@
     }
   },
   "files": ["./src/main.ts"],
-  "include": ["./src/app/**/*.module.ts"],
+  "include": [
+    "./src/app/**/*.module.ts",
+    "../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/src/**/*.ts",
+    "../../../@permobil/nativescript/src/**/*.ts",
+    "../../../forked-plugins/nativescript-bluetooth/**/*.ts"
+  ],
   "exclude": [
     "node_modules",
     "platforms",
-    "../../../@permobil/nativescript/src/plugins/*"
+    "../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/demo/**/*.ts"
   ],
   "angularCompilerOptions": {
     "disableTypeScriptVersionCheck": true // disabling for now to use TS 3.7.3 which should be fine with Angular and available in Q1 with NG9 release

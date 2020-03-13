@@ -1,0 +1,98 @@
+[
+  {
+    "name": "SD2-SRS-5-B: Activation Detection",
+    "short": "SD2-SRS-5-B",
+    "value": {
+      "name": "SD2-SRS-5-B",
+      "description": "Activation Detection"
+    }
+  },
+  {
+    "name": "SD2-SRS-7-B: Activation Detection",
+    "short": "SD2-SRS-7-B",
+    "value": {
+      "name": "SD2-SRS-7-B",
+      "description": "Activation Detection"
+    }
+  },
+  {
+    "name": "SD2-SRS-11-B: Deactivation Detection",
+    "short": "SD2-SRS-11-B",
+    "value": {
+      "name": "SD2-SRS-11-B",
+      "description": "Deactivation Detection"
+    }
+  },
+  {
+    "name": "SD2-SRS-12-B: Deactivation Indication",
+    "short": "SD2-SRS-12-B",
+    "value": {
+      "name": "SD2-SRS-12-B",
+      "description": "Deactivation Indication"
+    }
+  },
+  {
+    "name": "SD2-SRS-15-B: Deactivation Indication",
+    "short": "SD2-SRS-15-B",
+    "value": {
+      "name": "SD2-SRS-15-B",
+      "description": "Deactivation Indication"
+    }
+  },
+  {
+    "name": "SD2-SRS-19-B: Deactivation Detection Thresholds",
+    "short": "SD2-SRS-19-B",
+    "value": {
+      "name": "SD2-SRS-19-B",
+      "description": "Deactivation Detection Thresholds"
+    }
+  },
+  {
+    "name": "SD2-SRS-37-B: Activation Detection Thresholds",
+    "short": "SD2-SRS-37-B",
+    "value": {
+      "name": "SD2-SRS-37-B",
+      "description": "Activation Detection Thresholds"
+    }
+  },
+  {
+    "name": "SD2-SRS-99-B: Tap Indication",
+    "short": "SD2-SRS-99-B",
+    "value": {
+      "name": "SD2-SRS-99-B",
+      "description": "Tap Indication"
+    }
+  },
+  {
+    "name": "SD2-SRS-106-B: Activation Gesture Thresholds",
+    "short": "SD2-SRS-106-B",
+    "value": {
+      "name": "SD2-SRS-106-B",
+      "description": "Activation Gesture Thresholds"
+    }
+  },
+  {
+    "name": "SD2-SRS-107-B: Activation Gesture Recognition Indication",
+    "short": "SD2-SRS-107-B",
+    "value": {
+      "name": "SD2-SRS-107-B",
+      "description": "Activation Gesture Recognition Indication"
+    }
+  },
+  {
+    "name": "SD2-SRS-109-B: Power Assist Activation Indication",
+    "short": "SD2-SRS-109-B",
+    "value": {
+      "name": "SD2-SRS-109-B",
+      "description": "Power Assist Activation Indication"
+    }
+  },
+  {
+    "name": "SD2-SRS-112-B: Motor Activation Gesture Thresholds",
+    "short": "SD2-SRS-112-B",
+    "value": {
+      "name": "SD2-SRS-112-B",
+      "description": "Motor Activation Gesture Thresholds"
+    }
+  }
+]

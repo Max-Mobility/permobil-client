@@ -1,5 +1,3 @@
-/// <reference path="../node_modules/tns-platform-declarations/ios.d.ts" />
-
 import { BluetoothCommon, CLog, CLogTypes, ConnectOptions, Device, MakeCharacteristicOptions, MakeServiceOptions, StartAdvertisingOptions, StartNotifyingOptions, StartScanningOptions, StopNotifyingOptions } from '../common';
 import { CBCentralManagerDelegateImpl } from './CBCentralManagerDelegateImpl';
 import { CBPeripheralDelegateImpl } from './CBPeripheralDelegateImpl';
@@ -329,11 +327,6 @@ export class Bluetooth extends BluetoothCommon {
   }
 
   makeDescriptor(options) {
-    const uuid = this._stringToUuid(options.UUID);
-    // const perms = (opts && opts.perms) ||
-    const descriptor = CBMutableDescriptor.alloc().init();
-    const d = CBDescriptor.alloc().init();
-    // return new android.bluetooth.BluetoothGattDescriptor(uuid, perms);
     return null;
   }
 

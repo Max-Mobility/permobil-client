@@ -1,10 +1,5 @@
 @import 'variables';
 
-/** Fonts **/
-.ionicon {
-  font-family: $ionicon;
-}
-
 Page {
   background-color: $black;
 }
@@ -13,23 +8,18 @@ Page {
   background-color: $black;
 }
 
-.back-icon {
-    font-size: 11;
-    font-weight: bold;
-}
-
 /** Buttons **/
 .power-assist-btn {
-	border-radius: 50%;
+  border-radius: 50%;
   horizontal-align: $center;
   vertical-align: $center;
 }
 
 .updates-btn {
   font-size: 15;
-	border-radius: 50%;
-	width: 60%;
-	height: 25%;
+  border-radius: 50%;
+  width: 60%;
+  height: 25%;
   horizontal-align: $center;
   vertical-align: $center;
   margin: 0, 0, 0, 0;
@@ -52,7 +42,7 @@ Page {
     horizontal-align: center;
 
     label {
-      font-family: $ionicon;
+      font-family: $icomoon;
       font-size: 36;
       vertical-align: center;
       horizontal-align: center;
@@ -75,11 +65,11 @@ Page {
 }
 
 .no-margin {
-    margin: 0, 0, 0, 0;
+  margin: 0, 0, 0, 0;
 }
 
 .no-padding {
-    padding: 0, 0, 0, 0;
+  padding: 0, 0, 0, 0;
 }
 
 /** Label Line Chart Styles **/
@@ -95,43 +85,42 @@ Page {
 }
 
 .bold {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .fs10 {
-    font-size: 10;
+  font-size: 10;
 }
 .fs12 {
-    font-size: 12;
+  font-size: 12;
 }
 .fs14 {
-    font-size: 14;
+  font-size: 14;
 }
 .fs16 {
-    font-size: 16;
+  font-size: 16;
 }
 .fs18 {
-    font-size: 18;
+  font-size: 18;
 }
 .fs20 {
-    font-size: 20;
+  font-size: 20;
 }
 .fs22 {
-    font-size: 22;
+  font-size: 22;
 }
 .fs24 {
-    font-size: 24;
+  font-size: 24;
 }
 .fs26 {
-    font-size: 26;
+  font-size: 26;
 }
 .fs28 {
-    font-size: 28;
+  font-size: 28;
 }
 .fs30 {
-    font-size: 30;
+  font-size: 30;
 }
 .fs32 {
-    font-size: 32;
+  font-size: 32;
 }
-

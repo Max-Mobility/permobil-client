@@ -3,6 +3,7 @@ import { EventData, Observable, Page, ShowModalOptions, View, ViewBase } from '@
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
+import { setTimeout } from '@nativescript/core/timer';
 import { alert } from '@nativescript/core/ui/dialogs';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
@@ -10,14 +11,14 @@ import { getDefaultLang, L, Prop } from '@permobil/nativescript';
 import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import * as LS from 'nativescript-localstorage';
-import { Pager } from 'nativescript-pager';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Sentry } from 'nativescript-sentry';
+import * as themes from 'nativescript-themes';
 import { DataBroadcastReceiver } from '../../data-broadcast-receiver';
 import { DataKeys } from '../../enums';
 import { DailyActivity, Profile } from '../../namespaces';
 import { PushTrackerKinveyService, SqliteService } from '../../services';
-import { applyTheme, getSerialNumber, loadSerialNumber, saveSerialNumber, sentryBreadCrumb } from '../../utils';
+import { getSerialNumber, loadSerialNumber, saveSerialNumber, sentryBreadCrumb } from '../../utils';
 
 const dateLocales = {
   da: require('date-fns/locale/da'),
@@ -34,10 +35,17 @@ const dateLocales = {
   zh: require('date-fns/locale/zh_cn')
 };
 
+const ambientTheme = require('../../scss/theme-ambient.scss');
+const defaultTheme = require('../../scss/theme-default.scss');
+
 declare const com: any;
 
 export class MainViewModel extends Observable {
   // #region "Public Members for UI"
+  @Prop() insetPadding: number = 0;
+  @Prop() chinSize: number = 0;
+  @Prop() screenWidth: number = 100;
+  @Prop() screenHeight: number = 100;
 
   /**
    * Goal progress data.
@@ -90,12 +98,6 @@ export class MainViewModel extends Observable {
   @Prop() currentPushCountDisplay = this.currentPushCount.toFixed(0);
   @Prop() currentHighStressActivityCount: number = 0;
 
-  /**
-   * Layout related data
-   */
-  @Prop() insetPadding: number = 0;
-  @Prop() chinSize: number = 0;
-
   // #endregion "Public Members for UI"
 
   // #region "Private Members"
@@ -104,7 +106,6 @@ export class MainViewModel extends Observable {
 
   private _showingModal: boolean = false;
 
-  private pager: Pager = null;
   private _mainPage: ViewBase = null;
   private _synchronizingModal: string =
     'pages/modals/synchronizing/synchronizing';
@@ -147,13 +148,13 @@ export class MainViewModel extends Observable {
 
   async onMainPageLoaded(args: EventData) {
     sentryBreadCrumb('onMainPageLoaded');
-    try {
-      // apply theme
-      this._applyTheme('default');
-    } catch (err) {
-      Sentry.captureException(err);
-      Log.E('theme on startup error:', err);
-    }
+    // try {
+    //   // apply theme
+    //   this._applyTheme('default');
+    // } catch (err) {
+    //   Sentry.captureException(err);
+    //   Log.E('theme on startup error:', err);
+    // }
     // now init the ui
     try {
       await this._init();
@@ -173,14 +174,18 @@ export class MainViewModel extends Observable {
     }
   }
 
-  onPagerLoaded(args: EventData) {
-    this.pager = args.object as Pager;
-  }
-
-  customWOLInsetLoaded(args: EventData) {
+  setLeftRightTopPadding(args: EventData) {
     (args.object as any).nativeView.setPadding(
       this.insetPadding,
       this.insetPadding,
+      this.insetPadding,
+      0
+    );
+  }
+  setLeftRightPadding(args: EventData) {
+    (args.object as any).nativeView.setPadding(
+      this.insetPadding,
+      0,
       this.insetPadding,
       0
     );
@@ -597,7 +602,11 @@ export class MainViewModel extends Observable {
       const context = application.android.context;
       intent.setClassName(context, 'com.permobil.pushtracker.ActivityService');
       intent.setAction('ACTION_START_SERVICE');
-      context.startService(intent);
+      // The startService() method now throws an IllegalStateException if an app targeting Android 8.0 tries to use that method in a situation when it isn't permitted to create background services.
+      // We target 26+ so changing this to call the `startForegroundService` method should resolve this from throwing.
+      // @link - https://sentry.io/organizations/maxmobility/issues/1135637410/?project=1485857&referrer=github_integration
+      // @link - https://developer.android.com/about/versions/oreo/android-8.0-changes.html#back-all
+      context.startForegroundService(intent);
       sentryBreadCrumb('Activity Service started.');
     } catch (err) {
       Sentry.captureException(err);
@@ -639,32 +648,6 @@ export class MainViewModel extends Observable {
     const watchSerialNumber = getSerialNumber();
     saveSerialNumber(watchSerialNumber);
     this.kinveyService.watch_serial_number = watchSerialNumber;
-  }
-
-  private _applyTheme(theme?: string) {
-    // apply theme
-    applyTheme(theme);
-    this._applyStyle();
-  }
-
-  private _applyStyle() {
-    sentryBreadCrumb('applying style');
-    try {
-      if (this.pager) {
-        try {
-          const children = this.pager._childrenViews;
-          for (let i = 0; i < children.size; i++) {
-            const child = children.get(i) as View;
-            child._onCssStateChange();
-          }
-        } catch (err) {
-          Sentry.captureException(err);
-        }
-      }
-    } catch (err) {
-      Sentry.captureException(err);
-    }
-    sentryBreadCrumb('style applied');
   }
 
   /**
@@ -747,7 +730,7 @@ export class MainViewModel extends Observable {
       Log.D('requesting user data');
       // now request user data
       this.showSynchronizing();
-      const userData = (await this.kinveyService.getUserData()) as any;
+      const userData = await this.kinveyService.getUserData();
       // Log.D('userInfo', JSON.stringify(userData, null, 2));
       // save stuff for display
       const userName = `${userData.first_name}\n${userData.last_name}`;
@@ -880,8 +863,6 @@ export class MainViewModel extends Observable {
       let activityData = (await this._getActivityInfoFromDatabase(7)) as any[];
       // we've asked for one more day than needed so that we can
       // compute distance differences
-      const oldest = activityData[0];
-      // const newest = last(activityData);
       const newest = activityData[activityData.length - 1]; // get the last item in the array
       // keep track of the most recent day so we know when to update
       this.lastChartDay = new Date(newest.date);
@@ -1150,6 +1131,10 @@ export class MainViewModel extends Observable {
     const isCircleWatch = androidConfig.isScreenRound();
     const widthPixels = screen.mainScreen.widthPixels;
     const heightPixels = screen.mainScreen.heightPixels;
+    const widthDIPs = screen.mainScreen.widthDIPs;
+    const heightDIPs = screen.mainScreen.heightDIPs;
+    this.screenWidth = widthDIPs;
+    this.screenHeight = heightDIPs;
     if (isCircleWatch) {
       this.insetPadding = Math.round(0.146467 * widthPixels);
       // if the height !== width then there is a chin!
@@ -1158,6 +1143,20 @@ export class MainViewModel extends Observable {
       }
     }
     // Log.D('chinsize:', this.chinSize);
+  }
+
+  private _applyTheme(theme?: string) {
+    // apply theme
+    try {
+      if (theme === 'ambient') {
+        themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
+      } else {
+        themes.applyThemeCss(defaultTheme, 'theme-default.scss');
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('apply theme error:', err);
+    }
   }
 
   // #endregion "Private Functions"

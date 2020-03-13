@@ -1,0 +1,58 @@
+name: App Builds
+
+# Trigger the workflow on push or pull request
+on: [push]
+
+jobs:
+  job1:
+    name: PushTracker Mobile iOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1 # checks out the repo to CI runner
+      - uses: webfactory/ssh-agent@v0.2.0 # sets SSH key for our private-keys repo
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Build PT.M iOS
+        run: npm run ci.build.pt.mobile.setup && npm run ci.pip.install && npm run ci.pt.m.ios
+
+  job2:
+    name: PushTracker Mobile Android
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: webfactory/ssh-agent@v0.2.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build PT.M Android
+        run: npm run ci.build.pt.mobile.setup && npm run tslint && npm run ci.pt.m.android # only linting in one job to avoid duplicating it
+
+  job3:
+    name: PushTracker Wear Android
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: webfactory/ssh-agent@v0.2.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build PT.W Android
+        run: npm run ci.build.pt.wear.setup && npm run ci.pt.w.android
+
+  job4:
+    name: SmartDrive Wear Android
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: webfactory/ssh-agent@v0.2.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build SD.W Android
+        run: npm run ci.build.sd.wear.setup && npm run ci.sd.w.android

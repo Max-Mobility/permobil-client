@@ -4,7 +4,7 @@
     "sd-ble-version": "SmartDrive Bluetooth (BT) Version",
     "sd-mcu-version": "SmartDrive MCU (SD) Version",
     "sd-serial-number": "SmartDrive Serial Number",
-    "smartdrive-serial-number-info": "To access your SmartDrive serial number, you must connect to the PushTracker mobile app.",
+    "smartdrive-serial-number-info": "To access your SmartDrive Serial Number, which can be useful for support and warranty purposes, you must connect to the PushTracker Mobile app.",
     "title": "About Information",
     "version": "SmartDrive MX2+ Wear OS App (SW) Version",
     "watch-serial-number": "Smartwatch Serial Number"
@@ -26,6 +26,22 @@
     "enable": "Enable",
     "ok": "OK"
   },
+  "change-notes": {
+    "pt": {
+      "2_0": [
+        "Added ability to view most recent SmartDrive Bluetooth connection strength to the \"About\" Settings Menu",
+        "Added support for sending and receiving SmartDrive SwitchControl configurations to / from PushTracker Mobile app and SmartDrive"
+      ]
+    },
+    "sd": {
+      "2_0": [
+        "Added dynamic SwitchControl button indication so button LED(s) indicate power assist and driving state\n - If PushTracker / E2 is connected and / or switch control is enabled LED(s) will flash in different patterns.\n - If motor is driving LED(s) will be solid.",
+        "SmartDrive can be configured to Momentary or Latched SwitchControl Modes\n - In the default Momentary Mode the SmartDrive will start driving the motor by ramping up its speed to the configured SwitchControl Max Speed only while one of the buttons is being held.\n - In Latched Mode, the SmartDrive will start ramping up its speed to the configured SwitchControl Max Speed while one of the buttons is being held. When the held button is released, the SmartDrive will remain driving at the current speed. Deactivate the driving by pressing a button.",
+        "SmartDrive SwitchControl has its own configurable Max Speed setting which is independent of the Max Speed setting for the PushTracker / E2",
+        "SmartDrive is now configured to beep once whenever its state is changed to power assist ON\n - This state change can be from a PushTracker / E2 and SwitchControl button(s).\n - This indication setting can be disabled either through the SmartDrive MX2+ app on your PushTracker E2 or using the PushTracker Mobile app on your smartphone if you do not have an E2."
+      ]
+    }
+  },
   "charts": {
     "battery": {
       "title": "SmartDrive Battery Usage Daily (%)"
@@ -33,6 +49,10 @@
     "distance": {
       "title": "SmartDrive Distance Traveled Daily"
     }
+  },
+  "complications": {
+    "battery-level": "Battery Level",
+    "odometer": "Odometer"
   },
   "error-history": {
     "errors": {
@@ -56,12 +76,14 @@
     },
     "connect": "Could not connect to SmartDrive.",
     "could-not-enable-tap-sensor": "Could not enable tap sensor.",
+    "downloading-translations": "Failed to download the updated language files.",
     "getting-error": "Failed getting SmartDrive error.",
     "must-wear-watch": "[Check for Wrist] Setting is enabled, therefore the smartwatch must be worn to control your SmartDrive.",
-    "no-network": "No network available, please ensure that your smartwatch is able to connect to the internet either through Wifi or your phone.",
+    "no-network": "Connection to the cloud is not available. Ensure your smartwatch is connected to the internet either through Wi-Fi or your phone.",
     "no-smartdrive-paired": "No SmartDrive paired.",
     "no-smartdrives-found": "No SmartDrives found nearby.",
     "permissions": "Unable to perform the requested action. Required permissions were not granted.",
+    "power-assist-timeout": "To help conserve battery, power assist was automatically turned OFF due to inactivity. See \"Power Assist Timeout\" in SmartDrive Settings Menu for more information.",
     "saving-error": "Failed saving SmartDrive error.",
     "saving-usage": "Failed saving usage.",
     "scan": "Could not scan.",
@@ -70,17 +92,20 @@
     "too-many-smartdrives-found": "Multiple SmartDrives found. Make sure there is only one SmartDrive on in the vicinity when pairing."
   },
   "languages": {
+    "cs": "Czech",
     "da": "Danish",
     "de": "German",
     "en": "English",
     "es": "Spanish",
+    "fi": "Finnish",
     "fr": "French",
     "it": "Italian",
     "ja": "Japanese",
     "ko": "Korean",
     "nb": "Norwegian [Bokmål]",
     "nl": "Dutch",
-    "nn": "Norwegian [Nynorsk]",
+    "pl": "Polish",
+    "pt": "Portuguese",
     "sv": "Swedish",
     "zh": "Chinese [Traditional]"
   },
@@ -103,6 +128,7 @@
     },
     "sd": {
       "state": {
+        "already-uptodate": "Already up-to-date. Select Force to update anyway.",
         "awaiting-ble-ready": "Waiting on BT",
         "awaiting-connection": "Waiting for Connection",
         "awaiting-mcu-ready": "Waiting on SD",
@@ -164,6 +190,7 @@
       "controlmode": "MX2+: The default, gesture based operation of the SmartDrive. In MX2+ Control Mode, a double tap will start driving the motor by ramping up its speed, a single tap will coast at the current speed, and a double tap will deactivate the driving.\n\nMX2: In MX2 Control Mode, the SmartDrive will start driving when it senses your push, and will deactivate driving when you tap. Please note this is a legacy-support option.\n\nMX1: In MX1 Control Mode, the SmartDrive will start driving when it senses your push, and will stop driving when you tap or when you brake on the handrims. Please note this is a legacy-support option.",
       "maxspeed": "The maximum speed the SmartDrive can drive at when controlled by your smartwatch.",
       "powerassistbuzzer": "When enabled, the SmartDrive will beep any time a connection from a remote device is established, or when SwitchControl is taken out of the standby state.",
+      "powerassisttimeout": "When connected to the SmartDrive with power assist ON, if the motor hasn't been driven in the selected amount of time it will automatically turn power assist OFF. \n\nIf power assist is ON but it is not connected to the SmartDrive, it will automatically turn power assist OFF after 1 minute.",
       "switchcontrolmode": "Momentary: The default SwitchControl Mode in which the SmartDrive will start driving the motor by ramping up its speed to the configured SwitchControl Max Speed only while one of the SwitchControl Buttons is being held. When the held Button is released, or both of the Buttons [if present] are pressed, the driving will deactivate. Please note that upon deactivation it does not put the device in the standby state.\n\nLatched: In Latched SwitchControl Mode, the SmartDrive will start driving the motor by ramping up its speed to the configured SwitchControl Max Speed while one of the SwitchControl buttons is being held. When the held button is released, the SmartDrive will remain driving / coast at the current speed when the button was released. When one of the Buttons is pressed and released again, or both of the Buttons [if present] are pressed, the driving will deactivate. Please note that upon deactivation it does not put the device in the standby state.",
       "switchcontrolspeed": "The maximum speed the SmartDrive can drive at when controlled by SwitchControl.",
       "tapsensitivity": "The sensitivity of the tap gesture used for activating and deactivating the driving. The lower the percentage is the harder you need to tap - 100% is the most sensitive and therefore easiest to tap, and 10% is the least sensitive and therefore hardest to tap.",
@@ -176,8 +203,14 @@
     "pair-smartdrive": "Pair SmartDrive",
     "paired-to-smartdrive": "Successfully paired to SmartDrive.",
     "power-assist-buzzer": "Power Assist Beep Indication",
+    "power-assist-timeout": {
+      "title": "Power Assist Timeout",
+      "units-long": "minutes",
+      "units-short": "min"
+    },
     "scanning": "Scanning for SmartDrive to pair with...",
     "select-smartdrive": "Select SmartDrive",
+    "syncing-with-server": "Synchronizing with server...",
     "tap-sensitivity": "Tap Sensitivity",
     "title": "SmartDrive Settings",
     "units": "Units",
@@ -214,17 +247,17 @@
     "downloading-new-firmwares": "Downloading new updates data...",
     "errors": {
       "connecting": "Error connecting to SmartDrive.",
-      "connection-failure": "Connection to backend failed, please ensure that your smartwatch is able to connect to the internet either through Wifi or your phone.\n\nError:",
+      "connection-failure": "Connection to Permobil server failed. Ensure your smartwatch is connected to the internet either through Wi-Fi or your phone.\n\nError:",
       "downloading": "Error downloading updates.",
       "getting": "Error searching for updates.",
       "saving": "Error saving updates data.",
-      "timeout": "SmartDrive updates timed out."
+      "timeout": "SmartDrive updates has timed out."
     },
     "failed": "SmartDrive updates failed.",
-    "initializing": "Initializing updates",
+    "initializing": "Initializing updates...",
     "status": "Updates Status",
     "success": "SmartDrive updates completed successfully!",
-    "timeout": "SmartDrive updates timed out.",
+    "timeout": "SmartDrive updates has timed out.",
     "up-to-date": "SmartDrive is up-to-date!",
     "version": "Version"
   },

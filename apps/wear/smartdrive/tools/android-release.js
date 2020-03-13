@@ -25,7 +25,7 @@ askKeystorePassword().then(result => {
   );
   // execute the android release build cmd with the result as password
   exec(
-    `tns build android --release --no-hmr --env.uglify --env.hiddenSourceMap --key-store-path ./tools/smartdrive-wearos.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --aab --copy-to ./tools/smartdrive-wearos.aab`,
+    `tns build android --release --no-hmr --env.uglify --env.hiddenSourceMap --key-store-path ./smartdrive-wearos.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --aab --copy-to ./smartdrive-wearos.aab`,
     (err, stdout, stderr) => {
       if (err) {
         console.error(

@@ -2,10 +2,8 @@ import { Injectable } from 'injection-js';
 const Sqlite = require('nativescript-sqlite');
 
 function _exists(o, k): boolean {
-  return o[k] !== undefined && o[k] !== null && !isNaN(o[k]);
+  return o[k] !== undefined && o[k] !== null && o[k] !== NaN;
 }
-
-const enableMultithreading: boolean = false;
 
 @Injectable()
 export class SqliteService {
@@ -14,9 +12,7 @@ export class SqliteService {
   private _db: any = null;
 
   public getDatabase() {
-    return new Sqlite(SqliteService.DatabaseName, {
-      multithreading: enableMultithreading
-    });
+    return new Sqlite(SqliteService.DatabaseName);
   }
 
   get db() {
@@ -24,9 +20,7 @@ export class SqliteService {
       if (this._db) {
         return Promise.resolve(this._db);
       } else {
-        return new Sqlite(SqliteService.DatabaseName, {
-          multithreading: enableMultithreading
-        }).then((db: any) => {
+        return new Sqlite(SqliteService.DatabaseName).then((db: any) => {
           this._db = db;
           return this._db;
         });

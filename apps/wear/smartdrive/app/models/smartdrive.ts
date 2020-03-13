@@ -612,6 +612,7 @@ export class SmartDrive extends DeviceBase {
                   mcuVersion >= mcuFWVersion
                 ) {
                   this.setOtaActions(['ota.action.force', 'ota.action.cancel']);
+                  this.otaState = SmartDrive.OTAState.already_uptodate;
                 } else {
                   this.otaState = SmartDrive.OTAState.awaiting_mcu_ready;
                 }
@@ -1141,12 +1142,8 @@ export class SmartDrive extends DeviceBase {
           break;
       }
     } else if (packetType === 'Command') {
-      switch (subType) {
-        case 'OTAReady':
-          this._handleOTAReady(p);
-          break;
-        default:
-          break;
+      if (subType === 'OTAReady') {
+        this._handleOTAReady(p);
       }
     } else if (packetType === 'Error') {
       this._handleError(p);
@@ -1222,8 +1219,8 @@ export class SmartDrive extends DeviceBase {
     // ms (1 hz) while connected and the motor is off
     const motorTicks = p.data('motorDistance');
     const caseTicks = p.data('caseDistance');
-    const motorMiles = SmartDrive.motorTicksToMiles(motorTicks);
-    const caseMiles = SmartDrive.caseTicksToMiles(caseTicks);
+    // const motorMiles = SmartDrive.motorTicksToMiles(motorTicks);
+    // const caseMiles = SmartDrive.caseTicksToMiles(caseTicks);
     /* Distance Info
            struct {
            uint64_t   motorDistance;  // Cumulative Drive distance in ticks.

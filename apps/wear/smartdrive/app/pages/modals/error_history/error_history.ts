@@ -1,21 +1,11 @@
+import { ObservableArray, Page, ShownModallyData } from '@nativescript/core';
+import { fromObject } from '@nativescript/core/data/observable';
 import { Log } from '@permobil/core';
 import { getDefaultLang, L } from '@permobil/nativescript';
 import { format } from 'date-fns';
 import differenceBy from 'lodash/differenceBy';
 import { Sentry } from 'nativescript-sentry';
-import { WearOsLayout } from 'nativescript-wear-os';
-import {
-  ObservableArray,
-  Observable,
-  Page,
-  ShownModallyData
-} from '@nativescript/core';
-import { fromObject } from '@nativescript/core/data/observable';
-import {
-  ListViewEventData,
-  RadListView,
-  LoadOnDemandListViewEventData
-} from 'nativescript-ui-listview';
+import { LoadOnDemandListViewEventData, RadListView } from 'nativescript-ui-listview';
 import { SmartDriveData } from '../../../namespaces';
 import { SqliteService } from '../../../services';
 import { configureLayout } from '../../../utils';
@@ -53,9 +43,9 @@ export async function onShownModally(args: ShownModallyData) {
   sqliteService = args.context.sqliteService;
 
   // set the pages bindingContext
-  page.bindingContext = fromObject(data) as Observable;
+  page.bindingContext = fromObject(data);
 
-  const wearOsLayout = page.getViewById('wearOsLayout') as WearOsLayout;
+  const wearOsLayout: any = page.getViewById('wearOsLayout');
   const res = configureLayout(wearOsLayout);
   page.bindingContext.set('chinSize', res.chinSize);
   page.bindingContext.set('insetPadding', res.insetPadding);

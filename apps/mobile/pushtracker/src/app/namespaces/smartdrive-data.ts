@@ -104,13 +104,13 @@ export namespace SmartDriveData {
         const timeDiffMs = timeMs - record[SmartDriveData.Info.StartTimeName];
         if (timeDiffMs > SmartDriveData.Info.RECORD_LENGTH_MS) {
           // we need a new record
-          const record = SmartDriveData.Info.makeRecord(
+          const newRecord = SmartDriveData.Info.makeRecord(
             battery,
             coastDistance,
             driveDistance
           );
           // now append it
-          records.push(record);
+          records.push(newRecord);
         } else {
           // can just update this record
           record[SmartDriveData.Info.BatteryName] += battery;
@@ -121,13 +121,13 @@ export namespace SmartDriveData {
         }
       } else {
         // we have no records, make a new one
-        const record = SmartDriveData.Info.makeRecord(
+        const newRecord = SmartDriveData.Info.makeRecord(
           battery,
           coastDistance,
           driveDistance
         );
         // and append it
-        records.push(record);
+        records.push(newRecord);
       }
     }
 
@@ -357,10 +357,7 @@ export namespace SmartDriveData {
 
     export function getFileName(firmware: string): string {
       const firmwares = knownFolders.documents().getFolder('firmwares'); // creates Documents/firmwares if it doesn't exist
-      return path.join(
-        firmwares.path,
-        firmware
-      );
+      return path.join(firmwares.path, firmware);
     }
 
     export function loadFirmware(

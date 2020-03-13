@@ -5,10 +5,7 @@
       "ios": "com.max-mobility.PushTracker"
     },
     "tns-android": {
-      "version": "6.2.0"
-    },
-    "tns-ios": {
-      "version": "6.2.0"
+      "version": "6.4.1"
     }
   },
   "dependencies": {
@@ -21,8 +18,9 @@
     "@angular/platform-browser": "~8.2.14",
     "@angular/platform-browser-dynamic": "~8.2.14",
     "@angular/router": "~8.2.14",
-    "@maxmobility/nativescript-wear-os-comms": "file:../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/wear-os-comms-0.1.3-rc3.tgz",
+    "@maxmobility/nativescript-wear-os-comms": "file:../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/src",
     "@maxmobility/private-keys": "autochair/maxmobility-private-keys#master",
+    "@nativescript/core": "~6.4.1",
     "@ngx-translate/core": "~11.0.1",
     "@nstudio/nativescript-loading-indicator": "~1.0.0",
     "@nstudio/nativescript-pulltorefresh": "~1.1.1",
@@ -34,11 +32,11 @@
     "email-validator": "~2.0.4",
     "kinvey-nativescript-sdk": "~4.2.5",
     "lodash": "~4.17.15",
-    "nativescript-angular": "~8.20.3",
+    "nativescript-angular": "~8.21.0",
     "nativescript-animated-circle": "file:../../../forked-plugins/nativescript-animated-circle-1.3.0.tgz",
     "nativescript-appversion": "~1.4.2",
     "nativescript-barcodescanner": "~3.2.2",
-    "nativescript-bluetooth": "file:../../../forked-plugins/nativescript-bluetooth-1.3.1.tgz",
+    "nativescript-bluetooth": "file:../../../forked-plugins/nativescript-bluetooth",
     "nativescript-datetimepicker": "~1.2.2",
     "nativescript-download-progress": "~1.2.0",
     "nativescript-email": "~1.5.5",
@@ -46,32 +44,31 @@
     "nativescript-insomnia": "~1.2.3",
     "nativescript-iqkeyboardmanager": "~1.5.1",
     "nativescript-localstorage": "~2.0.1",
-    "nativescript-lottie": "~4.0.0",
+    "nativescript-lottie": "~4.0.1",
     "nativescript-mapbox": "~4.4.1",
-    "nativescript-material-bottomsheet": "file:../../../forked-plugins/nativescript-material-bottomsheet-2.4.2.tgz",
+    "nativescript-material-bottomsheet": "~3.1.8",
     "nativescript-ng-ripple": "~2.0.1",
-    "nativescript-perms": "file:../../../forked-plugins/nativescript-perms-1.0.12.tgz",
     "nativescript-permissions": "~1.3.8",
+    "nativescript-perms": "file:../../../forked-plugins/nativescript-perms-1.0.12.tgz",
     "nativescript-plugin-firebase": "~9.0.4",
     "nativescript-sentry": "file:../../../forked-plugins/nativescript-sentry-1.9.1.tgz",
     "nativescript-theme-core": "~1.0.6",
-    "nativescript-themes": "~2.0.1",
-    "nativescript-toasty": "~2.0.1",
+    "nativescript-themes": "~2.0.2",
+    "nativescript-toasty": "~3.0.0-alpha.2",
     "nativescript-ui-calendar": "~6.0.0",
-    "nativescript-ui-chart": "~7.0.0",
+    "nativescript-ui-chart": "~7.1.1",
     "nativescript-urlhandler": "^1.3.0",
-    "reflect-metadata": "~0.1.12",
-    "rxjs": "~6.5.3",
-    "tns-core-modules": "~6.2.3",
-    "zone.js": "~0.9.1"
+    "reflect-metadata": "~0.1.13",
+    "rxjs": "~6.5.4",
+    "zone.js": "~0.10.2"
   },
   "devDependencies": {
     "@angular/compiler-cli": "~8.2.14",
-    "@ngtools/webpack": "~8.3.20",
+    "@ngtools/webpack": "~8.3.21",
     "@types/lodash": "~4.14.149",
-    "nativescript-dev-webpack": "1.3.0",
+    "nativescript-dev-webpack": "1.5.0",
     "prompts": "^2.2.1",
-    "tns-platform-declarations": "6.2.3",
-    "typescript": "~3.7.3"
+    "tns-platform-declarations": "6.4.1",
+    "typescript": "~3.7.5"
   }
 }

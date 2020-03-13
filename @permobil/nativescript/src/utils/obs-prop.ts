@@ -1,7 +1,7 @@
 import { Observable } from '@nativescript/core';
 
 export function Prop() {
-  return (obj: Observable, key: string) => {
+  return (obj: any, key: string) => {
     let storedValue = obj[key];
 
     Object.defineProperty(obj, key, {

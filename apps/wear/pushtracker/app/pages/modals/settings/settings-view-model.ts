@@ -13,9 +13,15 @@ export class SettingsViewModel extends Observable {
 
   private _showingModal: boolean = false;
 
-  constructor(page: Page, private _kinveyService: PushTrackerKinveyService, data) {
+  constructor(
+    page: Page,
+    private _kinveyService: PushTrackerKinveyService,
+    data
+  ) {
     super();
-    const wearOsLayout = page.getViewById('wearOsLayout') as WearOsLayout;
+    const wearOsLayout = (<unknown>(
+      page.getViewById('wearOsLayout')
+    )) as WearOsLayout;
     this._configureLayout(wearOsLayout);
   }
 
@@ -90,7 +96,7 @@ export class SettingsViewModel extends Observable {
         this.chinSize = screenWidth - screenHeight;
       }
     }
-    layout.nativeView.setPadding(
+    (layout as any).nativeView.setPadding(
       this.insetPadding,
       this.insetPadding,
       this.insetPadding,

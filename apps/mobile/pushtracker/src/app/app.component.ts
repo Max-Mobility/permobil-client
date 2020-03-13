@@ -2,17 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { SentryKeys } from '@maxmobility/private-keys';
 import { registerElement } from '@nativescript/angular/element-registry';
 import { RouterExtensions } from '@nativescript/angular/router';
-import { isAndroid, device } from '@nativescript/core/platform';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
+import { device, isAndroid } from '@nativescript/core/platform';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
+import { APP_KEY, APP_SECRET } from '@permobil/nativescript';
 import * as Kinvey from 'kinvey-nativescript-sdk';
 import { Sentry } from 'nativescript-sentry';
 import { AppURL, handleOpenURL } from 'nativescript-urlhandler';
 import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService } from './services';
-import { applyTheme, APP_KEY, APP_SECRET, getFirstDayOfWeek, YYYY_MM_DD } from './utils';
+import { applyTheme } from './utils';
 import { Ratings } from './utils/ratings-utils';
 
 registerElement(
@@ -100,19 +101,24 @@ export class AppComponent implements OnInit {
     );
 
     if (isAndroid) {
-      application.android.off(application.AndroidApplication.activityResumedEvent);
-      application.android.on(application.AndroidApplication.activityResumedEvent, function(args) {
-        const ratings = new Ratings({
-          id: 'PUSHTRACKER.RATER.COUNT',
-          showOnCount: 100,
-          title: '',
-          text: '',
-          androidPackageId: 'com.permobil.pushtracker',
-          iTunesAppId: '1121427802'
-        });
-        console.log('Incrementing ratings counter activityResumedEvent');
-        ratings.increment();
-      });
+      application.android.off(
+        application.AndroidApplication.activityResumedEvent
+      );
+      application.android.on(
+        application.AndroidApplication.activityResumedEvent,
+        function(args) {
+          const ratings = new Ratings({
+            id: 'PUSHTRACKER.RATER.COUNT',
+            showOnCount: 100,
+            title: '',
+            text: '',
+            androidPackageId: 'com.permobil.pushtracker',
+            iTunesAppId: '1121427802'
+          });
+          console.log('Incrementing ratings counter activityResumedEvent');
+          ratings.increment();
+        }
+      );
     }
 
     Kinvey.init({ appKey: `${APP_KEY}`, appSecret: `${APP_SECRET}` });

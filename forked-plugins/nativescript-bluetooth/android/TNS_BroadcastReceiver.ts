@@ -28,9 +28,9 @@ export class TNS_BroadcastReceiver extends android.content.BroadcastReceiver {
    */
   onReceive(context: android.content.Context, intent: android.content.Intent) {
     const action = intent.getAction();
-    const device = intent.getParcelableExtra(
-      android.bluetooth.BluetoothDevice.EXTRA_DEVICE
-    ) as android.bluetooth.BluetoothDevice;
+    const device = <android.bluetooth.BluetoothDevice>(
+      intent.getParcelableExtra(android.bluetooth.BluetoothDevice.EXTRA_DEVICE)
+    );
     CLog(
       CLogTypes.info,
       `TNS_BroadcastReceiver.onReceive() action: ${action}, device: ${device}, context: ${context}, intent: ${intent}`
@@ -42,7 +42,10 @@ export class TNS_BroadcastReceiver extends android.content.BroadcastReceiver {
 
     const owner = this._owner.get();
     if (owner === null || owner === undefined) {
-      CLog(CLogTypes.error, 'TNS_BroadcastReceiver::onReceive error: could not get owner!');
+      CLog(
+        CLogTypes.error,
+        'TNS_BroadcastReceiver::onReceive error: could not get owner!'
+      );
       return;
     }
 
@@ -124,9 +127,7 @@ export class TNS_BroadcastReceiver extends android.content.BroadcastReceiver {
       // discovery has finished, give a call to fetchUuidsWithSdp
       const result = device.fetchUuidsWithSdp();
       CLog(CLogTypes.info, 'fetchUuidsWithSdp result', result);
-    } else if (
-      action === android.bluetooth.BluetoothDevice.ACTION_FOUND
-    ) {
+    } else if (action === android.bluetooth.BluetoothDevice.ACTION_FOUND) {
       CLog(CLogTypes.info, `Bluetooth Device Found: ${device}`);
       owner.sendEvent(Bluetooth.device_found_event, {
         device: getDevice(device)
