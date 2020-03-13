@@ -26,6 +26,22 @@
     "enable": "Aktivieren",
     "ok": "OK"
   },
+  "change-notes": {
+    "pt": {
+      "2_0": [
+        "Möglichkeit die Stärke der letzten SmartDrive-Bluetoothverbindungen einzusehen ist dem \"Über\" Menü hinzugefügt worden",
+        "Support für Senden und Empfangen von SmartDrive SwitchControls Konfigurationen zu und von der Pushtracker Mobil app und dem SmartDrive hinzugeführt"
+      ]
+    },
+    "sd": {
+      "2_0": [
+        "SwitchControl LEDs werden als dynamische Anzeige für den Fahrmodus eingesetzt\n - Wenn Pushtracker / E2 angeschlossen ist und/oder SwitchControl eingeschaltet ist, dann leuchten die LEDs in verschiedenen Mustern.\n - Wenn Motor läuft sind LEDs permanent an.",
+        "SmartDrive kann für Direkt oder Latched Modus konfiguriert werden\n - Als Standard ist der Direkt Modus voreingestellt. SmartDrive beschleunigt bis zur eingestellten Höchsgeschwindigkeit, solange wie einer der beiden SwitchControls gedrückt wird.Bei loslassen des Switchcontrols wird Fahren deaktiviert.\n - Im Latched Modus beschleunigt der SmartDrive bis zur eingestellten Höchsgeschwindigkeit, solange wie einer der beiden SwitchControls gedrückt wird. Wird der gedrückte SwitchControl losgelassen, wird die erreichte Geschwindigkeit gehalten. Das Fahren wird durch erneutes Drücken deaktiviert.",
+        "Die Maximalgeschwindigkeit für die SwitchControls kann unabhängig der Maximalgeschwindigkeit für Pushtracker / E2 eingestellt werden",
+        "SmartDrive zeigt jetzt durch einen Signalton den Wechsel in den Power Assist Modus \"Ein\" an\n - Der Statuswechsel kann durch Pushtracker/E2 und/oder SwitchControls erfolgen.\n - Diese Anzeige kann entweder durch die SmartDrive MX2+ App auf dem Pushtracker E2 oder durch die Pushtracker Mobile App auf dem Smartphone  deaktiviert werden."
+      ]
+    }
+  },
   "charts": {
     "battery": {
       "title": "Täglicher Verbrauch des SmartDrive-Akkus (%)"
@@ -33,6 +49,10 @@
     "distance": {
       "title": "Täglich zurückgelegte SmartDrive-Distanz"
     }
+  },
+  "complications": {
+    "battery-level": "Batterieanzeige",
+    "odometer": "Kilometerzähler"
   },
   "error-history": {
     "errors": {
@@ -56,12 +76,14 @@
     },
     "connect": "Verbindung zu SmartDrive konnte nicht hergestellt werden.",
     "could-not-enable-tap-sensor": "Klopfsensor kann nicht eingeschaltet werden.",
+    "downloading-translations": "Fehler beim Herunterladen der aktualisierten Sprachdateien.",
     "getting-error": "SmartDrive-Fehler können nicht gelesen werden.",
     "must-wear-watch": "Die Einstellung ist aktiviert, daher muss der PushTracker E2 (Smartwatch) zur Steuerung Ihres SmartDrive getragen werden.",
     "no-network": "Verbindung zur Cloud ist nicht verfügbar. Sicherstellen, dass der Pushtracker E2 mit dem Internet verbunden ist (via WiFi oder Smartphone).",
     "no-smartdrive-paired": "Kein SmartDrive gekoppelt.",
     "no-smartdrives-found": "Kein SmartDrive in der Nähe gefunden.",
     "permissions": "Die Aktion konnte nicht ausgeführt werden. Erforderliche Berechtigungen nicht erteilt.",
+    "power-assist-timeout": "Um die Batterie zu schonen, wurde die POWER ASSIST aufgrund von Inaktivität automatisch ausgeschaltet. Weitere Informationen finden Sie unter \"Power Assist Timeout\" im SmartDrive-Einstellungsmenü.",
     "saving-error": "Speichern von SmartDrive-Fehler fehlgeschlagen.",
     "saving-usage": "Speichern der Nutzungsdaten fehlgeschlagen.",
     "scan": "Konnte nicht scannen.",
@@ -70,17 +92,20 @@
     "too-many-smartdrives-found": "Mehrere SmartDrives gefunden. Vergewissern Sie sich, dass sich beim Koppeln nur ein SmartDrive in der Nähe befindet."
   },
   "languages": {
+    "cs": "Tschechisch",
     "da": "Dänisch",
     "de": "Deutsch",
     "en": "Englisch",
     "es": "Spanisch",
+    "fi": "Finnisch",
     "fr": "Französisch",
     "it": "Italienisch",
     "ja": "Japanisch",
     "ko": "Koreanisch",
     "nb": "Norwegisch [Bokmål]",
     "nl": "Niederländisch",
-    "nn": "Norwegisch [Nynorsk]",
+    "pl": "Polnisch",
+    "pt": "Portugiesisch",
     "sv": "Schwedisch",
     "zh": "Chinesisch [Traditionell]"
   },
@@ -88,14 +113,14 @@
     "about": "Über",
     "settings": "Einstellungen",
     "title": "SmartDrive MX2+ Menü",
-    "training": "Tippen Sie auf Training",
+    "training": "Training einschalten",
     "updates": "Wireless Updates"
   },
   "ota": {
     "action": {
       "cancel": "Abbrechen",
       "close": "Schliessen",
-      "force": "Erzwingen",
+      "force": "Zwingend",
       "pause": "Pause",
       "resume": "Fortsetzen",
       "retry": "Wiederholen",
@@ -103,6 +128,7 @@
     },
     "sd": {
       "state": {
+        "already-uptodate": "Bereits aktuell. Wählen Sie \"Zwingend\", um trotzdem zu aktualisieren.",
         "awaiting-ble-ready": "Warten auf Bluetooth",
         "awaiting-connection": "Auf Verbindung warten",
         "awaiting-mcu-ready": "Warten auf SmartDrive",
@@ -150,8 +176,8 @@
     },
     "switch-settings": {
       "mode": {
-        "latching": "Verriegelt",
-        "momentary": "Tote-Mann-Schaltung"
+        "latching": "Latched",
+        "momentary": "Direkt"
       }
     }
   },
@@ -164,7 +190,8 @@
       "controlmode": "MX2+: Die standardmäßige Bedienung des SmartDrive. Im MX2+ Steuermodus startet ein doppeltes Antippen des Greifreifens den Antrieb des Motors durch Hochfahren seiner Drehzahl. Durch einmaliges Antippen des Greifreifens während der Beschleunigung wird ein Tempomat aktiviert. Durch erneutes zweimaliges Antippen schaltet sich der Antrieb in den Stand-by-Modus.\n\nMX2: Im MX2 Steuermodus fährt der SmartDrive los, wenn Sie über die Greifreifen den Rollstuhl antreiben. Durch einmaliges Antippen des Greifreifens deaktivieren Sie das Fahren. Bitte beachten Sie, dass dies eine Legacy-Support-Option ist.\n\nMX1: Im MX1 Steuermodus fährt der SmartDrive los, wenn Sie über die Greifreifen den Rollstuhl antreiben. Durch Bremsen der Greifreifen bzw. durch einmaliges Antippen dieser deaktivieren Sie das Fahren. Bitte beachten Sie, dass dies eine Legacy-Support-Option ist.",
       "maxspeed": "Die maximale Geschwindigkeit, die der SmartDrive fahren kann, wenn er mit Ihrem PushTracker E2 (Smartwatch) gesteuert wird.",
       "powerassistbuzzer": "Wenn diese Option aktiviert ist, piept der SmartDrive jedes Mal, wenn eine Verbindung von einem Remote-Gerät hergestellt wird oder wenn SwitchControl aus dem Standby-Modus entfernt wird.",
-      "switchcontrolmode": "Tote-Mann-Schaltung: Der Standard-SwitchControl-Modus, in dem der SmartDrive den Motor antreibt, indem er seine Geschwindigkeit nur auf die konfigurierte maximale Geschwindigkeit erhöht, während eine der SwitchControls gedrückt gehalten wird. Wenn der gehaltene Knopf losgelassen wird oder beide Knöpfe gedrückt werden, wird das Fahren deaktiviert. Bitte beachten Sie, dass das Gerät beim Deaktivieren nicht in den Standby-Modus versetzt wird.\n\nLatched: In diesem Modus startet der SmartDrive den Antrieb des Motors, indem er seine Geschwindigkeit auf die konfigurierte maximale SwitchControl-Geschwindigkeit erhöht, während eine der SwitchControls gedrückt gehalten wird. Wenn die Taste losgelassen wird, fährt der SmartDrive weiterhin mit der aktuellen Geschwindigkeit, in der die Taste losgelassen wurde. Wenn eine der Tasten gedrückt und wieder losgelassen wird oder beide Tasten gedrückt werden, wird das Fahren deaktiviert. Bitte beachten Sie, dass das Gerät beim Deaktivieren nicht in den Standby-Modus versetzt wird.",
+      "powerassisttimeout": "Wenn der Motor bei eingeschalteter POWER ASSIT mit dem SmartDrive verbunden ist und nicht in der ausgewählten Zeit gefahren wurde, wird POWER ASSIST automatisch ausgeschaltet.\n\nWenn POWER ASSIST eingeschlatet ist, aber nicht mit dem SmartDrive verbunden ist, wird es nach 1 Minute automatisch ausgeschaltet.",
+      "switchcontrolmode": "Direkt Modus: Der Standard-SwitchControl-Modus, in dem der SmartDrive den Motor antreibt, indem er seine Geschwindigkeit nur auf die konfigurierte maximale Geschwindigkeit erhöht, während eine der SwitchControls gedrückt gehalten wird. Wenn der gehaltene Knopf losgelassen wird oder beide Knöpfe gedrückt werden, wird das Fahren deaktiviert. Bitte beachten Sie, dass das Gerät beim Deaktivieren nicht in den Standby-Modus versetzt wird.\n\nLatched Modus: In diesem Modus startet der SmartDrive den Antrieb des Motors, indem er seine Geschwindigkeit auf die konfigurierte maximale SwitchControl-Geschwindigkeit erhöht, während eine der SwitchControls gedrückt gehalten wird. Wenn die Taste losgelassen wird, fährt der SmartDrive weiterhin mit der aktuellen Geschwindigkeit, in der die Taste losgelassen wurde. Wenn eine der Tasten gedrückt und wieder losgelassen wird oder beide Tasten gedrückt werden, wird das Fahren deaktiviert. Bitte beachten Sie, dass das Gerät beim Deaktivieren nicht in den Standby-Modus versetzt wird.",
       "switchcontrolspeed": "Die maximale Geschwindigkeit, mit der der SmartDrive fahren kann, wenn er von SwitchControl gesteuert wird.",
       "tapsensitivity": "Die Empfindlichkeit der Tippbewegung, die zum Aktivieren und Deaktivieren des Fahrens verwendet wird. Je niedriger der Prozentsatz, desto schwieriger ist das Antippen. 100% ist am empfindlichsten und daher am einfachsten zu tippen, und 10% ist am unempfindlichsten und daher am schwersten zu tippen.",
       "units": "Das Einheitensystem oder die Maßeinheiten zur Anzeige von Geschwindigkeit und Entfernung innerhalb der Benutzeroberflächen. Wählen Sie entweder Imperial [mi und mph] oder Metrisch [km und km/h].",
@@ -176,8 +203,14 @@
     "pair-smartdrive": "SmartDrive koppeln",
     "paired-to-smartdrive": "Erfolgreich mit dem SmartDrive gekoppelt.",
     "power-assist-buzzer": "Power Assist Beep-Anzeige",
+    "power-assist-timeout": {
+      "title": "Power Assist Timeout",
+      "units-long": "Minuten",
+      "units-short": "Miin"
+    },
     "scanning": "SmartDrive Suche zum Koppeln mit...",
     "select-smartdrive": "Wählen Sie SmartDrive",
+    "syncing-with-server": "Mit Server synchronisieren ...",
     "tap-sensitivity": "Tippen Sie auf Empfindlichkeit",
     "title": "SmartDrive-Einstellungen",
     "units": "Einheiten",

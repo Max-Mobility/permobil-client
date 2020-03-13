@@ -4,7 +4,7 @@
     "sd-ble-version": "SmartDrive Bluetooth（BT）バージョン",
     "sd-mcu-version": "SmartDrive MCU（SD）バージョン",
     "sd-serial-number": "SmartDrive シリアル番号",
-    "smartdrive-serial-number-info": "サポートや保証の際に必要なシリアル番号にアクセスするにはPushTrackerモバイルアプリをダウンロードしてください。",
+    "smartdrive-serial-number-info": "サポートや保証の際に必要なSmartDriveのシリアル番号にアクセスするにはPushTrackerモバイルアプリをダウンロードしてください。",
     "title": "情報について",
     "version": "SmartDrive MX2+ Wear OSアプリ（SW）バージョン",
     "watch-serial-number": "スマートウォッチ シリアル番号"
@@ -26,6 +26,22 @@
     "enable": "有効にする",
     "ok": "OK"
   },
+  "change-notes": {
+    "pt": {
+      "2_0": [
+        "最新のSmartDriveのBluetooth接続強度を確認する機能が追加されました。メニューの「バージョン情報」をご参照ください",
+        "PushTrackerモバイルアプリとSmartDrive間でSwitchControlの設定を送受信するためのサポートが追加されました"
+      ]
+    },
+    "sd": {
+      "2_0": [
+        "SwitchControlのLEDボタンによるパワーアシスト状態や走行状態を表示する機能が追加されました\n - PushTrackerまたはE2が接続されている場合で、あるいはスウィッチコントロールが有効になっている場合、LEDライトが異なるパターンで点滅します。\n - モーターが駆動している場合、LEDライトは点灯したままになります。",
+        "SmartDriveのSwitchControlをモーメンタリーモードもしくはラッチモードに設定することができます\n - デフォルトのモーメンタリーモードではボタンを押し続けている間のみSmartDriveが駆動します。その際、設定されているSwitchControlの最大速度まで速度を上げて走行します。\n - ラッチモードではボタンを押し続けている間、設定されているSwitchControlの最大速度までスピードを上げながら走行し、ボタンを離してもその速度で走行し続けます。再度ボタンを押すと、SmartDriveは走行を停止します。",
+        "SmartDriveのSwitchControlの最大速度は個別に設定することができ、それはPushTrackerまたはE2で設定する「最大速度」とは異なるものです。",
+        "SmartDriveの状態が「パワーアシストをONにする」に変えるたびにビープ音が一度鳴ります\n - ON/OFFの変更はPushTrackerやE2、そしてSwitchControlから操作することができます。\n - この設定はPushTracker E2のSmartDrive MX2＋アプリ上、もしくはE2をお持ちでない場合はスマートフォン上のPushTrackerモバイルアプリから無効にすることができます。"
+      ]
+    }
+  },
   "charts": {
     "battery": {
       "title": "毎日のSmartDriveバッテリー使用量（%）"
@@ -33,6 +49,10 @@
     "distance": {
       "title": "毎日のSmartDrive走行距離"
     }
+  },
+  "complications": {
+    "battery-level": "バッテリーレベル",
+    "odometer": "走行距離"
   },
   "error-history": {
     "errors": {
@@ -56,12 +76,14 @@
     },
     "connect": "SmartDriveに接続できませんでした。",
     "could-not-enable-tap-sensor": "タップセンサーを有効にできませんでした。",
+    "downloading-translations": "更新された言語ファイルのダウンロードに失敗しました。",
     "getting-error": "SmartDriveエラーの取得に失敗しました。",
     "must-wear-watch": "[手首の確認]設定が有効になっているため、SmartDriveを制御するにはスマートウォッチを装着する必要があります。",
     "no-network": "クラウドへ接続できませんでした。スマートウォッチがWi-Fiまたはスマートフォンを介してインターネットに接続されていることを確認してください。",
     "no-smartdrive-paired": "ペアリングされたSmartDriveはありません。",
     "no-smartdrives-found": "近くにSmartDrivesが見つかりませんでした。",
     "permissions": "要求されたアクションを実行できません。必要な権限が付与されていません。",
+    "power-assist-timeout": "バッテリーを節約するため、非アクティブのためにパワーアシストが自動的にオフになりました。詳細については、SmartDrive設定メニューの「パワーアシストタイムアウト」を参照してください。",
     "saving-error": "SmartDriveエラーの保存に失敗しました。",
     "saving-usage": "使用状況の保存に失敗しました。",
     "scan": "スキャンできませんでした。",
@@ -70,18 +92,21 @@
     "too-many-smartdrives-found": "複数のSmartDriveが見つかりました。ペアリングするときは、近くにSmartDriveが1つだけあることを確認してください。"
   },
   "languages": {
+    "cs": "チェコ語",
     "da": "デンマーク語",
     "de": "ドイツ語",
     "en": "英語",
     "es": "スペイン語",
+    "fi": "フィンランド語",
     "fr": "フランス語",
     "it": "イタリア語",
     "ja": "日本語",
     "ko": "韓国語",
     "nb": "ノルウェー語[ブークモール]",
     "nl": "オランダ語",
-    "nn": "ノルウェー語[ニーノシュク]",
-    "sv": "スウェーデンの",
+    "pl": "ポーランド語",
+    "pt": "ポルトガル語",
+    "sv": "スウェーデン語",
     "zh": "中国語[繁体字]"
   },
   "menu": {
@@ -103,6 +128,7 @@
     },
     "sd": {
       "state": {
+        "already-uptodate": "更新済みです。それでも更新するには[強制]を選択します。",
         "awaiting-ble-ready": "BTで待機中",
         "awaiting-connection": "接続待ち",
         "awaiting-mcu-ready": "SDで待機中",
@@ -144,8 +170,8 @@
         "enabled": "有効"
       },
       "units": {
-        "english": "インペリアル",
-        "metric": "メトリック"
+        "english": "マイル",
+        "metric": "メートル"
       }
     },
     "switch-settings": {
@@ -164,6 +190,7 @@
       "controlmode": "MX2+：デフォルトは、ジェスチャベースのSmartDriveの操作。 MX2＋制御モードでは、ダブルタップで速度を上げてモーターの駆動を開始し、シングルタップで現在の速度で惰性走行し、ダブルタップで駆動を停止します。\n\nMX2：MX2制御モードでは、SmartDriveはプッシュを感知すると運転を開始し、タップすると運転を無効にします。これは以前からサポートされているオプションです。\n\nMX1：MX1制御モードでは、SmartDriveはプッシュを感知すると運転を開始し、タップするかハンドリムをブレーキすると運転を停止します。これは以前からサポートされているオプションです。",
       "maxspeed": "スマートウォッチで制御されたときにSmartDriveが駆動できる最大速度。",
       "powerassistbuzzer": "有効にすると、リモートデバイスからの接続が確立されるたびに、またはSwitchControlがスタンバイ状態から解除されるたびに、SmartDriveからビープ音が鳴ります。",
+      "powerassisttimeout": "パワーアシストをオンにした状態でSmartDriveに接続すると、モーターが選択した時間内に駆動されなかった場合、自動的にパワーアシストがオフになります。\n\nパワーアシストがオンになっているけどSmartDriveに接続されていない場合、パワーアシストは1分後に自動的にオフになります。",
       "switchcontrolmode": "モーメンタリー：SwitchControlのデフォルトモードで、SwitchControlボタンの1つを押し続けている間のみ、SmartDriveは設定したSwitchControlの最大速度まで速度を上げてモーターの駆動を開始します。押したままのボタンを放すか、両方のボタン（存在する場合）を押すと運転が停止します。運転停止時、デバイスはスタンバイ状態にならないことに注意してください。\n\nラッチ：SwitchControlのラッチモードでは、SwitchControlボタンの1つを押し続けている間、SmartDriveは設定したSwitchControlの最大速度まで速度を上げてモーターの駆動を開始します。押したままのボタンを放すと、SmartDriveはボタンを放したときに現在の速度で運転/ 惰性走行を続けます。ボタンの1つをもう一度押して放すか、両方のボタン（存在する場合）を押すと運転が停止します。運転停止時、デバイスはスタンバイ状態にならないことに注意してください。",
       "switchcontrolspeed": "SwitchControlによって制御されるときにSmartDriveが駆動できる最大速度。",
       "tapsensitivity": "運転の有効化と無効化に使用されるタップジェスチャの感度。パーセンテージが低いほど、タップするのが難しくなります-100%が最も感度が高く、したがって最もタップし易く、10%が最も感度が低く、したがって最もタップしづらくなります。",
@@ -176,8 +203,14 @@
     "pair-smartdrive": "SmartDriveをペアリングする",
     "paired-to-smartdrive": "SmartDriveとのペアリングに成功しました。",
     "power-assist-buzzer": "パワーアシストビープ表示",
+    "power-assist-timeout": {
+      "title": "パワーアシストタイムアウト",
+      "units-long": "分",
+      "units-short": "分"
+    },
     "scanning": "ペアリングするSmartDriveをスキャンしています...",
     "select-smartdrive": "SmartDriveを選択",
+    "syncing-with-server": "サーバーと同期しています...",
     "tap-sensitivity": "タップ感度",
     "title": "SmartDrive設定",
     "units": "単位",
@@ -214,14 +247,14 @@
     "downloading-new-firmwares": "新しい更新データをダウンロードしています ...",
     "errors": {
       "connecting": "SmartDriveへの接続エラー。",
-      "connection-failure": "サーバーへの接続に失敗しました。スマートウォッチがWi-Fiまたはスマートフォンを介してインターネットに接続されていることを確認してください。 \n\nエラー：",
+      "connection-failure": "Permobilのサーバーへの接続に失敗しました。スマートウォッチがWi-Fiまたはスマートフォンを介してインターネットに接続されていることを確認してください。 \n\nエラー：",
       "downloading": "更新のダウンロード中にエラーが発生しました。",
       "getting": "更新の検索エラー。",
       "saving": "更新データの保存中にエラーが発生しました。",
       "timeout": "SmartDriveのアップデートが中断されました。"
     },
     "failed": "SmartDriveの更新に失敗しました。",
-    "initializing": "アップデートを開始しています…",
+    "initializing": "アップデートを開始しています ...",
     "status": "更新ステータス",
     "success": "SmartDriveの更新が正常に完了しました！",
     "timeout": "SmartDriveの更新がタイムアウトしました。",

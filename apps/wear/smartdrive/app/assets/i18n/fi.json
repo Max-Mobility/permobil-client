@@ -1,0 +1,273 @@
+{
+  "about": {
+    "database": "Tietokannan tunnus",
+    "sd-ble-version": "SmartDrive Bluetooth (BT) versio",
+    "sd-mcu-version": "SmartDrive MCU (SD) -versio",
+    "sd-serial-number": "SmartDrive-sarjanumero",
+    "smartdrive-serial-number-info": "Sinun on muodostanut yhteys PushTracker-mobiilisovellukseen, jotta voit käyttää SmartDrive-sarjanumeroasi, josta voi olla hyötyä tuki- ja takuutarkoituksissa.",
+    "title": "Tietoja",
+    "version": "SmartDrive MX2 Wear OS -sovelluksen (SW) versio",
+    "watch-serial-number": "Älykello-sarjanumero"
+  },
+  "app-connection": {
+    "completed": "Yhteys onnistuneesti PushTracker-tiliin.",
+    "connecting": "Yhdistetään PushTracker-mobiilisovellukseen ...",
+    "identifier": "Älykellon nimi",
+    "preface": "Yhdistetään PushTracker-tiliin ...",
+    "receiving": "Vastaanotetaan tilitietoja ..."
+  },
+  "buttons": {
+    "allow": "Sallia",
+    "back": "Takaisin",
+    "cancel": "Peruuttaa",
+    "deny": "Kieltää",
+    "disable": "Poista käytöstä",
+    "dismiss": "Erottaa",
+    "enable": "Ota käyttöön",
+    "ok": "Kunnossa"
+  },
+  "change-notes": {
+    "pt": {
+      "2_0": [
+        "Lisätty kyky tarkastella viimeisintä SmartDrive Bluetooth-yhteyden voimakkuutta Tietoja-asetusvalikossa",
+        "Lisätty tuki SmartDrive SwitchControl -kokoonpanojen lähettämiseen ja vastaanottamiseen PushTracker mobiilisovellukseen ja SmartDriveen / niistä"
+      ]
+    },
+    "sd": {
+      "2_0": [
+        "Lisätty dynaaminen SwitchControl-painikkeen ilmaisin, jotta painikkeen merkkivalot osoittavat voima-apua ja ajon tilaa\n - Jos PushTracker / E2 on kytketty ja / tai kytkimen ohjaus on käytössä, LED (t) vilkkuvat erilaisissa kuvioissa.\n - Jos moottori ajaa, merkkivalot palavat.",
+        "SmartDrive voidaan määrittää hetkelliseen tai lukittuun SwitchControl-tilaan\n - Oletusmomenttihetkellä SmartDrive alkaa ajaa moottoria lisäämällä nopeutta vain määritettyyn SwitchControl-maksiminopeuteen vain yhden painikkeen ollessa painettuna.\n - Latched-tilassa SmartDrive alkaa kasvattaa nopeuttaan määritettyyn SwitchControl-maksiminopeuteen, kun yhtä painikkeista pidetään alhaalla. Kun pidä painike vapautetaan, SmartDrive jatkaa ajamista nykyisellä nopeudella. Poista ajo käytöstä painamalla painiketta.",
+        "SmartDrive SwitchControlilla on oma määritettävissä oleva maksiminopeuden asetus, joka on riippumaton PushTracker / E2: n maksiminopeuden asetuksesta.",
+        "SmartDrive on nyt määritetty piippaamaan kerran, kun sen tila vaihdetaan virranohjauksen päälle\n - Tämä tilamuutos voi tapahtua PushTracker / E2- ja SwitchControl-painikkeilla.\n - Tämä osoitusasetus voidaan poistaa käytöstä joko PushTracker E2: n SmartDrive MX2 -sovelluksella tai älypuhelimen PushTracker-mobiilisovelluksella, jos sinulla ei ole E2: ta."
+      ]
+    }
+  },
+  "charts": {
+    "battery": {
+      "title": "SmartDrive-akun päivittäinen käyttö (%)"
+    },
+    "distance": {
+      "title": "SmartDrive Etäisyys päivittäin"
+    }
+  },
+  "complications": {
+    "battery-level": "Akun varaustaso",
+    "odometer": "Matkamittari"
+  },
+  "error-history": {
+    "errors": {
+      "batteryvoltage": "[ERR: 001] SD-akun jännite",
+      "bledisconnect": "[ERR: 007] Bluetooth-yhteyden katkaisu",
+      "gyrorange": "[ERR: 005] SD-kulma",
+      "motorphases": "[ERR: 002] SD-moottori",
+      "otaunavailable": "[ERR: 006] Päivitykset eivät ole käytettävissä",
+      "overcurrent": "[ERR: 003] SD-virtapiikki",
+      "overtemperature": "[ERR: 004] SD-ylikuumeneminen"
+    },
+    "loading": "Ladataan ...",
+    "no-errors": "Mitään SmartDrive-virheitä ei ole tallennettu tai vastaanotettu.",
+    "title": "SmartDrive-virhehistoria"
+  },
+  "failures": {
+    "app-connection": {
+      "credentials": "PushTracker-tilin yhdistäminen epäonnistui.",
+      "logout": "Tili on kirjautunut ulos. Uudelleenyhteys PushTracker-mobiilisovellukseen vaaditaan.",
+      "timeout": "Sovelluksen yhteys on vanhentunut."
+    },
+    "connect": "Yhteyden muodostaminen SmartDriveen ei onnistunut.",
+    "could-not-enable-tap-sensor": "Venttiilianturia ei voitu ottaa käyttöön.",
+    "downloading-translations": "Laitteesi kielitiedostojen lataaminen epäonnistui.",
+    "getting-error": "SmartDrive-virheen saaminen epäonnistui.",
+    "must-wear-watch": "[Check for Wrist] -asetus on käytössä, joten älykelloa on käytettävä SmartDrive-laitteen ohjaamiseen.",
+    "no-network": "Yhteyttä pilveen ei ole saatavana. Varmista, että älykellosi on yhteydessä Internetiin joko Wi-Fi: n tai puhelimesi kautta.",
+    "no-smartdrive-paired": "Ei SmartDrive-paria.",
+    "no-smartdrives-found": "Lähistöllä ei löytynyt SmartDrive-laitteita.",
+    "permissions": "Pyydettyä toimintoa ei voida suorittaa. Vaadittuja lupia ei annettu.",
+    "power-assist-timeout": "Virtaapu poistettiin käytöstä poistamisen vuoksi automaattisesti aikakatkaisun kautta. Lisätietoja on SmartDrive MX2 -asetuksessa [Power Assist Timeout].",
+    "saving-error": "SmartDrive-virheen tallentaminen epäonnistui.",
+    "saving-usage": "Käytön tallentaminen epäonnistui.",
+    "scan": "Skannaus epäonnistui.",
+    "send-settings": "Asetusten lähettäminen SmartDriveen epäonnistui.",
+    "title": "Ilmoitus",
+    "too-many-smartdrives-found": "Löydetty useita SmartDrive-koneita. Varmista, että lähellä on vain yksi SmartDrive-laite pariliitoksen muodostamisen aikana."
+  },
+  "languages": {
+    "cs": "Czech",
+    "da": "Tanskan kieli",
+    "de": "Saksan kieli",
+    "en": "Englanti",
+    "es": "Espanja",
+    "fi": "Suomalainen",
+    "fr": "Ranskan kieli",
+    "it": "Italialainen",
+    "ja": "Japanilainen",
+    "ko": "Korealainen",
+    "nb": "Norjalainen [bokmål]",
+    "nl": "Hollannin kieli",
+    "pl": "Kiillottaa",
+    "pt": "Portugalin kieli",
+    "sv": "Ruotsin kieli",
+    "zh": "Kiinalainen [perinteinen]"
+  },
+  "menu": {
+    "about": "Noin",
+    "settings": "Asetukset",
+    "title": "SmartDrive MX2 -valikko",
+    "training": "Napauta Training",
+    "updates": "Langattomat päivitykset"
+  },
+  "ota": {
+    "action": {
+      "cancel": "Peruuttaa",
+      "close": "Kiinni",
+      "force": "Pakottaa",
+      "pause": "Tauko",
+      "resume": "Jatkaa",
+      "retry": "Yritä uudelleen",
+      "start": "Alkaa"
+    },
+    "sd": {
+      "state": {
+        "already-uptodate": "Jo ajan tasalla. Valitse Pakota päivittääksesi kuitenkin.",
+        "awaiting-ble-ready": "Odotetaan BT: llä",
+        "awaiting-connection": "Odotetaan yhteyttä",
+        "awaiting-mcu-ready": "Odotetaan SD: tä",
+        "awaiting-versions": "Odotetaan versioita",
+        "canceled": "Peruttu",
+        "canceling": "Peruuttaminen",
+        "comm-failure": "Viestintävirhe - SmartDrive-käynnistys vaaditaan uudelleen",
+        "complete": "Saattaa loppuun",
+        "failed": "Epäonnistui",
+        "not-started": "Ei alkanut",
+        "rebooting-ble": "Käynnistä BT uudelleen",
+        "rebooting-mcu": "Käynnistä SD",
+        "timeout": "Aikalisä",
+        "updating-ble": "Päivitetään BT",
+        "updating-mcu": "Päivitetään SD",
+        "verifying": "Tarkistaminen"
+      }
+    }
+  },
+  "permissions-reasons": {
+    "coarse-location": "SmartDrive-laitteen hallintaa varten Bluetooth edellyttää, että sallit sijaintiluvan [ACCESS_COARSE_LOCATION] seuraavalla näytöllä. Tämän luvan perusteella Permobil ei pääse käyttämään sijaintitietojasi.",
+    "phone-state": "VALINNAINEN: Jotta voisimme käyttää älykellon sarjanumeroasi, josta voi olla hyötyä tuki- ja takuutarkoituksissa, sinun on sallittava puhelinlupa [READ_PHONE_STATE] jollakin seuraavista näytöistä. Tämän luvan perusteella Permobil ei pääse käyttämään puhelinnumeroasi, matkapuhelinverkon tietoja tai muita tietoja paitsi älykellon sarjanumero."
+  },
+  "permissions-request": {
+    "title": "Lupailmoitus"
+  },
+  "power-assist": {
+    "activate": "Vuoro\nPower Assist\nPäällä",
+    "deactivate": "Vuoro\nPower Assist\nVinossa",
+    "estimated-range": "Arvioitu alue",
+    "exit-training": "Lopeta koulutus",
+    "speed": "Nykyinen nopeus",
+    "stop": "Poista ajo käytöstä"
+  },
+  "sd": {
+    "settings": {
+      "power-assist-buzzer": {
+        "disabled": "Liikuntarajoitteinen",
+        "enabled": "Käytössä"
+      },
+      "units": {
+        "english": "Keisarillinen",
+        "metric": "Metrinen"
+      }
+    },
+    "switch-settings": {
+      "mode": {
+        "latching": "Lukittu",
+        "momentary": "Hetkellinen"
+      }
+    }
+  },
+  "settings": {
+    "acceleration": "Kiihtyvyys",
+    "connect-pushtracker": "Yhdistä PushTracker-mobiilisovellus",
+    "control-mode": "Ohjaustila",
+    "description": {
+      "acceleration": "SmartDriven kiihtyvyys- tai nopeudenrampinopeus.",
+      "controlmode": "MX2: SmartDriven oletusarvoinen eleperusteinen toiminta. MX2-ohjaustilassa kaksoisnapautus alkaa ajaa moottoria lisäämällä sen nopeutta, yksi napautus menee rannalle nykyisellä nopeudella ja kaksoisnapautus poistaa käytöstä ajon.\n\nMX2: MX2-ohjaustilassa SmartDrive alkaa ajaa tunteessasi työntösi ja deaktivoi ajamisen, kun napautat. Huomaa, että tämä on vanha tukivaihtoehto.\n\nMX1: MX1-ohjaustilassa SmartDrive alkaa ajaa tunteessasi työntösi ja lopettaa ajamisen, kun napautat tai jarrutat käsipyörää. Huomaa, että tämä on vanha tukivaihtoehto.",
+      "maxspeed": "Suurin nopeus, jolla SmartDrive voi ajaa, kun älykellosi sitä ohjaa.",
+      "powerassistbuzzer": "Kun asetus on käytössä, SmartDrive antaa äänimerkin aina, kun yhteys etälaitteesta muodostetaan tai kun SwitchControl poistetaan valmiustilasta.",
+      "powerassisttimeout": "SmartDrive deaktivoi virranohjauksen automaattisesti määritetyn ajan kuluttua, jos käyttäjällä on virranhallintatoiminto aktiivinen ja hän on kytketty SmartDriveen, mutta ei ole aktivoinut moottoria ennen aikakatkaisun päättymistä.\n\nHuomaa: SmartDrive deaktivoi virranohjauksen automaattisesti yhden minuutin kuluttua, jos sitä ei ole kytketty SmartDriveen.",
+      "switchcontrolmode": "Hetkellinen: Oletusarvoinen SwitchControl-tila, jossa SmartDrive alkaa ajaa moottoria lisäämällä nopeuttaan vain määritettyyn SwitchControl-maksiminopeuteen vain samalla kun yhtä SwitchControl-painikkeista pidetään alhaalla. Kun pidä painike vapautetaan tai molemmat painikkeet [jos on] painetaan, ajo kytkeytyy pois päältä. Huomaa, että deaktivoinnin jälkeen se ei aseta laitetta valmiustilaan.\n\nLukittu: Lukitussa SwitchControl-tilassa SmartDrive alkaa ajaa moottoria lisäämällä nopeuttaan määritettyyn SwitchControl-maksiminopeuteen samalla kun yhtä SwitchControl-painikkeista pidetään alhaalla. Kun pidä painike vapautetaan, SmartDrive jatkaa ajamista / rannikkoa nykyisellä nopeudella, kun painike vapautettiin. Kun yhtä painikkeista painetaan ja vapautetaan uudelleen tai molemmat painikkeista [jos on] painetaan, ajo kytkeytyy pois päältä. Huomaa, että deaktivoinnin jälkeen se ei aseta laitetta valmiustilaan.",
+      "switchcontrolspeed": "Suurin nopeus, jolla SmartDrive voi ajaa, kun sitä ohjataan SwitchControlilla.",
+      "tapsensitivity": "Ajamisen aktivointiin ja deaktivointiin käytetyn napautus eleen herkkyys. Mitä pienempi prosenttiosuus on, sitä vaikeammin sinun täytyy napauttaa - 100% on herkein ja siksi helpoin napauttaa, ja 10% on vähiten herkkä ja siksi vaikeimmin napautettava.",
+      "units": "Yksikköjärjestelmä tai mittayksiköt nopeuden ja etäisyyksien näyttämiseksi käyttöliittymissä. Valitse joko Imperial [mi ja mph] tai Metric [km ja km / h].",
+      "wearcheck": "Kun toiminto on käytössä, älykellon on oltava ranteessa, jotta virtaapu kytketään päälle. Jos virtaapu on päällä ja älykello havaitsee, että se ei ole enää ranteessa, se kytkeytyy apuvirtaan automaattisesti."
+    },
+    "error-history": "Virhehistoria",
+    "information": "Tiedot",
+    "max-speed": "Maksiminopeus",
+    "pair-smartdrive": "Yhdistä SmartDrive",
+    "paired-to-smartdrive": "Yhdistäminen onnistuneesti SmartDriveen.",
+    "power-assist-buzzer": "Power Assist -äänimerkin ilmaisin",
+    "power-assist-timeout": {
+      "title": "Power Assist -aikakatkaisu",
+      "units-long": "pöytäkirja",
+      "units-short": "min"
+    },
+    "scanning": "Skannataan SmartDrive-paria pariksi ...",
+    "select-smartdrive": "Valitse SmartDrive",
+    "syncing-with-server": "Synkronointi palvelimen kanssa ...",
+    "tap-sensitivity": "Napauta Herkkyys",
+    "title": "SmartDrive-asetukset",
+    "units": "Yksiköt",
+    "watch-required": {
+      "title": "Tarkista ranne",
+      "values": {
+        "disabled": "Liikuntarajoitteinen",
+        "enabled": "Käytössä"
+      }
+    }
+  },
+  "switch-control": {
+    "max-speed": "SwitchControl-maksiminopeus",
+    "mode": "SwitchControl-tila"
+  },
+  "units": {
+    "distance": {
+      "english": "mi",
+      "metric": "km"
+    },
+    "english": "Keisarillinen",
+    "metric": "Metrinen",
+    "speed": {
+      "english": "mph",
+      "metric": "km / h"
+    }
+  },
+  "updates": {
+    "canceled": "SmartDrive-päivitykset peruutettiin.",
+    "changes": "Yhteenveto muutoksista",
+    "checking-for-updates": "Tarkistetaan päivitykset ...",
+    "communications-failed": "Yhteydet SmartDriven kanssa ovat epäonnistuneet. Käynnistä SmartDrive uudelleen.",
+    "connecting-to-smartdrive": "Yhdistetään SmartDriveen ...",
+    "downloading-new-firmwares": "Ladataan uusia päivitystietoja ...",
+    "errors": {
+      "connecting": "Virhe muodostaessaan yhteyden SmartDriveen.",
+      "connection-failure": "Yhteys Permobil-palvelimeen epäonnistui. Varmista, että älykellosi on yhteydessä Internetiin joko Wi-Fi: n tai puhelimesi kautta.\n\nVirhe:",
+      "downloading": "Virhe ladattaessa päivityksiä.",
+      "getting": "Virhe etsiessäsi päivityksiä.",
+      "saving": "Päivitysdatan tallennuksessa tapahtui virhe.",
+      "timeout": "SmartDrive-päivitykset ovat vanhentuneet."
+    },
+    "failed": "SmartDrive-päivitykset epäonnistuivat.",
+    "initializing": "Päivitysten alustaminen ...",
+    "status": "Päivitysten tila",
+    "success": "SmartDrive-päivitykset onnistui!",
+    "timeout": "SmartDrive-päivitykset ovat vanhentuneet.",
+    "up-to-date": "SmartDrive on ajan tasalla!",
+    "version": "Versio"
+  },
+  "warnings": {
+    "saved-settings": {
+      "message": "VAROITUS: Sinun on Tutustu SmartDrive-käyttöoppaaseen kuinka asetusten muuttaminen vaikuttaa laitteen toimintaan ja suorituskykyyn.",
+      "title": "Muutetut asetukset"
+    },
+    "title": {
+      "notice": "Ilmoitus"
+    }
+  }
+}

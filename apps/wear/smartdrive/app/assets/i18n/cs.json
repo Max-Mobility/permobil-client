@@ -1,0 +1,273 @@
+{
+  "about": {
+    "database": "ID databáze",
+    "sd-ble-version": "Verze SmartDrive Bluetooth (BT)",
+    "sd-mcu-version": "Verze SmartDrive MCU (SD)",
+    "sd-serial-number": "Sériové číslo SmartDrive",
+    "smartdrive-serial-number-info": "Chcete-li získat přístup k sériovému číslu SmartDrive, musíte se připojit k mobilní aplikaci PushTracker.",
+    "title": "Informace",
+    "version": "Verze aplikace SmartDrive MX2+ Wear OS (SW)",
+    "watch-serial-number": "Sériové číslo Smartwatch"
+  },
+  "app-connection": {
+    "completed": "Úspěšně se připojil k účtu PushTracker.",
+    "connecting": "Připojování k mobilní aplikaci PushTracker ...",
+    "identifier": "Název inteligentní hodinky",
+    "preface": "Připojování k účtu PushTracker ...",
+    "receiving": "Příjem informací o účtu ..."
+  },
+  "buttons": {
+    "allow": "Dovolit",
+    "back": "Zadní",
+    "cancel": "Zrušení",
+    "deny": "Odmítnout",
+    "disable": "Zakázat",
+    "dismiss": "Propustit",
+    "enable": "Umožnit",
+    "ok": "OK"
+  },
+  "change-notes": {
+    "pt": {
+      "2_0": [
+        "Přidána možnost zobrazit nejnovější sílu připojení SmartDrive Bluetooth do nabídky nastavení „About“",
+        "Přidána podpora pro odesílání a přijímání konfigurací SmartDrive SwitchControl do / z aplikace PushTracker Mobile a SmartDrive"
+      ]
+    },
+    "sd": {
+      "2_0": [
+        "Přidaná indikace dynamického tlačítka SwitchControl tak, že LED diody tlačítka indikují podporu napájení a stav jízdy\n - Je-li připojen PushTracker / E2 a je-li zapnuto ovládání přepínačů, LED diody blikají různými vzory.\n - Pokud motor běží, LED diody budou trvale svítit.",
+        "SmartDrive lze nakonfigurovat na režimy Momentary nebo Latched SwitchControl\n - Ve výchozím okamžitém režimu SmartDrive začne řídit motor zvyšováním jeho rychlosti na nakonfigurovanou maximální rychlost SwitchControl, pouze pokud je přidrženo jedno z tlačítek.\n - V režimu blokování začne SmartDrive během přidržování jednoho z tlačítek zvyšovat svou rychlost na nakonfigurovanou maximální rychlost SwitchControl. Po uvolnění přidrženého tlačítka SmartDrive zůstane v jízdě aktuální rychlostí. Stisknutím tlačítka deaktivujte jízdu.",
+        "SmartDrive SwitchControl má vlastní konfigurovatelné nastavení maximální rychlosti, které je nezávislé na nastavení maximální rychlosti pro PushTracker / E2",
+        "SmartDrive je nyní nakonfigurován tak, aby zapípal jednou, kdykoli se jeho stav změní na zapnutí napájení\n - Tuto změnu stavu lze provést pomocí tlačítek PushTracker / E2 a SwitchControl.\n - Toto nastavení indikace lze deaktivovat prostřednictvím aplikace SmartDrive MX2+ ve vašem PushTracker E2 nebo pomocí aplikace PushTracker Mobile ve vašem smartphonu, pokud nemáte E2."
+      ]
+    }
+  },
+  "charts": {
+    "battery": {
+      "title": "Využití baterie SmartDrive denně (%)"
+    },
+    "distance": {
+      "title": "Denně ujetá vzdálenost SmartDrive"
+    }
+  },
+  "complications": {
+    "battery-level": "Stav baterie",
+    "odometer": "Počítadlo kilometrů"
+  },
+  "error-history": {
+    "errors": {
+      "batteryvoltage": "[ERR: 001] Napětí baterie SD",
+      "bledisconnect": "[ERR: 007] Odpojení Bluetooth",
+      "gyrorange": "[ERR: 005] Úhel SD",
+      "motorphases": "[ERR: 002] SD Motor",
+      "otaunavailable": "[ERR: 006] Aktualizace nejsou k dispozici",
+      "overcurrent": "[ERR: 003] Aktuální proud SD",
+      "overtemperature": "[ERR: 004] Přehřátí SD"
+    },
+    "loading": "Načítání ...",
+    "no-errors": "Nebyly zaznamenány ani přijaty žádné chyby SmartDrive.",
+    "title": "Historie chyb SmartDrive"
+  },
+  "failures": {
+    "app-connection": {
+      "credentials": "Nepodařilo se připojit účet PushTracker.",
+      "logout": "Účet byl odhlášen. Vyžaduje se opětovné připojení k aplikaci PushTracker Mobile.",
+      "timeout": "Časový limit připojení aplikace vypršel."
+    },
+    "connect": "Nelze se připojit k SmartDrive.",
+    "could-not-enable-tap-sensor": "Nelze aktivovat snímač klepnutí.",
+    "downloading-translations": "Stahování jazykových souborů do vašeho zařízení se nezdařilo.",
+    "getting-error": "Chyba SmartDrive se nezdařila.",
+    "must-wear-watch": "Nastavení [Check for Wrist] (Kontrola zápěstí) je povoleno, proto musí být chytré hodinky používány k ovládání vašeho SmartDrive.",
+    "no-network": "Připojení k cloudu není k dispozici. Zkontrolujte, zda jsou vaše chytré hodinky připojeny k internetu prostřednictvím Wi-Fi nebo telefonu.",
+    "no-smartdrive-paired": "Nebyl spárován žádný SmartDrive.",
+    "no-smartdrives-found": "V okolí nebyly nalezeny žádné jednotky SmartDrives.",
+    "permissions": "Požadovanou akci nelze provést. Požadovaná oprávnění nebyla udělena.",
+    "power-assist-timeout": "Funkce Power Assist byla z důvodu nečinnosti automaticky deaktivována pomocí časového limitu. Další informace naleznete v nastavení SmartDrive MX2 [Power Assist Timeout].",
+    "saving-error": "Chyba SmartDrive se nezdařila.",
+    "saving-usage": "Uložení použití se nezdařilo.",
+    "scan": "Nelze skenovat.",
+    "send-settings": "Nepodařilo se odeslat nastavení do SmartDrive.",
+    "title": "Oznámení",
+    "too-many-smartdrives-found": "Bylo nalezeno více SmartDrives. Při párování se ujistěte, že je v blízkosti pouze jeden SmartDrive."
+  },
+  "languages": {
+    "cs": "čeština",
+    "da": "dánský",
+    "de": "Němec",
+    "en": "Angličtina",
+    "es": "Španělština",
+    "fi": "Finština",
+    "fr": "francouzština",
+    "it": "Italština",
+    "ja": "japonský",
+    "ko": "korejština",
+    "nb": "Norština [Bokmål]",
+    "nl": "holandský",
+    "pl": "polština",
+    "pt": "portugalština",
+    "sv": "švédský",
+    "zh": "Čínština [tradiční]"
+  },
+  "menu": {
+    "about": "O",
+    "settings": "NASTAVENÍ",
+    "title": "Nabídka SmartDrive MX2+",
+    "training": "Klepněte na Školení",
+    "updates": "Bezdrátové aktualizace"
+  },
+  "ota": {
+    "action": {
+      "cancel": "zrušení",
+      "close": "Zavřít",
+      "force": "Platnost",
+      "pause": "Pauza",
+      "resume": "Životopis",
+      "retry": "Opakujte",
+      "start": "Start"
+    },
+    "sd": {
+      "state": {
+        "already-uptodate": "Již aktuální. Chcete-li přesto provést aktualizaci, vyberte Vynutit.",
+        "awaiting-ble-ready": "Čekání na BT",
+        "awaiting-connection": "Čekání na připojení",
+        "awaiting-mcu-ready": "Čekání na SD",
+        "awaiting-versions": "Čekání na verze",
+        "canceled": "Zrušeno",
+        "canceling": "Ruší se",
+        "comm-failure": "Chyba komunikace - Vyžaduje se restart systému SmartDrive",
+        "complete": "Kompletní",
+        "failed": "Selhalo",
+        "not-started": "Nezačal",
+        "rebooting-ble": "Restartování BT",
+        "rebooting-mcu": "Restartování SD",
+        "timeout": "Časový limit",
+        "updating-ble": "Aktualizace BT",
+        "updating-mcu": "Aktualizace SD",
+        "verifying": "Ověření"
+      }
+    }
+  },
+  "permissions-reasons": {
+    "coarse-location": "Chcete-li ovládat svůj SmartDrive pomocí Bluetooth, musíte povolit povolení polohy [ACCESS_COARSE_LOCATION] na následující obrazovce. Na základě tohoto povolení nebude Permobil přistupovat k vašim údajům o poloze.",
+    "phone-state": "VOLITELNÉ: Chcete-li získat přístup k sériovému číslu smartwatch, které může být užitečné pro účely podpory a záruky, potřebujeme, abyste na jedné z následujících obrazovek povolili telefonické oprávnění [READ_PHONE_STATE]. Na základě tohoto povolení nebude Permobil přistupovat k vašemu telefonnímu číslu, informacím o celulární síti ani k jiným datům kromě sériového čísla smartwatch."
+  },
+  "permissions-request": {
+    "title": "Oznámení o oprávnění"
+  },
+  "power-assist": {
+    "activate": "Otáčet se\nPower Assist\nNa",
+    "deactivate": "Otáčet se\nPower Assist\nVypnuto",
+    "estimated-range": "Odhadovaný rozsah",
+    "exit-training": "Ukončete školení",
+    "speed": "Aktuální rychlost",
+    "stop": "Deaktivujte řízení"
+  },
+  "sd": {
+    "settings": {
+      "power-assist-buzzer": {
+        "disabled": "Zakázáno",
+        "enabled": "Povoleno"
+      },
+      "units": {
+        "english": "Císařský",
+        "metric": "Metrický"
+      }
+    },
+    "switch-settings": {
+      "mode": {
+        "latching": "Západka",
+        "momentary": "Momentální"
+      }
+    }
+  },
+  "settings": {
+    "acceleration": "Akcelerace",
+    "connect-pushtracker": "Připojte mobilní aplikaci PushTracker",
+    "control-mode": "Režim ovládání",
+    "description": {
+      "acceleration": "Zrychlení nebo rychlostní rampa SmartDrive.",
+      "controlmode": "MX2+: Výchozí operace SmartDrive založená na gestach. V režimu ovládání MX2 začne dvojité odbočení řídit motor zvyšováním jeho rychlosti, jediné odbočení se sníží při aktuální rychlosti a dvojité odbočení deaktivuje řízení.\n\nMX2: V režimu ovládání MX2 SmartDrive začne jezdit, jakmile zjistí váš tlak, a po klepnutí deaktivuje jízdu. Vezměte prosím na vědomí, že se jedná o možnost starší podpory.\n\nMX1: V režimu ovládání MX1 začne SmartDrive jízdu, jakmile zjistí váš tlak, a zastaví jízdu, když klepnete na tlačítko nebo když zabrzdíte na držadlech. Vezměte prosím na vědomí, že se jedná o možnost starší podpory.",
+      "maxspeed": "Maximální rychlost, kterou SmartDrive dokáže řídit, když je ovládáte pomocí smartwatch.",
+      "powerassistbuzzer": "Pokud je povoleno, SmartDrive vydá zvukový signál při každém navázání spojení ze vzdáleného zařízení nebo po přepnutí SwitchControl z pohotovostního stavu.",
+      "powerassisttimeout": "SmartDrive MX2 automaticky deaktivuje posilovač napájení po stanovené době, pokud má uživatel aktivní asistenční napájení a je připojen k SmartDrive, ale neaktivoval motor před vypršením časového limitu.\n\nPoznámka: SmartDrive MX2 automaticky deaktivuje posilovač napájení po 1 minutě, pokud není připojen k SmartDrive.",
+      "switchcontrolmode": "Momentary: Výchozí režim SwitchControl, ve kterém SmartDrive začne řídit motor zvyšováním jeho rychlosti na nakonfigurovanou maximální rychlost SwitchControl, pouze pokud je přidrženo jedno z tlačítek SwitchControl. Po uvolnění přidrženého tlačítka nebo po stisknutí obou tlačítek [je-li k dispozici] se jízda deaktivuje. Upozorňujeme, že po deaktivaci nepřepne zařízení do pohotovostního stavu.\n\nZápadka: V režimu Latched SwitchControl SmartDrive začne řídit motor zvyšováním jeho rychlosti na nakonfigurovanou maximální rychlost SwitchControl, zatímco je přidrženo jedno z tlačítek SwitchControl. Po uvolnění podrženého tlačítka zůstane SmartDrive po uvolnění tlačítka v jízdě / doběhu při aktuální rychlosti. Po opětovném stisknutí a uvolnění jednoho z tlačítek nebo po stisknutí obou tlačítek [je-li k dispozici] se řízení deaktivuje. Upozorňujeme, že po deaktivaci nepřepne zařízení do pohotovostního stavu.",
+      "switchcontrolspeed": "Maximální rychlost, kterou může SmartDrive řídit při ovládání pomocí SwitchControl.",
+      "tapsensitivity": "Citlivost gesta klepnutí použitého k aktivaci a deaktivaci jízdy. Čím nižší je procento, tím těžší je třeba klepnout - 100% je nejcitlivější a proto nejjednodušší klepnout, a 10% je nejméně citlivé, a proto nejtěžší klepnout.",
+      "units": "Jednotkový systém nebo měrné jednotky pro zobrazení rychlosti a vzdáleností v uživatelských rozhraních. Vyberte možnost Imperial [mi and mph] nebo Metric [km and km / h].",
+      "wearcheck": "Je-li tato funkce povolena, musí být chytré hodinky na zápěstí, aby bylo možné zapnout napájení. Pokud je funkce Power Assist zapnutá a inteligentní hodinky zjistí, že již není na zápěstí, automaticky vypne funkci Power Assist."
+    },
+    "error-history": "Historie chyb",
+    "information": "Informace",
+    "max-speed": "Maximální rychlost",
+    "pair-smartdrive": "Spárujte SmartDrive",
+    "paired-to-smartdrive": "Úspěšně spárováno s SmartDrive.",
+    "power-assist-buzzer": "Indikace pípání Power Assist",
+    "power-assist-timeout": {
+      "title": "Power Assist Timeout",
+      "units-long": "minut",
+      "units-short": "min"
+    },
+    "scanning": "Hledání SmartDrive pro spárování s ...",
+    "select-smartdrive": "Vyberte SmartDrive",
+    "syncing-with-server": "Synchronizace se serverem ...",
+    "tap-sensitivity": "Klepněte na Citlivost",
+    "title": "Nastavení SmartDrive",
+    "units": "Jednotky",
+    "watch-required": {
+      "title": "Zkontrolujte zápěstí",
+      "values": {
+        "disabled": "Zakázáno",
+        "enabled": "Povoleno"
+      }
+    }
+  },
+  "switch-control": {
+    "max-speed": "Maximální rychlost SwitchControl",
+    "mode": "Režim SwitchControl"
+  },
+  "units": {
+    "distance": {
+      "english": "mi",
+      "metric": "km"
+    },
+    "english": "Císařský",
+    "metric": "Metrický",
+    "speed": {
+      "english": "mph",
+      "metric": "km / h"
+    }
+  },
+  "updates": {
+    "canceled": "Aktualizace SmartDrive byla zrušena.",
+    "changes": "Shrnutí změn",
+    "checking-for-updates": "Probíhá kontrola aktualizací ...",
+    "communications-failed": "Komunikace s SmartDrive selhala, restartujte prosím SmartDrive.",
+    "connecting-to-smartdrive": "Připojování k SmartDrive ...",
+    "downloading-new-firmwares": "Stahování nových aktualizačních dat ...",
+    "errors": {
+      "connecting": "Chyba při připojování k SmartDrive.",
+      "connection-failure": "Připojení k serveru Permobil se nezdařilo. Zkontrolujte, zda jsou vaše chytré hodinky připojeny k internetu prostřednictvím Wi-Fi nebo telefonu.\n\nChyba:",
+      "downloading": "Při stahování aktualizací došlo k chybě.",
+      "getting": "Při hledání aktualizací došlo k chybě.",
+      "saving": "Při ukládání aktualizačních dat došlo k chybě.",
+      "timeout": "Aktualizace SmartDrive vypršela."
+    },
+    "failed": "Aktualizace SmartDrive selhala.",
+    "initializing": "Inicializace aktualizací ...",
+    "status": "Aktualizuje stav",
+    "success": "Aktualizace SmartDrive byla úspěšně dokončena!",
+    "timeout": "Aktualizace SmartDrive vypršela.",
+    "up-to-date": "SmartDrive je aktuální!",
+    "version": "Verze"
+  },
+  "warnings": {
+    "saved-settings": {
+      "message": "UPOZORNĚNÍ: MUSÍTE se podívat do uživatelské příručky SmartDrive o tom, jak změna nastavení ovlivňuje jeho provoz a výkon.",
+      "title": "Změněné nastavení"
+    },
+    "title": {
+      "notice": "Oznámení"
+    }
+  }
+}
