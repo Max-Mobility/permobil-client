@@ -3,6 +3,7 @@ import { EventData, Observable, Page, ShowModalOptions, View, ViewBase } from '@
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
+import { setTimeout } from '@nativescript/core/timer';
 import { alert } from '@nativescript/core/ui/dialogs';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
@@ -12,11 +13,12 @@ import { ReflectiveInjector } from 'injection-js';
 import * as LS from 'nativescript-localstorage';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Sentry } from 'nativescript-sentry';
+import * as themes from 'nativescript-themes';
 import { DataBroadcastReceiver } from '../../data-broadcast-receiver';
 import { DataKeys } from '../../enums';
 import { DailyActivity, Profile } from '../../namespaces';
 import { PushTrackerKinveyService, SqliteService } from '../../services';
-import { applyTheme, getSerialNumber, loadSerialNumber, saveSerialNumber, sentryBreadCrumb } from '../../utils';
+import { getSerialNumber, loadSerialNumber, saveSerialNumber, sentryBreadCrumb } from '../../utils';
 
 const dateLocales = {
   da: require('date-fns/locale/da'),
@@ -32,6 +34,9 @@ const dateLocales = {
   nn: require('date-fns/locale/nb'),
   zh: require('date-fns/locale/zh_cn')
 };
+
+const ambientTheme = require('../../scss/theme-ambient.scss');
+const defaultTheme = require('../../scss/theme-default.scss');
 
 declare const com: any;
 
@@ -143,13 +148,13 @@ export class MainViewModel extends Observable {
 
   async onMainPageLoaded(args: EventData) {
     sentryBreadCrumb('onMainPageLoaded');
-    try {
-      // apply theme
-      this._applyTheme('default');
-    } catch (err) {
-      Sentry.captureException(err);
-      Log.E('theme on startup error:', err);
-    }
+    // try {
+    //   // apply theme
+    //   this._applyTheme('default');
+    // } catch (err) {
+    //   Sentry.captureException(err);
+    //   Log.E('theme on startup error:', err);
+    // }
     // now init the ui
     try {
       await this._init();
@@ -193,7 +198,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(this.ANDROID_MARKET_SMARTDRIVE_URI));
     application.android.foregroundActivity.startActivity(intent);
@@ -625,7 +630,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
         // and return true letting the caller know we got the permissions
@@ -645,11 +650,6 @@ export class MainViewModel extends Observable {
     this.kinveyService.watch_serial_number = watchSerialNumber;
   }
 
-  private _applyTheme(theme?: string) {
-    // apply theme
-    applyTheme(theme);
-  }
-
   /**
    * Application lifecycle event handlers
    */
@@ -660,7 +660,7 @@ export class MainViewModel extends Observable {
       this._applyTheme('ambient');
     });
 
-    application.on('updateAmbient', () => { });
+    application.on('updateAmbient', () => {});
 
     application.on('exitAmbient', () => {
       sentryBreadCrumb('*** exitAmbient ***');
@@ -937,7 +937,7 @@ export class MainViewModel extends Observable {
     this.currentPushCountDisplay = this.currentPushCount.toFixed(0);
   }
 
-  private _updateSpeedDisplay() { }
+  private _updateSpeedDisplay() {}
 
   /**
    * SmartDrive Associated App Functions
@@ -1142,6 +1142,20 @@ export class MainViewModel extends Observable {
       }
     }
     // Log.D('chinsize:', this.chinSize);
+  }
+
+  private _applyTheme(theme?: string) {
+    // apply theme
+    try {
+      if (theme === 'ambient') {
+        themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
+      } else {
+        themes.applyThemeCss(defaultTheme, 'theme-default.scss');
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('apply theme error:', err);
+    }
   }
 
   // #endregion "Private Functions"

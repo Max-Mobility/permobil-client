@@ -4,11 +4,11 @@ import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
 import { action, alert } from '@nativescript/core/ui/dialogs';
-import { ScrollEventData, ScrollView } from '@nativescript/core/ui/scroll-view';
 import { AnimationCurve } from '@nativescript/core/ui/enums';
+import { ScrollView } from '@nativescript/core/ui/scroll-view';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
-import { getDefaultLang, L, Prop } from '@permobil/nativescript';
+import { getDefaultLang, L, performance, Prop } from '@permobil/nativescript';
 import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
@@ -26,8 +26,8 @@ import { BluetoothService, SensorChangedEventData, SensorService, SERVICES, Sett
 import { isNetworkAvailable, sentryBreadCrumb } from '../../utils';
 import { updatesViewModel } from '../modals/updates/updates-page';
 
-const ambientTheme = require('../../scss/theme-ambient.scss').toString();
-const defaultTheme = require('../../scss/theme-default.scss').toString();
+const ambientTheme = require('../../scss/theme-ambient.scss');
+const defaultTheme = require('../../scss/theme-default.scss');
 
 const dateLocales = {
   cs: require('date-fns/locale/cs'),
@@ -312,7 +312,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-            }`,
+          }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -707,7 +707,21 @@ export class MainViewModel extends Observable {
     this._settingsService = injector.get(SettingsService);
 
     // initialize data storage for usage, errors, settings
-    this._initSqliteTables();
+    performance.now('SQLite_Init');
+    this._initSqliteTables()
+      .then(async () => {
+        performance.now('SQLite_Init_End');
+        sentryBreadCrumb('SQLite has been initialized.');
+        const obj = await this._sqliteService.getLast(
+          SmartDriveData.Errors.TableName,
+          SmartDriveData.Errors.IdName
+        );
+        const lastErrorId = parseInt((obj && obj[3]) || -1);
+        this.lastErrorId = lastErrorId;
+      })
+      .catch(err => {
+        Sentry.captureException(err);
+      });
 
     // load serial number from settings / memory
     const savedSerial = appSettings.getString(DataKeys.WATCH_SERIAL_NUMBER);
@@ -789,39 +803,30 @@ export class MainViewModel extends Observable {
   }
 
   private async _initSqliteTables() {
-    try {
-      sentryBreadCrumb('Initializing SQLite...');
-      console.time('SQLite_Init');
-      // create / load tables for smartdrive data
-      const sqlitePromises = [
+    // create / load tables for smartdrive
+    return new Promise((resolve, reject) => {
+      try {
+        sentryBreadCrumb('Initializing SQLite...');
         this._sqliteService.makeTable(
           SmartDriveData.Info.TableName,
           SmartDriveData.Info.IdName,
           SmartDriveData.Info.Fields
-        ),
+        );
         this._sqliteService.makeTable(
           SmartDriveData.Errors.TableName,
           SmartDriveData.Errors.IdName,
           SmartDriveData.Errors.Fields
-        ),
+        );
         this._sqliteService.makeTable(
           SmartDriveData.Firmwares.TableName,
           SmartDriveData.Firmwares.IdName,
           SmartDriveData.Firmwares.Fields
-        )
-      ];
-      await Promise.all(sqlitePromises);
-      console.timeEnd('SQLite_Init');
-      sentryBreadCrumb('SQLite has been initialized.');
-      const obj = await this._sqliteService.getLast(
-        SmartDriveData.Errors.TableName,
-        SmartDriveData.Errors.IdName
-      );
-      const lastErrorId = parseInt((obj && obj[3]) || -1);
-      this.lastErrorId = lastErrorId;
-    } catch (err) {
-      Sentry.captureException(err);
-    }
+        );
+        resolve();
+      } catch (err) {
+        reject(err);
+      }
+    });
   }
 
   private async _askForPermissions() {
@@ -853,7 +858,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
       } catch (permissionsObj) {
@@ -921,10 +926,10 @@ export class MainViewModel extends Observable {
     try {
       if (theme === 'ambient' || this.isAmbient) {
         this._showAmbientTime();
-        themes.applyThemeCss(ambientTheme, 'theme-ambient.css');
+        themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
       } else {
         this._showMainDisplay();
-        themes.applyThemeCss(defaultTheme, 'theme-default.css');
+        themes.applyThemeCss(defaultTheme, 'theme-default.scss');
       }
     } catch (err) {
       Sentry.captureException(err);
@@ -1140,13 +1145,15 @@ export class MainViewModel extends Observable {
     application.on(application.suspendEvent, async () => {
       sentryBreadCrumb('*** appSuspend ***');
 
+      // ensure power assist is turned off if it is on
+      this._fullStop();
+
       if (updatesViewModel) {
         sentryBreadCrumb('Stopping OTA updates');
         await updatesViewModel.stopUpdates(L('updates.canceled'), true);
         sentryBreadCrumb('OTA updates successfully stopped');
       }
 
-      this._fullStop();
       this._updateComplications();
     });
 
@@ -1987,7 +1994,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -2052,7 +2059,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);

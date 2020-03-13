@@ -5,30 +5,30 @@
             // Increase the config value
         <RL:Ripple row="0" col="1" rippleColor="#ddd" class="increase-btn">
             <StackLayout tap="{{ onIncreaseSettingsTap }}">
-                <Label text="&#xf126;" fontSize="36" />
+                <Label text="&#xe904;" fontSize="42" />
             </StackLayout>
         </RL:Ripple>
             // Cancel Button - closes the layout
         <RL:Ripple row="1" col="0" rippleColor="#ddd" class="cancel-btn">
             <StackLayout tap="onCancelChangesTap">
-                <Label text="&#xf404;" fontSize="42" />
+                <Label text="&#xe900;" fontSize="32" />
             </StackLayout>
         </RL:Ripple>
         <StackLayout row="1" col="1" class="value-circle" tap="{{ onSettingsInfoItemTap }}">
             <ui:AutoFitText text="{{ changeSettingKeyValue }}" class="changeSettingsValue" />
             <Label text="{{ changeSettingKeyString }}" textWrap="true" class="changeSettingsTitle no-margin"/>
-            <Label text="&#xf149;" class="info-icon"/>
+            <Label text="&#xe908;" class="info-icon"/>
         </StackLayout>
             // Confirm button - will save the changes
         <RL:Ripple row="1" col="2" rippleColor="#ddd" class="confirm-btn">
             <StackLayout tap="{{ onConfirmChangesTap }}">
-                <Label text="&#xf3fd;" fontSize="42" />
+                <Label text="&#xe906;" fontSize="32" />
             </StackLayout>
         </RL:Ripple>
             // Decrease the config value
         <RL:Ripple row="2" col="1" rippleColor="#ddd" class="decrease-btn">
             <StackLayout tap="{{ onDecreaseSettingsTap }}">
-                <Label text="&#xf123;" fontSize="36" />
+                <Label text="&#xe901;" fontSize="42" />
             </StackLayout>
         </RL:Ripple>
     </GridLayout>

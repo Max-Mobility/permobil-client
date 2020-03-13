@@ -89,7 +89,7 @@ export class WatchSettings {
         break;
       case 'powerassisttimeout':
         this.powerAssistTimeoutMinutes =
-          Math.min(this.powerAssistTimeoutMinutes + increment, 20);
+          Math.min(this.powerAssistTimeoutMinutes + increment, 10);
         break;
       default:
         break;

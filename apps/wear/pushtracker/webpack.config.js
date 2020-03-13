@@ -18,49 +18,57 @@ const hashSalt = Date.now().toString();
 
 module.exports = env => {
   // Add your custom Activities, Services and other Android app components here.
-  const appComponents = [
-    '@nativescript/core/ui/frame',
-    '@nativescript/core/ui/frame/activity',
-    resolve(
-      __dirname,
-      'node_modules/@maxmobility/nativescript-wear-os-comms/android/ResultReceiver'
-    ),
-    resolve(
-      __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_AdvertiseCallback'
-    ),
-    resolve(
-      __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_BluetoothGattCallback'
-    ),
-    resolve(
-      __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_BluetoothGattServerCallback'
-    ),
-    resolve(
-      __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_BroadcastReceiver'
-    ),
-    resolve(
-      __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_LeScanCallback'
-    ),
-    resolve(
-      __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_ScanCallback'
-    ),
-    resolve(__dirname, 'app/main-activity'),
-    resolve(__dirname, 'app/result-receiver'),
-    resolve(__dirname, 'app/data-broadcast-receiver')
-  ];
+  const appComponents = env.appComponents || [];
+  appComponents.push(
+    ...[
+      'tns-core-modules/ui/frame',
+      'tns-core-modules/ui/frame/activity',
+      resolve(
+        __dirname,
+        'node_modules/@maxmobility/nativescript-wear-os-comms/android/ResultReceiver'
+      ),
+      resolve(
+        __dirname,
+        'node_modules/nativescript-bluetooth/android/TNS_AdvertiseCallback'
+      ),
+      resolve(
+        __dirname,
+        'node_modules/nativescript-bluetooth/android/TNS_BluetoothGattCallback'
+      ),
+      resolve(
+        __dirname,
+        'node_modules/nativescript-bluetooth/android/TNS_BluetoothGattServerCallback'
+      ),
+      resolve(
+        __dirname,
+        'node_modules/nativescript-bluetooth/android/TNS_BroadcastReceiver'
+      ),
+      resolve(
+        __dirname,
+        'node_modules/nativescript-bluetooth/android/TNS_LeScanCallback'
+      ),
+      resolve(
+        __dirname,
+        'node_modules/nativescript-bluetooth/android/TNS_ScanCallback'
+      ),
+      resolve(__dirname, 'app/main-activity'),
+      resolve(__dirname, 'app/result-receiver'),
+      resolve(__dirname, 'app/data-broadcast-receiver')
+    ]
+  );
 
-  const platform = env && ((env.android && 'android') || (env.ios && 'ios'));
+  const platform =
+    env && ((env.android && 'android') || (env.ios && 'ios') || env.platform);
   if (!platform) {
     throw new Error('You need to provide a target platform!');
   }
 
   const platforms = ['ios', 'android'];
   const projectRoot = __dirname;
+
+  if (env.platform) {
+    platforms.push(env.platform);
+  }
 
   // Default destination inside platforms/<platform>/...
   const dist = resolve(
@@ -102,10 +110,8 @@ module.exports = env => {
     projectDir: projectRoot
   });
   let coreModulesPackageName = 'tns-core-modules';
-  const alias = {
-    '~': appFullPath,
-    'tns-core-modules': '@nativescript/core'
-  };
+  const alias = env.alias || {};
+  alias['~'] = appFullPath;
 
   if (hasRootLevelScopedModules) {
     coreModulesPackageName = '@nativescript/core';
@@ -115,7 +121,8 @@ module.exports = env => {
 
   const entryModule = nsWebpack.getEntryModule(appFullPath, platform);
   const entryPath = `.${sep}${entryModule}.ts`;
-  const entries = { bundle: entryPath };
+  const entries = env.entries || {};
+  entries.bundle = entryPath;
 
   const tsConfigPath = resolve(projectRoot, 'tsconfig.tns.json');
 
@@ -300,7 +307,10 @@ module.exports = env => {
 
         {
           test: /\.scss$/,
-          use: ['nativescript-dev-webpack/css2json-loader', 'sass-loader']
+          use: [
+            { loader: 'css-loader', options: { url: false } },
+            'sass-loader'
+          ]
         },
 
         {

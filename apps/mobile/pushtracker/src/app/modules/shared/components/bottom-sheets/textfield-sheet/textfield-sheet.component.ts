@@ -1,5 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { isAndroid, TextField } from '@nativescript/core';
+import { setTimeout } from '@nativescript/core/timer';
 import * as appSettings from '@nativescript/core/application-settings';
 import { BottomSheetParams } from 'nativescript-material-bottomsheet/angular';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../../enums';

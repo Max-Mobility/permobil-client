@@ -1,30 +1,28 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd"
-      xmlns:lv="nativescript-ui-listview"
-      xmlns:wol="nativescript-wear-os/packages/wear-os-layout" shownModally="onShownModally" actionBarHidden="true">
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" 
+    xmlns:lv="nativescript-ui-listview" 
+    xmlns:wol="nativescript-wear-os/packages/wear-os-layout" shownModally="onShownModally" actionBarHidden="true">
     <wol:WearOsLayout id="wearOsLayout" disableInsetConstraint="true" height="100%" width="100%">
         <GridLayout height="100%" rows="auto, auto, *" colums="*">
             <Label row="0" text="{{ L('error-history.title') }}" class="chart-title" textWrap="true" />
             <Label row="1" text="" class="hr-blue" />
-            <lv:RadListView row="2" items="{{ errorHistoryData }}" itemTemplateSelector="selectErrorTemplate"
-                            loadMoreItems="onLoadMoreErrors"
-                            loadOnDemandMode="Auto" loadMoreDataRequested="onLoadMoreErrors">
+            <lv:RadListView row="2" items="{{ errorHistoryData }}" itemTemplateSelector="selectErrorTemplate" loadMoreItems="onLoadMoreErrors" loadOnDemandMode="Auto" loadMoreDataRequested="onLoadMoreErrors">
                 <lv:RadListView.itemTemplates>
                     <template key="back">
-                        <GridLayout rows="auto, auto" columns="15, *" tap="{{ onTap }}">
-                            <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
+                        <GridLayout rows="auto, auto" columns="auto, *" tap="{{ onTap }}">
+                            <Label row="0" col="0" text="&#xe907;" class="bullet-list-icon" fontSize="18" fontWeight="bold" textWrap="true" />
                             <Label row="0" col="1" text="{{ code }}" class="settings-label" textWrap="true" />
                         </GridLayout>
                     </template>
                     <template key="error">
-                      <GridLayout rows="auto, auto" columns="15, *">
-                        <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                        <Label row="0" col="1" text="{{ code }}" class="settings-label" textWrap="true" />
-                        <Label row="1" col="1" text="{{ time || ' ' }}" class="settings-label" textWrap="true" />
-                      </GridLayout>
+                        <GridLayout rows="auto, auto" columns="auto, *">
+                            <Label row="0" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
+                            <Label row="0" col="1" text="{{ code }}" class="settings-label" textWrap="true" />
+                            <Label row="1" col="1" text="{{ time || ' ' }}" class="settings-label" textWrap="true" />
+                        </GridLayout>
                     </template>
                     <template key="no-errors">
-                        <GridLayout rows="auto, auto" columns="15, *">
-                            <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                        <GridLayout rows="auto, auto" columns="auto, *">
+                            <Label row="0" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
                             <Label row="0" col="1" text="{{ code }}" class="settings-label" textWrap="true" />
                             <Label row="1" col="1" text=" " class="settings-label" textWrap="true" marginBottom="{{ insetPadding }}"/>
                         </GridLayout>

@@ -7,7 +7,7 @@
   "author": "Max-Mobility",
   "dependencies": {
     "globals": "^11.12.0",
-    "@maxmobility/private-keys": "autochair/maxmobility-private-keys#master",
+    "@maxmobility/private-keys": "github:autochair/maxmobility-private-keys#master",
     "nativescript-localstorage": "^2.0.1"
   },
   "peerDependencies": {
