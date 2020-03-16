@@ -20,7 +20,8 @@ export class KinveyService {
   private _userId: string = null;
   public watch_serial_number: string = null;
   public user: any = null;
-  private userStorageKey: string = 'com.permobil.nativescript.kinvey_service.user.data';
+  private userStorageKey: string =
+    'com.permobil.nativescript.kinvey_service.user.data';
 
   constructor() {
     // TODO: try to load authorization from ContentProvider
@@ -184,7 +185,8 @@ export class KinveyService {
     queries?: any,
     limit?: number,
     sort?: any,
-    skip?: any
+    skip?: any,
+    timeout?: number
   ) {
     // NOTE: This is the only kinvey service function which *DOES
     // NOT REQUIRE USER AUTHENTICATION*, so we don't need to check
@@ -214,7 +216,8 @@ export class KinveyService {
           KinveyService.api_app_key,
           KinveyService.api_app_secret
         )
-      }
+      },
+      timeout: timeout ? timeout : null
     });
     return this.handleResponse(response);
   }
