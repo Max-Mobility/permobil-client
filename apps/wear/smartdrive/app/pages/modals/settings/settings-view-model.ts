@@ -200,7 +200,14 @@ export class SettingsViewModel extends Observable {
     for (f of filesToDownload) {
       // need to make sure the downloadUrl of the file uses `https` and not `http` to avoid IOExceptions
       const fileUrl = f._downloadURL.replace(/^http:\/\//i, 'https://');
-      await getFile(fileUrl, `${i18nPath}/${f._filename}`).catch(err => {
+      await getFile(
+        {
+          url: fileUrl,
+          timeout: 30000,
+          method: 'GET'
+        },
+        `${i18nPath}/${f._filename}`
+      ).catch(err => {
         this._isDownloadingFiles = false;
         vb.closeModal();
         this._handleDownloadError(err);
