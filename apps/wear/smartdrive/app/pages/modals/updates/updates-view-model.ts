@@ -172,13 +172,13 @@ export class UpdatesViewModel extends Observable {
 
     // now init the ui
     await this.init().catch(err => {
-      sentryBreadCrumb('updates init error: ' + err);
+      sentryBreadCrumb('updates init error: ' + JSON.stringify(err));
       Sentry.captureException(err);
     });
 
     // now check for updates
     await this.checkForUpdates().catch(err => {
-      sentryBreadCrumb('checkForUpdates::error: ' + err);
+      sentryBreadCrumb('checkForUpdates::error: ' + JSON.stringify(err));
     });
   }
 

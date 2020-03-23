@@ -229,7 +229,7 @@ export class SettingsViewModel extends Observable {
   }
 
   private _handleDownloadError(err) {
-    sentryBreadCrumb(`Error downloading files: ${err}`);
+    sentryBreadCrumb(`Error downloading files: ${JSON.stringify(err)}`);
     Sentry.captureException(err);
     alert({
       title: L('failures.title'),
