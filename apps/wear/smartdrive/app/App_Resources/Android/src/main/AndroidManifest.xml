@@ -61,11 +61,11 @@
         <meta-data
             android:name="android.support.wearable.complications.SAFE_WATCH_FACES"
             android:value="
-          com.permobil.smartdrive.watchface/com.permobil.smartdrive.watchface.DigitalWatchFaceService" />
+          com.permobil.smartdrive.wearos.watchface/com.permobil.smartdrive.wearos.watchface.DigitalWatchFaceService" />
 
         <!-- for main activity -->
         <activity
-            android:name="com.permobil.smartdrive.MainActivity"
+            android:name="com.permobil.smartdrive.wearos.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_kimera"
             android:launchMode="singleInstance"
