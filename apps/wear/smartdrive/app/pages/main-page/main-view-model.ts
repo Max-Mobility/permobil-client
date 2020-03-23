@@ -1173,7 +1173,7 @@ export class MainViewModel extends Observable {
       application.uncaughtErrorEvent,
       (args: application.UnhandledErrorEventData) => {
         if (args) {
-          Sentry.captureException(args.error, {
+          Sentry.captureException(new Error(JSON.stringify(args)), {
             tags: {
               type: 'uncaughtErrorEvent'
             }
