@@ -14,7 +14,7 @@ console.timeEnd('load language files');
 application.on(
   application.uncaughtErrorEvent,
   (args: application.UnhandledErrorEventData) => {
-    Sentry.captureException(args.error, {
+    Sentry.captureException(new Error(JSON.stringify(args)), {
       tags: {
         type: 'uncaughtErrorEvent'
       }
@@ -25,7 +25,7 @@ application.on(
 application.on(
   application.discardedErrorEvent,
   (args: application.DiscardedErrorEventData) => {
-    Sentry.captureException(args.error, {
+    Sentry.captureException(new Error(JSON.stringify(args)), {
       tags: {
         type: 'discardedErrorEvent'
       }
