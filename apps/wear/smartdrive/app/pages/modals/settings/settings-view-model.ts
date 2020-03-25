@@ -1,11 +1,12 @@
 import { ApplicationSettings, Frame, knownFolders, Observable, Page, path, ShowModalOptions, ViewBase } from '@nativescript/core';
+import * as application from '@nativescript/core/application';
 import { getFile } from '@nativescript/core/http';
 import { Device, Log, wait } from '@permobil/core';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';
 import { Sentry } from 'nativescript-sentry';
 import { WatchSettings } from '../../../models';
 import { SettingsService, SmartDriveKinveyService } from '../../../services';
-import { configureLayout, isNetworkAvailable, sentryBreadCrumb } from '../../../utils';
+import { configureLayout, isNetworkAvailable, sentryBreadCrumb, _isActivityThis } from '../../../utils';
 
 export class SettingsViewModel extends Observable {
   @Prop() insetPadding = 0;
@@ -21,6 +22,7 @@ export class SettingsViewModel extends Observable {
   private _SDKinveyService: SmartDriveKinveyService;
   private _showingModal: boolean = false;
   private _isDownloadingFiles: boolean = false;
+  private _shouldDownloadFiles: boolean = true;
 
   constructor(
     page: Page,
@@ -43,10 +45,24 @@ export class SettingsViewModel extends Observable {
       0
     );
 
+    // set event listener so we do not DOWNLOAD the files when the activity resumes
+    // related https://github.com/Max-Mobility/permobil-client/issues/794
+    application.android.on(
+      application.AndroidApplication.activityResumedEvent,
+      (args: application.AndroidActivityEventData) => {
+        if (_isActivityThis(args.activity)) {
+          // we dont want to download anything
+          this._shouldDownloadFiles = false;
+        }
+      }
+    );
+
     // when the user opens the settings we are going to download the translation files and store them if needed
     // @link - https://github.com/Max-Mobility/permobil-client/issues/658
     wait(1000).then(() => {
-      this._downloadTranslationFiles();
+      if (this._shouldDownloadFiles === true) {
+        this._downloadTranslationFiles();
+      }
     });
   }
 
