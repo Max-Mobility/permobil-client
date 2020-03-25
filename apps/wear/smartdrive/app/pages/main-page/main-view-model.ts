@@ -23,7 +23,7 @@ import { DataKeys } from '../../enums';
 import { Acceleration, SmartDrive, SmartDriveException, StoredAcceleration, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
 import { BluetoothService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SmartDriveKinveyService, SqliteService } from '../../services';
-import { isNetworkAvailable, sentryBreadCrumb } from '../../utils';
+import { isNetworkAvailable, sentryBreadCrumb, _isActivityThis } from '../../utils';
 import { updatesViewModel } from '../modals/updates/updates-page';
 
 const ambientTheme = require('../../scss/theme-ambient.scss');
@@ -1097,7 +1097,7 @@ export class MainViewModel extends Observable {
     application.android.on(
       application.AndroidApplication.activityPausedEvent,
       (args: application.AndroidActivityEventData) => {
-        if (this._isActivityThis(args.activity)) {
+        if (_isActivityThis(args.activity)) {
           sentryBreadCrumb('*** activityPaused ***');
           // paused happens any time a new activity is shown
           // in front, e.g. showSuccess / showFailure - so we
@@ -1109,7 +1109,7 @@ export class MainViewModel extends Observable {
     application.android.on(
       application.AndroidApplication.activityResumedEvent,
       (args: application.AndroidActivityEventData) => {
-        if (this._isActivityThis(args.activity)) {
+        if (_isActivityThis(args.activity)) {
           sentryBreadCrumb('*** activityResumed ***');
           // resumed happens after an app is re-opened out of
           // suspend, even though the app level resume event
@@ -1124,7 +1124,7 @@ export class MainViewModel extends Observable {
     application.android.on(
       application.AndroidApplication.activityStoppedEvent,
       (args: application.AndroidActivityEventData) => {
-        if (this._isActivityThis(args.activity)) {
+        if (_isActivityThis(args.activity)) {
           sentryBreadCrumb('*** activityStopped ***');
           // similar to the app suspend / exit event.
           this._fullStop();
@@ -1182,10 +1182,6 @@ export class MainViewModel extends Observable {
         this.disablePowerAssist();
       }
     );
-  }
-
-  private _isActivityThis(activity: any) {
-    return `${activity}`.includes(application.android.packageName);
   }
 
   private _updateComplications() {
@@ -2070,12 +2066,16 @@ export class MainViewModel extends Observable {
       sentryBreadCrumb('ensuring bluetooth capabilities');
       // ensure we have the permissions
       await this._askForPermissions();
-      const blePermission = android.Manifest.permission.ACCESS_COARSE_LOCATION;
       // we only need the BLE/Location permission to proceed with connecting devices
-      if (!hasPermission(blePermission)) {
-        Sentry.captureException(
-          new SmartDriveException(L('failures.permissions'))
+      if (!hasPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        sentryBreadCrumb(
+          'ACCESS_COARSE_LOCATION not granted, unable to use bluetooth.'
         );
+        alert({
+          title: L('failures.title'),
+          message: L('failures.permissions'),
+          okButtonText: L('buttons.ok')
+        });
         return false;
       }
 
