@@ -7,7 +7,7 @@ import { action, alert } from '@nativescript/core/ui/dialogs';
 import { AnimationCurve } from '@nativescript/core/ui/enums';
 import { ScrollView } from '@nativescript/core/ui/scroll-view';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
-import { Log } from '@permobil/core';
+import { Log, wait } from '@permobil/core';
 import { getDefaultLang, L, performance, Prop } from '@permobil/nativescript';
 import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
@@ -23,7 +23,7 @@ import { DataKeys } from '../../enums';
 import { Acceleration, SmartDrive, SmartDriveException, StoredAcceleration, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
 import { BluetoothService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SmartDriveKinveyService, SqliteService } from '../../services';
-import { isNetworkAvailable, sentryBreadCrumb } from '../../utils';
+import { isNetworkAvailable, sentryBreadCrumb, _isActivityThis } from '../../utils';
 import { updatesViewModel } from '../modals/updates/updates-page';
 
 const ambientTheme = require('../../scss/theme-ambient.scss');
@@ -830,45 +830,44 @@ export class MainViewModel extends Observable {
   }
 
   private async _askForPermissions() {
-    // will throw an error if permissions are denied, else will
-    // return either true or a permissions object detailing all the
-    // granted permissions. The error thrown details which
-    // permissions were rejected
-    const blePermission = android.Manifest.permission.ACCESS_COARSE_LOCATION;
-    const reasons = [];
-    const neededPermissions = this.permissionsNeeded.filter(
-      p => !hasPermission(p)
-    );
-    const reasoning = {
-      [android.Manifest.permission.ACCESS_COARSE_LOCATION]: L(
-        'permissions-reasons.coarse-location'
-      ),
-      [android.Manifest.permission.READ_PHONE_STATE]: L(
-        'permissions-reasons.phone-state'
-      )
-    };
-    neededPermissions.forEach(r => {
-      reasons.push(reasoning[r]);
-    });
-    if (neededPermissions && neededPermissions.length > 0) {
-      sentryBreadCrumb('requesting permissions: ' + neededPermissions);
-      await alert({
-        title: L('permissions-request.title'),
-        message: reasons.join('\n\n'),
-        okButtonText: L('buttons.ok')
+    try {
+      // will throw an error if permissions are denied, else will
+      // return either true or a permissions object detailing all the
+      // granted permissions. The error thrown details which
+      // permissions were rejected
+      const reasons = [];
+      const neededPermissions = this.permissionsNeeded.filter(
+        p => !hasPermission(p)
+      );
+      const reasoning = {
+        [android.Manifest.permission.ACCESS_COARSE_LOCATION]: L(
+          'permissions-reasons.coarse-location'
+        ),
+        [android.Manifest.permission.READ_PHONE_STATE]: L(
+          'permissions-reasons.phone-state'
+        )
+      };
+
+      neededPermissions.forEach(r => {
+        reasons.push(reasoning[r]);
       });
-      try {
+
+      if (neededPermissions && neededPermissions.length > 0) {
+        sentryBreadCrumb('requesting permissions: ' + neededPermissions);
+        await alert({
+          title: L('permissions-request.title'),
+          message: reasons.join('\n\n'),
+          okButtonText: L('buttons.ok')
+        });
         await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
-      } catch (permissionsObj) {
-        // we were not given all permissions
       }
-    }
-    if (hasPermission(blePermission)) {
+
       return true;
-    } else {
-      throw new SmartDriveException(L('failures.permissions'));
+    } catch (error) {
+      Sentry.captureException(error);
+      return false;
     }
   }
 
@@ -1098,7 +1097,7 @@ export class MainViewModel extends Observable {
     application.android.on(
       application.AndroidApplication.activityPausedEvent,
       (args: application.AndroidActivityEventData) => {
-        if (this._isActivityThis(args.activity)) {
+        if (_isActivityThis(args.activity)) {
           sentryBreadCrumb('*** activityPaused ***');
           // paused happens any time a new activity is shown
           // in front, e.g. showSuccess / showFailure - so we
@@ -1110,7 +1109,7 @@ export class MainViewModel extends Observable {
     application.android.on(
       application.AndroidApplication.activityResumedEvent,
       (args: application.AndroidActivityEventData) => {
-        if (this._isActivityThis(args.activity)) {
+        if (_isActivityThis(args.activity)) {
           sentryBreadCrumb('*** activityResumed ***');
           // resumed happens after an app is re-opened out of
           // suspend, even though the app level resume event
@@ -1125,7 +1124,7 @@ export class MainViewModel extends Observable {
     application.android.on(
       application.AndroidApplication.activityStoppedEvent,
       (args: application.AndroidActivityEventData) => {
-        if (this._isActivityThis(args.activity)) {
+        if (_isActivityThis(args.activity)) {
           sentryBreadCrumb('*** activityStopped ***');
           // similar to the app suspend / exit event.
           this._fullStop();
@@ -1173,7 +1172,7 @@ export class MainViewModel extends Observable {
       application.uncaughtErrorEvent,
       (args: application.UnhandledErrorEventData) => {
         if (args) {
-          Sentry.captureException(args.error, {
+          Sentry.captureException(new Error(JSON.stringify(args)), {
             tags: {
               type: 'uncaughtErrorEvent'
             }
@@ -1183,10 +1182,6 @@ export class MainViewModel extends Observable {
         this.disablePowerAssist();
       }
     );
-  }
-
-  private _isActivityThis(activity: any) {
-    return `${activity}`.includes(application.android.packageName);
   }
 
   private _updateComplications() {
@@ -2070,43 +2065,37 @@ export class MainViewModel extends Observable {
     try {
       sentryBreadCrumb('ensuring bluetooth capabilities');
       // ensure we have the permissions
-      await this._askForPermissions().catch(err => {
-        Sentry.captureException(err);
-      });
-      // ensure bluetooth radio is enabled
-      // Log.D('checking radio is enabled');
-      const radioEnabled = await this._bluetoothService
-        .radioEnabled()
-        .catch(err => {
-          Sentry.captureException(err);
+      await this._askForPermissions();
+      // we only need the BLE/Location permission to proceed with connecting devices
+      if (!hasPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        sentryBreadCrumb(
+          'ACCESS_COARSE_LOCATION not granted, unable to use bluetooth.'
+        );
+        alert({
+          title: L('failures.title'),
+          message: L('failures.permissions'),
+          okButtonText: L('buttons.ok')
         });
+        return false;
+      }
 
+      // ensure bluetooth radio is enabled
+      const radioEnabled = await this._bluetoothService.radioEnabled();
       if (!radioEnabled) {
         sentryBreadCrumb('bluetooth is not enabled');
-        Log.W('radio is not enabled!');
         // if the radio is not enabled, we should turn it on
-        const didEnable = await this._bluetoothService
-          .enableRadio()
-          .catch(err => {
-            Sentry.captureException(err);
-          });
+        const didEnable = await this._bluetoothService.enableRadio();
         if (!didEnable) {
           // we could not enable the radio!
           sentryBreadCrumb('Unable to enable the Bluetooth radio.');
           // throw 'BLE OFF';
           return false;
         }
-        // await a promise here to ensure that the radio is back on!
-        const promise = new Promise((resolve, _) => {
-          setTimeout(resolve, 500);
-        });
-        await promise;
+        // wait here to ensure that the radio is back on!
+        wait(500);
       }
       // ensure bluetoothservice is functional
-      await this._bluetoothService.initialize().catch(err => {
-        Sentry.captureException(err);
-      });
-
+      await this._bluetoothService.initialize();
       return true;
     } catch (err) {
       Sentry.captureException(err);

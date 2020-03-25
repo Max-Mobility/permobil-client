@@ -1,7 +1,7 @@
 import * as application from '@nativescript/core/application';
 import { AndroidActivityCallbacks, setActivityCallbacks } from '@nativescript/core/ui/frame';
 
-@JavaProxy('com.permobil.smartdrive.MainActivity')
+@JavaProxy('com.permobil.smartdrive.wearos.MainActivity')
 @Interfaces([androidx.wear.ambient.AmbientModeSupport.AmbientCallbackProvider])
 class MainActivity extends androidx.appcompat.app.AppCompatActivity
   implements androidx.wear.ambient.AmbientModeSupport.AmbientCallbackProvider {

@@ -81,7 +81,9 @@ export class SmartDriveKinveyService extends KinveyService {
       response = await this.getFile(undefined, query);
       return response;
     } catch (err) {
-      throw new Error(`Error downloading translation files: ${err}`);
+      throw new Error(
+        `Error downloading translation files: ${JSON.stringify(err)}`
+      );
     }
   }
 }
