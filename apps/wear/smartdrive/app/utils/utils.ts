@@ -6,6 +6,10 @@ import { WearOsLayout } from 'nativescript-wear-os';
 
 declare const com: any;
 
+export function _isActivityThis(activity: any) {
+  return `${activity}`.includes(application.android.packageName);
+}
+
 export function isNetworkAvailable(minBandwidthKbps?: number) {
   let isAvailable = false;
   const networkManager = application.android.context.getSystemService(
