@@ -245,9 +245,8 @@ export class MainViewModel extends Observable {
       },
       closeCallback: () => {
         this._showingModal = false;
-        // we dont do anything with the about to return anything
       },
-      animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
+      animated: false,
       fullscreen: true
     };
     this._showingModal = true;
@@ -672,12 +671,34 @@ export class MainViewModel extends Observable {
       sentryBreadCrumb('*** appExit ***');
       await WearOsComms.stopWatch();
     });
+
     application.on(
       application.lowMemoryEvent,
       (args: application.ApplicationEventData) => {
         sentryBreadCrumb('*** appLowMemory ***');
       }
     );
+
+    application.android.on(
+      application.AndroidApplication.activityResumedEvent,
+      (args: application.AndroidActivityEventData) => {
+        sentryBreadCrumb('*** android app resume ***');
+        this._androidResumeEventHandlers();
+      }
+    );
+
+    application.android.on(
+      application.AndroidApplication.activityPausedEvent,
+      (args: application.AndroidActivityEventData) => {
+        sentryBreadCrumb('*** android app paused ***');
+      }
+    );
+  }
+
+  private _androidResumeEventHandlers() {
+    this._loadCurrentActivityData();
+    this._updateGoalDisplay();
+    this._registerForServiceDataUpdates();
   }
 
   private format(d: Date, fmt: string) {
