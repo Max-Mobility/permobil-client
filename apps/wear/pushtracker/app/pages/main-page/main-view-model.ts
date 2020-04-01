@@ -664,6 +664,7 @@ export class MainViewModel extends Observable {
     application.on('exitAmbient', () => {
       sentryBreadCrumb('*** exitAmbient ***');
       this._applyTheme('default');
+      this._androidResumeEventHandlers();
     });
 
     // Activity lifecycle event handlers
