@@ -885,17 +885,22 @@ export class MainViewModel extends Observable {
           message: reasons.join('\n\n'),
           okButtonText: L('buttons.ok')
         });
-        // using explicit .catch here because we don't need to log the exception in this case
-        // the user didn't allow permission or the screen went off/activity changed while the OS
-        // prompt was waiting for user to grant permissions.
-        await requestPermissions(neededPermissions, () => {}).catch(err => {
-          sentryBreadCrumb(
-            `Request Permissions was not granted ${JSON.stringify(err)}`
-          );
-          return false; // exit out so we don't try to update serial number after
-        });
-        // now that we have permissions go ahead and save the serial number
-        this._updateSerialNumber();
+
+        // @link - https://github.com/Max-Mobility/permobil-client/pull/819#pullrequestreview-391073852
+        // if we get the permissions then we update the serial number
+        // if no permission just log breadcrumb and return false
+        const gotPermissions = await requestPermissions(neededPermissions)
+          .then(() => {
+            this._updateSerialNumber();
+            return true;
+          })
+          .catch(err => {
+            sentryBreadCrumb(
+              `Request Permissions was not granted ${JSON.stringify(err)}`
+            );
+            return false;
+          });
+        return gotPermissions;
       }
 
       return true;
