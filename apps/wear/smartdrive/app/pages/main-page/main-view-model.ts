@@ -1,5 +1,13 @@
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
-import { Color, EventData, Frame, GridLayout, Observable, ShowModalOptions, StackLayout } from '@nativescript/core';
+import {
+  Color,
+  EventData,
+  Frame,
+  GridLayout,
+  Observable,
+  ShowModalOptions,
+  StackLayout
+} from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
@@ -20,10 +28,28 @@ import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
 import { Vibrate } from 'nativescript-vibrate';
 import { DataKeys } from '../../enums';
-import { Acceleration, SmartDrive, SmartDriveException, StoredAcceleration, TapDetector } from '../../models';
+import {
+  Acceleration,
+  SmartDrive,
+  SmartDriveException,
+  StoredAcceleration,
+  TapDetector
+} from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
-import { BluetoothService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SmartDriveKinveyService, SqliteService } from '../../services';
-import { isNetworkAvailable, sentryBreadCrumb, _isActivityThis } from '../../utils';
+import {
+  BluetoothService,
+  SensorChangedEventData,
+  SensorService,
+  SERVICES,
+  SettingsService,
+  SmartDriveKinveyService,
+  SqliteService
+} from '../../services';
+import {
+  isNetworkAvailable,
+  sentryBreadCrumb,
+  _isActivityThis
+} from '../../utils';
 import { updatesViewModel } from '../modals/updates/updates-page';
 
 const ambientTheme = require('../../scss/theme-ambient.scss');
@@ -859,7 +885,14 @@ export class MainViewModel extends Observable {
           message: reasons.join('\n\n'),
           okButtonText: L('buttons.ok')
         });
-        await requestPermissions(neededPermissions, () => {});
+        // using explicit .catch here because we don't need to log the exception in this case
+        // the user didn't allow permission or the screen went off/activity changed while the OS
+        // prompt was waiting for user to grant permissions.
+        await requestPermissions(neededPermissions, () => {}).catch(err => {
+          sentryBreadCrumb(
+            `Request Permissions was not granted ${JSON.stringify(err)}`
+          );
+        });
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
       }
