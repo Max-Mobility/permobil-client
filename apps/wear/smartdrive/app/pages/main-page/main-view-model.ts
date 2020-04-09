@@ -892,6 +892,7 @@ export class MainViewModel extends Observable {
           sentryBreadCrumb(
             `Request Permissions was not granted ${JSON.stringify(err)}`
           );
+          return false; // exit out so we don't try to update serial number after
         });
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
