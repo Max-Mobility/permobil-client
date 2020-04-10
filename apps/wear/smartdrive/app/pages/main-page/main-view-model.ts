@@ -1,5 +1,13 @@
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
-import { Color, EventData, Frame, GridLayout, Observable, ShowModalOptions, StackLayout } from '@nativescript/core';
+import {
+  Color,
+  EventData,
+  Frame,
+  GridLayout,
+  Observable,
+  ShowModalOptions,
+  StackLayout
+} from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
@@ -20,10 +28,28 @@ import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
 import { Vibrate } from 'nativescript-vibrate';
 import { DataKeys } from '../../enums';
-import { Acceleration, SmartDrive, SmartDriveException, StoredAcceleration, TapDetector } from '../../models';
+import {
+  Acceleration,
+  SmartDrive,
+  SmartDriveException,
+  StoredAcceleration,
+  TapDetector
+} from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
-import { BluetoothService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SmartDriveKinveyService, SqliteService } from '../../services';
-import { isNetworkAvailable, sentryBreadCrumb, _isActivityThis } from '../../utils';
+import {
+  BluetoothService,
+  SensorChangedEventData,
+  SensorService,
+  SERVICES,
+  SettingsService,
+  SmartDriveKinveyService,
+  SqliteService
+} from '../../services';
+import {
+  isNetworkAvailable,
+  sentryBreadCrumb,
+  _isActivityThis
+} from '../../utils';
 import { updatesViewModel } from '../modals/updates/updates-page';
 
 const ambientTheme = require('../../scss/theme-ambient.scss');
@@ -859,9 +885,22 @@ export class MainViewModel extends Observable {
           message: reasons.join('\n\n'),
           okButtonText: L('buttons.ok')
         });
-        await requestPermissions(neededPermissions, () => {});
-        // now that we have permissions go ahead and save the serial number
-        this._updateSerialNumber();
+
+        // @link - https://github.com/Max-Mobility/permobil-client/pull/819#pullrequestreview-391073852
+        // if we get the permissions then we update the serial number
+        // if no permission just log breadcrumb and return false
+        const gotPermissions = await requestPermissions(neededPermissions)
+          .then(() => {
+            this._updateSerialNumber();
+            return true;
+          })
+          .catch(err => {
+            sentryBreadCrumb(
+              `Request Permissions was not granted ${JSON.stringify(err)}`
+            );
+            return false;
+          });
+        return gotPermissions;
       }
 
       return true;
