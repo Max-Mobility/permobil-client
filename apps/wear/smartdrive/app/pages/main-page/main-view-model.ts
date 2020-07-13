@@ -145,8 +145,8 @@ export class MainViewModel extends Observable {
   private tapDetector: TapDetector = null;
   private tapTimeoutId: any = null;
   // Sensor listener config:
-  private SENSOR_DELAY_US: number = 10 * 1000;
-  private MAX_REPORTING_INTERVAL_US: number = 10 * 1000;
+  private SENSOR_DELAY_US: number = 40 * 1000;
+  private MAX_REPORTING_INTERVAL_US: number = 40 * 1000;
   // Estimated range min / max factors
   private minRangeFactor: number = 2.0 / 100.0; // never estimate less than 2 mi per full charge
   private maxRangeFactor: number = 12.0 / 100.0; // never estimate more than 12 mi per full charge
@@ -338,7 +338,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-          }`,
+            }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -612,7 +612,7 @@ export class MainViewModel extends Observable {
               );
             }
             // then set the timeout for power assist for 1 minute
-            this._restartPowerAssistTimeout(1);
+            // this._restartPowerAssistTimeout(1);
           }
         } else {
           sentryBreadCrumb('Did not connect, disabling power assist');
@@ -1535,6 +1535,22 @@ export class MainViewModel extends Observable {
     // update inputHistory with raw data
     this.tapDetector.updateRawHistory(acceleration);
 
+    // set tap sensitivity threshold
+    this.tapDetector.setSensitivity(
+      this._settingsService.settings.tapSensitivity,
+      this.motorOn
+    );
+    // now run the tap detector
+    const didTap = this.tapDetector.detectTap(
+      acceleration,
+      timestamp
+    );
+    if (didTap) {
+      // user has met threshold for tapping
+      this._handleTap();
+    }
+
+    /*
     // since we're now running at a higher frequency, we want to
     // average every 4 points to get a reading
     if (this._previousData.length === this._previousDataLength) {
@@ -1610,6 +1626,7 @@ export class MainViewModel extends Observable {
         this._handleTap();
       }
     }
+    */
   }
 
   private async _stopTaps() {
@@ -2028,7 +2045,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -2093,7 +2110,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
@@ -2315,9 +2332,11 @@ export class MainViewModel extends Observable {
     if (this.powerAssistActive) {
       // we've connected - set the timeout to be the user-configured
       // timeout
+      /*
       this._restartPowerAssistTimeout(
         this._settingsService.watchSettings.powerAssistTimeoutMinutes
       );
+      */
     }
     /*
     this.rssiIntervalId = setInterval(
@@ -2347,7 +2366,7 @@ export class MainViewModel extends Observable {
       if (this.powerAssistState !== PowerAssist.State.Disconnected) {
         // set the timeout for power assist to 1 minute since we're
         // disconnected
-        this._restartPowerAssistTimeout(1);
+        // this._restartPowerAssistTimeout(1);
       }
       // update state
       this.powerAssistState = PowerAssist.State.Disconnected;
@@ -2397,9 +2416,11 @@ export class MainViewModel extends Observable {
         this._vibrator.vibrate([0, 250, 50, 250]); // vibrate twice
         // motor has just stopped - set the timeout to be the
         // user-configured timeout
+        /*
         this._restartPowerAssistTimeout(
           this._settingsService.watchSettings.powerAssistTimeoutMinutes
         );
+        */
       }
     }
     this.motorOn = this.smartDrive.driving;
