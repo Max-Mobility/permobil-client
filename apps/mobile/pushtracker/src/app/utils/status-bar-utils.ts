@@ -2,10 +2,10 @@
 
 import { Color, isAndroid } from '@nativescript/core';
 import * as TNSApplication from '@nativescript/core/application';
-import { Device } from '@nativescript/core/platform';
+import { device } from '@nativescript/core/platform';
 
 export function setLightStatusBar() {
-  if (isAndroid && Device.sdkVersion >= '23') {
+  if (isAndroid && device.sdkVersion >= '23') {
     const whiteColor = new Color('#fff');
     const androidActivity: android.app.Activity =
       TNSApplication.android.startActivity ||
@@ -22,7 +22,7 @@ export function setLightStatusBar() {
 }
 
 export function clearLightStatusBar() {
-  if (isAndroid && Device.sdkVersion >= '23') {
+  if (isAndroid && device.sdkVersion >= '23') {
     const androidActivity: android.app.Activity =
       TNSApplication.android.startActivity ||
       TNSApplication.android.foregroundActivity;
@@ -37,7 +37,7 @@ export function clearLightStatusBar() {
 }
 
 export function setDarkStatusBar() {
-  if (isAndroid && Device.sdkVersion >= '23') {
+  if (isAndroid && device.sdkVersion >= '23') {
     const blackColor = new Color('#202125');
     const androidActivity: android.app.Activity =
       TNSApplication.android.startActivity ||

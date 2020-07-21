@@ -1,4 +1,4 @@
-import { Device } from '@nativescript/core/platform';
+import { device } from '@nativescript/core/platform';
 import { CLog, CLogTypes, ConnectionState } from '../common';
 import { Bluetooth, getDevice } from './ios_main';
 
@@ -69,7 +69,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
       state,
     });
 
-    if (Device.sdkVersion < '13.0') {
+    if (device.sdkVersion < '13.0') {
       let status;
       const value = CBPeripheralManager.authorizationStatus();
       switch (value) {

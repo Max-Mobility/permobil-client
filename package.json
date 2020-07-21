@@ -112,7 +112,7 @@
     "//************************** end PushTracker Wear": "***************************"
   },
   "dependencies": {
-    "@nativescript/core": "rc"
+    "@nativescript/core": "6.5.11"
   },
   "devDependencies": {
     "node-fetch": "~2.6.0",
@@ -122,7 +122,7 @@
     "prompt": "^1.0.0",
     "lint-staged": "^10.2.11",
     "rimraf": "~3.0.2",
-    "tns-platform-declarations": "rc",
+    "tns-platform-declarations": "6.5.11",
     "tslint": "~6.1.2",
     "typescript": "~3.9.6"
   },

@@ -1,10 +1,10 @@
 require('globals');
 import { File, Folder, knownFolders, path } from '@nativescript/core';
 import { getResources, setResources } from '@nativescript/core/application';
-import { Device } from '@nativescript/core/platform';
+import { device } from '@nativescript/core/platform';
 
 const getDefaultLang = function() {
-  return Device.language;
+  return device.language;
 };
 
 // The current translation object

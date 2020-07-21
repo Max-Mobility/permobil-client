@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RouterExtensions } from '@nativescript/angular/router';
 import { isAndroid, isIOS, Page, TextField } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
-import { Device } from '@nativescript/core/platform';
+import { device } from '@nativescript/core/platform';
 import { alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
@@ -64,7 +64,7 @@ export class ForgotPasswordComponent implements OnInit {
     if (isIOS) {
       const uiTF = (args.object as TextField).ios as UITextField;
       uiTF.textContentType = UITextContentTypeEmailAddress;
-    } else if (isAndroid && Device.sdkVersion >= '26') {
+    } else if (isAndroid && device.sdkVersion >= '26') {
       const et = (args.object as TextField).android; // android.widget.EditText
       et.setAutofillHints([
         (android.view.View as any).AUTOFILL_HINT_EMAIL_ADDRESS

@@ -1,4 +1,4 @@
-import { Device } from '@nativescript/core/platform';
+import { device } from '@nativescript/core/platform';
 import { CLog, CLogTypes } from '../common';
 import { CBPeripheralDelegateImpl } from './CBPeripheralDelegateImpl';
 import { Bluetooth } from './ios_main';
@@ -292,10 +292,10 @@ export class CBCentralManagerDelegateImpl extends NSObject
     let status;
     // checking the auth state of the Manager to emit the authorization event
     // so the app can know the auth/permission
-    if (Device.sdkVersion < '13.0') {
+    if (device.sdkVersion < '13.0') {
       const value = CBPeripheralManager.authorizationStatus();
       status = this._checkPeripheralManagerStatus(value);
-    } else if (Device.sdkVersion >= '13.0') {
+    } else if (device.sdkVersion >= '13.0') {
       const value = central.authorization;
       status = this._checkCentralManagerStatus(value);
     }

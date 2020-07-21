@@ -1,4 +1,4 @@
-import { Device } from '@nativescript/core/platform';
+import { device } from '@nativescript/core/platform';
 import {
   CheckOptions,
   CLog,
@@ -158,8 +158,8 @@ export namespace PermissionsIOS {
 
   namespace NSPBluetooth {
     export function getStatus(): Status {
-      CLog(CLogTypes.info, 'Device SDK ', Device.sdkVersion);
-      if (Device.sdkVersion < '13.0') {
+      CLog(CLogTypes.info, 'Device SDK ', device.sdkVersion);
+      if (device.sdkVersion < '13.0') {
         const status = CBPeripheralManager.authorizationStatus();
         CLog(CLogTypes.info, 'authorization status ', status);
         switch (status) {
@@ -172,7 +172,7 @@ export namespace PermissionsIOS {
           default:
             return Status.Undetermined;
         }
-      } else if (Device.sdkVersion >= '13.0') {
+      } else if (device.sdkVersion >= '13.0') {
         const centralManager = CBCentralManager.alloc().initWithDelegateQueue(
           null,
           null

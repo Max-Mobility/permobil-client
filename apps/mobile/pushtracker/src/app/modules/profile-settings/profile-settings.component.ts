@@ -2,7 +2,7 @@ import { Component, NgZone, OnInit, ViewChild, ViewContainerRef } from '@angular
 import { ModalDialogParams } from '@nativescript/angular';
 import { Page, PropertyChangeData, Switch } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
-import { Device } from '@nativescript/core/platform';
+import { device } from '@nativescript/core/platform';
 import { setTimeout } from '@nativescript/core/timer';
 import { alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
@@ -245,7 +245,7 @@ export class ProfileSettingsComponent implements OnInit {
     this.user = KinveyUser.getActiveUser() as PushTrackerUser;
     let defaultLanguage = 'English';
     Object.entries(APP_LANGUAGES).forEach(([key, value]) => {
-      if (Device.language.startsWith(value)) {
+      if (device.language.startsWith(value)) {
         defaultLanguage = key;
       }
     });
