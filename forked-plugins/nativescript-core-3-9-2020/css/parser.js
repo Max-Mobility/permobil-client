@@ -1,4 +1,5 @@
 Object.defineProperty(exports, '__esModule', { value: true });
+exports.CSSNativeScript = exports.CSS3Parser = exports.parseSelector = exports.parseCombinator = exports.parseSimpleSelectorSequence = exports.parseSimpleSelector = exports.parseAttributeSelector = exports.parseSimpleIdentifierSelector = exports.parseUniversalSelector = exports.parseBackground = exports.parseLinearGradient = exports.parseColorStop = exports.parseBackgroundPosition = exports.parseBackgroundSize = exports.parseAngle = exports.parsePercentageOrLength = exports.parseUnit = exports.parseRepeat = exports.parseColor = exports.parseColorKeyword = exports.colors = exports.parseHSLAColor = exports.parseHSLColor = exports.convertHSLToRGBColor = exports.parseRGBAColor = exports.parseRGBColor = exports.parseHexColor = exports.parseURL = void 0;
 var urlRegEx = /\s*url\((?:('|")([^\1]*)\1|([^\)]*))\)\s*/gy;
 function parseURL(text, start) {
   if (start === void 0) {
@@ -130,7 +131,7 @@ function convertHSLToRGBColor(hue, saturation, lightness) {
   return {
     r: Math.round(r * 0xff),
     g: Math.round(g * 0xff),
-    b: Math.round(b * 0xff)
+    b: Math.round(b * 0xff),
   };
 }
 exports.convertHSLToRGBColor = convertHSLToRGBColor;
@@ -199,7 +200,7 @@ function parseHSLAColor(text, start) {
 }
 exports.parseHSLAColor = parseHSLAColor;
 var colors;
-(function(colors) {
+(function (colors) {
   colors[(colors['transparent'] = 0)] = 'transparent';
   colors[(colors['aliceblue'] = 4293982463)] = 'aliceblue';
   colors[(colors['antiquewhite'] = 4294634455)] = 'antiquewhite';
@@ -398,7 +399,7 @@ var backgroundRepeatKeywords = new Set([
   'repeat',
   'repeat-x',
   'repeat-y',
-  'no-repeat'
+  'no-repeat',
 ]);
 function parseRepeat(value, start, keyword) {
   if (start === void 0) {
@@ -454,18 +455,18 @@ function parsePercentageOrLength(text, start) {
 }
 exports.parsePercentageOrLength = parsePercentageOrLength;
 var angleUnitsToRadMap = {
-  deg: function(start, end, deg) {
+  deg: function (start, end, deg) {
     return { start: start, end: end, value: (deg / 180) * Math.PI };
   },
-  rad: function(start, end, rad) {
+  rad: function (start, end, rad) {
     return { start: start, end: end, value: rad };
   },
-  grad: function(start, end, grad) {
+  grad: function (start, end, grad) {
     return { start: start, end: end, value: (grad / 200) * Math.PI };
   },
-  turn: function(start, end, turn) {
+  turn: function (start, end, turn) {
     return { start: start, end: end, value: turn * Math.PI * 2 };
-  }
+  },
 };
 function parseAngle(value, start) {
   if (start === void 0) {
@@ -478,7 +479,7 @@ function parseAngle(value, start) {
       value_3 = angleResult.value;
     return (
       angleUnitsToRadMap[value_3.unit] ||
-      function(_, __, ___) {
+      function (_, __, ___) {
         return null;
       }
     )(start_2, end, value_3.value);
@@ -509,13 +510,13 @@ function parseBackgroundSize(value, start, keyword) {
       return {
         start: start,
         end: end,
-        value: { x: firstLength.value, y: secondLength.value }
+        value: { x: firstLength.value, y: secondLength.value },
       };
     } else {
       return {
         start: start,
         end: end,
-        value: { x: firstLength.value, y: 'auto' }
+        value: { x: firstLength.value, y: 'auto' },
       };
     }
   }
@@ -530,7 +531,7 @@ var backgroundPositionKeywordsDirection = {
   right: 'x',
   center: 'center',
   top: 'y',
-  bottom: 'y'
+  bottom: 'y',
 };
 function parseBackgroundPosition(text, start, keyword) {
   if (start === void 0) {
@@ -581,15 +582,16 @@ function parseBackgroundPosition(text, start, keyword) {
       }
       if (
         (firstDirection === secondDirection && secondDirection === 'center') ||
-        firstDirection === 'x' || secondDirection === 'y'
+        firstDirection === 'x' ||
+        secondDirection === 'y'
       ) {
         return {
           start: start,
           end: end,
           value: {
             x: formatH(keyword, firstLength),
-            y: formatV(secondKeyword, secondLength)
-          }
+            y: formatV(secondKeyword, secondLength),
+          },
         };
       } else {
         return {
@@ -597,8 +599,8 @@ function parseBackgroundPosition(text, start, keyword) {
           end: end,
           value: {
             x: formatH(secondKeyword, secondLength),
-            y: formatV(keyword, firstLength)
-          }
+            y: formatV(keyword, firstLength),
+          },
         };
       }
     } else {
@@ -608,13 +610,13 @@ function parseBackgroundPosition(text, start, keyword) {
         return {
           start: start,
           end: end,
-          value: { x: formatH(keyword, firstLength), y: 'center' }
+          value: { x: formatH(keyword, firstLength), y: 'center' },
         };
       } else {
         return {
           start: start,
           end: end,
-          value: { x: 'center', y: formatV(keyword, firstLength) }
+          value: { x: 'center', y: formatV(keyword, firstLength) },
         };
       }
     }
@@ -630,8 +632,8 @@ function parseBackgroundPosition(text, start, keyword) {
           end: end,
           value: {
             x: { align: 'left', offset: firstLength.value },
-            y: { align: 'top', offset: secondLength.value }
-          }
+            y: { align: 'top', offset: secondLength.value },
+          },
         };
       } else {
         return {
@@ -639,8 +641,8 @@ function parseBackgroundPosition(text, start, keyword) {
           end: end,
           value: {
             x: { align: 'left', offset: firstLength.value },
-            y: 'center'
-          }
+            y: 'center',
+          },
         };
       }
     } else {
@@ -654,25 +656,25 @@ var sideDirections = {
   top: (Math.PI * 0) / 2,
   right: (Math.PI * 1) / 2,
   bottom: (Math.PI * 2) / 2,
-  left: (Math.PI * 3) / 2
+  left: (Math.PI * 3) / 2,
 };
 var cornerDirections = {
   top: {
     right: (Math.PI * 1) / 4,
-    left: (Math.PI * 7) / 4
+    left: (Math.PI * 7) / 4,
   },
   right: {
     top: (Math.PI * 1) / 4,
-    bottom: (Math.PI * 3) / 4
+    bottom: (Math.PI * 3) / 4,
   },
   bottom: {
     right: (Math.PI * 3) / 4,
-    left: (Math.PI * 5) / 4
+    left: (Math.PI * 5) / 4,
   },
   left: {
     top: (Math.PI * 7) / 4,
-    bottom: (Math.PI * 5) / 4
-  }
+    bottom: (Math.PI * 5) / 4,
+  },
 };
 function parseDirection(text, start) {
   if (start === void 0) {
@@ -747,7 +749,7 @@ function parseColorStop(text, start) {
     return {
       start: start,
       end: end,
-      value: { argb: color.value, offset: offset.value }
+      value: { argb: color.value, offset: offset.value },
     };
   }
   return { start: start, end: end, value: { argb: color.value } };
@@ -766,7 +768,7 @@ function parseLinearGradient(text, start) {
   var end = linearGradientStartRegEx.lastIndex;
   var angle = Math.PI;
   var colors = [];
-  var parsedArgs = parseArgumentsList(text, end, function(text, start, index) {
+  var parsedArgs = parseArgumentsList(text, end, function (text, start, index) {
     if (index === 0) {
       var angleArg = parseAngle(text, start) || parseDirection(text, start);
       if (angleArg) {
@@ -898,7 +900,7 @@ function parseAttributeSelector(text, start) {
     return {
       start: start,
       end: end,
-      value: { type: '[]', property: property, test: test, value: value }
+      value: { type: '[]', property: property, test: test, value: value },
     };
   }
   return { start: start, end: end, value: { type: '[]', property: property } };
@@ -990,12 +992,12 @@ var doubleQuoteStringRegEx = /"((?:[^\n\r\f\"]|\\(?:\$|\n|[0-9a-fA-F]{1,6}\s?))*
 var commentRegEx = /(\/\*(?:[^\*]|\*[^\/])*\*\/)/gmy;
 var numberRegEx = /[\+\-]?(?:\d+\.\d+|\d+|\.\d+)(?:[eE][\+\-]?\d+)?/gmy;
 var nameRegEx = /-?(?:(?:[a-zA-Z_]|[^\x00-\x7F]|\\(?:\$|\n|[0-9a-fA-F]{1,6}\s?))(?:[a-zA-Z_0-9\-]*|\\(?:\$|\n|[0-9a-fA-F]{1,6}\s?))*)/gmy;
-var CSS3Parser = (function() {
+var CSS3Parser = (function () {
   function CSS3Parser(text) {
     this.text = text;
     this.nextInputCodePointIndex = 0;
   }
-  CSS3Parser.prototype.tokenize = function() {
+  CSS3Parser.prototype.tokenize = function () {
     var tokens = [];
     var inputToken;
     do {
@@ -1004,7 +1006,7 @@ var CSS3Parser = (function() {
     } while (inputToken);
     return tokens;
   };
-  CSS3Parser.prototype.consumeAToken = function() {
+  CSS3Parser.prototype.consumeAToken = function () {
     if (this.reconsumedInputToken) {
       var result = this.reconsumedInputToken;
       this.reconsumedInputToken = null;
@@ -1085,16 +1087,16 @@ var CSS3Parser = (function() {
         return this.consumeAnIdentLikeToken() || this.consumeADelimToken();
     }
   };
-  CSS3Parser.prototype.consumeADelimToken = function() {
+  CSS3Parser.prototype.consumeADelimToken = function () {
     return { type: 2, text: this.text[this.nextInputCodePointIndex++] };
   };
-  CSS3Parser.prototype.consumeAWhitespace = function() {
+  CSS3Parser.prototype.consumeAWhitespace = function () {
     whitespaceRegEx.lastIndex = this.nextInputCodePointIndex;
     whitespaceRegEx.exec(this.text);
     this.nextInputCodePointIndex = whitespaceRegEx.lastIndex;
     return ' ';
   };
-  CSS3Parser.prototype.consumeAHashToken = function() {
+  CSS3Parser.prototype.consumeAHashToken = function () {
     this.nextInputCodePointIndex++;
     var hashName = this.consumeAName();
     if (hashName) {
@@ -1103,21 +1105,21 @@ var CSS3Parser = (function() {
     this.nextInputCodePointIndex--;
     return null;
   };
-  CSS3Parser.prototype.consumeCDO = function() {
+  CSS3Parser.prototype.consumeCDO = function () {
     if (this.text.substr(this.nextInputCodePointIndex, 4) === '<!--') {
       this.nextInputCodePointIndex += 4;
       return '<!--';
     }
     return null;
   };
-  CSS3Parser.prototype.consumeCDC = function() {
+  CSS3Parser.prototype.consumeCDC = function () {
     if (this.text.substr(this.nextInputCodePointIndex, 3) === '-->') {
       this.nextInputCodePointIndex += 3;
       return '-->';
     }
     return null;
   };
-  CSS3Parser.prototype.consumeAMatchToken = function() {
+  CSS3Parser.prototype.consumeAMatchToken = function () {
     if (this.text[this.nextInputCodePointIndex + 1] === '=') {
       var token = this.text.substr(this.nextInputCodePointIndex, 2);
       this.nextInputCodePointIndex += 2;
@@ -1125,7 +1127,7 @@ var CSS3Parser = (function() {
     }
     return null;
   };
-  CSS3Parser.prototype.consumeANumericToken = function() {
+  CSS3Parser.prototype.consumeANumericToken = function () {
     numberRegEx.lastIndex = this.nextInputCodePointIndex;
     var result = numberRegEx.exec(this.text);
     if (!result) {
@@ -1141,7 +1143,7 @@ var CSS3Parser = (function() {
     }
     return { type: 3, text: result[0] };
   };
-  CSS3Parser.prototype.consumeAnIdentLikeToken = function() {
+  CSS3Parser.prototype.consumeAnIdentLikeToken = function () {
     var name = this.consumeAName();
     if (!name) {
       return null;
@@ -1155,7 +1157,7 @@ var CSS3Parser = (function() {
     }
     return name;
   };
-  CSS3Parser.prototype.consumeAStringToken = function() {
+  CSS3Parser.prototype.consumeAStringToken = function () {
     var char = this.text[this.nextInputCodePointIndex];
     var result;
     if (char === "'") {
@@ -1175,7 +1177,7 @@ var CSS3Parser = (function() {
     }
     return { type: 1, text: result[0] };
   };
-  CSS3Parser.prototype.consumeAURLToken = function() {
+  CSS3Parser.prototype.consumeAURLToken = function () {
     var start = this.nextInputCodePointIndex - 3 - 1;
     var urlToken = { type: 7, text: undefined };
     this.consumeAWhitespace();
@@ -1227,7 +1229,7 @@ var CSS3Parser = (function() {
     }
     return urlToken;
   };
-  CSS3Parser.prototype.consumeAName = function() {
+  CSS3Parser.prototype.consumeAName = function () {
     nameRegEx.lastIndex = this.nextInputCodePointIndex;
     var result = nameRegEx.exec(this.text);
     if (!result) {
@@ -1236,7 +1238,7 @@ var CSS3Parser = (function() {
     this.nextInputCodePointIndex = nameRegEx.lastIndex;
     return { type: 6, text: result[0] };
   };
-  CSS3Parser.prototype.consumeAtKeyword = function() {
+  CSS3Parser.prototype.consumeAtKeyword = function () {
     this.nextInputCodePointIndex++;
     var name = this.consumeAName();
     if (name) {
@@ -1245,7 +1247,7 @@ var CSS3Parser = (function() {
     this.nextInputCodePointIndex--;
     return null;
   };
-  CSS3Parser.prototype.consumeAComment = function() {
+  CSS3Parser.prototype.consumeAComment = function () {
     if (this.text[this.nextInputCodePointIndex + 1] === '*') {
       commentRegEx.lastIndex = this.nextInputCodePointIndex;
       var result = commentRegEx.exec(this.text);
@@ -1257,19 +1259,19 @@ var CSS3Parser = (function() {
     }
     return null;
   };
-  CSS3Parser.prototype.reconsumeTheCurrentInputToken = function(
+  CSS3Parser.prototype.reconsumeTheCurrentInputToken = function (
     currentInputToken
   ) {
     this.reconsumedInputToken = currentInputToken;
   };
-  CSS3Parser.prototype.parseAStylesheet = function() {
+  CSS3Parser.prototype.parseAStylesheet = function () {
     this.topLevelFlag = true;
     var stylesheet = {
-      rules: this.consumeAListOfRules()
+      rules: this.consumeAListOfRules(),
     };
     return stylesheet;
   };
-  CSS3Parser.prototype.consumeAListOfRules = function() {
+  CSS3Parser.prototype.consumeAListOfRules = function () {
     var rules = [];
     var inputToken;
     while ((inputToken = this.consumeAToken())) {
@@ -1304,13 +1306,13 @@ var CSS3Parser = (function() {
     }
     return rules;
   };
-  CSS3Parser.prototype.consumeAnAtRule = function() {
+  CSS3Parser.prototype.consumeAnAtRule = function () {
     var inputToken = this.consumeAToken();
     var atRule = {
       type: 'at-rule',
       name: inputToken.text,
       prelude: [],
-      block: undefined
+      block: undefined,
     };
     while ((inputToken = this.consumeAToken())) {
       if (inputToken === ';') {
@@ -1330,11 +1332,11 @@ var CSS3Parser = (function() {
     }
     return atRule;
   };
-  CSS3Parser.prototype.consumeAQualifiedRule = function() {
+  CSS3Parser.prototype.consumeAQualifiedRule = function () {
     var qualifiedRule = {
       type: 'qualified-rule',
       prelude: [],
-      block: undefined
+      block: undefined,
     };
     var inputToken;
     while ((inputToken = this.consumeAToken())) {
@@ -1357,7 +1359,7 @@ var CSS3Parser = (function() {
     }
     return null;
   };
-  CSS3Parser.prototype.consumeAComponentValue = function() {
+  CSS3Parser.prototype.consumeAComponentValue = function () {
     var inputToken = this.consumeAToken();
     switch (inputToken) {
       case '{':
@@ -1371,18 +1373,18 @@ var CSS3Parser = (function() {
     }
     return inputToken;
   };
-  CSS3Parser.prototype.consumeASimpleBlock = function(associatedToken) {
+  CSS3Parser.prototype.consumeASimpleBlock = function (associatedToken) {
     var endianToken = {
       '[': ']',
       '{': '}',
-      '(': ')'
+      '(': ')',
     }[associatedToken];
     var start = this.nextInputCodePointIndex - 1;
     var block = {
       type: 9,
       text: undefined,
       associatedToken: associatedToken,
-      values: []
+      values: [],
     };
     var nextInputToken;
     while ((nextInputToken = this.text[this.nextInputCodePointIndex])) {
@@ -1400,7 +1402,7 @@ var CSS3Parser = (function() {
     block.text = this.text.substring(start);
     return block;
   };
-  CSS3Parser.prototype.consumeAFunction = function(name) {
+  CSS3Parser.prototype.consumeAFunction = function (name) {
     var start = this.nextInputCodePointIndex;
     var funcToken = { type: 14, name: name, text: undefined, components: [] };
     do {
@@ -1426,51 +1428,51 @@ var CSS3Parser = (function() {
   return CSS3Parser;
 })();
 exports.CSS3Parser = CSS3Parser;
-var CSSNativeScript = (function() {
+var CSSNativeScript = (function () {
   function CSSNativeScript() {}
-  CSSNativeScript.prototype.parseStylesheet = function(stylesheet) {
+  CSSNativeScript.prototype.parseStylesheet = function (stylesheet) {
     return {
       type: 'stylesheet',
       stylesheet: {
-        rules: this.parseRules(stylesheet.rules)
-      }
+        rules: this.parseRules(stylesheet.rules),
+      },
     };
   };
-  CSSNativeScript.prototype.parseRules = function(rules) {
+  CSSNativeScript.prototype.parseRules = function (rules) {
     var _this = this;
-    return rules.map(function(rule) {
+    return rules.map(function (rule) {
       return _this.parseRule(rule);
     });
   };
-  CSSNativeScript.prototype.parseRule = function(rule) {
+  CSSNativeScript.prototype.parseRule = function (rule) {
     if (rule.type === 'at-rule') {
       return this.parseAtRule(rule);
     } else if (rule.type === 'qualified-rule') {
       return this.parseQualifiedRule(rule);
     }
   };
-  CSSNativeScript.prototype.parseAtRule = function(rule) {
+  CSSNativeScript.prototype.parseAtRule = function (rule) {
     if (rule.name === 'import') {
       return {
         import: rule.prelude
-          .map(function(m) {
+          .map(function (m) {
             return typeof m === 'string' ? m : m.text;
           })
           .join('')
           .trim(),
-        type: 'import'
+        type: 'import',
       };
     }
     return;
   };
-  CSSNativeScript.prototype.parseQualifiedRule = function(rule) {
+  CSSNativeScript.prototype.parseQualifiedRule = function (rule) {
     return {
       type: 'rule',
       selectors: this.preludeToSelectorsStringArray(rule.prelude),
-      declarations: this.ruleBlockToDeclarations(rule.block.values)
+      declarations: this.ruleBlockToDeclarations(rule.block.values),
     };
   };
-  CSSNativeScript.prototype.ruleBlockToDeclarations = function(
+  CSSNativeScript.prototype.ruleBlockToDeclarations = function (
     declarationsInputTokens
   ) {
     var declarations = [];
@@ -1494,7 +1496,7 @@ var CSSNativeScript = (function() {
           declarations.push({
             type: 'declaration',
             property: property,
-            value: value
+            value: value,
           });
           property = '';
           value = '';
@@ -1512,15 +1514,15 @@ var CSSNativeScript = (function() {
       declarations.push({
         type: 'declaration',
         property: property,
-        value: value
+        value: value,
       });
     }
     return declarations;
   };
-  CSSNativeScript.prototype.preludeToSelectorsStringArray = function(prelude) {
+  CSSNativeScript.prototype.preludeToSelectorsStringArray = function (prelude) {
     var selectors = [];
     var selector = '';
-    prelude.forEach(function(inputToken) {
+    prelude.forEach(function (inputToken) {
       if (typeof inputToken === 'string') {
         if (inputToken === ',') {
           if (selector) {

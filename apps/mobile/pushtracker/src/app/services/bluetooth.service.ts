@@ -1,12 +1,25 @@
 /// <reference path="../../../node_modules/tns-platform-declarations/ios.d.ts" />
 
 import { Injectable } from '@angular/core';
-import { isAndroid, isIOS, Observable, ObservableArray } from '@nativescript/core';
+import {
+  isAndroid,
+  isIOS,
+  Observable,
+  ObservableArray
+} from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { fromObject } from '@nativescript/core/data/observable';
 import { Log, Packet } from '@permobil/core';
-import { Bluetooth, BondState, ConnectionState, Device } from 'nativescript-bluetooth';
-import { check as checkPermission, request as requestPermission } from 'nativescript-perms';
+import {
+  Bluetooth,
+  BondState,
+  ConnectionState,
+  Device
+} from 'nativescript-bluetooth';
+import {
+  check as checkPermission,
+  request as requestPermission
+} from 'nativescript-perms';
 import { STORAGE_KEYS } from '../enums';
 import { PushTracker, SmartDrive } from '../models';
 import { LoggingService } from './logging.service';
@@ -17,7 +30,7 @@ export enum PushTrackerState {
   busy,
   disconnected,
   connected,
-  ready
+  ready,
 }
 
 @Injectable()
@@ -40,7 +53,7 @@ export class BluetoothService extends Observable {
    * Observable to monitor the push tracker connectivity status. The MaxActionBar uses this to display the correct icon.
    */
   static pushTrackerStatus: Observable = fromObject({
-    state: PushTrackerState.unknown
+    state: PushTrackerState.unknown,
   });
   static _backgroundOtaTask: number = isIOS ? UIBackgroundTaskInvalid : null;
 
@@ -83,7 +96,7 @@ export class BluetoothService extends Observable {
           `Bluetooth init took: ${(end - start).toFixed(2)}ms`
         );
       })
-      .catch(err => {
+      .catch((err) => {
         this._logService.logException(err);
       });
   }
@@ -211,7 +224,7 @@ export class BluetoothService extends Observable {
 
   clearSmartDrives() {
     const connectedSDs = BluetoothService.SmartDrives.slice().filter(
-      sd => sd.connected
+      (sd) => sd.connected
     );
     BluetoothService.SmartDrives.splice(
       0,
@@ -284,11 +297,11 @@ export class BluetoothService extends Observable {
       await this._bluetooth.startAdvertising({
         UUID: BluetoothService.AppServiceUUID,
         settings: {
-          connectable: true
+          connectable: true,
         },
         data: {
-          includeDeviceName: true
-        }
+          includeDeviceName: true,
+        },
       });
     } catch (err) {
       this.advertising = false;
@@ -325,7 +338,7 @@ export class BluetoothService extends Observable {
               rssi: peripheral.RSSI,
               device: peripheral.device,
               address: peripheral.UUID,
-              name: peripheral.name
+              name: peripheral.name,
             };
             let sd = undefined;
             // determine if it's a SD and get it
@@ -334,7 +347,7 @@ export class BluetoothService extends Observable {
             }
             // now resolve
             resolve(sd);
-          }
+          },
         });
         resolve(undefined);
       } catch (err) {
@@ -347,7 +360,7 @@ export class BluetoothService extends Observable {
   scan(uuids: string[], timeout: number = 4): Promise<any> {
     return this._bluetooth.startScanning({
       serviceUUIDs: uuids,
-      seconds: timeout
+      seconds: timeout,
     });
   }
 
@@ -359,7 +372,7 @@ export class BluetoothService extends Observable {
     return this._bluetooth.connect({
       UUID: address,
       onConnected: onConnected,
-      onDisconnected: onDisconnected
+      onDisconnected: onDisconnected,
     });
   }
 
@@ -534,7 +547,7 @@ export class BluetoothService extends Observable {
       rssi: argdata.RSSI,
       device: argdata.device,
       address: argdata.UUID,
-      name: argdata.name
+      name: argdata.name,
     };
     if (this.isSmartDrive(peripheral)) {
       this.getOrMakeSmartDrive(peripheral);
@@ -586,7 +599,7 @@ export class BluetoothService extends Observable {
           const pt = this.getOrMakePushTracker(device);
           if (!pt.connected) {
             this.sendEvent(BluetoothService.pushtracker_connected, {
-              pushtracker: pt
+              pushtracker: pt,
             });
             pt.handleConnect();
             this.updatePushTrackerState();
@@ -602,7 +615,7 @@ export class BluetoothService extends Observable {
           pt.handleDisconnect();
           this.updatePushTrackerState();
           this.sendEvent(BluetoothService.pushtracker_disconnected, {
-            pushtracker: pt
+            pushtracker: pt,
           });
           BluetoothService.stopOtaBackgroundExecution();
         } else if (this.isSmartDrive(device)) {
@@ -621,7 +634,7 @@ export class BluetoothService extends Observable {
       rssi: argdata.RSSI,
       device: argdata.device,
       address: argdata.UUID,
-      name: argdata.name
+      name: argdata.name,
     };
     if (device.address && this.isSmartDrive(device)) {
       // const sd = this.getOrMakeSmartDrive(device);
@@ -636,7 +649,7 @@ export class BluetoothService extends Observable {
       rssi: argdata.RSSI,
       device: argdata.device,
       address: argdata.UUID,
-      name: argdata.name
+      name: argdata.name,
     };
     if (device.address && this.isSmartDrive(device)) {
       const sd = this.getOrMakeSmartDrive(device);
@@ -664,7 +677,7 @@ export class BluetoothService extends Observable {
     if (!pt.connected) {
       pt.handleConnect();
       this.sendEvent(BluetoothService.pushtracker_connected, {
-        pushtracker: pt
+        pushtracker: pt,
       });
     }
     pt.handlePacket(p);
@@ -698,23 +711,23 @@ export class BluetoothService extends Observable {
       // make the service
       this.AppService = this._bluetooth.makeService({
         UUID: BluetoothService.AppServiceUUID,
-        primary: true
+        primary: true,
       });
 
       const descriptorUUIDs = ['2900', '2902'];
 
       // make the characteristics
-      const characteristics = PushTracker.Characteristics.map(cuuid => {
+      const characteristics = PushTracker.Characteristics.map((cuuid) => {
         //  defaults props are set READ/WRITE/NOTIFY, perms are set to READ/WRITE
         const c = this._bluetooth.makeCharacteristic({
-          UUID: cuuid
+          UUID: cuuid,
         });
 
         if (isAndroid) {
-          const descriptors = descriptorUUIDs.map(duuid => {
+          const descriptors = descriptorUUIDs.map((duuid) => {
             //  defaults perms are set to READ/WRITE
             const d = this._bluetooth.makeDescriptor({
-              UUID: duuid
+              UUID: duuid,
             });
 
             const value = Array.create('byte', 2);
@@ -724,7 +737,7 @@ export class BluetoothService extends Observable {
             return d;
           });
 
-          descriptors.forEach(d => {
+          descriptors.forEach((d) => {
             c.addDescriptor(d);
           });
         } else {
@@ -752,7 +765,7 @@ export class BluetoothService extends Observable {
         return c;
       });
       if (isAndroid) {
-        characteristics.forEach(c => this.AppService.addCharacteristic(c));
+        characteristics.forEach((c) => this.AppService.addCharacteristic(c));
       } else {
         this.AppService.characteristics = characteristics;
       }
@@ -793,40 +806,43 @@ export class BluetoothService extends Observable {
       false
     );
 
-    const defaultState = hasPaired
+    const defaultState: any = hasPaired
       ? PushTrackerState.disconnected
       : PushTrackerState.unknown;
 
-    let state: PushTrackerState = BluetoothService.PushTrackers.reduce(
-      (ptState, pt) => {
-        if (pt && pt.connected) {
-          if (pt.version !== 0xff) {
-            state = <any>(
-              this._mergePushTrackerState(ptState, PushTrackerState.ready)
-            );
-          } else {
-            state = <any>(
-              this._mergePushTrackerState(ptState, PushTrackerState.connected)
-            );
-          }
-          // setting true so we know the user has connected to a PT previously
-          appSettings.setBoolean(STORAGE_KEYS.HAS_PAIRED_TO_PUSHTRACKER, true);
-        } else if (pt && pt.paired) {
+    let state = BluetoothService.PushTrackers.reduce((ptState, pt) => {
+      if (pt && pt.connected) {
+        if (pt.version !== 0xff) {
           state = <any>(
-            this._mergePushTrackerState(ptState, PushTrackerState.disconnected)
+            this._mergePushTrackerState(ptState as any, PushTrackerState.ready)
           );
-
-          // setting true so we know the user has connected to a PT previously
-          appSettings.setBoolean(STORAGE_KEYS.HAS_PAIRED_TO_PUSHTRACKER, true);
         } else {
           state = <any>(
-            this._mergePushTrackerState(ptState, PushTrackerState.unknown)
+            this._mergePushTrackerState(
+              ptState as any,
+              PushTrackerState.connected
+            )
           );
         }
-        return state;
-      },
-      defaultState
-    );
+        // setting true so we know the user has connected to a PT previously
+        appSettings.setBoolean(STORAGE_KEYS.HAS_PAIRED_TO_PUSHTRACKER, true);
+      } else if (pt && pt.paired) {
+        state = <any>(
+          this._mergePushTrackerState(
+            ptState as any,
+            PushTrackerState.disconnected
+          )
+        );
+
+        // setting true so we know the user has connected to a PT previously
+        appSettings.setBoolean(STORAGE_KEYS.HAS_PAIRED_TO_PUSHTRACKER, true);
+      } else {
+        state = <any>(
+          this._mergePushTrackerState(ptState as any, PushTrackerState.unknown)
+        );
+      }
+      return state;
+    }, defaultState);
 
     BluetoothService.pushTrackerStatus.set('state', state);
     this.sendEvent(BluetoothService.pushtracker_status_changed, { state });
@@ -834,7 +850,7 @@ export class BluetoothService extends Observable {
 
   private getOrMakePushTracker(device: any): PushTracker {
     let pt = BluetoothService.PushTrackers.filter(
-      p => p.address === device.address
+      (p) => p.address === device.address
     )[0];
     if (pt === null || pt === undefined) {
       pt = new PushTracker(this, { address: device.address });
@@ -865,7 +881,7 @@ export class BluetoothService extends Observable {
   }
 
   disconnectPushTrackers(addresses: string[]) {
-    addresses.forEach(addr => {
+    addresses.forEach((addr) => {
       this._bluetooth.cancelServerConnection(addr);
     });
   }
@@ -902,11 +918,15 @@ export class BluetoothService extends Observable {
   }
 
   getPushTracker(address: string) {
-    return BluetoothService.PushTrackers.filter(p => p.address === address)[0];
+    return BluetoothService.PushTrackers.filter(
+      (p) => p.address === address
+    )[0];
   }
 
   getSmartDrive(address: string) {
-    return BluetoothService.SmartDrives.filter(sd => sd.address === address)[0];
+    return BluetoothService.SmartDrives.filter(
+      (sd) => sd.address === address
+    )[0];
   }
 
   private isSmartDrive(dev: any): boolean {
@@ -942,7 +962,7 @@ export class BluetoothService extends Observable {
       eventName,
       object: this,
       data,
-      message: msg
+      message: msg,
     });
   }
 }

@@ -1,12 +1,11 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ModalDialogParams } from '@nativescript/angular/modal-dialog';
+import { ModalDialogParams } from '@nativescript/angular';
 import { TextField } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { PushTrackerUser } from '../../models';
-import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
-import { milesToKilometers } from '../../utils';
 
 @Component({
   moduleId: module.id,
