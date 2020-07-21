@@ -1,27 +1,23 @@
-import { Color, ContentView, View } from '@nativescript/core';
-import {
-  Style,
-  CssProperty,
-  InheritedCssProperty
-} from '@nativescript/core/ui/core/view';
+import { Color, ContentView, Style } from '@nativescript/core';
+import { InheritedCssProperty } from '@nativescript/core/ui/core/view';
 
 export const spinBarColorProperty = new InheritedCssProperty<Style, Color>({
   name: 'spinBarColor',
   cssName: 'spin-bar-color',
   equalityComparer: Color.equals,
-  valueConverter: value => new Color(value)
+  valueConverter: (value) => new Color(value),
 });
 export const rimColorProperty = new InheritedCssProperty<Style, Color>({
   name: 'rimColor',
   cssName: 'rim-color',
   equalityComparer: Color.equals,
-  valueConverter: value => new Color(value)
+  valueConverter: (value) => new Color(value),
 });
 export const barColorProperty = new InheritedCssProperty<Style, Color>({
   name: 'barColor',
   cssName: 'bar-color',
   equalityComparer: Color.equals,
-  valueConverter: value => new Color(value)
+  valueConverter: (value) => new Color(value),
 });
 
 export class Common extends ContentView {

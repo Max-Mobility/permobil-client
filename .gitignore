@@ -155,4 +155,5 @@ forked-plugins/nativescript-core-3-9-2020/**/*.js
 !**/references.d.ts
 !**/typings/**/*.d.ts
 !**/webpack.config.js
+!**/ngcc.config.js
 !**/android-release.js
