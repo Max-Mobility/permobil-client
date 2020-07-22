@@ -1,8 +1,9 @@
 import { Color } from '@nativescript/core';
 import {
-  barColorProperty, Common,
-
-  rimColorProperty, spinBarColorProperty
+  barColorProperty,
+  Common,
+  rimColorProperty,
+  spinBarColorProperty
 } from './animated-circle.common';
 
 declare const at;

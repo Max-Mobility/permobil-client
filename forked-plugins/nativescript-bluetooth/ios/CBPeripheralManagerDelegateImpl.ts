@@ -66,7 +66,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
 
     owner.sendEvent(Bluetooth.peripheralmanager_update_state_event, {
       manager: mgr,
-      state,
+      state
     });
 
     if (device.sdkVersion < '13.0') {
@@ -87,7 +87,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
           break;
       }
       owner.sendEvent(Bluetooth.bluetooth_authorization_event, {
-        status,
+        status
       });
     }
   }
@@ -114,7 +114,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
     }
     owner.sendEvent(Bluetooth.peripheralmanager_restore_state_event, {
       manager: peripheral,
-      dict: dict,
+      dict: dict
     });
   }
 
@@ -147,7 +147,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
     owner.sendEvent(Bluetooth.peripheralmanager_did_add_event, {
       manager: peripheral,
       service: service,
-      error: error,
+      error: error
     });
   }
 
@@ -176,7 +176,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
         'TODO: we may need to parse out the error value here for parity with Android.'
       );
       this._owner.get().sendEvent(Bluetooth.bluetooth_advertise_failure_event, {
-        error: error,
+        error: error
       });
       return;
     }
@@ -250,7 +250,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
       device: dev,
       manager: peripheral,
       central: central,
-      connection_state,
+      connection_state
     });
   }
 
@@ -302,7 +302,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
       device: dev,
       manager: peripheral,
       central: central,
-      connection_state,
+      connection_state
     });
   }
 
@@ -348,7 +348,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
     owner.sendEvent(
       Bluetooth.peripheralmanager_ready_update_subscribers_event,
       {
-        manager: peripheral,
+        manager: peripheral
       }
     );
   }
@@ -384,7 +384,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
     }
     owner.sendEvent(Bluetooth.peripheralmanager_read_request_event, {
       manager: peripheral,
-      request: request,
+      request: request
     });
 
     // peripheral.respond(request, CBATTError.Success);
@@ -417,7 +417,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
     }
     owner.sendEvent(Bluetooth.peripheralmanager_write_request_event, {
       manager: peripheral,
-      requests: requests,
+      requests: requests
     });
 
     // per docs:
@@ -458,7 +458,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
         preparedWrite: null,
         responseNeeded: false,
         offset: r.offset,
-        value: r.value,
+        value: r.value
       });
     }
 

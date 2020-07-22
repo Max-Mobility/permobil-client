@@ -96,7 +96,7 @@ export class BluetoothService extends Observable {
           `Bluetooth init took: ${(end - start).toFixed(2)}ms`
         );
       })
-      .catch((err) => {
+      .catch(err => {
         this._logService.logException(err);
       });
   }
@@ -224,7 +224,7 @@ export class BluetoothService extends Observable {
 
   clearSmartDrives() {
     const connectedSDs = BluetoothService.SmartDrives.slice().filter(
-      (sd) => sd.connected
+      sd => sd.connected
     );
     BluetoothService.SmartDrives.splice(
       0,
@@ -717,14 +717,14 @@ export class BluetoothService extends Observable {
       const descriptorUUIDs = ['2900', '2902'];
 
       // make the characteristics
-      const characteristics = PushTracker.Characteristics.map((cuuid) => {
+      const characteristics = PushTracker.Characteristics.map(cuuid => {
         //  defaults props are set READ/WRITE/NOTIFY, perms are set to READ/WRITE
         const c = this._bluetooth.makeCharacteristic({
           UUID: cuuid
         });
 
         if (isAndroid) {
-          const descriptors = descriptorUUIDs.map((duuid) => {
+          const descriptors = descriptorUUIDs.map(duuid => {
             //  defaults perms are set to READ/WRITE
             const d = this._bluetooth.makeDescriptor({
               UUID: duuid
@@ -737,7 +737,7 @@ export class BluetoothService extends Observable {
             return d;
           });
 
-          descriptors.forEach((d) => {
+          descriptors.forEach(d => {
             c.addDescriptor(d);
           });
         } else {
@@ -765,7 +765,7 @@ export class BluetoothService extends Observable {
         return c;
       });
       if (isAndroid) {
-        characteristics.forEach((c) => this.AppService.addCharacteristic(c));
+        characteristics.forEach(c => this.AppService.addCharacteristic(c));
       } else {
         this.AppService.characteristics = characteristics;
       }
@@ -850,7 +850,7 @@ export class BluetoothService extends Observable {
 
   private getOrMakePushTracker(device: any): PushTracker {
     let pt = BluetoothService.PushTrackers.filter(
-      (p) => p.address === device.address
+      p => p.address === device.address
     )[0];
     if (pt === null || pt === undefined) {
       pt = new PushTracker(this, { address: device.address });
@@ -881,7 +881,7 @@ export class BluetoothService extends Observable {
   }
 
   disconnectPushTrackers(addresses: string[]) {
-    addresses.forEach((addr) => {
+    addresses.forEach(addr => {
       this._bluetooth.cancelServerConnection(addr);
     });
   }
@@ -918,15 +918,11 @@ export class BluetoothService extends Observable {
   }
 
   getPushTracker(address: string) {
-    return BluetoothService.PushTrackers.filter(
-      (p) => p.address === address
-    )[0];
+    return BluetoothService.PushTrackers.filter(p => p.address === address)[0];
   }
 
   getSmartDrive(address: string) {
-    return BluetoothService.SmartDrives.filter(
-      (sd) => sd.address === address
-    )[0];
+    return BluetoothService.SmartDrives.filter(sd => sd.address === address)[0];
   }
 
   private isSmartDrive(dev: any): boolean {

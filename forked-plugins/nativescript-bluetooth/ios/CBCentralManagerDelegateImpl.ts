@@ -93,7 +93,7 @@ export class CBCentralManagerDelegateImpl extends NSObject
       RSSI: null,
       state: owner._getState(peripheral.state),
       manufacturerId: null,
-      manufacturerData: null,
+      manufacturerData: null
     };
     owner.sendEvent('peripheral_connected_event', eventData);
   }
@@ -122,7 +122,7 @@ export class CBCentralManagerDelegateImpl extends NSObject
     if (cb) {
       cb({
         UUID: peripheral.identifier.UUIDString,
-        name: peripheral.name,
+        name: peripheral.name
       });
     } else {
       CLog(
@@ -139,7 +139,7 @@ export class CBCentralManagerDelegateImpl extends NSObject
       state: owner._getState(peripheral.state),
       manufacturerId: null,
       manufacturerData: null,
-      error: error,
+      error: error
     };
     owner.sendEvent('peripheral_disconnected_event', eventData);
   }
@@ -177,7 +177,7 @@ export class CBCentralManagerDelegateImpl extends NSObject
       state: owner._getState(peripheral.state),
       manufacturerId: null,
       manufacturerData: null,
-      error: error,
+      error: error
     };
     owner.sendEvent('peripheral_failed_to_connect_event', eventData);
   }
@@ -247,7 +247,7 @@ export class CBCentralManagerDelegateImpl extends NSObject
         RSSI: RSSI,
         state: owner._getState(peripheral.state),
         manufacturerId: manufacturerId,
-        manufacturerData: manufacturerData,
+        manufacturerData: manufacturerData
       };
 
       owner.sendEvent(Bluetooth.device_discovered_event, eventData);
@@ -286,7 +286,7 @@ export class CBCentralManagerDelegateImpl extends NSObject
 
     owner.sendEvent(Bluetooth.centralmanager_updated_state_event, {
       manager: central,
-      state: central.state,
+      state: central.state
     });
 
     let status;
@@ -300,7 +300,7 @@ export class CBCentralManagerDelegateImpl extends NSObject
       status = this._checkCentralManagerStatus(value);
     }
     owner.sendEvent(Bluetooth.bluetooth_authorization_event, {
-      status,
+      status
     });
   }
 
@@ -341,7 +341,7 @@ export class CBCentralManagerDelegateImpl extends NSObject
         RSSI: null,
         state: owner._getState(peripheral.state),
         manufacturerId: null,
-        manufacturerData: null,
+        manufacturerData: null
       };
 
       owner.sendEvent(Bluetooth.device_discovered_event, eventData);
@@ -352,7 +352,7 @@ export class CBCentralManagerDelegateImpl extends NSObject
 
     owner.sendEvent('centralmanager_restore_state_event', {
       manager: central,
-      dict,
+      dict
     });
   }
 
