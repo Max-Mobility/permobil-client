@@ -1,6 +1,7 @@
 {
   "semi": true,
   "singleQuote": true,
+  "trailingComma": "none",
   "overrides": [
     {
       "files": "*.component.html",
