@@ -5,7 +5,7 @@ import {
   isAndroid,
   isIOS,
   Observable,
-  ObservableArray
+  ObservableArray,
 } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { fromObject } from '@nativescript/core/data/observable';
@@ -14,11 +14,11 @@ import {
   Bluetooth,
   BondState,
   ConnectionState,
-  Device
+  Device,
 } from 'nativescript-bluetooth';
 import {
   check as checkPermission,
-  request as requestPermission
+  request as requestPermission,
 } from 'nativescript-perms';
 import { STORAGE_KEYS } from '../enums';
 import { PushTracker, SmartDrive } from '../models';
