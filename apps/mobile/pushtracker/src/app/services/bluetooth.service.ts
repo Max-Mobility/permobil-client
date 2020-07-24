@@ -1,12 +1,25 @@
 /// <reference path="../../../node_modules/tns-platform-declarations/ios.d.ts" />
 
 import { Injectable } from '@angular/core';
-import { isAndroid, isIOS, Observable, ObservableArray } from '@nativescript/core';
+import {
+  isAndroid,
+  isIOS,
+  Observable,
+  ObservableArray
+} from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { fromObject } from '@nativescript/core/data/observable';
 import { Log, Packet } from '@permobil/core';
-import { Bluetooth, BondState, ConnectionState, Device } from 'nativescript-bluetooth';
-import { check as checkPermission, request as requestPermission } from 'nativescript-perms';
+import {
+  Bluetooth,
+  BondState,
+  ConnectionState,
+  Device
+} from 'nativescript-bluetooth';
+import {
+  check as checkPermission,
+  request as requestPermission
+} from 'nativescript-perms';
 import { STORAGE_KEYS } from '../enums';
 import { PushTracker, SmartDrive } from '../models';
 import { LoggingService } from './logging.service';
@@ -793,40 +806,43 @@ export class BluetoothService extends Observable {
       false
     );
 
-    const defaultState = hasPaired
+    const defaultState: any = hasPaired
       ? PushTrackerState.disconnected
       : PushTrackerState.unknown;
 
-    let state: PushTrackerState = BluetoothService.PushTrackers.reduce(
-      (ptState, pt) => {
-        if (pt && pt.connected) {
-          if (pt.version !== 0xff) {
-            state = <any>(
-              this._mergePushTrackerState(ptState, PushTrackerState.ready)
-            );
-          } else {
-            state = <any>(
-              this._mergePushTrackerState(ptState, PushTrackerState.connected)
-            );
-          }
-          // setting true so we know the user has connected to a PT previously
-          appSettings.setBoolean(STORAGE_KEYS.HAS_PAIRED_TO_PUSHTRACKER, true);
-        } else if (pt && pt.paired) {
+    let state = BluetoothService.PushTrackers.reduce((ptState, pt) => {
+      if (pt && pt.connected) {
+        if (pt.version !== 0xff) {
           state = <any>(
-            this._mergePushTrackerState(ptState, PushTrackerState.disconnected)
+            this._mergePushTrackerState(ptState as any, PushTrackerState.ready)
           );
-
-          // setting true so we know the user has connected to a PT previously
-          appSettings.setBoolean(STORAGE_KEYS.HAS_PAIRED_TO_PUSHTRACKER, true);
         } else {
           state = <any>(
-            this._mergePushTrackerState(ptState, PushTrackerState.unknown)
+            this._mergePushTrackerState(
+              ptState as any,
+              PushTrackerState.connected
+            )
           );
         }
-        return state;
-      },
-      defaultState
-    );
+        // setting true so we know the user has connected to a PT previously
+        appSettings.setBoolean(STORAGE_KEYS.HAS_PAIRED_TO_PUSHTRACKER, true);
+      } else if (pt && pt.paired) {
+        state = <any>(
+          this._mergePushTrackerState(
+            ptState as any,
+            PushTrackerState.disconnected
+          )
+        );
+
+        // setting true so we know the user has connected to a PT previously
+        appSettings.setBoolean(STORAGE_KEYS.HAS_PAIRED_TO_PUSHTRACKER, true);
+      } else {
+        state = <any>(
+          this._mergePushTrackerState(ptState as any, PushTrackerState.unknown)
+        );
+      }
+      return state;
+    }, defaultState);
 
     BluetoothService.pushTrackerStatus.set('state', state);
     this.sendEvent(BluetoothService.pushtracker_status_changed, { state });

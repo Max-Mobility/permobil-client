@@ -86,19 +86,19 @@
             <Label text="{{ batteryChartMaxValue }}" row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
             // Battery Usage Bar Chart
             <GridLayout rows="*, auto" columns="*, *, *, *, *, *, *" row="2" colSpan="2" width="100%" class="chart-stack">
-              <Label col="0" height="{{ batteryChartData[0].value }}" class="battery-line"/>
+              <Label col="0" height="{{ batteryChartData[0].value }}" class="battery-line" visibility="{{ batteryChartData[0].value > 0 ? 'visible' : 'collapsed' }}" />
               <Label col="0" row="1" text="{{ batteryChartData[0].day }}" class="line-label" />
-              <Label col="1" height="{{ batteryChartData[1].value }}" class="battery-line"/>
+              <Label col="1" height="{{ batteryChartData[1].value }}" class="battery-line" visibility="{{ batteryChartData[1].value > 0 ? 'visible' : 'collapsed' }}"/>
               <Label col="1" row="1" text="{{ batteryChartData[1].day }}" class="line-label" />
-              <Label col="2" height="{{ batteryChartData[2].value }}" class="battery-line"/>
+              <Label col="2" height="{{ batteryChartData[2].value }}" class="battery-line" visibility="{{ batteryChartData[2].value > 0 ? 'visible' : 'collapsed' }}" />
               <Label col="2" row="1" text="{{ batteryChartData[2].day }}" class="line-label" />
-              <Label col="3" height="{{ batteryChartData[3].value }}" class="battery-line"/>
+              <Label col="3" height="{{ batteryChartData[3].value }}" class="battery-line" visibility="{{ batteryChartData[3].value > 0 ? 'visible' : 'collapsed' }}" />
               <Label col="3" row="1" text="{{ batteryChartData[3].day }}" class="line-label" />
-              <Label col="4" height="{{ batteryChartData[4].value }}" class="battery-line"/>
+              <Label col="4" height="{{ batteryChartData[4].value }}" class="battery-line" visibility="{{ batteryChartData[4].value > 0 ? 'visible' : 'collapsed' }}"/>
               <Label col="4" row="1" text="{{ batteryChartData[4].day }}" class="line-label" />
-              <Label col="5" height="{{ batteryChartData[5].value }}" class="battery-line"/>
+              <Label col="5" height="{{ batteryChartData[5].value }}" class="battery-line" visibility="{{ batteryChartData[5].value > 0 ? 'visible' : 'collapsed' }}" />
               <Label col="5" row="1" text="{{ batteryChartData[5].day }}" class="line-label" />
-              <Label col="6" height="{{ batteryChartData[6].value }}" class="battery-line"/>
+              <Label col="6" height="{{ batteryChartData[6].value }}" class="battery-line" visibility="{{ batteryChartData[6].value > 0 ? 'visible' : 'collapsed' }}" />
               <Label col="6" row="1" text="{{ batteryChartData[6].day }}" class="line-label" />
             </GridLayout>
           </GridLayout>
@@ -113,19 +113,19 @@
             <Label text="{{ distanceChartMaxValue }}" row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
             // Distance Traveled Bar Chart
             <GridLayout rows="*, auto" columns="*, *, *, *, *, *, *" row="2" colSpan="2" width="100%" class="chart-stack">
-              <Label col="0" height="{{ distanceChartData[0].value }}" class="distance-line"/>
+              <Label col="0" height="{{ distanceChartData[0].value }}" class="distance-line" visibility="{{ distanceChartData[0].value > 0 ? 'visible' : 'collapsed' }}" />
               <Label col="0" row="1" text="{{ distanceChartData[0].day }}" class="line-label" />
-              <Label col="1" height="{{ distanceChartData[1].value }}" class="distance-line"/>
+              <Label col="1" height="{{ distanceChartData[1].value }}" class="distance-line" visibility="{{ distanceChartData[1].value > 0 ? 'visible' : 'collapsed' }}" />
               <Label col="1" row="1" text="{{ distanceChartData[1].day }}" class="line-label" />
-              <Label col="2" height="{{ distanceChartData[2].value }}" class="distance-line"/>
+              <Label col="2" height="{{ distanceChartData[2].value }}" class="distance-line" visibility="{{ distanceChartData[2].value > 0 ? 'visible' : 'collapsed' }}" />
               <Label col="2" row="1" text="{{ distanceChartData[2].day }}" class="line-label" />
-              <Label col="3" height="{{ distanceChartData[3].value }}" class="distance-line"/>
+              <Label col="3" height="{{ distanceChartData[3].value }}" class="distance-line" visibility="{{ distanceChartData[3].value > 0 ? 'visible' : 'collapsed' }}" />
               <Label col="3" row="1" text="{{ distanceChartData[3].day }}" class="line-label" />
-              <Label col="4" height="{{ distanceChartData[4].value }}" class="distance-line"/>
+              <Label col="4" height="{{ distanceChartData[4].value }}" class="distance-line" visibility="{{ distanceChartData[4].value > 0 ? 'visible' : 'collapsed' }}" />
               <Label col="4" row="1" text="{{ distanceChartData[4].day }}" class="line-label" />
-              <Label col="5" height="{{ distanceChartData[5].value }}" class="distance-line"/>
+              <Label col="5" height="{{ distanceChartData[5].value }}" class="distance-line" visibility="{{ distanceChartData[5].value > 0 ? 'visible' : 'collapsed' }}" />
               <Label col="5" row="1" text="{{ distanceChartData[5].day }}" class="line-label" />
-              <Label col="6" height="{{ distanceChartData[6].value }}" class="distance-line"/>
+              <Label col="6" height="{{ distanceChartData[6].value }}" class="distance-line" visibility="{{ distanceChartData[6].value > 0 ? 'visible' : 'collapsed' }}" />
               <Label col="6" row="1" text="{{ distanceChartData[6].day }}" class="line-label" />
             </GridLayout>
           </GridLayout>

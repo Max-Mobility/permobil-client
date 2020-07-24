@@ -13,7 +13,7 @@
     "skipLibCheck": true,
     "noImplicitUseStrict": true,
     "declaration": false,
-    "lib": ["es6", "dom", "ES2020", "es2015.iterable"],
+    "lib": ["es2017", "dom", "es6"],
     "baseUrl": ".",
     "paths": {
       "~/*": ["src/*"],
@@ -37,6 +37,6 @@
     "../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/demo/**/*.ts"
   ],
   "angularCompilerOptions": {
-    "disableTypeScriptVersionCheck": true // disabling for now to use TS 3.7.3 which should be fine with Angular and available in Q1 with NG9 release
+    "enableIvy": false
   }
 }

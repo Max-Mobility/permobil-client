@@ -1,11 +1,11 @@
-import {
-  Common,
-  spinBarColorProperty,
-  rimColorProperty,
-  barColorProperty
-} from './animated-circle.common';
 import { Color } from '@nativescript/core';
 import * as utils from '@nativescript/core/utils/utils';
+import {
+  barColorProperty,
+  Common,
+  rimColorProperty,
+  spinBarColorProperty
+} from './animated-circle.common';
 
 export class AnimatedCircle extends Common {
   private _ios: any;

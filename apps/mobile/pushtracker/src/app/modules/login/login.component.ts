@@ -11,7 +11,6 @@ import { validate } from 'email-validator';
 import * as Kinvey from 'kinvey-nativescript-sdk';
 import { LottieView } from 'nativescript-lottie';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
-import { PushTrackerUser } from '../../models';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
 

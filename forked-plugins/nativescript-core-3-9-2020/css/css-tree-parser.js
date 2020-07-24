@@ -1,10 +1,11 @@
 Object.defineProperty(exports, '__esModule', { value: true });
+exports.cssTreeParse = void 0;
 var css_tree_1 = require('css-tree');
 function mapSelectors(selector) {
   if (!selector) {
     return [];
   }
-  return selector.split(/\s*(?![^(]*\)),\s*/).map(function(s) {
+  return selector.split(/\s*(?![^(]*\)),\s*/).map(function (s) {
     return s.replace(/\u200C/g, ',');
   });
 }
@@ -12,13 +13,13 @@ function mapPosition(node, css) {
   var res = {
     start: {
       line: node.loc.start.line,
-      column: node.loc.start.column
+      column: node.loc.start.column,
     },
     end: {
       line: node.loc.end.line,
-      column: node.loc.end.column
+      column: node.loc.end.column,
     },
-    content: css
+    content: css,
   };
   if (node.loc.source && node.loc.source !== '<unknown>') {
     res.source = node.loc.source;
@@ -37,17 +38,17 @@ function transformAst(node, css, type) {
       type: 'stylesheet',
       stylesheet: {
         rules: node.children
-          .map(function(child) {
+          .map(function (child) {
             return transformAst(child, css);
           })
           .toArray(),
-        parsingErrors: []
-      }
+        parsingErrors: [],
+      },
     };
   }
   if (node.type === 'Atrule') {
     var atrule = {
-      type: node.name
+      type: node.name,
     };
     if (node.name === 'supports' || node.name === 'media') {
       atrule[node.name] = node.prelude.value;
@@ -79,7 +80,7 @@ function transformAst(node, css, type) {
   }
   if (node.type === 'Block') {
     return node.children
-      .map(function(child) {
+      .map(function (child) {
         return transformAst(child, css, type);
       })
       .toArray();
@@ -89,7 +90,7 @@ function transformAst(node, css, type) {
     var res = {
       type: type != null ? type : 'rule',
       declarations: transformAst(node.block, css),
-      position: mapPosition(node, css)
+      position: mapPosition(node, css),
     };
     if (type === 'keyframe') {
       res.values = mapSelectors(value);
@@ -102,7 +103,7 @@ function transformAst(node, css, type) {
     return {
       type: 'comment',
       comment: node.value,
-      position: mapPosition(node, css)
+      position: mapPosition(node, css),
     };
   }
   if (node.type === 'Declaration') {
@@ -110,7 +111,7 @@ function transformAst(node, css, type) {
       type: 'declaration',
       property: node.property,
       value: node.value.value ? node.value.value.trim() : '',
-      position: mapPosition(node, css)
+      position: mapPosition(node, css),
     };
   }
   throw Error('Unknown node type ' + node.type);
@@ -123,7 +124,7 @@ function cssTreeParse(css, source) {
     parseRulePrelude: false,
     positions: true,
     filename: source,
-    onParseError: function(error) {
+    onParseError: function (error) {
       errors.push(
         source +
           ':' +
@@ -133,7 +134,7 @@ function cssTreeParse(css, source) {
           ': ' +
           error.formattedMessage
       );
-    }
+    },
   });
   if (errors.length > 0) {
     throw new Error(errors[0]);

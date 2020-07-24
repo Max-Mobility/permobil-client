@@ -1,16 +1,16 @@
 import { Component, NgZone, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ModalDialogParams } from '@nativescript/angular';
-import { setTimeout } from '@nativescript/core/timer';
-import { ObservableArray, Page, PropertyChangeData, Switch } from '@nativescript/core';
-import { device } from '@nativescript/core/platform';
+import { Page, PropertyChangeData, Switch } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
+import { device } from '@nativescript/core/platform';
+import { setTimeout } from '@nativescript/core/timer';
 import { alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
-import { Device } from '@permobil/core';
+import { Device as PermobilCoreDevice } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { getVersionNameSync, getVersionCodeSync } from 'nativescript-appversion';
 import debounce from 'lodash/debounce';
 import once from 'lodash/once';
+import { getVersionCodeSync, getVersionNameSync } from 'nativescript-appversion';
 import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
 import { APP_LANGUAGES, APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, STORAGE_KEYS, TIME_FORMAT, WEIGHT_UNITS } from '../../enums';
 import { DeviceBase, PushTracker, PushTrackerUser, SmartDrive } from '../../models';
@@ -407,7 +407,7 @@ export class ProfileSettingsComponent implements OnInit {
         break;
       case 'mode':
         this.activeSetting = 'mode';
-        const primaryItems = Device.Settings.ControlMode.Options;
+        const primaryItems = PermobilCoreDevice.Settings.ControlMode.Options;
         options.context = {
           title: this._translateService.instant('general.mode'),
           primaryItems,
@@ -421,11 +421,11 @@ export class ProfileSettingsComponent implements OnInit {
         this.activeSetting = 'switch-control-mode';
         options.context = {
           title: this._translateService.instant('general.switch-control-mode'),
-          primaryItems: Device.SwitchControlSettings.Mode.Options.map(o => {
+          primaryItems: PermobilCoreDevice.SwitchControlSettings.Mode.Options.map(o => {
             const translationKey = 'sd.switch-settings.mode.' + o.toLowerCase();
             return this._translateService.instant(translationKey);
           }),
-          primaryIndex: Device.SwitchControlSettings.Mode.Options.indexOf(
+          primaryIndex: PermobilCoreDevice.SwitchControlSettings.Mode.Options.indexOf(
             this.settingsService.switchControlSettings.mode
           ),
           listPickerNeedsSecondary: false
@@ -596,12 +596,12 @@ export class ProfileSettingsComponent implements OnInit {
         break;
       case 'mode':
         this.settingsService.settings.controlMode =
-          Device.Settings.ControlMode.Options[index];
+        PermobilCoreDevice.Settings.ControlMode.Options[index];
         break;
       case 'switch-control-mode':
         this._changedSettingsWhichRequireUpdate = true;
         this.settingsService.switchControlSettings.mode =
-          Device.SwitchControlSettings.Mode.Options[index];
+        PermobilCoreDevice.SwitchControlSettings.Mode.Options[index];
         break;
       case 'time format':
         didUpdate = await this.updateUser({

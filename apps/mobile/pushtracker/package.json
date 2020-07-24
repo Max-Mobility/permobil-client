@@ -5,26 +5,30 @@
       "ios": "com.max-mobility.PushTracker"
     },
     "tns-android": {
-      "version": "6.4.1"
+      "version": "6.5.3"
+    },
+    "tns-ios": {
+      "version": "6.5.2"
     }
   },
   "dependencies": {
-    "@angular/animations": "~8.2.14",
-    "@angular/common": "~8.2.14",
-    "@angular/compiler": "~8.2.14",
-    "@angular/core": "~8.2.14",
-    "@angular/forms": "~8.2.14",
+    "@angular/animations": "^9.0.0",
+    "@angular/common": "^9.0.0",
+    "@angular/compiler": "^9.0.0",
+    "@angular/core": "^9.0.0",
+    "@angular/forms": "^9.0.0",
     "@angular/http": "~8.0.0-beta.10",
-    "@angular/platform-browser": "~8.2.14",
-    "@angular/platform-browser-dynamic": "~8.2.14",
-    "@angular/router": "~8.2.14",
+    "@angular/platform-browser": "^9.0.0",
+    "@angular/platform-browser-dynamic": "^9.0.0",
+    "@angular/router": "^9.0.0",
     "@maxmobility/nativescript-wear-os-comms": "file:../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/src",
     "@maxmobility/private-keys": "autochair/maxmobility-private-keys#master",
-    "@nativescript/core": "~6.4.1",
+    "@nativescript/core": "~6.5.11",
+    "@nativescript/angular": "9.0.0",
     "@ngx-translate/core": "~11.0.1",
-    "@nstudio/nativescript-loading-indicator": "~1.0.0",
-    "@nstudio/nativescript-pulltorefresh": "~1.1.1",
-    "@nstudio/nativescript-snackbar": "~1.1.1",
+    "@nstudio/nativescript-loading-indicator": "~3.0.4",
+    "@nstudio/nativescript-pulltorefresh": "~2.0.0",
+    "@nstudio/nativescript-snackbar": "~1.1.2",
     "@permobil/angular": "file:../../../@permobil/angular",
     "@permobil/core": "file:../../../@permobil/core",
     "@permobil/nativescript": "file:../../../@permobil/nativescript",
@@ -32,14 +36,13 @@
     "email-validator": "~2.0.4",
     "kinvey-nativescript-sdk": "~4.2.5",
     "lodash": "~4.17.15",
-    "nativescript-angular": "~8.21.0",
     "nativescript-animated-circle": "file:../../../forked-plugins/nativescript-animated-circle-1.3.0.tgz",
-    "nativescript-appversion": "~1.4.2",
-    "nativescript-barcodescanner": "~3.2.2",
+    "nativescript-appversion": "~1.4.4",
+    "nativescript-barcodescanner": "~3.4.2",
     "nativescript-bluetooth": "file:../../../forked-plugins/nativescript-bluetooth",
     "nativescript-datetimepicker": "~1.2.2",
     "nativescript-download-progress": "~1.2.0",
-    "nativescript-email": "~1.5.5",
+    "nativescript-email": "~1.6.0",
     "nativescript-geolocation": "~5.1.0",
     "nativescript-insomnia": "~1.2.3",
     "nativescript-iqkeyboardmanager": "~1.5.1",
@@ -63,12 +66,12 @@
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
-    "@angular/compiler-cli": "~8.2.14",
-    "@ngtools/webpack": "~8.3.21",
+    "@angular/compiler-cli": "^9.0.0",
+    "@ngtools/webpack": "^9.0.0",
     "@types/lodash": "~4.14.149",
-    "nativescript-dev-webpack": "1.5.0",
+    "nativescript-dev-webpack": "1.5.1",
     "prompts": "^2.2.1",
-    "tns-platform-declarations": "6.4.1",
-    "typescript": "~3.7.5"
+    "tns-platform-declarations": "6.5.11",
+    "typescript": "~3.8.3"
   }
 }

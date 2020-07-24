@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RouterExtensions } from '@nativescript/angular/router';
-import { Page, isAndroid, isIOS, TextField } from '@nativescript/core';
+import { isAndroid, isIOS, Page, TextField } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { device } from '@nativescript/core/platform';
 import { alert } from '@nativescript/core/ui/dialogs';

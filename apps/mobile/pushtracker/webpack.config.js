@@ -36,8 +36,8 @@ module.exports = env => {
   const appComponents = env.appComponents || [];
   appComponents.push(
     ...[
-      '@nativescript/core/ui/frame',
-      '@nativescript/core/ui/frame/activity',
+      'tns-core-modules/ui/frame',
+      'tns-core-modules/ui/frame/activity',
       resolve(
         __dirname,
         'node_modules/@maxmobility/nativescript-wear-os-comms/android/ResultReceiver'
@@ -306,19 +306,17 @@ module.exports = env => {
           cache: true,
           sourceMap: isAnySourceMapEnabled,
           terserOptions: {
-            // https://github.com/terser/terser#minify-options
-            keep_classnames: true,
             output: {
               comments: false,
               semicolons: !isAnySourceMapEnabled
             },
             compress: {
-              drop_console: true,
-              drop_debugger: true,
               // The Android SBG has problems parsing the output
               // when these options are enabled
               collapse_vars: platform !== 'android',
-              sequences: platform !== 'android'
+              sequences: platform !== 'android',
+              drop_console: true,
+              drop_debugger: true
             }
           }
         })
