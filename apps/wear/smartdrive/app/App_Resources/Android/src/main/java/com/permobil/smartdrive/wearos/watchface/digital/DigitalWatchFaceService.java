@@ -514,7 +514,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             );
 
             if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-                Sentry.getContext().addTag("Watch_Serial_Number", android.os.Build.getSerial());
+                Sentry.getContext().addTag("watch_serial_number", android.os.Build.getSerial());
                 Log.d(TAG, "Added serial number to Sentry logs.");
             } else {
                 Log.d(TAG, "READ_PHONE_STATE permission not granted so unable to add the watch serial number to the Sentry logs.");
