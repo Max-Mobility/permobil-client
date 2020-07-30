@@ -171,9 +171,14 @@ export class TabsComponent {
     setTimeout(this.configureBluetooth.bind(this), 1000);
 
     // Set the Sentry Context Tags
-    if (user?.data?.pushtracker_serial_number) {
+    if (user?.data) {
       Sentry.setContextTags({
-        watch_serial_number: user.data.pushtracker_serial_number
+        pushtracker_serial_number: user.data.pushtracker_serial_number
+          ? user.data.pushtracker_serial_number
+          : '',
+        smartdrive_serial_number: user.data.smartdrive_serial_number
+          ? user.data.smartdrive_serial_number
+          : ''
       });
     }
   }

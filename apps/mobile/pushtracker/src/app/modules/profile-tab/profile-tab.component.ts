@@ -1383,10 +1383,14 @@ export class ProfileTabComponent {
 
         // Set the Sentry Context Tags
         Sentry.setContextTags({
-          watch_serial_number: serialNumber
+          pushtracker_serial_number: serialNumber
         });
       } else if (deviceType === 'smartdrive') {
         this.updateUser({
+          smartdrive_serial_number: serialNumber
+        });
+        // Set the Sentry Context Tags
+        Sentry.setContextTags({
           smartdrive_serial_number: serialNumber
         });
       }
