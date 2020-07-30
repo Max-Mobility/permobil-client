@@ -16,7 +16,15 @@ import { AnimationCurve } from '@nativescript/core/ui/enums';
 import { ScrollView } from '@nativescript/core/ui/scroll-view';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log, wait } from '@permobil/core';
-import { getDefaultLang, L, performance, Prop } from '@permobil/nativescript';
+import {
+  getDefaultLang,
+
+
+
+  getDeviceSerialNumber, L,
+  performance,
+  Prop
+} from '@permobil/nativescript';
 import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
@@ -892,6 +900,16 @@ export class MainViewModel extends Observable {
         const gotPermissions = await requestPermissions(neededPermissions)
           .then(() => {
             this._updateSerialNumber();
+
+            // Set the Sentry Context Tags
+            const device_serial_number = getDeviceSerialNumber();
+            if (device_serial_number) {
+              // Set the Sentry Context Tags
+              Sentry.setContextTags({
+                watch_serial_number: device_serial_number
+              });
+            }
+
             return true;
           })
           .catch(err => {

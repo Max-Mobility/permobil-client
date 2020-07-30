@@ -1,6 +1,5 @@
 import { Component, NgZone } from '@angular/core';
 import { RouterExtensions } from '@nativescript/angular';
-import { setTimeout } from '@nativescript/core/timer';
 import {
   BottomNavigation,
   isAndroid,
@@ -9,6 +8,7 @@ import {
   SelectedIndexChangedEventData
 } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
+import { setTimeout } from '@nativescript/core/timer';
 import { action, alert, confirm } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBar } from '@nstudio/nativescript-snackbar';
@@ -18,6 +18,7 @@ import assign from 'lodash/assign';
 import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
 import * as LS from 'nativescript-localstorage';
+import { Sentry } from 'nativescript-sentry';
 import { APP_LANGUAGES, CONFIGURATIONS } from '../../enums';
 import { PushTracker, PushTrackerUser } from '../../models';
 import {
@@ -95,7 +96,7 @@ export class TabsComponent {
       this.alertPushTrackerSettingsDiffer.bind(this),
       1000,
       { leading: false, trailing: true },
-      function(acc: any, args: any) {
+      function (acc: any, args: any) {
         return assign(acc || {}, ...args);
       }
     );
@@ -168,6 +169,18 @@ export class TabsComponent {
     this.registerBluetoothEvents();
 
     setTimeout(this.configureBluetooth.bind(this), 1000);
+
+    // Set the Sentry Context Tags
+    if (user?.data) {
+      Sentry.setContextTags({
+        pushtracker_serial_number: user.data.pushtracker_serial_number
+          ? user.data.pushtracker_serial_number
+          : '',
+        smartdrive_serial_number: user.data.smartdrive_serial_number
+          ? user.data.smartdrive_serial_number
+          : ''
+      });
+    }
   }
 
   private async configureBluetooth() {

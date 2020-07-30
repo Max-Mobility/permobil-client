@@ -5,12 +5,13 @@ import { screen } from '@nativescript/core/platform';
 import { alert } from '@nativescript/core/ui/dialogs';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
-import { L } from '@permobil/nativescript';
+import { getDeviceSerialNumber, L } from '@permobil/nativescript';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
+import { Sentry } from 'nativescript-sentry';
 import { WearOsLayout } from 'nativescript-wear-os';
 import { DataKeys } from '../../../enums';
 import { PushTrackerKinveyService } from '../../../services';
-import { getSerialNumber, saveSerialNumber } from '../../../utils';
+import { saveSerialNumber } from '../../../utils';
 
 let closeCallback;
 let page: Page;
@@ -40,7 +41,7 @@ export function onShownModally(args: ShownModallyData) {
   closeCallback = args.closeCallback; // the closeCallback handles closing the modal
 
   // get the device serial number
-  data.watchSerialNumber = getSerialNumber() || '---';
+  data.watchSerialNumber = getDeviceSerialNumber() || '---';
 
   // get the app version
   const ctx = androidUtils.getApplicationContext();
@@ -79,9 +80,13 @@ export async function onSerialNumberTap(_: any) {
     });
     try {
       await requestPermissions([p], () => {});
-      const watchSerialNumber = getSerialNumber();
+      const watchSerialNumber = getDeviceSerialNumber();
       saveSerialNumber(watchSerialNumber);
       kinveyService.watch_serial_number = watchSerialNumber;
+      // Set the Sentry Context Tags
+      Sentry.setContextTags({
+        watch_serial_number: watchSerialNumber
+      });
     } catch (err) {}
   } else {
     Log.D('Already has permission.');

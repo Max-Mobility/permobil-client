@@ -1,5 +1,6 @@
 import * as application from '@nativescript/core/application';
 import { isIOS } from '@nativescript/core';
+import { hasPermission } from 'nativescript-permissions';
 
 /**
  * Adds margin-bottom to the page. Is not super elegant but works for now.
@@ -13,6 +14,21 @@ export function addBottomSafeAreaForIOS(): void {
       application.addCss(`
               Page { margin-bottom: ${bottomSafeArea} !important }
           `);
+    }
+  }
+}
+
+export function getDeviceSerialNumber() {
+  if (isIOS) {
+    return UIDevice.currentDevice.identifierForVendor.UUIDString;
+  } else {
+    if (!hasPermission(android.Manifest.permission.READ_PHONE_STATE)) {
+      return null;
+    }
+    if (android.os.Build.VERSION.SDK_INT >= 26) {
+      return (android.os.Build as any).getSerial();
+    } else {
+      return android.os.Build.SERIAL;
     }
   }
 }

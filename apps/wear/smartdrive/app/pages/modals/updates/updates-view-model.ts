@@ -17,7 +17,11 @@ import * as themes from 'nativescript-themes';
 import { DataKeys } from '../../../enums';
 import { SmartDrive, SmartDriveException } from '../../../models';
 import { SmartDriveData } from '../../../namespaces';
-import { BluetoothService, SmartDriveKinveyService, SqliteService } from '../../../services';
+import {
+  BluetoothService,
+  SmartDriveKinveyService,
+  SqliteService
+} from '../../../services';
 import { sentryBreadCrumb } from '../../../utils';
 
 const ambientTheme = require('../../../scss/theme-ambient.css').toString();
@@ -252,7 +256,7 @@ export class UpdatesViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this.updateSerialNumber();
       } catch (permissionsObj) {
@@ -325,6 +329,11 @@ export class UpdatesViewModel extends Observable {
     this.watchSerialNumber = android.os.Build.getSerial();
     appSettings.setString(DataKeys.WATCH_SERIAL_NUMBER, this.watchSerialNumber);
     this._kinveyService.watch_serial_number = this.watchSerialNumber;
+
+    // Set the Sentry Context Tags
+    Sentry.setContextTags({
+      watch_serial_number: this.watchSerialNumber
+    });
   }
 
   registerForSmartDriveEvents() {

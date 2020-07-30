@@ -1,5 +1,6 @@
 package com.permobil.smartdrive.wearos.watchface.digital;
 
+import android.Manifest;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -7,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -33,6 +35,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
 
 import com.permobil.smartdrive.wearos.R;
 import com.permobil.smartdrive.wearos.util.DateUtils;
@@ -325,8 +329,8 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             Resources.Theme theme = getTheme();
 
             int timeSize, amPmSize, dateSize,
-              watchBarColor, watchRimColor,
-              sdBarColor, sdRimColor;
+                    watchBarColor, watchRimColor,
+                    sdBarColor, sdRimColor;
 
             if (inAmbientMode) {
                 int ambientColor = res.getColor(R.color.ambient_mode_text, theme);
@@ -369,12 +373,12 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 dateSize = 12;
             }
             if (watchBatteryCircle != null) {
-              watchBatteryCircle.setBarColor(watchBarColor);
-              watchBatteryCircle.setRimColor(watchRimColor);
+                watchBatteryCircle.setBarColor(watchBarColor);
+                watchBatteryCircle.setRimColor(watchRimColor);
             }
             if (smartDriveBatteryCircle != null) {
-              smartDriveBatteryCircle.setBarColor(sdBarColor);
-              smartDriveBatteryCircle.setRimColor(sdRimColor);
+                smartDriveBatteryCircle.setBarColor(sdBarColor);
+                smartDriveBatteryCircle.setRimColor(sdRimColor);
             }
             hourTextView.setTextSize(timeSize);
             colonTextView.setTextSize(timeSize);
@@ -508,6 +512,13 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             Sentry.getContext().recordBreadcrumb(
                     new BreadcrumbBuilder().setMessage("SmartDrive MX2 Digital WatchFace started.").build()
             );
+
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                Sentry.getContext().addTag("watch_serial_number", android.os.Build.getSerial());
+                Log.d(TAG, "Added serial number to Sentry logs.");
+            } else {
+                Log.d(TAG, "READ_PHONE_STATE permission not granted so unable to add the watch serial number to the Sentry logs.");
+            }
 
             Thread.setDefaultUncaughtExceptionHandler(
                     (thread, e) -> {
@@ -672,25 +683,25 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
 
             // Set the am/pm.
             if (!is24Hour) {
-              String value = DateUtils.getAmPmString(mCalendar.get(Calendar.AM_PM));
-              amPmTextView.setText(" " + value);
-              amPmTextView.setVisibility(View.VISIBLE);
+                String value = DateUtils.getAmPmString(mCalendar.get(Calendar.AM_PM));
+                amPmTextView.setText(" " + value);
+                amPmTextView.setVisibility(View.VISIBLE);
             } else {
-              amPmTextView.setVisibility(View.GONE);
+                amPmTextView.setVisibility(View.GONE);
             }
 
             if (isInAmbientMode()) {
-              // show the date view when in ambient
-              dateTextView.setVisibility(View.VISIBLE);
-              // set the date string
-              SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
-              dateFormat.setTimeZone(TimeZone.getDefault());
-              Date today = mCalendar.getTime();
-              String dateString = dateFormat.format(today);
-              dateTextView.setText(dateString);
+                // show the date view when in ambient
+                dateTextView.setVisibility(View.VISIBLE);
+                // set the date string
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+                dateFormat.setTimeZone(TimeZone.getDefault());
+                Date today = mCalendar.getTime();
+                String dateString = dateFormat.format(today);
+                dateTextView.setText(dateString);
             } else {
-              // hide date when not in ambient
-              dateTextView.setVisibility(View.INVISIBLE);
+                // hide date when not in ambient
+                dateTextView.setVisibility(View.INVISIBLE);
             }
 
             // handle color of text depending if ambient mode
