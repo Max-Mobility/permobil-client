@@ -338,7 +338,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-          }`,
+            }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -1055,27 +1055,15 @@ export class MainViewModel extends Observable {
     if (this.smartDrive === undefined || this.smartDrive === null) {
       return;
     }
-    sentryBreadCrumb('Loading SD state from LS');
-    const savedSd = LS.getItem(
-      'com.permobil.smartdrive.wearos.smartdrive.data'
-    );
-    if (savedSd) {
-      this.smartDrive.fromObject(savedSd);
-    }
+    this.smartDrive.loadStateFromLS();
     // update the displayed smartdrive data
     this.smartDriveCurrentBatteryPercentage =
       (this.smartDrive && this.smartDrive.battery) || 0;
   }
 
   private _saveSmartDriveStateToLS() {
-    sentryBreadCrumb('Saving SD state to LS');
     if (this.smartDrive) {
-      LS.setItemObject(
-        'com.permobil.smartdrive.wearos.smartdrive.data',
-        this.smartDrive.data()
-      );
-      // save the updated smartdrive battery
-      appSettings.setNumber(DataKeys.SD_BATTERY, this.smartDrive.battery);
+      this.smartDrive.saveStateToLS();
     } else {
       // make sure we have 0 battery saved
       appSettings.setNumber(DataKeys.SD_BATTERY, 0);
@@ -2028,7 +2016,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -2093,7 +2081,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
