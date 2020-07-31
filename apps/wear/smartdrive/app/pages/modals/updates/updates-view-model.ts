@@ -272,9 +272,13 @@ export class UpdatesViewModel extends Observable {
 
   async getSmartDriveVersion() {
     return new Promise((resolve, reject) => {
+      sentryBreadCrumb('getting smartdrive version');
       if (this.smartDrive && this.smartDrive.hasVersionInfo()) {
         // if we've already talked to this SD and gotten its
         // version info then we can just resolve
+        sentryBreadCrumb('Already have smartdrive version:' +
+          '\n\tmcu: ' + this.smartDrive.mcu_version_string +
+          '\n\tble: ' + this.smartDrive.ble_version_string);
         resolve(true);
         return;
       } else {
@@ -295,6 +299,9 @@ export class UpdatesViewModel extends Observable {
         const onVersion = () => {
           remove();
           clearTimeout(connectTimeoutId);
+          sentryBreadCrumb('Got smartdrive version:' +
+            '\n\tmcu: ' + this.smartDrive.mcu_version_string +
+            '\n\tble: ' + this.smartDrive.ble_version_string);
           resolve();
         };
         this.smartDrive.on(SmartDrive.smartdrive_mcu_version_event, onVersion);
@@ -397,6 +404,8 @@ export class UpdatesViewModel extends Observable {
     this.unregisterForSmartDriveEvents();
     if (this.smartDrive) {
       this.smartDrive.cancelOTA();
+      sentryBreadCrumb('Updating saved SD state');
+      this.smartDrive.saveStateToLS();
     }
     this.unregisterForTimeUpdates();
     this._closeCallback();
@@ -464,7 +473,9 @@ export class UpdatesViewModel extends Observable {
         );
       }
     }
-
+    if (state !== this.smartDriveOtaState) {
+      sentryBreadCrumb('SmartDrive OTA Status, new state: ' + state);
+    }
     this.smartDriveOtaState = state;
   }
 
@@ -573,7 +584,6 @@ export class UpdatesViewModel extends Observable {
     // Now let's connect to the SD to make sure that we get it's
     // version information
     try {
-      sentryBreadCrumb('getting smartdrive version');
       await this.getSmartDriveVersion();
     } catch (err) {
       sentryBreadCrumb('Connecting to smartdrive failed');
@@ -582,7 +592,7 @@ export class UpdatesViewModel extends Observable {
     // Now perform the SmartDrive updates if we need to
 
     // now see what we need to do with the data
-    sentryBreadCrumb('Finished downloading updates.');
+    sentryBreadCrumb('Finished checking for updates');
     this.performSmartDriveWirelessUpdate();
   }
 
@@ -603,55 +613,72 @@ export class UpdatesViewModel extends Observable {
     const version = SmartDriveData.Firmwares.versionByteToString(
       Math.max(mcuVersion, bleVersion)
     );
-    sentryBreadCrumb('got version: ' + version);
-    // show dialog to user informing them of the version number and changes
-    const changes = Object.keys(this.currentVersions).map(
-      k => this.currentVersions[k].changes
-    );
-    // Log.D('got changes', changes);
-    await alert({
-      title: L('updates.version') + ' ' + version,
-      message: L('updates.changes') + '\n\n' + flatten(changes).join('\n\n'),
-      okButtonText: L('buttons.ok')
-    });
-    sentryBreadCrumb('Beginning SmartDrive update');
-
-    const bleFw = new Uint8Array(
-      this.currentVersions['SmartDriveBLE.ota'].data
-    );
-    const mcuFw = new Uint8Array(
-      this.currentVersions['SmartDriveMCU.ota'].data
-    );
-    sentryBreadCrumb(`mcu length: ${mcuFw.length}`);
-    sentryBreadCrumb(`ble length: ${bleFw.length}`);
-    // maintain CPU resources while updating
-    this.maintainCPU();
-    // smartdrive needs to update
-    let otaStatus = '';
-    try {
-      this._otaStarted = true;
-      otaStatus = await this.smartDrive.performOTA(
-        bleFw,
-        mcuFw,
-        bleVersion,
-        mcuVersion,
-        300 * 1000
+    const versionString = [mcuVersion, bleVersion].map(SmartDriveData.Firmwares.versionByteToString).join(', ');
+    sentryBreadCrumb('got curent firmware versions: ' + versionString);
+    // do we need to update?
+    const isUpToDate = this.smartDrive.isMcuUpToDate(mcuVersion) &&
+      this.smartDrive.isBleUpToDate(bleVersion);
+    if (isUpToDate) {
+      this.smartDriveOtaState = L('updates.up-to-date');
+      // let the user know early if they are already up to date!
+      await alert({
+        title: L('updates.status'),
+        message: L('updates.up-to-date'),
+        okButtonText: L('buttons.ok')
+      });
+      // now close the updates page
+      this.closeModal();
+    } else {
+      // show dialog to user informing them of the version number and changes
+      const changes = Object.keys(this.currentVersions).map(
+        k => this.currentVersions[k].changes
       );
-      this._otaStarted = false;
-      sentryBreadCrumb('"' + otaStatus + '" ' + typeof otaStatus);
-      if (otaStatus === 'updates.canceled') {
-        this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
-          label: L('ota.action.close'),
-          func: this._debouncedCloseModal.bind(this),
-          action: 'ota.action.close',
-          class: 'action-close'
-        });
+      // Log.D('got changes', changes);
+      await alert({
+        title: L('updates.version') + ' ' + version,
+        message: L('updates.changes') + '\n\n' + flatten(changes).join('\n\n'),
+        okButtonText: L('buttons.ok')
+      });
+      sentryBreadCrumb('Beginning SmartDrive update');
+
+      const bleFw = new Uint8Array(
+        this.currentVersions['SmartDriveBLE.ota'].data
+      );
+      const mcuFw = new Uint8Array(
+        this.currentVersions['SmartDriveMCU.ota'].data
+      );
+      sentryBreadCrumb(`mcu length: ${mcuFw.length}`);
+      sentryBreadCrumb(`ble length: ${bleFw.length}`);
+      // maintain CPU resources while updating
+      this.maintainCPU();
+      // smartdrive needs to update
+      let otaStatus = '';
+      try {
+        this._otaStarted = true;
+        this.registerForSmartDriveEvents();
+        otaStatus = await this.smartDrive.performOTA(
+          bleFw,
+          mcuFw,
+          bleVersion,
+          mcuVersion,
+          300 * 1000
+        );
+        this._otaStarted = false;
+        sentryBreadCrumb('ota status at end: "' + otaStatus + '" type=' + typeof otaStatus);
+        if (otaStatus === 'updates.canceled') {
+          this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
+            label: L('ota.action.close'),
+            func: this._debouncedCloseModal.bind(this),
+            action: 'ota.action.close',
+            class: 'action-close'
+          });
+        }
+      } catch (err) {
+        return this.updateError(err, L('updates.failed'), `${err}`);
       }
-    } catch (err) {
-      return this.updateError(err, L('updates.failed'), `${err}`);
+      const updateMsg = L(otaStatus);
+      await this.stopUpdates(updateMsg, false);
     }
-    const updateMsg = L(otaStatus);
-    await this.stopUpdates(updateMsg, false);
   }
 
   async updateFirmwareData(f: any) {
