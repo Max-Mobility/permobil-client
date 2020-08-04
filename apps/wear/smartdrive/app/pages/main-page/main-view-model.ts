@@ -1082,9 +1082,13 @@ export class MainViewModel extends Observable {
   private _saveSmartDriveStateToLS() {
     if (this.smartDrive) {
       this.smartDrive.saveStateToLS();
+      // update displayed battery percentage
+      this.smartDriveCurrentBatteryPercentage = this.smartDrive.battery;
     } else {
       // make sure we have 0 battery saved
       appSettings.setNumber(DataKeys.SD_BATTERY, 0);
+      // update displayed battery percentage
+      this.smartDriveCurrentBatteryPercentage = 0;
     }
   }
 
@@ -1285,14 +1289,7 @@ export class MainViewModel extends Observable {
   }
 
   private _onNewDay() {
-    if (this.smartDrive) {
-      // it's a new day, reset smartdrive battery to 0
-      this.smartDrive.battery = 0;
-      // update displayed battery percentage
-      this.smartDriveCurrentBatteryPercentage = this.smartDrive.battery;
-      // and save it
-      this._saveSmartDriveStateToLS();
-    }
+    this._saveSmartDriveStateToLS();
   }
 
   private _registerForTimeUpdates() {

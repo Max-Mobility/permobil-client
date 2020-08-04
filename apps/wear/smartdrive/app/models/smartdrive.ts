@@ -1,6 +1,7 @@
 import * as timer from '@nativescript/core/timer';
 import { bindingTypeToString, Device, ISmartDriveEvents, Packet, SD_OTA_State } from '@permobil/core';
 import { Prop } from '@permobil/nativescript';
+import { isToday } from 'date-fns';
 import { BluetoothService } from '../services/bluetooth.service';
 import { DeviceBase } from './device-base';
 
@@ -61,6 +62,7 @@ export class SmartDrive extends DeviceBase {
   // public members
   public driveDistance: number = 0; // cumulative total distance the smartDrive has driven
   public coastDistance: number = 0; // cumulative total distance the smartDrive has gone
+  public lastConnectedDate: Date = null;   // last time we were connected
   public settings = new Device.Settings();
   public switchControlSettings = new Device.SwitchControlSettings();
 
@@ -96,7 +98,8 @@ export class SmartDrive extends DeviceBase {
       battery: this.battery,
       driveDistance: this.driveDistance,
       coastDistance: this.coastDistance,
-      address: this.address
+      address: this.address,
+      lastConnectedDate: this.lastConnectedDate
     };
   }
 
@@ -107,6 +110,7 @@ export class SmartDrive extends DeviceBase {
     this.driveDistance = (obj && obj.driveDistance) || 0;
     this.coastDistance = (obj && obj.coastDistance) || 0;
     this.address = (obj && obj.address) || '';
+    this.lastConnectedDate = (obj && obj.lastConnectedDate && new Date(obj.lastConnectedDate)) || null;
   }
 
   // regular methods
@@ -121,6 +125,11 @@ export class SmartDrive extends DeviceBase {
   }
 
   saveStateToLS() {
+    if (!this.lastConnectedDate || !isToday(this.lastConnectedDate)) {
+      // set the battery to 0 since we haven't seen the SD today
+      this.battery = 0;
+    }
+    // save the smartdrive data
     LS.setItemObject(
       'com.permobil.smartdrive.wearos.smartdrive.data',
       this.data()
@@ -149,6 +158,7 @@ export class SmartDrive extends DeviceBase {
         ? version
         : SmartDrive.versionStringToByte(version);
     if (v === 0xff) {
+      // return true if we're passed an invalid version
       return true;
     }
     const versions = [this.mcu_version];
@@ -163,6 +173,7 @@ export class SmartDrive extends DeviceBase {
         ? version
         : SmartDrive.versionStringToByte(version);
     if (v === 0xff) {
+      // return true if we're passed an invalid version
       return true;
     }
     const versions = [this.ble_version];
@@ -177,6 +188,7 @@ export class SmartDrive extends DeviceBase {
         ? version
         : SmartDrive.versionStringToByte(version);
     if (v === 0xff) {
+      // return true if we're passed an invalid version
       return true;
     }
     const versions = [this.mcu_version, this.ble_version];
@@ -1040,6 +1052,8 @@ export class SmartDrive extends DeviceBase {
           onNotify: this.handleNotify.bind(this)
         });
       }
+      // only if we get here did we actually successfully connect!
+      this.lastConnectedDate = new Date();
       this.sendEvent(SmartDrive.smartdrive_connect_event);
     } catch (err) {
       // console.error('could not start notifying:', err);
@@ -1103,7 +1117,12 @@ export class SmartDrive extends DeviceBase {
     this.ableToSend = false;
     // now that we're connected, subscribe to the characteristics
     try {
+      // just because we get here doesn't mean we have a succeful
+      // connection, only within the startNotifyCharacteristics call
+      // can we know that
       await this.startNotifyCharacteristics(SmartDrive.Characteristics);
+      // TODO: update logic so that control flow is simpler and we can
+      // know here if we got a successful connection
     } catch (err) { }
   }
 
