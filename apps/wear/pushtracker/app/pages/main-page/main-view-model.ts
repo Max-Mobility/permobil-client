@@ -198,7 +198,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(this.ANDROID_MARKET_SMARTDRIVE_URI));
     application.android.foregroundActivity.startActivity(intent);
@@ -407,7 +407,7 @@ export class MainViewModel extends Observable {
           const dateKey = this.format(date, 'YYYY/MM/DD');
           if (data[dateKey] !== undefined && data[dateKey].total > 0) {
             // for now we're using total
-            value = (100.0 * data[dateKey].total) / maxDist;
+            value = Math.round((100.0 * data[dateKey].total) / maxDist);
             // @ts-ignore
             if (value) value += '%';
           }
@@ -629,7 +629,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => {});
+        await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
         // and return true letting the caller know we got the permissions
@@ -659,7 +659,7 @@ export class MainViewModel extends Observable {
       this._applyTheme('ambient');
     });
 
-    application.on('updateAmbient', () => {});
+    application.on('updateAmbient', () => { });
 
     application.on('exitAmbient', () => {
       sentryBreadCrumb('*** exitAmbient ***');
@@ -895,7 +895,7 @@ export class MainViewModel extends Observable {
         return obj.coast_time_avg > max ? obj.coast_time_avg : max;
       }, 0);
       const coastData = activityData.map(e => {
-        let value = (e.coast_time_avg * 100.0) / (maxCoast || 1);
+        let value = Math.round((e.coast_time_avg * 100.0) / (maxCoast || 1));
         // @ts-ignore
         if (value) value += '%';
         return {
@@ -959,7 +959,7 @@ export class MainViewModel extends Observable {
     this.currentPushCountDisplay = this.currentPushCount.toFixed(0);
   }
 
-  private _updateSpeedDisplay() {}
+  private _updateSpeedDisplay() { }
 
   /**
    * SmartDrive Associated App Functions

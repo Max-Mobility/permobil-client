@@ -1759,7 +1759,7 @@ export class MainViewModel extends Observable {
         return obj.battery > max ? obj.battery : max;
       }, 0);
       const batteryData = sdData.map(e => {
-        let value = (e.battery * 100.0) / (maxBattery || 1);
+        let value = Math.round((e.battery * 100.0) / (maxBattery || 1));
         // @ts-ignore
         if (value) value += '%';
         return {
@@ -1807,7 +1807,7 @@ export class MainViewModel extends Observable {
         };
       });
       distanceData.forEach(data => {
-        data.value = (100.0 * data.value) / (maxDist || 1);
+        data.value = Math.round((100.0 * data.value) / (maxDist || 1));
         // @ts-ignore
         if (data.value) data.value += '%';
       });
