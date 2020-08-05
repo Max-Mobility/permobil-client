@@ -3,7 +3,7 @@ import { File, Folder, knownFolders, path } from '@nativescript/core';
 import { getResources, setResources } from '@nativescript/core/application';
 import { device } from '@nativescript/core/platform';
 
-const getDefaultLang = function() {
+const getDefaultLang = function () {
   return device.language;
 };
 
@@ -14,7 +14,7 @@ const translations = {};
 // "~/assets/i18n"
 const i18nPath = path.join(knownFolders.currentApp().path, 'assets', 'i18n');
 
-const use = function(language?: string) {
+const use = (language?: string) => {
   if (language) {
     lang = language;
   } else {
@@ -22,7 +22,7 @@ const use = function(language?: string) {
   }
 };
 
-const languagePath = function(language: string) {
+const languagePath = (language: string) => {
   let l = language;
   if (!l.endsWith('.json')) {
     l += '.json';
@@ -34,7 +34,7 @@ const languagePath = function(language: string) {
  * Load is used when we want to load the translation files into memory
  * from disk. It updates the state of the translations object.
  */
-const load = async function(language?: string) {
+const load = async (language?: string) => {
   const languagesToLoad = [];
   if (language) {
     // load the specified language
@@ -78,7 +78,7 @@ const load = async function(language?: string) {
  * will save the new translation content to disk - overwriting the
  * original translation file.
  */
-const update = function(language: string, translation: any) {
+const update = (language: string, translation: any) => {
   // update translations
   translations[language] = translation;
   // save translation file
@@ -89,11 +89,11 @@ const update = function(language: string, translation: any) {
   });
 };
 
-const get = function(k, obj) {
+const get = (k, obj) => {
   return k.split('.').reduce((o, i) => o[i], obj);
 };
 
-const L = function(...args: any[]) {
+const L = (...args: any[]) => {
   let translated = get(args[0], translations['en']) || args[0];
   try {
     translated = get(args[0], translations[lang]) || args[0];
@@ -110,4 +110,3 @@ setResources(applicationResources);
 global.L = L;
 
 export { getDefaultLang, use, load, update, L };
-

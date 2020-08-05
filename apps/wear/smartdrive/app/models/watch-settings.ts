@@ -111,7 +111,6 @@ export class WatchSettings {
               TRANSLATE('settings.power-assist-timeout.units-short');
             break;
           case 'language':
-            console.log('this.language', this.language);
             translationKey = `languages.${this.language.toLowerCase()}`;
             displayString = TRANSLATE(translationKey);
             break;
@@ -142,7 +141,6 @@ export class WatchSettings {
         index = WatchSettings.Languages.Options.indexOf(this.language);
         index = mod(index + 1, WatchSettings.Languages.Options.length);
         this.language = WatchSettings.Languages.Options[index];
-        console.log('language increase', this.language, index);
         break;
       default:
         break;
@@ -166,7 +164,6 @@ export class WatchSettings {
         index = WatchSettings.Languages.Options.indexOf(this.language);
         index = mod(index - 1, WatchSettings.Languages.Options.length);
         this.language = WatchSettings.Languages.Options[index];
-        console.log('language decrease', this.language, index);
         break;
       default:
         break;

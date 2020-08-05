@@ -10,9 +10,12 @@ import {
 } from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import { getFile } from '@nativescript/core/http';
+import { setTimeout } from '@nativescript/core/timer';
+import { alert, confirm } from '@nativescript/core/ui/dialogs';
 import { Device, Log, wait } from '@permobil/core';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';
 import { Sentry } from 'nativescript-sentry';
+import { DataKeys } from '../../../enums';
 import { WatchSettings } from '../../../models';
 import { SettingsService, SmartDriveKinveyService } from '../../../services';
 import {
@@ -121,11 +124,47 @@ export class SettingsViewModel extends Observable {
           this._settingsService.hasSentSettings = false;
           this._settingsService.saveSettings();
           // warning / indication to the user that they've updated their settings
-          alert({
-            title: L('warnings.saved-settings.title'),
-            message: L('warnings.saved-settings.message'),
-            okButtonText: L('buttons.ok')
-          });
+          console.log('activeSettingtoChange', this.activeSettingToChange);
+          if (this.activeSettingToChange === 'language') {
+            confirm({
+              title: L('warnings.saved-settings.title'),
+              message:
+                'Language changed, the app will need to restart in order to update.',
+              okButtonText: L('buttons.ok'),
+              cancelable: true,
+              cancelButtonText: L('buttons.cancel')
+            }).then(res => {
+              if (res === true) {
+                ApplicationSettings.setString(
+                  DataKeys.APP_LANGUAGE_FILE,
+                  this._settingsService.watchSettings.language
+                );
+                sentryBreadCrumb(
+                  `User confirmed language file change ${this._settingsService.watchSettings.language}`
+                );
+                setTimeout(() => {
+                  const intent = application.android.context
+                    .getPackageManager()
+                    .getLaunchIntentForPackage(
+                      application.android.context.getPackageName()
+                    );
+                  application.android.context.startActivity(
+                    android.content.Intent.makeRestartActivityTask(
+                      intent.getComponent()
+                    )
+                  );
+
+                  java.lang.System.exit(0); // System finishes and automatically relaunches us.
+                }, 100);
+              }
+            });
+          } else {
+            alert({
+              title: L('warnings.saved-settings.title'),
+              message: L('warnings.saved-settings.message'),
+              okButtonText: L('buttons.ok')
+            });
+          }
         }
       },
       animated: false,
