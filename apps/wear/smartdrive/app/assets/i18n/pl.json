@@ -188,6 +188,7 @@
     "description": {
       "acceleration": "Przyspieszenie lub prędkość rampy SmartDrive.",
       "controlmode": "MX2+: Domyślna operacja SmartDrive oparta na gestach. W trybie sterowania MX2+ podwójne dotknięcie rozpocznie napędzanie silnika przez zwiększenie jego prędkości, pojedyncze dotknięcie wybiegnie z bieżącą prędkością, a podwójne dotknięcie spowoduje dezaktywację jazdy.\n\nMX2: W trybie sterowania MX2 SmartDrive rozpocznie jazdę po wykryciu naciśnięcia i dezaktywuje jazdę po dotknięciu. Uwaga: jest to opcja obsługi starszych wersji.\n\nMX1: W trybie sterowania MX1 SmartDrive rozpocznie jazdę po wykryciu twojego popchnięcia i przestanie jeździć po stuknięciu lub po hamowaniu uchwytami. Uwaga: jest to opcja obsługi starszych wersji.",
+      "language": "The language of the text in the SmartDrive app.",
       "maxspeed": "Maksymalna prędkość, z jaką SmartDrive może jeździć, gdy jest kontrolowany przez smartwatch.",
       "powerassistbuzzer": "Po włączeniu SmartDrive wyda sygnał dźwiękowy za każdym razem, gdy zostanie nawiązane połączenie ze zdalnego urządzenia lub gdy SwitchControl zostanie wyłączony ze stanu gotowości.",
       "powerassisttimeout": "SmartDrive MX2 automatycznie dezaktywuje wspomaganie po określonym czasie, jeśli użytkownik ma aktywne wspomaganie i jest podłączony do SmartDrive, ale nie aktywował silnika przed upływem limitu czasu.\n\nUwaga: SmartDrive MX2 automatycznie dezaktywuje wspomaganie po 1 minucie, jeśli nie jest podłączony do SmartDrive.",
@@ -199,6 +200,7 @@
     },
     "error-history": "Historia błędów",
     "information": "informacja",
+    "language": "Język",
     "max-speed": "Maksymalna prędkość",
     "pair-smartdrive": "Sparuj SmartDrive",
     "paired-to-smartdrive": "Pomyślnie sparowano ze SmartDrive.",

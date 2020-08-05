@@ -1,4 +1,13 @@
-import { ApplicationSettings, Frame, knownFolders, Observable, Page, path, ShowModalOptions, ViewBase } from '@nativescript/core';
+import {
+  ApplicationSettings,
+  Frame,
+  knownFolders,
+  Observable,
+  Page,
+  path,
+  ShowModalOptions,
+  ViewBase
+} from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import { getFile } from '@nativescript/core/http';
 import { Device, Log, wait } from '@permobil/core';
@@ -6,7 +15,12 @@ import { getDefaultLang, L, Prop } from '@permobil/nativescript';
 import { Sentry } from 'nativescript-sentry';
 import { WatchSettings } from '../../../models';
 import { SettingsService, SmartDriveKinveyService } from '../../../services';
-import { configureLayout, isNetworkAvailable, sentryBreadCrumb, _isActivityThis } from '../../../utils';
+import {
+  configureLayout,
+  isNetworkAvailable,
+  sentryBreadCrumb,
+  _isActivityThis
+} from '../../../utils';
 
 export class SettingsViewModel extends Observable {
   @Prop() insetPadding = 0;

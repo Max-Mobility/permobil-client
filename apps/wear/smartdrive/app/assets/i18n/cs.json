@@ -188,6 +188,7 @@
     "description": {
       "acceleration": "Zrychlení nebo rychlostní rampa SmartDrive.",
       "controlmode": "MX2+: Výchozí operace SmartDrive založená na gestach. V režimu ovládání MX2 začne dvojité odbočení řídit motor zvyšováním jeho rychlosti, jediné odbočení se sníží při aktuální rychlosti a dvojité odbočení deaktivuje řízení.\n\nMX2: V režimu ovládání MX2 SmartDrive začne jezdit, jakmile zjistí váš tlak, a po klepnutí deaktivuje jízdu. Vezměte prosím na vědomí, že se jedná o možnost starší podpory.\n\nMX1: V režimu ovládání MX1 začne SmartDrive jízdu, jakmile zjistí váš tlak, a zastaví jízdu, když klepnete na tlačítko nebo když zabrzdíte na držadlech. Vezměte prosím na vědomí, že se jedná o možnost starší podpory.",
+      "language": "The language of the text in the SmartDrive app.",
       "maxspeed": "Maximální rychlost, kterou SmartDrive dokáže řídit, když je ovládáte pomocí smartwatch.",
       "powerassistbuzzer": "Pokud je povoleno, SmartDrive vydá zvukový signál při každém navázání spojení ze vzdáleného zařízení nebo po přepnutí SwitchControl z pohotovostního stavu.",
       "powerassisttimeout": "SmartDrive MX2 automaticky deaktivuje posilovač napájení po stanovené době, pokud má uživatel aktivní asistenční napájení a je připojen k SmartDrive, ale neaktivoval motor před vypršením časového limitu.\n\nPoznámka: SmartDrive MX2 automaticky deaktivuje posilovač napájení po 1 minutě, pokud není připojen k SmartDrive.",
@@ -199,6 +200,7 @@
     },
     "error-history": "Historie chyb",
     "information": "Informace",
+    "language": "Jazyk",
     "max-speed": "Maximální rychlost",
     "pair-smartdrive": "Spárujte SmartDrive",
     "paired-to-smartdrive": "Úspěšně spárováno s SmartDrive.",

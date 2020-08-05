@@ -188,6 +188,7 @@
     "description": {
       "acceleration": "SmartDriveの加速または速度上昇率。",
       "controlmode": "MX2+：デフォルトは、ジェスチャベースのSmartDriveの操作。 MX2＋制御モードでは、ダブルタップで速度を上げてモーターの駆動を開始し、シングルタップで現在の速度で惰性走行し、ダブルタップで駆動を停止します。\n\nMX2：MX2制御モードでは、SmartDriveはプッシュを感知すると運転を開始し、タップすると運転を無効にします。これは以前からサポートされているオプションです。\n\nMX1：MX1制御モードでは、SmartDriveはプッシュを感知すると運転を開始し、タップするかハンドリムをブレーキすると運転を停止します。これは以前からサポートされているオプションです。",
+      "language": "The language of the text in the SmartDrive app.",
       "maxspeed": "スマートウォッチで制御されたときにSmartDriveが駆動できる最大速度。",
       "powerassistbuzzer": "有効にすると、リモートデバイスからの接続が確立されるたびに、またはSwitchControlがスタンバイ状態から解除されるたびに、SmartDriveからビープ音が鳴ります。",
       "powerassisttimeout": "パワーアシストをオンにした状態でSmartDriveに接続すると、モーターが選択した時間内に駆動されなかった場合、自動的にパワーアシストがオフになります。\n\nパワーアシストがオンになっているけどSmartDriveに接続されていない場合、パワーアシストは1分後に自動的にオフになります。",
@@ -199,6 +200,7 @@
     },
     "error-history": "エラー履歴",
     "information": "情報",
+    "language": "言語",
     "max-speed": "最大速度",
     "pair-smartdrive": "SmartDriveをペアリングする",
     "paired-to-smartdrive": "SmartDriveとのペアリングに成功しました。",

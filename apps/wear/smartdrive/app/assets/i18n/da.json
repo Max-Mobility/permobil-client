@@ -188,6 +188,7 @@
     "description": {
       "acceleration": "SmartDrive's acceleration eller hastighedsændring.",
       "controlmode": "MX2+: Standard, gestusbaseret aktivering af SmartDrive. I MX2+ kontroltilstand vil et dobbelttryk starte motoren ved at øge dens hastighed, et enkelt tryk vil holde den aktuelle hastighed, og et dobbelttryk deaktiverer kørslen.\n\nMX2: I MX2-kontroltilstand begynder SmartDrive at køre, når den registrerer dit skub, og deaktiverer kørslen, når du tapper. Bemærk, at dette er en supportindstilling fra tidligere modeller.\n\nMX1: I MX1-kontroltilstand begynder SmartDrive at køre, når den registrerer dit skub, og vil stoppe med at køre, når du tapper, eller når du bremser på drivringene. Bemærk, at dette er en supportindstilling fra tidligere modeller.",
+      "language": "The language of the text in the SmartDrive app.",
       "maxspeed": "Den maksimale hastighed SmartDrive kan opnå, når den styres af din smartwatch.",
       "powerassistbuzzer": "Når den er aktiveret, bipper SmartDrive, når der oprettes en forbindelse fra en fjernenhed, eller når SwitchControl tages ud af standbytilstand.",
       "powerassisttimeout": "Når den er tilsluttet SmartDrive med strømforsyning TIL, hvis motoren ikke er blevet kørt i den valgte tidsperiode, slukker den automatisk strømforsyningen.\n\nHvis strømforsyning er TIL, men den ikke er tilsluttet SmartDrive, slukker den automatisk for strømforsyning efter 1 minut.",
@@ -199,6 +200,7 @@
     },
     "error-history": "Fejlhistorik",
     "information": "Information",
+    "language": "Sprog",
     "max-speed": "Højeste hastighed",
     "pair-smartdrive": "Par SmartDrive",
     "paired-to-smartdrive": "Parret med SmartDrive.",

@@ -188,6 +188,7 @@
     "description": {
       "acceleration": "SmartDrive的加速或速度增加率。",
       "controlmode": "MX2+：本機預設SmartDrive姿勢控制模式。在MX2+控制模式下，敲擊兩次將通過提高馬達速度啟動馬達，再敲擊一次將會以當前速度行駛，再次敲擊兩次將停止行駛。\n\nMX2：在MX2控制模式下，SmartDrive將在感應到您的推動時開始行駛，並在您輕敲時停駛。請注意，這是既有SmartDrive的控制方式之一。\n\nMX1：在MX1控制模式下，SmartDrive將在感應到您的推動時開始行駛，並在您輕敲或您在握住手扶圈刹車時停駛。請注意，這亦是既有SmartDrive的控制方式之一。",
+      "language": "The language of the text in the SmartDrive app.",
       "maxspeed": "SmartDrive在智能手錶控制下可以達到的最高速度。",
       "powerassistbuzzer": "開啟後，SmartDrive與遠程設備建立連結時，或者當缐控退出待機狀態時，SmartDrive會發出蜂鳴聲。",
       "powerassisttimeout": "連結到助推系統開啟的SmartDrive時，如果在選定的時間內未行駛，它將自動關閉助推系統。\n\n如果助推系統開啟，但未連結到SmartDrive，則將在1分鐘後自動關閉助推系統。",
@@ -199,6 +200,7 @@
     },
     "error-history": "錯誤訊息歷史記錄",
     "information": "信息",
+    "language": "語言",
     "max-speed": "最大速度",
     "pair-smartdrive": "配對SmartDrive",
     "paired-to-smartdrive": "與SmartDrive完成配對。",

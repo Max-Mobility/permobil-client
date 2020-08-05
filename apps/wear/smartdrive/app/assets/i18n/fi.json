@@ -188,6 +188,7 @@
     "description": {
       "acceleration": "SmartDriven kiihtyvyys- tai nopeudenrampinopeus.",
       "controlmode": "MX2: SmartDriven oletusarvoinen eleperusteinen toiminta. MX2-ohjaustilassa kaksoisnapautus alkaa ajaa moottoria lisäämällä sen nopeutta, yksi napautus menee rannalle nykyisellä nopeudella ja kaksoisnapautus poistaa käytöstä ajon.\n\nMX2: MX2-ohjaustilassa SmartDrive alkaa ajaa tunteessasi työntösi ja deaktivoi ajamisen, kun napautat. Huomaa, että tämä on vanha tukivaihtoehto.\n\nMX1: MX1-ohjaustilassa SmartDrive alkaa ajaa tunteessasi työntösi ja lopettaa ajamisen, kun napautat tai jarrutat käsipyörää. Huomaa, että tämä on vanha tukivaihtoehto.",
+      "language": "The language of the text in the SmartDrive app.",
       "maxspeed": "Suurin nopeus, jolla SmartDrive voi ajaa, kun älykellosi sitä ohjaa.",
       "powerassistbuzzer": "Kun asetus on käytössä, SmartDrive antaa äänimerkin aina, kun yhteys etälaitteesta muodostetaan tai kun SwitchControl poistetaan valmiustilasta.",
       "powerassisttimeout": "SmartDrive deaktivoi virranohjauksen automaattisesti määritetyn ajan kuluttua, jos käyttäjällä on virranhallintatoiminto aktiivinen ja hän on kytketty SmartDriveen, mutta ei ole aktivoinut moottoria ennen aikakatkaisun päättymistä.\n\nHuomaa: SmartDrive deaktivoi virranohjauksen automaattisesti yhden minuutin kuluttua, jos sitä ei ole kytketty SmartDriveen.",
@@ -199,6 +200,7 @@
     },
     "error-history": "Virhehistoria",
     "information": "Tiedot",
+    "language": "Kieli",
     "max-speed": "Maksiminopeus",
     "pair-smartdrive": "Yhdistä SmartDrive",
     "paired-to-smartdrive": "Yhdistäminen onnistuneesti SmartDriveen.",

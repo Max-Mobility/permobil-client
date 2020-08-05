@@ -188,6 +188,7 @@
     "description": {
       "acceleration": "Akselerasjonen eller hastighetsøkningen for SmartDrive.",
       "controlmode": "MX2+: Standard, og anbefalt betjening av SmartDrive. I MX2+ kontrollmodus vil et dobbelt trykk starte motoren ved å øke hastigheten, et enkelt trykk vil starte motoren med gjeldende hastighet, og et dobbelt trykk vil deaktivere kjøringen.\n\nMX2: I MX2-kontrollmodus vil SmartDrive begynne å kjøre når den registrerer din kraft på drivringen, og vil deaktivere kjøringen når du trykker på enheten. Vær oppmerksom på at dette er et alternativ som fanger opp din faktiske hastighet.\n\nMX1: I MX1 kontrollmodus vil SmartDrive begynne å kjøre når den registrerer din kraft på drivringen, og vil slutte å kjøre når du trykker på den, eller når du bremser på drivringene. Vær oppmerksom på at dette er et alternativ som tar opp din hastighet.",
+      "language": "The language of the text in the SmartDrive app.",
       "maxspeed": "Maksimal hastighet for SmartDrive når den betjenes av smarturet ditt.",
       "powerassistbuzzer": "Når den er aktivert, piper SmartDrive hver gang en tilkobling fra en ekstern enhet opprettes, eller når bryterkontroll tas ut av ventemodus.",
       "powerassisttimeout": "Hvis den er koblet til SmartDrive med strømstøtte PÅ, vil motoren automatisk slå AV av hvis motoren ikke har blitt kjørt i den valgte tidsperioden.\n\nHvis strømstøtten er PÅ, men den ikke er koblet til SmartDrive, vil den automatisk slå AV-hjelpen etter 1 minutt.",
@@ -199,6 +200,7 @@
     },
     "error-history": "Feilhistorikk",
     "information": "Informasjon",
+    "language": "Språk",
     "max-speed": "Maksimal hastighet",
     "pair-smartdrive": "Tilkople SmartDrive",
     "paired-to-smartdrive": "Vellykket tilkobling til SmartDrive.",

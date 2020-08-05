@@ -188,6 +188,7 @@
     "description": {
       "acceleration": "SmartDrive's accelerations- eller hastighetsfrekvens.",
       "controlmode": "MX2+: Standard driftsläge för SmartDrive. I MX2+ driftläge kommer en dubbelknackning/klapp på drivringen för att starta motorn genom att höja hastigheten, en enda knackning/klapp på drivring kommer att låsa den aktuell hastighet och en dubbelknackning/klapp på drivring stannar motorn.\n\nMX2: I MX2 driftsläge kommer SmartDrive att börja köra när du trycker på knappen och den känner av din ökning och avaktiverar körningen när du trycker på. Observera att detta är ett val-support alternativ.\n\nMX1: I MX1-kontrollläge kommer SmartDrive att börja köra när du trycker på knappen och den känner av din ökning och kommer att sluta köra när du knackar eller när du bromsar på drivringarna. Observera att detta är ett val-support alternativ.",
+      "language": "The language of the text in the SmartDrive app.",
       "maxspeed": "Den maximala hastigheten som SmartDrive kan köra på när den styrs av din klocka.",
       "powerassistbuzzer": "När den är aktiverad piper SmartDrive varje gång en anslutning från en fjärrenhet upprättas, eller när SwitchControl tas ur vänteläget.",
       "powerassisttimeout": "När den är ansluten till SmartDrive med strömassistent ON, om motorn inte har körts under den valda tiden kommer den automatiskt att stänga av strömassistenten.\n\nOm strömhjälpen är PÅ men den inte är ansluten till SmartDrive stängs den automatiskt av efter 1 minut.",
@@ -199,6 +200,7 @@
     },
     "error-history": "Felhistorik",
     "information": "Information",
+    "language": "Språk",
     "max-speed": "Max hastighet",
     "pair-smartdrive": "Parkoppla SmartDrive",
     "paired-to-smartdrive": "Parkopplingen fungerade till SmartDrive.",

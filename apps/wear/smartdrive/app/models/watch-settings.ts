@@ -1,19 +1,44 @@
+import { mod } from '@permobil/core/src/utils';
+
 type TranslateFunction = (translationKey: string) => string;
 
 // These settings are specific to the watch - they are not sent to the
 // server or the SmartDrive
 export class WatchSettings {
+  static Languages = class {
+    static Options: string[] = [
+      'cs',
+      'da',
+      'de',
+      'en',
+      'es',
+      'fi',
+      'fr',
+      'it',
+      'ja',
+      'ko',
+      'nb',
+      'nl',
+      'pl',
+      'pt',
+      'sv',
+      'zh'
+    ];
+  };
+
   public static Defaults = {
     disableWearCheck: false,
-    powerAssistTimeoutMinutes: 5
+    powerAssistTimeoutMinutes: 5,
+    language: WatchSettings.Languages.Options[3]
   };
 
   // public members:
   disableWearCheck: boolean = WatchSettings.Defaults.disableWearCheck;
-  powerAssistTimeoutMinutes: number = WatchSettings.Defaults.powerAssistTimeoutMinutes;
+  powerAssistTimeoutMinutes: number =
+    WatchSettings.Defaults.powerAssistTimeoutMinutes;
+  language: string = WatchSettings.Defaults.language;
 
-  constructor() {
-  }
+  constructor() {}
 
   toObj(): any {
     return Object.keys(WatchSettings.Defaults).reduce((obj, key) => {
@@ -41,9 +66,14 @@ export class WatchSettings {
     }, true);
   }
 
-  getDisplayString(displayType: WatchSettings.Display, key: string, TRANSLATE: TranslateFunction): string {
+  getDisplayString(
+    displayType: WatchSettings.Display,
+    key: string,
+    TRANSLATE: TranslateFunction
+  ): string {
     key = key.toLowerCase().replace(/\W/g, '');
-    const timeSeconds = (this.powerAssistTimeoutMinutes).toFixed(0);
+    const timeSeconds = this.powerAssistTimeoutMinutes.toFixed(0);
+    let translationKey = '';
     let displayString = undefined;
     switch (displayType) {
       case WatchSettings.Display.Label:
@@ -54,6 +84,9 @@ export class WatchSettings {
           case 'powerassisttimeout':
             displayString = TRANSLATE('settings.power-assist-timeout.title');
             break;
+          case 'language':
+            displayString = TRANSLATE('settings.language');
+            break;
           default:
             break;
         }
@@ -62,14 +95,25 @@ export class WatchSettings {
         switch (key) {
           case 'wearcheck':
             if (this.disableWearCheck) {
-              displayString = TRANSLATE('settings.watch-required.values.disabled');
+              displayString = TRANSLATE(
+                'settings.watch-required.values.disabled'
+              );
             } else {
-              displayString = TRANSLATE('settings.watch-required.values.enabled');
+              displayString = TRANSLATE(
+                'settings.watch-required.values.enabled'
+              );
             }
             break;
           case 'powerassisttimeout':
-            displayString = timeSeconds + ' ' +
+            displayString =
+              timeSeconds +
+              ' ' +
               TRANSLATE('settings.power-assist-timeout.units-short');
+            break;
+          case 'language':
+            console.log('this.language', this.language);
+            translationKey = `languages.${this.language.toLowerCase()}`;
+            displayString = TRANSLATE(translationKey);
             break;
           default:
             break;
@@ -83,13 +127,22 @@ export class WatchSettings {
 
   increase(key: string, increment: number = 1): void {
     key = key.toLowerCase().replace(/\W/g, '');
+    let index = 0;
     switch (key) {
       case 'wearcheck':
         this.disableWearCheck = !this.disableWearCheck;
         break;
       case 'powerassisttimeout':
-        this.powerAssistTimeoutMinutes =
-          Math.min(this.powerAssistTimeoutMinutes + increment, 10);
+        this.powerAssistTimeoutMinutes = Math.min(
+          this.powerAssistTimeoutMinutes + increment,
+          10
+        );
+        break;
+      case 'language':
+        index = WatchSettings.Languages.Options.indexOf(this.language);
+        index = mod(index + 1, WatchSettings.Languages.Options.length);
+        this.language = WatchSettings.Languages.Options[index];
+        console.log('language increase', this.language, index);
         break;
       default:
         break;
@@ -98,13 +151,22 @@ export class WatchSettings {
 
   decrease(key: string, increment: number = 1): void {
     key = key.toLowerCase().replace(/\W/g, '');
+    let index;
     switch (key) {
       case 'wearcheck':
         this.disableWearCheck = !this.disableWearCheck;
         break;
       case 'powerassisttimeout':
-        this.powerAssistTimeoutMinutes =
-          Math.max(this.powerAssistTimeoutMinutes - increment, 1);
+        this.powerAssistTimeoutMinutes = Math.max(
+          this.powerAssistTimeoutMinutes - increment,
+          1
+        );
+        break;
+      case 'language':
+        index = WatchSettings.Languages.Options.indexOf(this.language);
+        index = mod(index - 1, WatchSettings.Languages.Options.length);
+        this.language = WatchSettings.Languages.Options[index];
+        console.log('language decrease', this.language, index);
         break;
       default:
         break;
@@ -114,6 +176,7 @@ export class WatchSettings {
 
 export namespace WatchSettings {
   export enum Display {
-    Label, Value
+    Label,
+    Value
   }
 }

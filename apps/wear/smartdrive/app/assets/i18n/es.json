@@ -188,6 +188,7 @@
     "description": {
       "acceleration": "La tasa de aceleración de velocidad del SmartDrive.",
       "controlmode": "MX2+: La operación predeterminada basada en gestos de SmartDrive. En el modo de control MX2+, con una doble palmada se iniciará la marcha aumentando la velocidad, con una palmada mantendrá la velocidad actual y haciendo una doble palmada desactivará el motor.\n\nMX2: En el modo de control MX2, el SmartDrive iniciará la marcha cuando detecte su impulso y se desactivará el motor cuando realize una palmada. Tenga en cuenta que esta es una opción de soporte heredada.\n\nMX1: En el modo de control MX1, el SmartDrive iniciará la marcha cuando detecte su impulso, y se desactivará el motor cuando realize una palmada o cuando frene los aros con la mano. Tenga en cuenta que esta es una opción de soporte heredado.",
+      "language": "The language of the text in the SmartDrive app.",
       "maxspeed": "Velocidad máxima a la que puede conducir el SmartDrive cuando lo controla con su reloj inteligente (PushTracker E2).",
       "powerassistbuzzer": "Cuando está encendido, el SmartDrive emitirá un pitido cada vez que se establezca una conexión desde un dispositivo remoto, o cuando el Botón del interruptor salga del estado de espera.",
       "powerassisttimeout": "Cuando se conecta al SmartDrive con la asistencia de energía ENCENDIDA, si el motor no se ha accionado en la cantidad de tiempo seleccionada, se apagará automáticamente.\n\nSi la asistencia de energía está ENCENDIDA pero no está conectada al SmartDrive, la APAGARÁ automáticamente después de 1 minuto.",
@@ -199,6 +200,7 @@
     },
     "error-history": "Historial de errores",
     "information": "Información",
+    "language": "Idioma",
     "max-speed": "Máxima velocidad",
     "pair-smartdrive": "Emparejando SmartDrive",
     "paired-to-smartdrive": "Emparejado con éxito al SmartDrive.",
