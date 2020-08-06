@@ -8,7 +8,7 @@ console.time('App_Start_Time');
 
 // get the user set language file, if none, we load the device.language
 const defaultLanguage = getDefaultLang();
-console.log('the default language is', defaultLanguage);
+Log.D('The default language is ', defaultLanguage);
 load(defaultLanguage);
 use(defaultLanguage);
 

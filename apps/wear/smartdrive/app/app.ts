@@ -1,4 +1,5 @@
 ﻿import * as application from '@nativescript/core/application';
+import { Log } from '@permobil/core/src';
 import { getDefaultLang, load, use } from '@permobil/nativescript';
 import { Sentry } from 'nativescript-sentry';
 
@@ -6,7 +7,7 @@ console.time('App_Start_Time');
 
 // get the user set language file, if none, we load the device.language
 const defaultLanguage = getDefaultLang();
-console.log('the default language is', defaultLanguage);
+Log.D('The default language is ', defaultLanguage);
 load(defaultLanguage);
 use(defaultLanguage);
 
