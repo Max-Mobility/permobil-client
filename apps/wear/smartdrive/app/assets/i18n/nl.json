@@ -188,6 +188,7 @@
     "description": {
       "acceleration": "De acceleratie van de SmartDrive.",
       "controlmode": "MX2+: De standaard instelling is op tikken gebaseerde werking van de SmartDrive. In de MX2+ besturingsmodus gaat na een dubbele tik de SmartDrive rijden en versnellen. Met een enkele tik wordt de huidige snelheid vastgezet. Met een dubbele tik wordt rijden gedeactiveerd.\n\nMX2: In de MX2 besturingsmodus begint de SmartDrive te rijden door de hoepels te bewegen. Met een enkele tik wordt rijden  gedeactiveerd.\nHoud er rekening mee dat dit een oudere besturingsmode is.\n\nMX1: In de MX1 besturingsmodus begint de SmartDrive te rijden door de hoepels te bewegen.\nMet een enkele tik of remmen met de hoepels wordt rijden gedeactiveerd.",
+      "language": "The language of the text in the SmartDrive app.",
       "maxspeed": "De maximale snelheid waarmee de SmartDrive kan rijden wanneer deze wordt bestuurd door uw Smartwatch.",
       "powerassistbuzzer": "Indien ingeschakeld, piept de SmartDrive telkens wanneer een verbinding vanaf een extern apparaat tot stand wordt gebracht of wanneer Schakelaarbesturung uit de stand-by status wordt gehaald.",
       "powerassisttimeout": "Als de SmartDrive is ingeschakeld, maar er wordt gedurende de ingestelde tijd niet gereden zal de SmartDrive automatisch worden uitgeschakeld.\n\nAls der Smartdrive wordt ingeschakeld maar komt er geen verbinding gemaakt worden met de SmartDrive dan schakelt deze na 1 minuut automatisch uit",
@@ -199,6 +200,7 @@
     },
     "error-history": "Foutgeschiedenis",
     "information": "Informatie",
+    "language": "Taal",
     "max-speed": "Maximale snelheid",
     "pair-smartdrive": "Koppel SmartDrive",
     "paired-to-smartdrive": "Met succes gekoppeld aan SmartDrive.",
@@ -264,7 +266,8 @@
   "warnings": {
     "saved-settings": {
       "message": "WAARSCHUWING: U MOET de gebruikershandleiding van de SmartDrive raadplegen hoe de wijzigingen van de instellingen, de werking en prestaties van de SmartDrive beïnvloeden.",
-      "title": "Gewijzigde instellingen"
+      "title": "Gewijzigde instellingen",
+      "language": "The app language has been changed."
     },
     "title": {
       "notice": "Opmerking"

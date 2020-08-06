@@ -188,6 +188,7 @@
     "description": {
       "acceleration": "A taxa de aceleração do SmartDrive.",
       "controlmode": "MX2+: A operação padrão do SmartDrive. No modo MX2+, um toque duplo inicia o movimento do motor, aumentando sua velocidade, um toque simples mantem a velocidade atual e um toque duplo desativa a direção.\n\nMX2: No modo MX2, o SmartDrive arrancará quando sentir o seu impulso na cadeira de rodas e desativar-se-á quando der um toque com o PushTracker. Note que esta é uma opção preexistente de versões anteriores.\n\nMX1: No modo de controle MX1, o SmartDrive arrancará quando sentir o seu impulso na cadeira de rodas e desativar-se-á quando travar a cadeira de rodas. Note que esta é uma opção preexistente de versões anteriores.",
+      "language": "The language of the text in the SmartDrive app.",
       "maxspeed": "A velocidade máxima a que o SmartDrive pode circular quando controlado pelo seu smartwatch.",
       "powerassistbuzzer": "Quando ativado, o SmartDrive emite um bipe sempre que uma ligação de um dispositivo remoto é estabelecida ou quando o SwitchControl sai do modo de espera.",
       "powerassisttimeout": "Quando estiver ligado ao SmartDrive com Power Assist ON, se o motor não for utilizado num determinado período de tempo, ele desativar-se-á automáticamente para Power Assist OFF.\n\nSe o Power Assist estiver ON mas não estiver ligado ao SmartDrive, será automaticamente desativado para Power Assist OFF após 1 minuto.",
@@ -199,6 +200,7 @@
     },
     "error-history": "Histórico de erros",
     "information": "Informação",
+    "language": "Língua",
     "max-speed": "Velocidade máxima",
     "pair-smartdrive": "Emparelhar o SmartDrive",
     "paired-to-smartdrive": "Emparelhado com sucesso no SmartDrive.",
@@ -264,7 +266,8 @@
   "warnings": {
     "saved-settings": {
       "message": "CUIDADO: É necessário consultar o Manual do usuário do SmartDrive para saber como a alteração das configurações afeta sua utilização e desempenho.",
-      "title": "Configurações alteradas"
+      "title": "Configurações alteradas",
+      "language": "The app language has been changed."
     },
     "title": {
       "notice": "Aviso"

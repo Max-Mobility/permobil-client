@@ -188,6 +188,7 @@
     "description": {
       "acceleration": "The acceleration or speed ramp rate of the SmartDrive.",
       "controlmode": "MX2+: The default, gesture based operation of the SmartDrive. In MX2+ Control Mode, a double tap will start driving the motor by ramping up its speed, a single tap will coast at the current speed, and a double tap will deactivate the driving.\n\nMX2: In MX2 Control Mode, the SmartDrive will start driving when it senses your push, and will deactivate driving when you tap. Please note this is a legacy-support option.\n\nMX1: In MX1 Control Mode, the SmartDrive will start driving when it senses your push, and will stop driving when you tap or when you brake on the handrims. Please note this is a legacy-support option.",
+      "language": "The language of the text in the SmartDrive app.",
       "maxspeed": "The maximum speed the SmartDrive can drive at when controlled by your smartwatch.",
       "powerassistbuzzer": "When enabled, the SmartDrive will beep any time a connection from a remote device is established, or when SwitchControl is taken out of the standby state.",
       "powerassisttimeout": "When connected to the SmartDrive with power assist ON, if the motor hasn't been driven in the selected amount of time it will automatically turn power assist OFF. \n\nIf power assist is ON but it is not connected to the SmartDrive, it will automatically turn power assist OFF after 1 minute.",
@@ -199,6 +200,7 @@
     },
     "error-history": "Error History",
     "information": "Information",
+    "language": "Language",
     "max-speed": "Max Speed",
     "pair-smartdrive": "Pair SmartDrive",
     "paired-to-smartdrive": "Successfully paired to SmartDrive.",
@@ -264,7 +266,8 @@
   "warnings": {
     "saved-settings": {
       "message": "CAUTION: You MUST consult the SmartDrive User's Manual on how changing the settings affects its operation and performance.",
-      "title": "Changed Settings"
+      "title": "Changed Settings",
+      "language": "The app language has been changed."
     },
     "title": {
       "notice": "Notice"

@@ -188,6 +188,7 @@
     "description": {
       "acceleration": "Réglage du niveau d'accélération de la SmartDrive.",
       "controlmode": "MX2+: Paramètre par défaut basé sur les mouvements de la montre. En mode de contrôle MX2+, une double tape active le moteur en augmentant sa vitesse puis une simple tape valide et maintient la vitesse. Et enfin une double tape désactive la conduite.\n\nMX2: En mode de contrôle MX2, la SmartDrive démarre lorsqu'elle détecte votre impulsion et se désactive lorsqu'une tape est détectée.\n\nMX1: En mode de contrôle MX1, la SmartDrive démarre lorsqu'elle détecte votre impulsion, et se désactive lorsqu'une tape est détectée ou lorsque vous freinez sur les mains courantes.  Veuillez noter qu'il s'agit d'une option de soutien légal.",
+      "language": "The language of the text in the SmartDrive app.",
       "maxspeed": "La vitesse maximale à laquelle la SmartDrive peut rouler lorsqu'elle est contrôlée par votre montre.",
       "powerassistbuzzer": "Lorsqu'elle est activée, la SmartDrive émet un bip à chaque fois qu'une connexion est établie avec le PushTracker E2 ou lorsque vous la démarrez par les boutons de tierce personne.",
       "powerassisttimeout": "Lorsque le Pushtracker E2 est connecté à la SmartDrive et que l'assistance électrique est activée, si le moteur n'a pas été entraîné pendant la durée sélectionnée, l'assistance électrique se désactivera automatiquement.\n\nSi l'assistance électrique est activée mais qu'elle n'est pas connectée au SmartDrive, elle désactivera automatiquement l'assistance électrique après 1 minute.",
@@ -199,6 +200,7 @@
     },
     "error-history": "Historique des erreurs",
     "information": "Information",
+    "language": "Langue",
     "max-speed": "Vitesse maximale",
     "pair-smartdrive": "Jumelage SmartDrive",
     "paired-to-smartdrive": "Couplage réussi.",
@@ -264,7 +266,8 @@
   "warnings": {
     "saved-settings": {
       "message": "ATTENTION: vous DEVEZ consulter le manuel d'utilisation de la SmartDrive pour savoir comment la modification des paramètres affecte son fonctionnement et ses performances.",
-      "title": "Paramètres modifiés"
+      "title": "Paramètres modifiés",
+      "language": "The app language has been changed."
     },
     "title": {
       "notice": "Remarque"
