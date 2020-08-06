@@ -1,132 +1,138 @@
 {
-	"about": {
-		"database": "ID del database",
-		"title": "informazioni",
-		"user-email": "la tua email",
-		"user-name": "Il tuo nome",
-		"version": "PushTracker Wear Versione dell'app OS",
-		"watch-serial-number": "Numero seriale Smartwatch"
-	},
-	"busy": {
-		"synchronizing": "Sincronizzazione ..."
-	},
-	"buttons": {
-		"back": "indietro",
-		"dismiss": "Respingere",
-		"ok": "Ok"
-	},
-	"charts": {
-		"coast": {
-			"title": "Coast Time Daily (s)"
-		},
-		"distance": {
-			"title": "Distanza percorsa quotidianamente"
-		}
-	},
-	"enhancements": {
-		"coast-time": "Tempo di costa giornaliero",
-		"distance": "Distanza giornaliera",
-		"pushes": "Spinge ogni giorno"
-	},
-	"failures": {
-		"connect": "Impossibile connettersi a",
-		"could-not-update-profile": "Impossibile aggiornare il profilo sul server Permobil.",
-		"must-wear-watch": "L'impostazione [Controlla polso] è abilitata, pertanto è necessario indossare lo smartwatch per controllare SmartDrive.",
-		"no-auth-for-saving": "Per salvare le impostazioni sul server, che è facoltativo, è necessario connettere l'app PushTracker Wear OS all'app PushTracker Mobile. Per fare ciò, segui le istruzioni nella pagina \"Impostazione dispositivo\" dell'app PushTracker Mobile.",
-		"not-connected-to-mobile": "Autenticazione non riuscita con il server Permobil. Richiesto ricollegamento all'app PushTracker Mobile.",
-		"not-fully-initialized": "Inizializzazione ancora della connessione al server Permobil. Le impostazioni verranno inviate quando possibile.",
-		"permissions": "Impossibile eseguire l'azione richiesta. Le autorizzazioni necessarie non sono state concesse.",
-		"saving-activity": "Attività di salvataggio non riuscita.",
-		"scan": "Impossibile eseguire la scansione.",
-		"title": "Avviso"
-	},
-	"goals": {
-		"coast": {
-			"units": "secondi"
-		},
-		"distance": {
-			"english": "miglia",
-			"metric": "chilometri"
-		}
-	},
-	"information": "Informazione",
-	"languages": {
-		"da": "danese",
-		"de": "Tedesco",
-		"en": "Inglese",
-		"es": "Spagnolo",
-		"fr": "Francese",
-		"it": "Italiano",
-		"ja": "giapponese",
-		"ko": "coreano",
-		"nb": "Norvegese [Bokmål]",
-		"nl": "olandese",
-		"sv": "svedese",
-		"zh": "Cinese tradizionale]"
-	},
-	"menu": {
-		"about": "Di",
-		"profile": "Profilo",
-		"title": "Menu"
-	},
-	"notifications": {
-		"foreground-service": "Permobil PushTracker sta raccogliendo la tua attività"
-	},
-	"permissions-reasons": {
-		"coarse-location": "Per connettersi con l'app PushTracker Mobile sul tuo iPhone tramite Bluetooth, ti chiediamo di consentire l'autorizzazione Posizione [ACCESS_COARSE_LOCATION] nella schermata seguente. Da questa autorizzazione, Permobil non accederà ai dati sulla tua posizione.",
-		"fine-location": "FACOLTATIVO: per misurare la distanza utilizzando il tuo smartwatch GPS abbiamo bisogno che tu autorizzi [ACCESS_FINE_LOCATION] su una delle seguenti schermate. Da questa autorizzazione, Permobil non accederà ai dati sulla tua posizione.",
-		"phone-state": "FACOLTATIVO: per accedere al numero di serie dello smartwatch, che può essere utile ai fini dell'assistenza e della garanzia, è necessario consentire l'autorizzazione del telefono [READ_PHONE_STATE] su una delle seguenti schermate. Da questa autorizzazione, Permobil non accederà al numero di telefono, alle informazioni sulla rete cellulare o ad altri dati tranne il numero di serie dello smartwatch."
-	},
-	"permissions-request": {
-		"title": "Avviso sulle autorizzazioni"
-	},
-	"profile": "Profilo",
-	"pushes": {
-		"units": "spinge"
-	},
-	"settings": {
-		"coastgoal": {
-			"description": "Il tuo obiettivo per il tempo medio di costa tra le spinte ogni giorno.",
-			"title": "Coast Time Goal",
-			"units": "S"
-		},
-		"connect-pushtracker": "Connetti l'app mobile PushTracker",
-		"distancegoal": {
-			"description": "Il tuo obiettivo per la distanza percorsa sulla sedia a rotelle ogni giorno misurata da uno SmartDrive.",
-			"title": "Distanza percorsa",
-			"units": {
-				"english": "mi",
-				"metric": "km"
-			}
-		},
-		"information": "Informazione",
-		"install-smartdrive": "Installa l'app SmartDrive MX2 Wear OS",
-		"pushsensitivity": {
-			"description": "La sensibilità del rilevamento utilizzata per contare le spinte. Più bassa è la percentuale, meno sensibile è il rilevamento di una spinta: lo 0% è il meno sensibile e pertanto rileverà meno spinte e il 100% è la più sensibile e quindi rileverà più spinte.",
-			"title": "Sensibilità alla spinta"
-		},
-		"title": "Impostazioni PushTracker",
-		"units": {
-			"description": "Il sistema di unità o unità di misura per visualizzare le misurazioni all'interno delle interfacce utente. Seleziona Imperiale [ft, mi e lbs] o Metrico [cm, km e kg].",
-			"title": "Unità",
-			"values": {
-				"english": "Imperiale",
-				"metric": "metrico"
-			}
-		}
-	},
-	"units": {
-		"distance": {
-			"english": "mi",
-			"metric": "km"
-		},
-		"english": "Imperiale",
-		"metric": "metrico"
-	},
-	"wearos-comms": {
-		"errors": {
-			"bad-authorization": "Dati di autorizzazione dell'account non validi ricevuti dall'app PushTracker Mobile. Assicurati che le informazioni del tuo account siano aggiornate e che lo smartwatch sia connesso a Internet tramite Wi-Fi o telefono.",
-			"bad-data": "Dati non validi ricevuti dall'app PushTracker Mobile. Controlla la connessione e riprova."
-		}
-	}
+  "about": {
+    "database": "ID del database",
+    "title": "informazioni",
+    "user-email": "la tua email",
+    "user-name": "Il tuo nome",
+    "version": "PushTracker Wear Versione dell'app OS",
+    "watch-serial-number": "Numero seriale Smartwatch"
+  },
+  "busy": {
+    "synchronizing": "Sincronizzazione ..."
+  },
+  "buttons": {
+    "back": "indietro",
+    "dismiss": "Respingere",
+    "ok": "Ok",
+    "cancel": "Annulla"
+  },
+  "charts": {
+    "coast": {
+      "title": "Coast Time Daily (s)"
+    },
+    "distance": {
+      "title": "Distanza percorsa quotidianamente"
+    }
+  },
+  "enhancements": {
+    "coast-time": "Tempo di costa giornaliero",
+    "distance": "Distanza giornaliera",
+    "pushes": "Spinge ogni giorno"
+  },
+  "failures": {
+    "connect": "Impossibile connettersi a",
+    "could-not-update-profile": "Impossibile aggiornare il profilo sul server Permobil.",
+    "must-wear-watch": "L'impostazione [Controlla polso] è abilitata, pertanto è necessario indossare lo smartwatch per controllare SmartDrive.",
+    "no-auth-for-saving": "Per salvare le impostazioni sul server, che è facoltativo, è necessario connettere l'app PushTracker Wear OS all'app PushTracker Mobile. Per fare ciò, segui le istruzioni nella pagina \"Impostazione dispositivo\" dell'app PushTracker Mobile.",
+    "not-connected-to-mobile": "Autenticazione non riuscita con il server Permobil. Richiesto ricollegamento all'app PushTracker Mobile.",
+    "not-fully-initialized": "Inizializzazione ancora della connessione al server Permobil. Le impostazioni verranno inviate quando possibile.",
+    "permissions": "Impossibile eseguire l'azione richiesta. Le autorizzazioni necessarie non sono state concesse.",
+    "saving-activity": "Attività di salvataggio non riuscita.",
+    "scan": "Impossibile eseguire la scansione.",
+    "title": "Avviso"
+  },
+  "goals": {
+    "coast": {
+      "units": "secondi"
+    },
+    "distance": {
+      "english": "miglia",
+      "metric": "chilometri"
+    }
+  },
+  "information": "Informazione",
+  "languages": {
+    "da": "danese",
+    "de": "Tedesco",
+    "en": "Inglese",
+    "es": "Spagnolo",
+    "fr": "Francese",
+    "it": "Italiano",
+    "ja": "giapponese",
+    "ko": "coreano",
+    "nb": "Norvegese [Bokmål]",
+    "nl": "olandese",
+    "sv": "svedese",
+    "zh": "Cinese tradizionale]"
+  },
+  "menu": {
+    "about": "Di",
+    "profile": "Profilo",
+    "title": "Menu"
+  },
+  "notifications": {
+    "foreground-service": "Permobil PushTracker sta raccogliendo la tua attività"
+  },
+  "permissions-reasons": {
+    "coarse-location": "Per connettersi con l'app PushTracker Mobile sul tuo iPhone tramite Bluetooth, ti chiediamo di consentire l'autorizzazione Posizione [ACCESS_COARSE_LOCATION] nella schermata seguente. Da questa autorizzazione, Permobil non accederà ai dati sulla tua posizione.",
+    "fine-location": "FACOLTATIVO: per misurare la distanza utilizzando il tuo smartwatch GPS abbiamo bisogno che tu autorizzi [ACCESS_FINE_LOCATION] su una delle seguenti schermate. Da questa autorizzazione, Permobil non accederà ai dati sulla tua posizione.",
+    "phone-state": "FACOLTATIVO: per accedere al numero di serie dello smartwatch, che può essere utile ai fini dell'assistenza e della garanzia, è necessario consentire l'autorizzazione del telefono [READ_PHONE_STATE] su una delle seguenti schermate. Da questa autorizzazione, Permobil non accederà al numero di telefono, alle informazioni sulla rete cellulare o ad altri dati tranne il numero di serie dello smartwatch."
+  },
+  "permissions-request": {
+    "title": "Avviso sulle autorizzazioni"
+  },
+  "profile": "Profilo",
+  "pushes": {
+    "units": "spinge"
+  },
+  "settings": {
+    "coastgoal": {
+      "description": "Il tuo obiettivo per il tempo medio di costa tra le spinte ogni giorno.",
+      "title": "Coast Time Goal",
+      "units": "S"
+    },
+    "connect-pushtracker": "Connetti l'app mobile PushTracker",
+    "distancegoal": {
+      "description": "Il tuo obiettivo per la distanza percorsa sulla sedia a rotelle ogni giorno misurata da uno SmartDrive.",
+      "title": "Distanza percorsa",
+      "units": {
+        "english": "mi",
+        "metric": "km"
+      }
+    },
+    "information": "Informazione",
+    "install-smartdrive": "Installa l'app SmartDrive MX2 Wear OS",
+    "language": {
+      "description": "The language of the text in the app.",
+      "title": "Language",
+      "change": "The app language has been changed."
+    },
+    "pushsensitivity": {
+      "description": "La sensibilità del rilevamento utilizzata per contare le spinte. Più bassa è la percentuale, meno sensibile è il rilevamento di una spinta: lo 0% è il meno sensibile e pertanto rileverà meno spinte e il 100% è la più sensibile e quindi rileverà più spinte.",
+      "title": "Sensibilità alla spinta"
+    },
+    "title": "Impostazioni PushTracker",
+    "units": {
+      "description": "Il sistema di unità o unità di misura per visualizzare le misurazioni all'interno delle interfacce utente. Seleziona Imperiale [ft, mi e lbs] o Metrico [cm, km e kg].",
+      "title": "Unità",
+      "values": {
+        "english": "Imperiale",
+        "metric": "metrico"
+      }
+    }
+  },
+  "units": {
+    "distance": {
+      "english": "mi",
+      "metric": "km"
+    },
+    "english": "Imperiale",
+    "metric": "metrico"
+  },
+  "wearos-comms": {
+    "errors": {
+      "bad-authorization": "Dati di autorizzazione dell'account non validi ricevuti dall'app PushTracker Mobile. Assicurati che le informazioni del tuo account siano aggiornate e che lo smartwatch sia connesso a Internet tramite Wi-Fi o telefono.",
+      "bad-data": "Dati non validi ricevuti dall'app PushTracker Mobile. Controlla la connessione e riprova."
+    }
+  }
 }

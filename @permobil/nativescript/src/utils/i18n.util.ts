@@ -1,10 +1,14 @@
 require('globals');
 import { File, Folder, knownFolders, path } from '@nativescript/core';
 import { getResources, setResources } from '@nativescript/core/application';
+import * as AppSettings from '@nativescript/core/application-settings';
 import { device } from '@nativescript/core/platform';
+import { DataKeys } from '../../../core';
 
-const getDefaultLang = function () {
-  return device.language;
+// Long string that will be the unique app-settings key across multiple apps for the i18n language file the user has set
+
+const getDefaultLang = () => {
+  return AppSettings.getString(DataKeys.APP_LANGUAGE_FILE, device.language);
 };
 
 // The current translation object

@@ -1,9 +1,15 @@
-import { EventData, Observable, Page, ShowModalOptions } from '@nativescript/core';
+import {
+  EventData,
+  Observable,
+  Page,
+  ShowModalOptions
+} from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
-import { alert } from '@nativescript/core/ui/dialogs';
+import { device } from '@nativescript/core/platform';
+import { alert, confirm } from '@nativescript/core/ui/dialogs';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
-import { Log } from '@permobil/core';
+import { DataKeys as PermobilDataKeys, Log } from '@permobil/core';
 import { L, Prop } from '@permobil/nativescript';
 import * as LS from 'nativescript-localstorage';
 import { DataKeys } from '../../../enums';
@@ -71,7 +77,48 @@ export class ChangeSettingsViewModel extends Observable {
   onConfirmChangesTap() {
     // SAVE THE VALUE to local data for the setting user has selected
     this.saveSettings();
-    if (
+    // if user is changing the language we need to confirm the change with them
+    // then restart the app to force the language change app wide
+    if (this.activeSettingToChange === 'language') {
+      confirm({
+        title: L('settings.information'),
+        message: L('settings.language.change'),
+        okButtonText: L('buttons.ok'),
+        cancelButtonText: L('buttons.cancel'),
+        cancelable: true
+      }).then(res => {
+        if (res === true) {
+          appSettings.setString(
+            PermobilDataKeys.APP_LANGUAGE_FILE,
+            this._settings.language
+          );
+          sentryBreadCrumb(
+            `User confirmed language file change ${this._settings.language}`
+          );
+          setTimeout(() => {
+            const intent = application.android.context
+              .getPackageManager()
+              .getLaunchIntentForPackage(
+                application.android.context.getPackageName()
+              );
+            application.android.context.startActivity(
+              android.content.Intent.makeRestartActivityTask(
+                intent.getComponent()
+              )
+            );
+
+            java.lang.System.exit(0); // System finishes and automatically relaunches us.
+          }, 100);
+        } else {
+          // revert back the watch settings language if the user cancels the change
+          this._settings.language = appSettings.getString(
+            PermobilDataKeys.APP_LANGUAGE_FILE,
+            device.language
+          );
+          this.saveSettings();
+        }
+      });
+    } else if (
       this.activeSettingToChange !== 'watchrequired' &&
       this.activeSettingToChange !== 'units' &&
       this.activeSettingToChange !== 'pushsensitivity'
@@ -139,15 +186,14 @@ export class ChangeSettingsViewModel extends Observable {
           value *= 1.609;
         }
         this.changeSettingKeyValue = value.toFixed(1) + ' ';
-        translationKey = 'settings.distancegoal.units.' + this._settings.units;
+        translationKey = `settings.distancegoal.units.${this._settings.units}`;
         this.changeSettingKeyValue += L(translationKey);
         break;
       case 'height':
         this.changeSettingKeyValue = this._settings.getHeightDisplay();
         break;
       case 'units':
-        translationKey =
-          'settings.units.values.' + this._settings.units.toLowerCase();
+        translationKey = `settings.units.values.${this._settings.units.toLowerCase()}`;
         this.changeSettingKeyValue = L(translationKey);
         return;
       case 'weight':
@@ -156,8 +202,9 @@ export class ChangeSettingsViewModel extends Observable {
           value *= 2.20462;
         }
         this.changeSettingKeyValue = Math.round(value) + ' ';
-        translationKey = 'settings.weight.units.' + this._settings.units;
-        this.changeSettingKeyValue += L(translationKey);
+        this.changeSettingKeyValue += L(
+          `settings.weight.units.${this._settings.units}`
+        );
         break;
       case 'watchrequired':
         if (this._disableWearCheck) {
@@ -169,6 +216,11 @@ export class ChangeSettingsViewModel extends Observable {
             'settings.watchrequired.values.enabled'
           );
         }
+        break;
+      case 'language':
+        this.changeSettingKeyValue = L(
+          `language-list.${this._settings.language.toLowerCase()}`
+        );
         break;
       default:
         break;
