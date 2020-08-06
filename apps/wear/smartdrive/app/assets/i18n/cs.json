@@ -266,7 +266,8 @@
   "warnings": {
     "saved-settings": {
       "message": "UPOZORNĚNÍ: MUSÍTE se podívat do uživatelské příručky SmartDrive o tom, jak změna nastavení ovlivňuje jeho provoz a výkon.",
-      "title": "Změněné nastavení"
+      "title": "Změněné nastavení",
+      "language": "The app language has been changed."
     },
     "title": {
       "notice": "Oznámení"

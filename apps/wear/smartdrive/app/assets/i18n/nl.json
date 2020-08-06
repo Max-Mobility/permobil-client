@@ -266,7 +266,8 @@
   "warnings": {
     "saved-settings": {
       "message": "WAARSCHUWING: U MOET de gebruikershandleiding van de SmartDrive raadplegen hoe de wijzigingen van de instellingen, de werking en prestaties van de SmartDrive beïnvloeden.",
-      "title": "Gewijzigde instellingen"
+      "title": "Gewijzigde instellingen",
+      "language": "The app language has been changed."
     },
     "title": {
       "notice": "Opmerking"

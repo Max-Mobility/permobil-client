@@ -266,7 +266,8 @@
   "warnings": {
     "saved-settings": {
       "message": "주의 : 설정 변경에 따른 작동 및 성능에 미치는 영향에 대해서는 반드시 스마트드라이브 사용 설명서를 참조하십시오.",
-      "title": "변경된 설정"
+      "title": "변경된 설정",
+      "language": "The app language has been changed."
     },
     "title": {
       "notice": "주의사항"

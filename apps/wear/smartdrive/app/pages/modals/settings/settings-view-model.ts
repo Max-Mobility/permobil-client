@@ -10,6 +10,7 @@ import {
 } from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import { getFile } from '@nativescript/core/http';
+import { device } from '@nativescript/core/platform';
 import { setTimeout } from '@nativescript/core/timer';
 import { alert, confirm } from '@nativescript/core/ui/dialogs';
 import { Device, Log, wait } from '@permobil/core';
@@ -128,11 +129,10 @@ export class SettingsViewModel extends Observable {
           if (this.activeSettingToChange === 'language') {
             confirm({
               title: L('warnings.saved-settings.title'),
-              message:
-                'Language changed, the app will need to restart in order to update.',
+              message: L('warnings.saved-settings.language'),
               okButtonText: L('buttons.ok'),
-              cancelable: true,
-              cancelButtonText: L('buttons.cancel')
+              cancelButtonText: L('buttons.cancel'),
+              cancelable: true
             }).then(res => {
               if (res === true) {
                 ApplicationSettings.setString(
@@ -156,6 +156,13 @@ export class SettingsViewModel extends Observable {
 
                   java.lang.System.exit(0); // System finishes and automatically relaunches us.
                 }, 100);
+              } else {
+                // revert back the watch settings language if the user cancels the change
+                this._settingsService.watchSettings.language = ApplicationSettings.getString(
+                  DataKeys.APP_LANGUAGE_FILE,
+                  device.language
+                );
+                this._settingsService.saveSettings();
               }
             });
           } else {

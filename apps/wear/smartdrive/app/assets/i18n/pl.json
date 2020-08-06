@@ -266,7 +266,8 @@
   "warnings": {
     "saved-settings": {
       "message": "PRZESTROGA: MUSISZ zapoznać się z instrukcją obsługi SmartDrive, aby dowiedzieć się, w jaki sposób zmiana ustawień wpływa na jej działanie i wydajność.",
-      "title": "Zmienione ustawienia"
+      "title": "Zmienione ustawienia",
+      "language": "The app language has been changed."
     },
     "title": {
       "notice": "Ogłoszenie"

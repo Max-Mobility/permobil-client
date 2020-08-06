@@ -266,7 +266,8 @@
   "warnings": {
     "saved-settings": {
       "message": "VAROITUS: Sinun on Tutustu SmartDrive-käyttöoppaaseen kuinka asetusten muuttaminen vaikuttaa laitteen toimintaan ja suorituskykyyn.",
-      "title": "Muutetut asetukset"
+      "title": "Muutetut asetukset",
+      "language": "The app language has been changed."
     },
     "title": {
       "notice": "Ilmoitus"

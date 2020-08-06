@@ -266,7 +266,8 @@
   "warnings": {
     "saved-settings": {
       "message": "ATTENTION: vous DEVEZ consulter le manuel d'utilisation de la SmartDrive pour savoir comment la modification des paramètres affecte son fonctionnement et ses performances.",
-      "title": "Paramètres modifiés"
+      "title": "Paramètres modifiés",
+      "language": "The app language has been changed."
     },
     "title": {
       "notice": "Remarque"

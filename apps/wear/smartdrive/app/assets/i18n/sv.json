@@ -266,7 +266,8 @@
   "warnings": {
     "saved-settings": {
       "message": "FÖRSIKTIGHET: Du MÅSTE läsa SmartDrive bruksanvisningen för hur ändring av inställningar kan påverkar dess funktion och prestanda.",
-      "title": "Ändrade inställningar"
+      "title": "Ändrade inställningar",
+      "language": "The app language has been changed."
     },
     "title": {
       "notice": "Meddelande"

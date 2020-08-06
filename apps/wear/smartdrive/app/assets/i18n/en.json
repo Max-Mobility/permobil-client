@@ -266,7 +266,8 @@
   "warnings": {
     "saved-settings": {
       "message": "CAUTION: You MUST consult the SmartDrive User's Manual on how changing the settings affects its operation and performance.",
-      "title": "Changed Settings"
+      "title": "Changed Settings",
+      "language": "The app language has been changed."
     },
     "title": {
       "notice": "Notice"

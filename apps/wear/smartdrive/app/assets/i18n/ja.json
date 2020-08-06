@@ -266,7 +266,8 @@
   "warnings": {
     "saved-settings": {
       "message": "注意：設定の変更がその操作と動作に与える影響については、SmartDriveユーザーマニュアルを参照する必要があります。",
-      "title": "変更された設定"
+      "title": "変更された設定",
+      "language": "The app language has been changed."
     },
     "title": {
       "notice": "通知"

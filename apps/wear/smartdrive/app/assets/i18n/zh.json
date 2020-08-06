@@ -266,7 +266,8 @@
   "warnings": {
     "saved-settings": {
       "message": "注意：您必須參考SmartDrive用戶手冊，了解更改設定如何影響其操作和性能。",
-      "title": "更改了設定"
+      "title": "更改了設定",
+      "language": "The app language has been changed."
     },
     "title": {
       "notice": "注意"
