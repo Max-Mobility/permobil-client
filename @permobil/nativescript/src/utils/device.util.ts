@@ -1,5 +1,5 @@
-import * as application from '@nativescript/core/application';
 import { isIOS } from '@nativescript/core';
+import * as application from '@nativescript/core/application';
 import { hasPermission } from 'nativescript-permissions';
 
 /**
