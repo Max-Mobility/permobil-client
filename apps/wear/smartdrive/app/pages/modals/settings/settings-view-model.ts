@@ -125,7 +125,6 @@ export class SettingsViewModel extends Observable {
           this._settingsService.hasSentSettings = false;
           this._settingsService.saveSettings();
           // warning / indication to the user that they've updated their settings
-          console.log('activeSettingtoChange', this.activeSettingToChange);
           if (this.activeSettingToChange === 'language') {
             confirm({
               title: L('warnings.saved-settings.title'),
