@@ -184,7 +184,6 @@ export namespace Profile {
           index = Profile.Settings.Languages.Options.indexOf(this.language);
           index = mod(index + 1, Profile.Settings.Languages.Options.length);
           this.language = Profile.Settings.Languages.Options[index];
-          console.log('increase language', this.language, index);
           break;
       }
     }
@@ -226,8 +225,6 @@ export namespace Profile {
           index = Profile.Settings.Languages.Options.indexOf(this.language);
           index = mod(index - 1, Profile.Settings.Languages.Options.length);
           this.language = Profile.Settings.Languages.Options[index];
-          console.log('decrease language', this.language, index);
-
           break;
       }
     }
