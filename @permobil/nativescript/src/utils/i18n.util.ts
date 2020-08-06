@@ -3,7 +3,7 @@ import { File, Folder, knownFolders, path } from '@nativescript/core';
 import { getResources, setResources } from '@nativescript/core/application';
 import * as AppSettings from '@nativescript/core/application-settings';
 import { device } from '@nativescript/core/platform';
-import { DataKeys } from '../../../core';
+import { DataKeys } from '../../../core/src/enums';
 
 // Long string that will be the unique app-settings key across multiple apps for the i18n language file the user has set
 
