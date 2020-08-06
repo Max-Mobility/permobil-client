@@ -218,7 +218,7 @@ export namespace Profile {
           this.weight = Math.max(this.weight - this.getWeightIncrement(), 0);
           break;
         case 'units':
-          index = Profile.Units.Options.indexOf(this.language);
+          index = Profile.Units.Options.indexOf(this.units);
           index = mod(index - 1, Profile.Units.Options.length);
           this.units = Profile.Units.Options[index];
           break;
