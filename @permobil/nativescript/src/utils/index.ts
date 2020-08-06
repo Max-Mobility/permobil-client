@@ -1,3 +1,4 @@
+export * from './android.util';
 export * from './device.util';
 export * from './i18n.util';
 export * from './ios.util';
