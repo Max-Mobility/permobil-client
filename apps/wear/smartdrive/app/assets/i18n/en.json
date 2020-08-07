@@ -272,5 +272,23 @@
     "title": {
       "notice": "Notice"
     }
+  },
+  "language-list": {
+    "cs": "Čeština",
+    "da": "Dansk",
+    "de": "Deutsche",
+    "en": "English",
+    "es": "Español",
+    "fi": "Suomalainen",
+    "fr": "Français",
+    "it": "Italiano",
+    "ja": "日本人",
+    "ko": "한국어",
+    "nb": "Norsk Bokmål",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Português",
+    "sv": "Svenska",
+    "zh": "中國傳統的"
   }
 }

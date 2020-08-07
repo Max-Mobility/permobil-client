@@ -4,3 +4,4 @@
  * will be defaulted to use the safe area insets for iOS.
  */
 export declare function addBottomSafeAreaForIOS(): void;
+export declare function getDeviceSerialNumber(): any;
