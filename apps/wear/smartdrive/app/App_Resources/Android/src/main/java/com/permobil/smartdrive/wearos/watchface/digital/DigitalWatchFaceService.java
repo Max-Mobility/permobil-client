@@ -378,7 +378,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 sdRimColor = charcoalColor;
                 timeSize = 20;
                 amPmSize = 14;
-                dateSize = 20;
+                dateSize = 15;
             }
             if (watchBatteryCircle != null) {
                 watchBatteryCircle.setBarColor(watchBarColor);
@@ -645,7 +645,12 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             // we will toggle between the time and date just like we do in the SmartDrive WearOS app
             Rect timeTableRowRect = new Rect();
             timeTableRow.getGlobalVisibleRect(timeTableRowRect);
-            if (y < timeTableRowRect.bottom && y > timeTableRowRect.top && x > timeTableRowRect.left && x < timeTableRowRect.right) {
+            Rect dateTableRowRect = new Rect();
+            dateTableRow.getGlobalVisibleRect(dateTableRowRect);
+
+            if (y < timeTableRowRect.bottom && y > timeTableRowRect.top && x > timeTableRowRect.left && x < timeTableRowRect.right
+                    || y < dateTableRowRect.bottom && y > dateTableRowRect.top && x > dateTableRowRect.left && x < dateTableRowRect.right
+            ) {
                 toggleTimeAndDateTextDisplay();
             }
 
@@ -670,7 +675,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             isShowingTimeText = !isShowingTimeText;
             if (isShowingTimeText) {
                 timeTableRow.setVisibility(View.VISIBLE);
-                dateTableRow.setVisibility(View.INVISIBLE);
+                dateTableRow.setVisibility(View.GONE);
             } else {
                 timeTableRow.setVisibility(View.GONE);
                 dateTableRow.setVisibility(View.VISIBLE);
@@ -691,7 +696,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 String dateString = dateFormat.format(today);
                 dateTextView.setText(dateString);
                 dateTableRow.setVisibility(View.VISIBLE);
-                timeTableRow.setVisibility(View.GONE);
+                timeTableRow.setVisibility(View.GONE); // hide the time if not showing
                 return;
             }
 
@@ -745,7 +750,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 dateTextView.setText(dateString);
             } else {
                 // hide date when not in ambient
-                dateTableRow.setVisibility(View.INVISIBLE);
+                dateTableRow.setVisibility(View.GONE);
             }
 
             // handle color of text depending if ambient mode
