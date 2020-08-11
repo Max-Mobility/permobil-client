@@ -93,29 +93,35 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/smartDriveBtnTableRow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal">
+                android:gravity="center|center_horizontal|center_vertical"
+                android:hapticFeedbackEnabled="true">
 
                 <ImageButton
                     android:id="@+id/smartDriveBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_gravity="center|center_horizontal|center_vertical"
+                    android:adjustViewBounds="true"
                     android:background="@drawable/action_item_background"
                     android:contentDescription="@string/smartdrivebutton"
+                    android:cropToPadding="true"
                     android:hapticFeedbackEnabled="true"
                     android:scaleType="centerInside"
                     android:src="@drawable/smartdrive_button" />
             </TableRow>
 
             <TableRow
+                android:id="@+id/timeTableRow"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="bottom|center|center_horizontal|center_vertical">
+                android:gravity="center_horizontal|center_vertical">
 
                 <!-- ignore the useless parent warning here, the layout wont align with just table row to the design -->
                 <LinearLayout
+                    android:id="@+id/timeLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center|center_horizontal"
@@ -127,7 +133,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:gravity="right|bottom"
+                        android:gravity="bottom|end"
                         android:textSize="18sp" />
 
                     <TextView
@@ -135,8 +141,8 @@
                         android:layout_width="6dp"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:text="@string/colon"
                         android:gravity="center_horizontal|bottom"
+                        android:text="@string/colon"
                         android:textSize="18sp" />
 
                     <TextView
@@ -144,31 +150,43 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:gravity="left|bottom"
+                        android:gravity="bottom|start"
                         android:textSize="18sp" />
+
                     <TextView
                         android:id="@+id/amPmTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:gravity="right|bottom"
+                        android:gravity="bottom|end"
                         android:textSize="12sp" />
                 </LinearLayout>
-
             </TableRow>
 
             <TableRow
-                android:layout_width="wrap_content"
+                android:id="@+id/dateTableRow"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal|top">
+                android:gravity="center_horizontal|center_vertical">
 
-                <TextView
-                    android:id="@+id/dateTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:gravity="center"
-                    android:textSize="12sp" />
+                <!-- ignore the useless parent warning here, the layout wont align with just table row to the design -->
+                <LinearLayout
+                    android:id="@+id/dateLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center|center_horizontal"
+                    android:orientation="horizontal"
+                    tools:ignore="UselessParent">
+
+                    <TextView
+                        android:id="@+id/dateTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center"
+                        android:soundEffectsEnabled="true"
+                        android:textSize="12sp" />
+                </LinearLayout>
             </TableRow>
 
         </TableLayout>

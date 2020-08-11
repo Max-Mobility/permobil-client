@@ -1,6 +1,7 @@
 package com.permobil.smartdrive.wearos.watchface.digital;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -63,6 +64,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
     private int whiteColor;
     private int ambientColor;
     private SharedPreferences sharedPreferences;
+    private boolean isShowingTimeText = true;
 
     /**
      * Update rate in milliseconds for normal (not ambient and not mute) mode. We update twice
@@ -155,6 +157,10 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         TextView dateTextView;
         @BindView(R.id.spaceTableRow)
         TableRow spaceTableRow;
+        @BindView(R.id.timeTableRow)
+        TableRow timeTableRow;
+        @BindView(R.id.dateTableRow)
+        TableRow dateTableRow;
 
         /**
          * Alpha value for drawing time when in mute mode.
@@ -303,7 +309,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             // Lay the view out at the rect width and height
             mRelativeLayout.layout(0, 0, bounds.width(), bounds.height());
             // update the children of mRelativeLayout before drawing them
-            drawTimeStrings();
+            drawDateTimeStrings();
             // now draw everything
             mRelativeLayout.draw(canvas);
 
@@ -352,6 +358,8 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 dateSize = 20;
                 // always draw the colon with the time in ambient mode
                 colonTextView.setVisibility(View.VISIBLE);
+                timeTableRow.setVisibility(View.VISIBLE);
+                dateTableRow.setVisibility(View.VISIBLE); // always show the date when in ambient
             } else {
                 int oceanColor = res.getColor(R.color.permobil_ocean, theme);
                 int skyColor = res.getColor(R.color.permobil_sky, theme);
@@ -368,9 +376,9 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 watchRimColor = charcoalColor;
                 sdBarColor = skyColor;
                 sdRimColor = charcoalColor;
-                timeSize = 22;
+                timeSize = 20;
                 amPmSize = 14;
-                dateSize = 12;
+                dateSize = 20;
             }
             if (watchBatteryCircle != null) {
                 watchBatteryCircle.setBarColor(watchBarColor);
@@ -506,6 +514,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             Log.d(TAG, "onApplyWindowInsets: " + (insets.isRound() ? "round" : "square"));
         }
 
+        @SuppressLint("MissingPermission")
         private void initSentrySetup() {
             // Setup Sentry logging, uses `sentry.properties`
             Sentry.init();
@@ -632,6 +641,14 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 openSmartDriveAppOrPlayStore();
             }
 
+            // check if user is tapping the time/date textview of the watchface layout
+            // we will toggle between the time and date just like we do in the SmartDrive WearOS app
+            Rect timeTableRowRect = new Rect();
+            timeTableRow.getGlobalVisibleRect(timeTableRowRect);
+            if (y < timeTableRowRect.bottom && y > timeTableRowRect.top && x > timeTableRowRect.left && x < timeTableRowRect.right) {
+                toggleTimeAndDateTextDisplay();
+            }
+
             return -1;
         }
 
@@ -648,8 +665,35 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             }
         }
 
-        private void drawTimeStrings() {
+        private void toggleTimeAndDateTextDisplay() {
+            Log.d(TAG, "toggling time and date text display: " + isShowingTimeText);
+            isShowingTimeText = !isShowingTimeText;
+            if (isShowingTimeText) {
+                timeTableRow.setVisibility(View.VISIBLE);
+                dateTableRow.setVisibility(View.INVISIBLE);
+            } else {
+                timeTableRow.setVisibility(View.GONE);
+                dateTableRow.setVisibility(View.VISIBLE);
+            }
+        }
+
+        private void drawDateTimeStrings() {
             boolean is24Hour = DateFormat.is24HourFormat(DigitalWatchFaceService.this);
+
+            // if we are showing the date on the main watch face in active mode
+            // then we will ONLY set the date text view and then hide the TimeTableRow
+            if (!isShowingTimeText) {
+                // we are showing the date so we do NOT need to calculate the time strings
+                // set the date string
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+                dateFormat.setTimeZone(TimeZone.getDefault());
+                Date today = mCalendar.getTime();
+                String dateString = dateFormat.format(today);
+                dateTextView.setText(dateString);
+                dateTableRow.setVisibility(View.VISIBLE);
+                timeTableRow.setVisibility(View.GONE);
+                return;
+            }
 
             // Show colons for the first half of each second so the colons blink on when the time updates.
             // always draw the colon during ambient mode for time display
@@ -684,24 +728,24 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             // Set the am/pm.
             if (!is24Hour) {
                 String value = DateUtils.getAmPmString(mCalendar.get(Calendar.AM_PM));
-                amPmTextView.setText(" " + value);
+                amPmTextView.setText(String.format(" %s", value));
                 amPmTextView.setVisibility(View.VISIBLE);
             } else {
-                amPmTextView.setVisibility(View.GONE);
+                amPmTextView.setVisibility(View.INVISIBLE);
             }
 
             if (isInAmbientMode()) {
                 // show the date view when in ambient
-                dateTextView.setVisibility(View.VISIBLE);
+                dateTableRow.setVisibility(View.VISIBLE);
                 // set the date string
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
                 dateFormat.setTimeZone(TimeZone.getDefault());
                 Date today = mCalendar.getTime();
                 String dateString = dateFormat.format(today);
                 dateTextView.setText(dateString);
             } else {
                 // hide date when not in ambient
-                dateTextView.setVisibility(View.INVISIBLE);
+                dateTableRow.setVisibility(View.INVISIBLE);
             }
 
             // handle color of text depending if ambient mode
