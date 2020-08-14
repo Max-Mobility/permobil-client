@@ -135,6 +135,11 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
     }
 
     public class Engine extends CanvasWatchFaceService.Engine {
+        Engine() {
+            // Sets useHardwareCanvas to true to request hardware acceleration
+            super(true);
+        }
+
         private static final int MSG_UPDATE_TIME = 0;
         // Gets our view instances in our layout bound with ButterKnife
         @BindView(R.id.batteryIcon)
