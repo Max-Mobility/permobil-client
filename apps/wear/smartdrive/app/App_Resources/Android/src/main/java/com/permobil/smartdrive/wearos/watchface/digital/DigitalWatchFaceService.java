@@ -368,9 +368,9 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 watchRimColor = transparentColor;
                 sdBarColor = ambientColor;
                 sdRimColor = transparentColor;
-                timeSize = 48;
+                timeSize = 20;
                 amPmSize = 30;
-                dateSize = 20;
+                dateSize = 14;
                 // always draw the colon with the time in ambient mode
                 colonTextView.setVisibility(View.VISIBLE);
                 timeTableRow.setVisibility(View.VISIBLE);
@@ -387,13 +387,22 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 if (smartDriveBtn != null) {
                     smartDriveBtn.setVisibility(View.VISIBLE);
                 }
+
+                if (isShowingTimeText) {
+                    timeTableRow.setVisibility(View.VISIBLE);
+                    dateTableRow.setVisibility(View.GONE);
+                } else {
+                    timeTableRow.setVisibility(View.GONE);
+                    dateTableRow.setVisibility(View.VISIBLE);
+                }
+
                 watchBarColor = oceanColor;
                 watchRimColor = charcoalColor;
                 sdBarColor = skyColor;
                 sdRimColor = charcoalColor;
                 timeSize = 20;
                 amPmSize = 14;
-                dateSize = 15;
+                dateSize = 14;
             }
             if (watchBatteryCircle != null) {
                 watchBatteryCircle.setBarColor(watchBarColor);
