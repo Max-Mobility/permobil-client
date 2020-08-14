@@ -96,18 +96,18 @@
                 android:id="@+id/smartDriveBtnTableRow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clipToPadding="true"
                 android:gravity="center|center_horizontal|center_vertical"
-                android:hapticFeedbackEnabled="true">
+                android:orientation="horizontal">
 
                 <ImageButton
                     android:id="@+id/smartDriveBtn"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center|center_horizontal|center_vertical"
                     android:adjustViewBounds="true"
                     android:background="@drawable/action_item_background"
                     android:contentDescription="@string/smartdrivebutton"
-                    android:cropToPadding="true"
                     android:hapticFeedbackEnabled="true"
                     android:scaleType="centerInside"
                     android:src="@drawable/smartdrive_button" />
@@ -189,7 +189,7 @@
                         android:gravity="center"
                         android:soundEffectsEnabled="true"
                         android:textAlignment="center"
-                        android:textSize="14sp" />
+                        android:textSize="18sp" />
                 </LinearLayout>
             </TableRow>
 

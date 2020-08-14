@@ -25,11 +25,13 @@ import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
 import android.text.format.DateFormat;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -139,6 +141,8 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             // Sets useHardwareCanvas to true to request hardware acceleration
             super(true);
         }
+
+        private DisplayMetrics metrics = getResources().getDisplayMetrics();
 
         private static final int MSG_UPDATE_TIME = 0;
         // Gets our view instances in our layout bound with ButterKnife
@@ -315,6 +319,12 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             mRelativeLayout.layout(0, 0, bounds.width(), bounds.height());
             // update the children of mRelativeLayout before drawing them
             drawDateTimeStrings();
+
+            // Size the SmartDriveButton based on the screen width pixels to 75%
+            ViewGroup.LayoutParams sdBtnParams = smartDriveBtn.getLayoutParams();
+            sdBtnParams.width = (int) (metrics.widthPixels * 0.75);
+            smartDriveBtn.setLayoutParams(sdBtnParams);
+
             // now draw everything
             mRelativeLayout.draw(canvas);
 
