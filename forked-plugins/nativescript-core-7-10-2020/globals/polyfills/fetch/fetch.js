@@ -9,6 +9,6 @@ polyfill_helpers_1.installPolyfills('fetch', [
   'fetch',
   'Headers',
   'Request',
-  'Response',
+  'Response'
 ]);
 //# sourceMappingURL=fetch.js.map

@@ -131,7 +131,7 @@ function convertHSLToRGBColor(hue, saturation, lightness) {
   return {
     r: Math.round(r * 0xff),
     g: Math.round(g * 0xff),
-    b: Math.round(b * 0xff),
+    b: Math.round(b * 0xff)
   };
 }
 exports.convertHSLToRGBColor = convertHSLToRGBColor;
@@ -399,7 +399,7 @@ var backgroundRepeatKeywords = new Set([
   'repeat',
   'repeat-x',
   'repeat-y',
-  'no-repeat',
+  'no-repeat'
 ]);
 function parseRepeat(value, start, keyword) {
   if (start === void 0) {
@@ -466,7 +466,7 @@ var angleUnitsToRadMap = {
   },
   turn: function (start, end, turn) {
     return { start: start, end: end, value: turn * Math.PI * 2 };
-  },
+  }
 };
 function parseAngle(value, start) {
   if (start === void 0) {
@@ -510,13 +510,13 @@ function parseBackgroundSize(value, start, keyword) {
       return {
         start: start,
         end: end,
-        value: { x: firstLength.value, y: secondLength.value },
+        value: { x: firstLength.value, y: secondLength.value }
       };
     } else {
       return {
         start: start,
         end: end,
-        value: { x: firstLength.value, y: 'auto' },
+        value: { x: firstLength.value, y: 'auto' }
       };
     }
   }
@@ -531,7 +531,7 @@ var backgroundPositionKeywordsDirection = {
   right: 'x',
   center: 'center',
   top: 'y',
-  bottom: 'y',
+  bottom: 'y'
 };
 function parseBackgroundPosition(text, start, keyword) {
   if (start === void 0) {
@@ -590,8 +590,8 @@ function parseBackgroundPosition(text, start, keyword) {
           end: end,
           value: {
             x: formatH(keyword, firstLength),
-            y: formatV(secondKeyword, secondLength),
-          },
+            y: formatV(secondKeyword, secondLength)
+          }
         };
       } else {
         return {
@@ -599,8 +599,8 @@ function parseBackgroundPosition(text, start, keyword) {
           end: end,
           value: {
             x: formatH(secondKeyword, secondLength),
-            y: formatV(keyword, firstLength),
-          },
+            y: formatV(keyword, firstLength)
+          }
         };
       }
     } else {
@@ -610,13 +610,13 @@ function parseBackgroundPosition(text, start, keyword) {
         return {
           start: start,
           end: end,
-          value: { x: formatH(keyword, firstLength), y: 'center' },
+          value: { x: formatH(keyword, firstLength), y: 'center' }
         };
       } else {
         return {
           start: start,
           end: end,
-          value: { x: 'center', y: formatV(keyword, firstLength) },
+          value: { x: 'center', y: formatV(keyword, firstLength) }
         };
       }
     }
@@ -632,8 +632,8 @@ function parseBackgroundPosition(text, start, keyword) {
           end: end,
           value: {
             x: { align: 'left', offset: firstLength.value },
-            y: { align: 'top', offset: secondLength.value },
-          },
+            y: { align: 'top', offset: secondLength.value }
+          }
         };
       } else {
         return {
@@ -641,8 +641,8 @@ function parseBackgroundPosition(text, start, keyword) {
           end: end,
           value: {
             x: { align: 'left', offset: firstLength.value },
-            y: 'center',
-          },
+            y: 'center'
+          }
         };
       }
     } else {
@@ -656,25 +656,25 @@ var sideDirections = {
   top: (Math.PI * 0) / 2,
   right: (Math.PI * 1) / 2,
   bottom: (Math.PI * 2) / 2,
-  left: (Math.PI * 3) / 2,
+  left: (Math.PI * 3) / 2
 };
 var cornerDirections = {
   top: {
     right: (Math.PI * 1) / 4,
-    left: (Math.PI * 7) / 4,
+    left: (Math.PI * 7) / 4
   },
   right: {
     top: (Math.PI * 1) / 4,
-    bottom: (Math.PI * 3) / 4,
+    bottom: (Math.PI * 3) / 4
   },
   bottom: {
     right: (Math.PI * 3) / 4,
-    left: (Math.PI * 5) / 4,
+    left: (Math.PI * 5) / 4
   },
   left: {
     top: (Math.PI * 7) / 4,
-    bottom: (Math.PI * 5) / 4,
-  },
+    bottom: (Math.PI * 5) / 4
+  }
 };
 function parseDirection(text, start) {
   if (start === void 0) {
@@ -749,7 +749,7 @@ function parseColorStop(text, start) {
     return {
       start: start,
       end: end,
-      value: { argb: color.value, offset: offset.value },
+      value: { argb: color.value, offset: offset.value }
     };
   }
   return { start: start, end: end, value: { argb: color.value } };
@@ -905,7 +905,7 @@ function parseAttributeSelector(text, start) {
     return {
       start: start,
       end: end,
-      value: { type: '[]', property: property, test: test_1, value: value },
+      value: { type: '[]', property: property, test: test_1, value: value }
     };
   }
   return { start: start, end: end, value: { type: '[]', property: property } };
@@ -1272,7 +1272,7 @@ var CSS3Parser = (function () {
   CSS3Parser.prototype.parseAStylesheet = function () {
     this.topLevelFlag = true;
     var stylesheet = {
-      rules: this.consumeAListOfRules(),
+      rules: this.consumeAListOfRules()
     };
     return stylesheet;
   };
@@ -1317,7 +1317,7 @@ var CSS3Parser = (function () {
       type: 'at-rule',
       name: inputToken.text,
       prelude: [],
-      block: undefined,
+      block: undefined
     };
     while ((inputToken = this.consumeAToken())) {
       if (inputToken === ';') {
@@ -1341,7 +1341,7 @@ var CSS3Parser = (function () {
     var qualifiedRule = {
       type: 'qualified-rule',
       prelude: [],
-      block: undefined,
+      block: undefined
     };
     var inputToken;
     while ((inputToken = this.consumeAToken())) {
@@ -1382,14 +1382,14 @@ var CSS3Parser = (function () {
     var endianToken = {
       '[': ']',
       '{': '}',
-      '(': ')',
+      '(': ')'
     }[associatedToken];
     var start = this.nextInputCodePointIndex - 1;
     var block = {
       type: 9,
       text: undefined,
       associatedToken: associatedToken,
-      values: [],
+      values: []
     };
     var nextInputToken;
     while ((nextInputToken = this.text[this.nextInputCodePointIndex])) {
@@ -1439,8 +1439,8 @@ var CSSNativeScript = (function () {
     return {
       type: 'stylesheet',
       stylesheet: {
-        rules: this.parseRules(stylesheet.rules),
-      },
+        rules: this.parseRules(stylesheet.rules)
+      }
     };
   };
   CSSNativeScript.prototype.parseRules = function (rules) {
@@ -1465,7 +1465,7 @@ var CSSNativeScript = (function () {
           })
           .join('')
           .trim(),
-        type: 'import',
+        type: 'import'
       };
     }
     return;
@@ -1474,7 +1474,7 @@ var CSSNativeScript = (function () {
     return {
       type: 'rule',
       selectors: this.preludeToSelectorsStringArray(rule.prelude),
-      declarations: this.ruleBlockToDeclarations(rule.block.values),
+      declarations: this.ruleBlockToDeclarations(rule.block.values)
     };
   };
   CSSNativeScript.prototype.ruleBlockToDeclarations = function (
@@ -1501,7 +1501,7 @@ var CSSNativeScript = (function () {
           declarations.push({
             type: 'declaration',
             property: property,
-            value: value,
+            value: value
           });
           property = '';
           value = '';
@@ -1519,7 +1519,7 @@ var CSSNativeScript = (function () {
       declarations.push({
         type: 'declaration',
         property: property,
-        value: value,
+        value: value
       });
     }
     return declarations;

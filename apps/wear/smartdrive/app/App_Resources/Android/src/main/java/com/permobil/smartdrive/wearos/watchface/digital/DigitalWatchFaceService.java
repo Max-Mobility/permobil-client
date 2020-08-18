@@ -379,9 +379,9 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 watchRimColor = transparentColor;
                 sdBarColor = ambientColor;
                 sdRimColor = transparentColor;
-                timeSize = 30;
-                amPmSize = 26;
-                dateSize = 18;
+                timeSize = 48;
+                amPmSize = 30;
+                dateSize = 28;
                 // always draw the colon with the time in ambient mode
                 // always show the date & time when in ambient
                 colonTextView.setVisibility(View.VISIBLE);
@@ -400,6 +400,8 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                     smartDriveBtn.setVisibility(View.VISIBLE);
                 }
 
+                // handling the visibility here fixes the "shift" in the layout when ambient mode changes
+                // 
                 if (isShowingTimeText) {
                     timeTableRow.setVisibility(View.VISIBLE);
                     dateTableRow.setVisibility(View.GONE);
@@ -412,9 +414,9 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 watchRimColor = charcoalColor;
                 sdBarColor = skyColor;
                 sdRimColor = charcoalColor;
-                timeSize = 20;
+                timeSize = 22;
                 amPmSize = 14;
-                dateSize = 12;
+                dateSize = 11;
             }
             if (watchBatteryCircle != null) {
                 watchBatteryCircle.setBarColor(watchBarColor);
