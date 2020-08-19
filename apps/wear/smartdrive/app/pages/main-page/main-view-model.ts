@@ -2614,7 +2614,7 @@ export class MainViewModel extends Observable {
 
   private async _updateTodaysUsageInfo(updates: any) {
     if (!this._todaysUsage) {
-      Log.E("_updateTodaysUsageInfo called but we have no _todaysUsageObject!");
+      Log.E('_updateTodaysUsageInfo called but we have no _todaysUsageObject!');
       return;
     }
     // update the data stored in SQLite
