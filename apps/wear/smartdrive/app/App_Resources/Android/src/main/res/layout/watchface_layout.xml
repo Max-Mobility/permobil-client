@@ -89,7 +89,7 @@
 
                 <Space
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp" />
+                    android:layout_height="30dp" />
             </TableRow>
 
             <TableRow

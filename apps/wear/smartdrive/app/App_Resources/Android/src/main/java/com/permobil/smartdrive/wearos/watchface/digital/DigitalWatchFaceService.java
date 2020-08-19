@@ -137,10 +137,10 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
     }
 
     public class Engine extends CanvasWatchFaceService.Engine {
-        Engine() {
-            // Sets useHardwareCanvas to true to request hardware acceleration
-            super(true);
-        }
+       Engine() {
+           // Sets useHardwareCanvas to true to request hardware acceleration
+           super(true);
+       }
 
         private DisplayMetrics metrics = getResources().getDisplayMetrics();
 
@@ -379,14 +379,18 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 watchRimColor = transparentColor;
                 sdBarColor = ambientColor;
                 sdRimColor = transparentColor;
-                timeSize = 30;
-                amPmSize = 26;
-                dateSize = 18;
+                timeSize = 48;
+                amPmSize = 30;
+                dateSize = 28;
                 // always draw the colon with the time in ambient mode
                 // always show the date & time when in ambient
+                hourTextView.setVisibility(View.VISIBLE);
+                minuteTextView.setVisibility(View.VISIBLE);
                 colonTextView.setVisibility(View.VISIBLE);
                 timeTableRow.setVisibility(View.VISIBLE);
+                Log.d(TAG, String.valueOf(timeTableRow.getVisibility()));
                 dateTableRow.setVisibility(View.VISIBLE);
+                Log.d(TAG, String.valueOf(dateTableRow.getVisibility()));
             } else {
                 int oceanColor = res.getColor(R.color.permobil_ocean, theme);
                 int skyColor = res.getColor(R.color.permobil_sky, theme);
@@ -400,6 +404,8 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                     smartDriveBtn.setVisibility(View.VISIBLE);
                 }
 
+                // handling the visibility here fixes the "shift" in the layout when ambient mode changes
+                // https://github.com/Max-Mobility/permobil-client/pull/832#pullrequestreview-467838833
                 if (isShowingTimeText) {
                     timeTableRow.setVisibility(View.VISIBLE);
                     dateTableRow.setVisibility(View.GONE);
@@ -424,6 +430,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 smartDriveBatteryCircle.setBarColor(sdBarColor);
                 smartDriveBatteryCircle.setRimColor(sdRimColor);
             }
+
             hourTextView.setTextSize(timeSize);
             colonTextView.setTextSize(timeSize);
             minuteTextView.setTextSize(timeSize);
