@@ -418,9 +418,9 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 watchRimColor = charcoalColor;
                 sdBarColor = skyColor;
                 sdRimColor = charcoalColor;
-                timeSize = 20;
+                timeSize = 22;
                 amPmSize = 14;
-                dateSize = 12;
+                dateSize = 11;
             }
             if (watchBatteryCircle != null) {
                 watchBatteryCircle.setBarColor(watchBarColor);
