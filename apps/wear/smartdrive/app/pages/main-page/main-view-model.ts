@@ -2525,17 +2525,12 @@ export class MainViewModel extends Observable {
         // has been used. we directly overwrite the distance and
         // update the records
         const updates = SmartDriveData.Info.updateInfo(args, u);
-        await this._sqliteService.updateInTable(
-          SmartDriveData.Info.TableName,
-          updates,
-          {
-            [SmartDriveData.Info.IdName]: u.id
-          }
-        );
+        await this._updateTodaysUsageInfo(updates);
       } else {
-        // should not come here - _getTodaysUsageFromDatabase loads /
-        // creates as needed - but if it encounters an exception then
-        // it will not have an id - so we will try to make it again...
+        // should not come here - _getTodaysUsageInfoFromDatabase
+        // loads / creates as needed - but if it encounters an
+        // exception then it will not have an id - so we will try to
+        // make it again...
         this._todaysUsage = await this._makeTodaysUsage(
           battery,
           driveDistance,
@@ -2615,6 +2610,26 @@ export class MainViewModel extends Observable {
       }
     }
     return this._todaysUsage;
+  }
+
+  private async _updateTodaysUsageInfo(updates: any) {
+    if (!this._todaysUsage) {
+      Log.E('_updateTodaysUsageInfo called but we have no _todaysUsageObject!');
+      return;
+    }
+    // update the data stored in SQLite
+    const _id = this._todaysUsage[SmartDriveData.Info.IdName];
+    await this._sqliteService.updateInTable(
+      SmartDriveData.Info.TableName,
+      updates,
+      {
+        [SmartDriveData.Info.IdName]: _id
+      }
+    );
+    // now update _todaysUsage variable
+    Object.keys(updates).forEach((k) => {
+      this._todaysUsage[k] = updates[k];
+    });
   }
 
   private async _updateSharedUsageInfo(sdData: any[]) {
