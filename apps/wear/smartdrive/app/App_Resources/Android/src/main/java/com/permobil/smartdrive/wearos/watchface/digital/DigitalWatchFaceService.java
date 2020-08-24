@@ -713,14 +713,22 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             String dateString = dateFormat.format(today);
             dateTextView.setText(dateString);
 
-            // if we are showing the date on the main watch face in active mode
-            // then we will ONLY set the date text view and then hide the TimeTableRow
-            if (!isShowingTimeText) {
-                // we are showing the date so we do NOT need to calculate the time strings
-                // set the date string
+            // if we are in ambient mode both TIME and DATE need to show
+            // else if we are in TIME TEXT mode, show the time and hide the date
+            // else hide the date
+            if (isInAmbientMode()) {
+                // always show date and time in ambient
                 dateTableRow.setVisibility(View.VISIBLE);
-                timeTableRow.setVisibility(View.GONE); // hide the time if not showing
+                timeTableRow.setVisibility(View.VISIBLE);
+            } else if (!isShowingTimeText) { // not in ambient here
+                // show the date and hide the time
+                dateTableRow.setVisibility(View.VISIBLE);
+                timeTableRow.setVisibility(View.GONE);
                 return;
+            } else {
+                // show the time and hide date
+                timeTableRow.setVisibility(View.VISIBLE);
+                dateTableRow.setVisibility(View.GONE);
             }
 
             // Show colons for the first half of each second so the colons blink on when the time updates.
@@ -760,17 +768,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 amPmTextView.setVisibility(View.VISIBLE);
             } else {
                 amPmTextView.setVisibility(View.INVISIBLE);
-            }
-
-            if (isInAmbientMode()) {
-                // always show date and time in ambient
-                dateTableRow.setVisibility(View.VISIBLE);
-                timeTableRow.setVisibility(View.VISIBLE);
-                // set the date string
-                dateTextView.setText(dateString);
-            } else {
-                // hide date when not in ambient
-                dateTableRow.setVisibility(View.GONE);
             }
 
             // handle color of text depending if ambient mode
