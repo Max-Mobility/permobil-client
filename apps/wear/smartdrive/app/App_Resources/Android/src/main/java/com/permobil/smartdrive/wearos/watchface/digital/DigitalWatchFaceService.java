@@ -63,8 +63,6 @@ import io.sentry.event.BreadcrumbBuilder;
  */
 public class DigitalWatchFaceService extends CanvasWatchFaceService {
     private static final String TAG = "ComplicationWatchFace";
-    private int whiteColor;
-    private int ambientColor;
     private SharedPreferences sharedPreferences;
     private boolean isShowingTimeText = true;
 
@@ -137,10 +135,10 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
     }
 
     public class Engine extends CanvasWatchFaceService.Engine {
-       Engine() {
-           // Sets useHardwareCanvas to true to request hardware acceleration
-           super(true);
-       }
+        Engine() {
+            // Sets useHardwareCanvas to true to request hardware acceleration
+            super(true);
+        }
 
         private DisplayMetrics metrics = getResources().getDisplayMetrics();
 
@@ -257,13 +255,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
 
             sharedPreferences = getApplicationContext().getSharedPreferences("prefs.db", 0);
 
-            Resources.Theme theme = getTheme();
             Resources resources = getResources();
-
-            // get the color ints for changing the text colors during ambient mode switches
-            // saving as member of the class to avoid duplicate calls to get the resources, convert colors, and getTheme methods over and over
-            whiteColor = resources.getColor(R.color.white, theme);
-            ambientColor = resources.getColor(R.color.ambient_mode_text, theme);
 
             setWatchFaceStyle(
                     new WatchFaceStyle.Builder(DigitalWatchFaceService.this)
@@ -333,7 +325,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             smartDriveBtn.setLayoutParams(sdBtnParams);
 
             ViewGroup.LayoutParams timeTableRowParams = timeTableRow.getLayoutParams();
-            timeTableRowParams.height = (int) (metrics.heightPixels * .25);
+            timeTableRowParams.height = (int) (metrics.heightPixels * .35);
             timeTableRow.setLayoutParams(timeTableRowParams);
 
             // now draw everything
@@ -357,17 +349,11 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             super.onAmbientModeChanged(inAmbientMode);
             Log.d(TAG, "onAmbientModeChanged: " + inAmbientMode);
 
-            Resources res = getResources();
-            Resources.Theme theme = getTheme();
-
             int timeSize, amPmSize, dateSize,
                     watchBarColor, watchRimColor,
                     sdBarColor, sdRimColor;
 
             if (inAmbientMode) {
-                int ambientColor = res.getColor(R.color.ambient_mode_text, theme);
-                int transparentColor = res.getColor(R.color.transparent, theme);
-
                 // hide the space TableRow and the SD Button from layout so the time shifts up in ambient
                 if (spaceTableRow != null) {
                     spaceTableRow.setVisibility(View.GONE);
@@ -375,10 +361,10 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 if (smartDriveBtn != null) {
                     smartDriveBtn.setVisibility(View.GONE);
                 }
-                watchBarColor = ambientColor;
-                watchRimColor = transparentColor;
-                sdBarColor = ambientColor;
-                sdRimColor = transparentColor;
+                watchBarColor = -1;
+                watchRimColor = 0;
+                sdBarColor = -1;
+                sdRimColor = 0;
                 timeSize = 48;
                 amPmSize = 30;
                 dateSize = 28;
@@ -388,13 +374,15 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 minuteTextView.setVisibility(View.VISIBLE);
                 colonTextView.setVisibility(View.VISIBLE);
                 timeTableRow.setVisibility(View.VISIBLE);
-                Log.d(TAG, String.valueOf(timeTableRow.getVisibility()));
                 dateTableRow.setVisibility(View.VISIBLE);
-                Log.d(TAG, String.valueOf(dateTableRow.getVisibility()));
             } else {
-                int oceanColor = res.getColor(R.color.permobil_ocean, theme);
-                int skyColor = res.getColor(R.color.permobil_sky, theme);
-                int charcoalColor = res.getColor(R.color.permobil_charcoal, theme);
+                watchBarColor = -16737593; // ocean color
+                watchRimColor = -12500926; // charcoal color
+                sdBarColor = -7744285; // sky color
+                sdRimColor = -12500926; // charcoal color
+                timeSize = 22;
+                amPmSize = 14;
+                dateSize = 11;
 
                 // Make sure the space TableRow and the SD Button are visible in active mode
                 if (spaceTableRow != null) {
@@ -413,15 +401,8 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                     timeTableRow.setVisibility(View.GONE);
                     dateTableRow.setVisibility(View.VISIBLE);
                 }
-
-                watchBarColor = oceanColor;
-                watchRimColor = charcoalColor;
-                sdBarColor = skyColor;
-                sdRimColor = charcoalColor;
-                timeSize = 22;
-                amPmSize = 14;
-                dateSize = 11;
             }
+
             if (watchBatteryCircle != null) {
                 watchBatteryCircle.setBarColor(watchBarColor);
                 watchBatteryCircle.setRimColor(watchRimColor);
@@ -830,18 +811,18 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
 
         private void colorTextViewsForAmbientHandling() {
             if (!isInAmbientMode()) {
-                hourTextView.setTextColor(whiteColor);
-                colonTextView.setTextColor(whiteColor);
-                minuteTextView.setTextColor(whiteColor);
-                amPmTextView.setTextColor(whiteColor);
-                dateTextView.setTextColor(whiteColor);
+                hourTextView.setTextColor(-1);
+                colonTextView.setTextColor(-1);
+                minuteTextView.setTextColor(-1);
+                amPmTextView.setTextColor(-1);
+                dateTextView.setTextColor(-1);
             } else {
                 // in ambient so use ambient color
-                hourTextView.setTextColor(ambientColor);
-                colonTextView.setTextColor(ambientColor);
-                minuteTextView.setTextColor(ambientColor);
-                amPmTextView.setTextColor(ambientColor);
-                dateTextView.setTextColor(ambientColor);
+                hourTextView.setTextColor(-1);
+                colonTextView.setTextColor(-1);
+                minuteTextView.setTextColor(-1);
+                amPmTextView.setTextColor(-1);
+                dateTextView.setTextColor(-1);
             }
         }
 
