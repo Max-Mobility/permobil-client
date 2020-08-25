@@ -760,7 +760,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             }
             hourTextView.setText(hourString);
 
-
             // Set the am/pm.
             if (!is24Hour) {
                 String value = DateUtils.getAmPmString(mCalendar.get(Calendar.AM_PM));
@@ -770,8 +769,12 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 amPmTextView.setVisibility(View.INVISIBLE);
             }
 
-            // handle color of text depending if ambient mode
-            colorTextViewsForAmbientHandling();
+            // set the color of the text views, we may not need this bc the text color is same during active & ambient
+            hourTextView.setTextColor(-1);
+            colonTextView.setTextColor(-1);
+            minuteTextView.setTextColor(-1);
+            amPmTextView.setTextColor(-1);
+            dateTextView.setTextColor(-1);
         }
 
         private void drawComplications(Canvas canvas, long currentTimeMillis) {
@@ -803,23 +806,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 Log.e(TAG, "Error trying to get the sd.battery value from sharedPrefs: " + e.getMessage());
                 Sentry.capture(e);
                 return 0;
-            }
-        }
-
-        private void colorTextViewsForAmbientHandling() {
-            if (!isInAmbientMode()) {
-                hourTextView.setTextColor(-1);
-                colonTextView.setTextColor(-1);
-                minuteTextView.setTextColor(-1);
-                amPmTextView.setTextColor(-1);
-                dateTextView.setTextColor(-1);
-            } else {
-                // in ambient so use ambient color
-                hourTextView.setTextColor(-1);
-                colonTextView.setTextColor(-1);
-                minuteTextView.setTextColor(-1);
-                amPmTextView.setTextColor(-1);
-                dateTextView.setTextColor(-1);
             }
         }
 
