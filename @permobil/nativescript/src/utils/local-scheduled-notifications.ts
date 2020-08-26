@@ -1,5 +1,6 @@
 import { Color } from '@nativescript/core';
 import { LocalNotifications } from 'nativescript-local-notifications';
+import { NotificationChannels, PushTrackerLocalNotifications, SmartDriveLocalNotifications } from '../enums';
 
 export function scheduleSmartDriveLocalNotifications() {
   LocalNotifications.schedule([
@@ -55,19 +56,8 @@ export function schedulePushTrackerLocalNotifications() {
   ]);
 }
 
-/**
- * Cancels the tire pressure reminder notification
- */
-export function cancelTirePressureNotificationReminder() {
-  LocalNotifications.cancel(
-    SmartDriveLocalNotifications.TIRE_PRESSURE_NOTIFICATION_ID
-  );
-}
-
-export function cancelSmartDriveMaintenanceReminder() {
-  LocalNotifications.cancel(
-    SmartDriveLocalNotifications.SMARTDRIVE_MAINTENANCE_NOTIFICATION_ID
-  );
+export function cancelScheduledNotification(notificationID: SmartDriveLocalNotifications | PushTrackerLocalNotifications) {
+  return LocalNotifications.cancel(notificationID);
 }
 
 /**
@@ -75,26 +65,4 @@ export function cancelSmartDriveMaintenanceReminder() {
  */
 export function cancelAllScheduledNotifications() {
   LocalNotifications.cancelAll();
-}
-
-/**
- * IDs for SmartDrive Notifications
- */
-enum SmartDriveLocalNotifications {
-  TIRE_PRESSURE_NOTIFICATION_ID = 111111,
-  SMARTDRIVE_MAINTENANCE_NOTIFICATION_ID = 111112
-}
-
-enum PushTrackerLocalNotifications {
-  REPOSITIONING_NOTIFICATION_ID = 111111,
-  PRESSURE_RELIEF_NOTIFICATION_ID = 111112
-}
-
-/**
- * Channels for SmartDrive Notifications
- * Useful on Android 26+, not much of a need on WearOS as it is on mobile.
- */
-enum NotificationChannels {
-  SMARTDRIVE_WEAR_NOTIFICATION_CHANNEL = 'SMARTDRIVE_WEAR_NOTIFICATION_CHANNEL',
-  PUSHTRACKER_WEAR_NOTIFICATION_CHANNEL = 'PUSHTRACKER_WEAR_NOTIFICATION_CHANNEL'
 }
