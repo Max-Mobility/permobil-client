@@ -365,9 +365,9 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 watchRimColor = 0;
                 sdBarColor = -1;
                 sdRimColor = 0;
-                timeSize = 48;
-                amPmSize = 30;
-                dateSize = 28;
+                timeSize = 42;
+                amPmSize = 24;
+                dateSize = 20;
                 // always draw the colon with the time in ambient mode
                 // always show the date & time when in ambient
                 hourTextView.setVisibility(View.VISIBLE);
@@ -380,9 +380,9 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 watchRimColor = -12500926; // charcoal color
                 sdBarColor = -7744285; // sky color
                 sdRimColor = -12500926; // charcoal color
-                timeSize = 22;
-                amPmSize = 14;
-                dateSize = 11;
+                timeSize = 19;
+                amPmSize = 13;
+                dateSize = 19;
 
                 // Make sure the space TableRow and the SD Button are visible in active mode
                 if (spaceTableRow != null) {
@@ -431,7 +431,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             // Note: ComplicationDrawable handles switching between active/ambient colors, we just
             // have to inform it to enter ambient mode.
             ComplicationDrawable complicationDrawable;
-
             for (int complicationId : COMPLICATION_IDS) {
                 complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
                 complicationDrawable.setInAmbientMode(inAmbientMode);
@@ -476,7 +475,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
 
             // Updates complications to properly render in ambient mode based on the screen's capabilities.
             ComplicationDrawable complicationDrawable;
-
             for (int complicationId : COMPLICATION_IDS) {
                 complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
 
@@ -491,11 +489,9 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         public void onComplicationDataUpdate(int complicationId, ComplicationData complicationData) {
             // Adds/updates active complication data in the array.
             mActiveComplicationDataSparseArray.put(complicationId, complicationData);
-
             // Updates correct ComplicationDrawable with updated  data.
             ComplicationDrawable complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
             complicationDrawable.setComplicationData(complicationData);
-
             invalidate();
         }
 
@@ -579,7 +575,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             mComplicationDrawableSparseArray.put(TOP_COMPLICATION_ID, topComplicationDrawable);
 
             setActiveComplications(COMPLICATION_IDS);
-
             // set the default complication provider for the TOP COMPLICATION - this will set the default icon for the complication
             // setDefaultComplicationProvider(COMPLICATION_IDS[0], new ComponentName("com.permobil.smartdrive.wearos", "com.permobil.smartdrive.wearos.BatteryComplicationProviderService"), ComplicationData.TYPE_RANGED_VALUE);
         }
@@ -616,7 +611,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 return;
             }
             mInteractiveUpdateRateMs = updateRateMs;
-
             // Stop and restart the timer so the new update rate takes effect immediately.
             if (shouldTimerBeRunning()) {
                 updateTimer();

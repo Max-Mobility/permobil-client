@@ -89,7 +89,7 @@
 
                 <Space
                     android:layout_width="wrap_content"
-                    android:layout_height="30dp" />
+                    android:layout_height="28dp" />
             </TableRow>
 
             <TableRow
@@ -131,7 +131,6 @@
                         android:id="@+id/hourTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:autoSizeTextType="uniform"
                         android:fontFamily="sans-serif"
                         android:gravity="bottom|end"
                         android:textSize="18sp" />
@@ -140,7 +139,6 @@
                         android:id="@+id/colonTextView"
                         android:layout_width="6dp"
                         android:layout_height="wrap_content"
-                        android:autoSizeTextType="uniform"
                         android:fontFamily="sans-serif"
                         android:gravity="center_horizontal|bottom"
                         android:text="@string/colon"
@@ -150,7 +148,6 @@
                         android:id="@+id/minuteTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:autoSizeTextType="uniform"
                         android:fontFamily="sans-serif"
                         android:gravity="bottom|start"
                         android:textSize="18sp" />
@@ -159,7 +156,6 @@
                         android:id="@+id/amPmTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:autoSizeTextType="uniform"
                         android:fontFamily="sans-serif"
                         android:gravity="bottom|end"
                         android:textSize="12sp" />
@@ -184,7 +180,6 @@
                         android:id="@+id/dateTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:autoSizeTextType="uniform"
                         android:fontFamily="sans-serif"
                         android:gravity="center"
                         android:soundEffectsEnabled="true"
