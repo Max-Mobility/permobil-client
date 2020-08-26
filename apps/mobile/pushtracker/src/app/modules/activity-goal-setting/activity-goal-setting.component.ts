@@ -32,7 +32,7 @@ export class ActivityGoalSettingComponent implements OnInit {
   constructor(
     private _logService: LoggingService,
     private _params: ModalDialogParams
-  ) { }
+  ) {}
 
   ngOnInit() {
     this._user = KinveyUser.getActiveUser() as PushTrackerUser;

@@ -1,6 +1,10 @@
 import { Color } from '@nativescript/core';
 import { LocalNotifications } from 'nativescript-local-notifications';
-import { NotificationChannels, PushTrackerLocalNotifications, SmartDriveLocalNotifications } from '../enums';
+import {
+  PushTrackerLocalNotifications, PushTrackerWearNotificationChannels,
+
+  SmartDriveLocalNotifications, SmartDriveWearNotificationChannels
+} from '../enums';
 
 export function scheduleSmartDriveLocalNotifications() {
   LocalNotifications.schedule([
@@ -12,7 +16,8 @@ export function scheduleSmartDriveLocalNotifications() {
       ongoing: false, // Ongoing notifications cannot be dismissed by the user, not swipeable to close
       icon: 'res://ic_omniwheel_white',
       interval: 'minute', // fires every minute
-      channel: NotificationChannels.SMARTDRIVE_WEAR_NOTIFICATION_CHANNEL,
+      channel:
+        SmartDriveWearNotificationChannels.SMARTDRIVE_WEAR_NOTIFICATION_CHANNEL,
       at: new Date(new Date().getTime() + 10 * 1000) // 10 seconds from now
     },
     {
@@ -23,7 +28,8 @@ export function scheduleSmartDriveLocalNotifications() {
       ongoing: false, // Ongoing notifications cannot be dismissed by the user, not swipeable to close
       icon: 'res://ic_omniwheel_white',
       interval: 'hour', // fires every minute
-      channel: NotificationChannels.SMARTDRIVE_WEAR_NOTIFICATION_CHANNEL,
+      channel:
+        SmartDriveWearNotificationChannels.SMARTDRIVE_WEAR_NOTIFICATION_CHANNEL,
       at: new Date(new Date().getTime() + 10 * 2000) // 20 seconds from now
     }
   ]);
@@ -39,7 +45,8 @@ export function schedulePushTrackerLocalNotifications() {
       ongoing: false, // Ongoing notifications cannot be dismissed by the user, not swipeable to close
       icon: 'res://ic_omniwheel_white',
       interval: 'minute', // fires every minute
-      channel: NotificationChannels.PUSHTRACKER_WEAR_NOTIFICATION_CHANNEL,
+      channel:
+        PushTrackerWearNotificationChannels.PUSHTRACKER_WEAR_NOTIFICATION_CHANNEL,
       at: new Date(new Date().getTime() + 10 * 1000) // 10 seconds from now
     },
     {
@@ -50,13 +57,16 @@ export function schedulePushTrackerLocalNotifications() {
       ongoing: false, // Ongoing notifications cannot be dismissed by the user, not swipeable to close
       icon: 'res://ic_omniwheel_white',
       interval: 'hour', // fires every minute
-      channel: NotificationChannels.PUSHTRACKER_WEAR_NOTIFICATION_CHANNEL,
+      channel:
+        PushTrackerWearNotificationChannels.PUSHTRACKER_WEAR_NOTIFICATION_CHANNEL,
       at: new Date(new Date().getTime() + 10 * 2000) // 20 seconds from now
     }
   ]);
 }
 
-export function cancelScheduledNotification(notificationID: SmartDriveLocalNotifications | PushTrackerLocalNotifications) {
+export function cancelScheduledNotification(
+  notificationID: SmartDriveLocalNotifications | PushTrackerLocalNotifications
+) {
   return LocalNotifications.cancel(notificationID);
 }
 
