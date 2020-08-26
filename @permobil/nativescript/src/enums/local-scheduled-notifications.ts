@@ -5,7 +5,7 @@
 export enum SmartDriveLocalNotifications {
     TIRE_PRESSURE_NOTIFICATION_ID = 111111,
     SMARTDRIVE_MAINTENANCE_NOTIFICATION_ID = 111112
-  }  
+  }
   export enum PushTrackerLocalNotifications {
     REPOSITIONING_NOTIFICATION_ID = 111111,
     PRESSURE_RELIEF_NOTIFICATION_ID = 111112
