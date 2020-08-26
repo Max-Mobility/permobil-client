@@ -17,8 +17,10 @@ import { ScrollView } from '@nativescript/core/ui/scroll-view';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log, wait } from '@permobil/core';
 import {
-  cancelScheduledNotification, getDefaultLang,
-  getDeviceSerialNumber, L,
+  cancelScheduledNotification,
+  getDefaultLang,
+  getDeviceSerialNumber,
+  L,
   performance,
   Prop,
   scheduleSmartDriveLocalNotifications
@@ -285,7 +287,9 @@ export class MainViewModel extends Observable {
       scheduleSmartDriveLocalNotifications();
       Log.D('scheduled local notifications for SmartDrive Wear');
       setTimeout(async () => {
-        const cancelId = await cancelScheduledNotification(SmartDriveLocalNotifications.TIRE_PRESSURE_NOTIFICATION_ID);
+        const cancelId = await cancelScheduledNotification(
+          SmartDriveLocalNotifications.TIRE_PRESSURE_NOTIFICATION_ID
+        );
         Log.D(`Canceled the Notification: ${cancelId}`);
       }, 600000);
     } catch (err) {
@@ -353,7 +357,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-            }`,
+          }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -2041,7 +2045,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -2106,7 +2110,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
@@ -2634,7 +2638,7 @@ export class MainViewModel extends Observable {
       }
     );
     // now update _todaysUsage variable
-    Object.keys(updates).forEach((k) => {
+    Object.keys(updates).forEach(k => {
       this._todaysUsage[k] = updates[k];
     });
   }
