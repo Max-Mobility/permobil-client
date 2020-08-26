@@ -7,7 +7,7 @@ import { setTimeout } from '@nativescript/core/timer';
 import { alert } from '@nativescript/core/ui/dialogs';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
-import { getDefaultLang, L, Prop } from '@permobil/nativescript';
+import { getDefaultLang, L, Prop, schedulePushTrackerLocalNotifications } from '@permobil/nativescript';
 import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import * as LS from 'nativescript-localstorage';
@@ -159,6 +159,10 @@ export class MainViewModel extends Observable {
     try {
       await this._init();
       Log.D('init finished in the main-view-model');
+      // start of the local notification reminders
+      // will need to modify the API once we have the parameters for the UX from Curtis/Ben
+      schedulePushTrackerLocalNotifications();
+      Log.D('scheduled notifications for pushtracker wear');
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);

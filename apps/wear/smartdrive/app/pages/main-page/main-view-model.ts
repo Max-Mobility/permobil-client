@@ -18,19 +18,16 @@ import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log, wait } from '@permobil/core';
 import {
   getDefaultLang,
-
-
-
   getDeviceSerialNumber, L,
   performance,
-  Prop
+  Prop,
+  scheduleSmartDriveLocalNotifications
 } from '@permobil/nativescript';
 import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
 import last from 'lodash/last';
 import once from 'lodash/once';
-import * as LS from 'nativescript-localstorage';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
@@ -281,6 +278,8 @@ export class MainViewModel extends Observable {
     try {
       await this._init();
       Log.D('init finished in the main-view-model');
+      scheduleSmartDriveLocalNotifications();
+      Log.D('scheduled local notifications for SmartDrive Wear');
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
