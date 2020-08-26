@@ -167,7 +167,7 @@ export class MainViewModel extends Observable {
       schedulePushTrackerLocalNotifications();
       Log.D('scheduled local notifications for PushTracker Wear');
       setTimeout(async () => {
-        const cancelId = await cancelScheduledNotification(PushTrackerLocalNotifications.PRESSURE_RELIEF_NOTIFICATION_ID)
+        const cancelId = await cancelScheduledNotification(PushTrackerLocalNotifications.PRESSURE_RELIEF_NOTIFICATION_ID);
         Log.D(`Canceled the Notification: ${cancelId}`);
       }, 600000);
     } catch (err) {

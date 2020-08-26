@@ -285,7 +285,7 @@ export class MainViewModel extends Observable {
       scheduleSmartDriveLocalNotifications();
       Log.D('scheduled local notifications for SmartDrive Wear');
       setTimeout(async () => {
-        const cancelId = await cancelScheduledNotification(SmartDriveLocalNotifications.TIRE_PRESSURE_NOTIFICATION_ID)
+        const cancelId = await cancelScheduledNotification(SmartDriveLocalNotifications.TIRE_PRESSURE_NOTIFICATION_ID);
         Log.D(`Canceled the Notification: ${cancelId}`);
       }, 600000);
     } catch (err) {
