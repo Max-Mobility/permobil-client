@@ -1,14 +1,17 @@
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 import {
+  AndroidActivityEventData,
+  AndroidApplication,
+  Application,
   Color,
   EventData,
   Frame,
   GridLayout,
   Observable,
   ShowModalOptions,
-  StackLayout
+  StackLayout,
+  UnhandledErrorEventData
 } from '@nativescript/core';
-import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
 import { action, alert } from '@nativescript/core/ui/dialogs';
@@ -18,10 +21,8 @@ import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log, wait } from '@permobil/core';
 import {
   getDefaultLang,
-
-
-
-  getDeviceSerialNumber, L,
+  getDeviceSerialNumber,
+  L,
   performance,
   Prop
 } from '@permobil/nativescript';
@@ -30,7 +31,6 @@ import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
 import last from 'lodash/last';
 import once from 'lodash/once';
-import * as LS from 'nativescript-localstorage';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
@@ -55,7 +55,9 @@ import {
 } from '../../services';
 import {
   isNetworkAvailable,
-  sentryBreadCrumb,
+
+
+  scheduleSmartDriveLocalNotifications, sentryBreadCrumb,
   _isActivityThis
 } from '../../utils';
 import { updatesViewModel } from '../modals/updates/updates-page';
@@ -281,6 +283,9 @@ export class MainViewModel extends Observable {
     try {
       await this._init();
       Log.D('init finished in the main-view-model');
+      Log.D('setting up local notifications...');
+
+      scheduleSmartDriveLocalNotifications();
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
@@ -346,7 +351,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-            }`,
+          }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -764,7 +769,7 @@ export class MainViewModel extends Observable {
       this._kinveyService.watch_serial_number = this.watchSerialNumber;
     }
 
-    // handle application lifecycle events
+    // handle Application lifecycle events
     this._registerAppEventHandlers();
 
     // regiter for system updates related to battery / time UI
@@ -1099,7 +1104,7 @@ export class MainViewModel extends Observable {
 
   private _registerAppEventHandlers() {
     // handle ambient mode callbacks
-    application.on('enterAmbient', () => {
+    Application.on('enterAmbient', () => {
       sentryBreadCrumb('*** enterAmbient ***');
       this.isAmbient = true;
 
@@ -1118,13 +1123,13 @@ export class MainViewModel extends Observable {
       }
     });
 
-    application.on('updateAmbient', () => {
+    Application.on('updateAmbient', () => {
       this.isAmbient = true;
       this._updateTimeDisplay();
       sentryBreadCrumb('updateAmbient');
     });
 
-    application.on('exitAmbient', () => {
+    Application.on('exitAmbient', () => {
       sentryBreadCrumb('*** exitAmbient ***');
       this.isAmbient = false;
       this._enableBodySensor();
@@ -1139,9 +1144,9 @@ export class MainViewModel extends Observable {
     });
 
     // Activity lifecycle event handlers
-    application.android.on(
-      application.AndroidApplication.activityPausedEvent,
-      (args: application.AndroidActivityEventData) => {
+    Application.android.on(
+      AndroidApplication.activityPausedEvent,
+      (args: AndroidActivityEventData) => {
         if (_isActivityThis(args.activity)) {
           sentryBreadCrumb('*** activityPaused ***');
           // paused happens any time a new activity is shown
@@ -1151,9 +1156,9 @@ export class MainViewModel extends Observable {
       }
     );
 
-    application.android.on(
-      application.AndroidApplication.activityResumedEvent,
-      (args: application.AndroidActivityEventData) => {
+    Application.android.on(
+      AndroidApplication.activityResumedEvent,
+      (args: AndroidActivityEventData) => {
         if (_isActivityThis(args.activity)) {
           sentryBreadCrumb('*** activityResumed ***');
           // resumed happens after an app is re-opened out of
@@ -1166,9 +1171,9 @@ export class MainViewModel extends Observable {
       }
     );
 
-    application.android.on(
-      application.AndroidApplication.activityStoppedEvent,
-      (args: application.AndroidActivityEventData) => {
+    Application.android.on(
+      AndroidApplication.activityStoppedEvent,
+      (args: AndroidActivityEventData) => {
         if (_isActivityThis(args.activity)) {
           sentryBreadCrumb('*** activityStopped ***');
           // similar to the app suspend / exit event.
@@ -1178,15 +1183,15 @@ export class MainViewModel extends Observable {
     );
 
     // application lifecycle event handlers
-    application.on(application.launchEvent, () => {
-      Log.D('application launch event');
+    Application.on(Application.launchEvent, () => {
+      Log.D('Application launch event');
     });
 
-    application.on(application.resumeEvent, () => {
+    Application.on(Application.resumeEvent, () => {
       this._enableBodySensor();
     });
 
-    application.on(application.suspendEvent, async () => {
+    Application.on(Application.suspendEvent, async () => {
       sentryBreadCrumb('*** appSuspend ***');
 
       // ensure power assist is turned off if it is on
@@ -1201,21 +1206,21 @@ export class MainViewModel extends Observable {
       this._updateComplications();
     });
 
-    application.on(application.exitEvent, () => {
+    Application.on(Application.exitEvent, () => {
       sentryBreadCrumb('*** appExit ***');
       this._fullStop();
     });
 
-    application.on(application.lowMemoryEvent, () => {
+    Application.on(Application.lowMemoryEvent, () => {
       sentryBreadCrumb('*** appLowMemory ***');
       // TODO: determine if we need to stop for this - we see this
       // even even when the app is using very little memory
       // this.disablePowerAssist();
     });
 
-    application.on(
-      application.uncaughtErrorEvent,
-      (args: application.UnhandledErrorEventData) => {
+    Application.on(
+      Application.uncaughtErrorEvent,
+      (args: UnhandledErrorEventData) => {
         if (args) {
           Sentry.captureException(new Error(JSON.stringify(args)), {
             tags: {
@@ -1278,7 +1283,7 @@ export class MainViewModel extends Observable {
         plugged === android.os.BatteryManager.BATTERY_PLUGGED_WIRELESS;
     };
 
-    application.android.registerBroadcastReceiver(
+    Application.android.registerBroadcastReceiver(
       android.content.Intent.ACTION_BATTERY_CHANGED,
       batteryReceiverCallback
     );
@@ -1310,11 +1315,11 @@ export class MainViewModel extends Observable {
         Sentry.captureException(error);
       }
     };
-    application.android.registerBroadcastReceiver(
+    Application.android.registerBroadcastReceiver(
       android.content.Intent.ACTION_TIME_TICK,
       timeReceiverCallback
     );
-    application.android.registerBroadcastReceiver(
+    Application.android.registerBroadcastReceiver(
       android.content.Intent.ACTION_TIMEZONE_CHANGED,
       timeReceiverCallback
     );
@@ -2034,10 +2039,10 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
-    application.android.foregroundActivity.startActivity(intent);
+    Application.android.foregroundActivity.startActivity(intent);
   }
 
   private async _openAppOnPhone() {
@@ -2099,11 +2104,11 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
-    application.android.foregroundActivity.startActivity(intent);
-    application.android.foregroundActivity.overridePendingTransition(0, 0);
+    Application.android.foregroundActivity.startActivity(intent);
+    Application.android.foregroundActivity.overridePendingTransition(0, 0);
   }
 
   private async _ensureBluetoothCapabilities() {
@@ -2627,7 +2632,7 @@ export class MainViewModel extends Observable {
       }
     );
     // now update _todaysUsage variable
-    Object.keys(updates).forEach((k) => {
+    Object.keys(updates).forEach(k => {
       this._todaysUsage[k] = updates[k];
     });
   }
