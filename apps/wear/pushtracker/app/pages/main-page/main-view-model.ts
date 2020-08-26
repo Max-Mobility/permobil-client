@@ -7,7 +7,8 @@ import { setTimeout } from '@nativescript/core/timer';
 import { alert } from '@nativescript/core/ui/dialogs';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
-import { getDefaultLang, L, Prop, schedulePushTrackerLocalNotifications } from '@permobil/nativescript';
+import { cancelScheduledNotification, getDefaultLang, L, Prop, schedulePushTrackerLocalNotifications } from '@permobil/nativescript';
+import { PushTrackerLocalNotifications } from '@permobil/nativescript/src/enums';
 import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import * as LS from 'nativescript-localstorage';
@@ -160,9 +161,15 @@ export class MainViewModel extends Observable {
       await this._init();
       Log.D('init finished in the main-view-model');
       // start of the local notification reminders
-      // will need to modify the API once we have the parameters for the UX from Curtis/Ben
+      // need to think out the API for this to schedule and not always call reschedule
+      // TBD based on the UX outlined by Ben, William, Curtis regarding the reminders/notifications
+      // we might want to set specific notifications based on parameters for regions, users, etc.
       schedulePushTrackerLocalNotifications();
-      Log.D('scheduled notifications for pushtracker wear');
+      Log.D('scheduled local notifications for PushTracker Wear');
+      setTimeout(async () => {
+        const cancelId = await cancelScheduledNotification(PushTrackerLocalNotifications.PRESSURE_RELIEF_NOTIFICATION_ID)
+        Log.D(`Canceled the Notification: ${cancelId}`);
+      }, 600000);
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
