@@ -1,5 +1,12 @@
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
-import { EventData, Observable, Page, ShowModalOptions, View, ViewBase } from '@nativescript/core';
+import {
+  EventData,
+  Observable,
+  Page,
+  ShowModalOptions,
+  View,
+  ViewBase
+} from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
@@ -7,7 +14,14 @@ import { setTimeout } from '@nativescript/core/timer';
 import { alert } from '@nativescript/core/ui/dialogs';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
-import { getDefaultLang, L, Prop } from '@permobil/nativescript';
+import {
+  cancelScheduledNotification,
+  getDefaultLang,
+  L,
+  Prop,
+  schedulePushTrackerLocalNotifications
+} from '@permobil/nativescript';
+import { PushTrackerLocalNotifications } from '@permobil/nativescript/src/enums';
 import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import * as LS from 'nativescript-localstorage';
@@ -18,7 +32,12 @@ import { DataBroadcastReceiver } from '../../data-broadcast-receiver';
 import { DataKeys } from '../../enums';
 import { DailyActivity, Profile } from '../../namespaces';
 import { PushTrackerKinveyService, SqliteService } from '../../services';
-import { getSerialNumber, loadSerialNumber, saveSerialNumber, sentryBreadCrumb } from '../../utils';
+import {
+  getSerialNumber,
+  loadSerialNumber,
+  saveSerialNumber,
+  sentryBreadCrumb
+} from '../../utils';
 
 const dateLocales = {
   da: require('date-fns/locale/da'),
@@ -159,6 +178,18 @@ export class MainViewModel extends Observable {
     try {
       await this._init();
       Log.D('init finished in the main-view-model');
+      // start of the local notification reminders
+      // need to think out the API for this to schedule and not always call reschedule
+      // TBD based on the UX outlined by Ben, William, Curtis regarding the reminders/notifications
+      // we might want to set specific notifications based on parameters for regions, users, etc.
+      schedulePushTrackerLocalNotifications();
+      Log.D('scheduled local notifications for PushTracker Wear');
+      setTimeout(async () => {
+        const cancelId = await cancelScheduledNotification(
+          PushTrackerLocalNotifications.PRESSURE_RELIEF_NOTIFICATION_ID
+        );
+        Log.D(`Canceled the Notification: ${cancelId}`);
+      }, 600000);
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
@@ -198,7 +229,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(this.ANDROID_MARKET_SMARTDRIVE_URI));
     application.android.foregroundActivity.startActivity(intent);
@@ -629,7 +660,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
         // and return true letting the caller know we got the permissions
@@ -659,7 +690,7 @@ export class MainViewModel extends Observable {
       this._applyTheme('ambient');
     });
 
-    application.on('updateAmbient', () => { });
+    application.on('updateAmbient', () => {});
 
     application.on('exitAmbient', () => {
       sentryBreadCrumb('*** exitAmbient ***');
@@ -959,7 +990,7 @@ export class MainViewModel extends Observable {
     this.currentPushCountDisplay = this.currentPushCount.toFixed(0);
   }
 
-  private _updateSpeedDisplay() { }
+  private _updateSpeedDisplay() {}
 
   /**
    * SmartDrive Associated App Functions
