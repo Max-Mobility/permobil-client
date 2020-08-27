@@ -93,7 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:layout_marginBottom="6dp"
+            android:layout_marginBottom="4dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/topcomplication"
             android:scaleType="centerInside" />
