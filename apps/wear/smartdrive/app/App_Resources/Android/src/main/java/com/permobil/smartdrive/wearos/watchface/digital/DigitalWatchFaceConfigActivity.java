@@ -88,7 +88,6 @@ public class DigitalWatchFaceConfigActivity extends Activity implements View.OnC
         sdBtnParams.width = (int) (metrics.widthPixels * 0.75);
         sdBtnParams.height = (int) (metrics.heightPixels * 0.40);
         smartDriveBtn.setLayoutParams(sdBtnParams);
-        Log.d(TAG, "set the sd btn size in the layout");
 
         ViewGroup.LayoutParams timeTableRowParams = timeTableRow.getLayoutParams();
         timeTableRowParams.height = (int) (metrics.heightPixels * .35);
