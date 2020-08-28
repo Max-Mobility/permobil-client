@@ -80,21 +80,23 @@
             android:id="@+id/top_complication_background"
             style="?android:borderlessButtonStyle"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:layout_marginBottom="6dp"
+            android:layout_marginBottom="4dp"
             android:background="@android:color/transparent"
-            android:contentDescription="@string/topcomplicationbackground" />
+            android:contentDescription="@string/topcomplicationbackground"
+            android:scaleType="centerInside" />
 
         <ImageButton
             android:id="@+id/top_complication"
             style="?android:borderlessButtonStyle"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:layout_marginBottom="6dp"
+            android:layout_marginBottom="4dp"
             android:background="@android:color/transparent"
-            android:contentDescription="@string/topcomplication" />
+            android:contentDescription="@string/topcomplication"
+            android:scaleType="centerInside" />
 
         <TableLayout
             android:layout_width="match_parent"
@@ -103,13 +105,14 @@
             android:orientation="vertical">
 
             <TableRow
+                android:id="@+id/spaceTableRow"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal">
 
                 <Space
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp" />
+                    android:layout_height="28dp" />
             </TableRow>
 
             <TableRow
@@ -121,7 +124,7 @@
                     android:id="@+id/smartDriveBtn"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal|fill_horizontal|center_vertical"
+                    android:layout_gravity="center|center_horizontal|center_vertical"
                     android:background="@drawable/action_item_background"
                     android:contentDescription="@string/smartdrivebutton"
                     android:scaleType="centerInside"
@@ -129,9 +132,9 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/timeTableRow"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="bottom|center|center_horizontal|center_vertical">
+                android:gravity="center_horizontal|center_vertical">
 
                 <!-- ignore the useless parent warning here, the layout wont align with just table row to the design -->
                 <LinearLayout
@@ -147,9 +150,9 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:gravity="right|bottom"
-                        android:textSize="22sp"
                         android:text="@string/_12"
-                        android:textColor="@color/ambient_mode_text" />
+                        android:textColor="@color/ambient_mode_text"
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/colonTextView"
@@ -157,9 +160,9 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:gravity="center_horizontal|bottom"
-                        android:textSize="22sp"
                         android:text="@string/colon"
-                        android:textColor="@color/ambient_mode_text" />
+                        android:textColor="@color/ambient_mode_text"
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/minuteTextView"
@@ -167,18 +170,19 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:gravity="left|bottom"
-                        android:textSize="22sp"
                         android:text="@string/_00"
-                        android:textColor="@color/ambient_mode_text" />
+                        android:textColor="@color/ambient_mode_text"
+                        android:textSize="18sp" />
+
                     <TextView
                         android:id="@+id/amPmTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:gravity="right|bottom"
-                        android:textSize="14sp"
                         android:text="@string/pm"
-                        android:textColor="@color/ambient_mode_text" />
+                        android:textColor="@color/ambient_mode_text"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
             </TableRow>
@@ -189,15 +193,15 @@
                 android:gravity="center_horizontal|top">
 
                 <TextView
-                    android:visibility="gone"
                     android:id="@+id/dateTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
                     android:gravity="center"
-                    android:textSize="12sp"
                     android:text="@string/_date"
-                    android:textColor="@color/ambient_mode_text" />
+                    android:textColor="@color/ambient_mode_text"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
             </TableRow>
 
         </TableLayout>

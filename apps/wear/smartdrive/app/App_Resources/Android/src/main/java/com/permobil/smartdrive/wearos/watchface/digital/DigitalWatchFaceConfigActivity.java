@@ -9,10 +9,13 @@ import android.support.wearable.complications.ComplicationHelperActivity;
 import android.support.wearable.complications.ComplicationProviderInfo;
 import android.support.wearable.complications.ProviderChooserIntent;
 import android.support.wearable.complications.ProviderInfoRetriever;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TableRow;
 
 import com.permobil.smartdrive.wearos.R;
 
@@ -58,16 +61,37 @@ public class DigitalWatchFaceConfigActivity extends Activity implements View.OnC
     ImageView topComplicationBackground;
     @BindView(R.id.top_complication)
     ImageButton topComplication;
-
+    @BindView(R.id.smartDriveBtn)
+    ImageButton smartDriveBtn;
+    @BindView(R.id.spaceTableRow)
+    TableRow spaceTableRow;
+    @BindView(R.id.timeTableRow)
+    TableRow timeTableRow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_config);
 
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+
         mWatchFaceComponentName = new ComponentName(getApplicationContext(), DigitalWatchFaceService.class);
 
         ButterKnife.bind(this);
+
+        ViewGroup.LayoutParams spaceTableRowParams = spaceTableRow.getLayoutParams();
+        spaceTableRowParams.height = (int) (metrics.heightPixels * .25);
+        spaceTableRow.setLayoutParams(spaceTableRowParams);
+
+        // Size the SmartDriveButton based on the screen width pixels to 75%
+        ViewGroup.LayoutParams sdBtnParams = smartDriveBtn.getLayoutParams();
+        sdBtnParams.width = (int) (metrics.widthPixels * 0.75);
+        sdBtnParams.height = (int) (metrics.heightPixels * 0.40);
+        smartDriveBtn.setLayoutParams(sdBtnParams);
+
+        ViewGroup.LayoutParams timeTableRowParams = timeTableRow.getLayoutParams();
+        timeTableRowParams.height = (int) (metrics.heightPixels * .35);
+        timeTableRow.setLayoutParams(timeTableRowParams);
 
         mSelectedComplicationId = -1;
         mTopComplicationId = DigitalWatchFaceService.getComplicationId(ComplicationLocation.TOP);
