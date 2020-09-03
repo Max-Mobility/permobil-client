@@ -2941,7 +2941,7 @@ export class MainViewModel extends Observable {
       `Current FW Versions: ${JSON.stringify(this._currentVersions, null, 2)}`
     );
 
-    let response = await this._kinveyService
+    const response = await this._kinveyService
       .downloadFirmwareFiles()
       .catch(err => {
         Sentry.captureException(err);

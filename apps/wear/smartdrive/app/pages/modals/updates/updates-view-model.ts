@@ -92,7 +92,7 @@ export class UpdatesViewModel extends Observable {
     } catch (error) {
       Sentry.captureException(error);
     }
-  };
+  }
 
   private _otaStarted: boolean = false;
 
@@ -509,7 +509,7 @@ export class UpdatesViewModel extends Observable {
       `Current FW Versions: ${JSON.stringify(this.currentVersions, null, 2)}`
     );
 
-    let response = await this._kinveyService
+    const response = await this._kinveyService
       .downloadFirmwareFiles()
       .catch(err => {
         const errorMessage = `${L(
