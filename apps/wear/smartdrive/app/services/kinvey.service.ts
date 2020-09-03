@@ -1,5 +1,5 @@
 import { device } from '@nativescript/core/platform';
-import { KinveyService } from '@permobil/nativescript/src/services/kinvey.service';
+import { KinveyService } from '@permobil/nativescript';
 import { Injectable } from 'injection-js';
 import * as LS from 'nativescript-localstorage';
 
@@ -84,6 +84,26 @@ export class SmartDriveKinveyService extends KinveyService {
       throw new Error(
         `Error downloading translation files: ${JSON.stringify(err)}`
       );
+    }
+  }
+
+  async downloadFirmwareFiles() {
+    const query = {
+      $or: [
+        { _filename: 'SmartDriveBLE.ota' },
+        { _filename: 'SmartDriveMCU.ota' }
+      ],
+      app_name: 'smartdrive_wear',
+      firmware_file: true
+    };
+
+    try {
+      // NOTE: This is the only kinvey service function which *DOES
+      // *** NOT REQUIRE USER AUTHENTICATION ***
+      // so we don't need to check this._kinveyService.hasAuth()
+      return await this.getFile(undefined, query);
+    } catch (err) {
+      return err;
     }
   }
 }
