@@ -22,7 +22,12 @@ import {
   SmartDriveKinveyService,
   SqliteService
 } from '../../../services';
-import { sentryBreadCrumb } from '../../../utils';
+import {
+  checkFirmwareMetaData,
+  getCurrentFirmwareData,
+  saveFirmwareFiles,
+  sentryBreadCrumb
+} from '../../../utils';
 
 const ambientTheme = require('../../../scss/theme-ambient.css').toString();
 const defaultTheme = require('../../../scss/theme-default.css').toString();
@@ -276,9 +281,13 @@ export class UpdatesViewModel extends Observable {
       if (this.smartDrive && this.smartDrive.hasVersionInfo()) {
         // if we've already talked to this SD and gotten its
         // version info then we can just resolve
-        sentryBreadCrumb('Already have smartdrive version:' +
-          '\n\tmcu: ' + this.smartDrive.mcu_version_string +
-          '\n\tble: ' + this.smartDrive.ble_version_string);
+        sentryBreadCrumb(
+          'Already have smartdrive version:' +
+            '\n\tmcu: ' +
+            this.smartDrive.mcu_version_string +
+            '\n\tble: ' +
+            this.smartDrive.ble_version_string
+        );
         resolve(true);
         return;
       } else {
@@ -299,9 +308,13 @@ export class UpdatesViewModel extends Observable {
         const onVersion = () => {
           remove();
           clearTimeout(connectTimeoutId);
-          sentryBreadCrumb('Got smartdrive version:' +
-            '\n\tmcu: ' + this.smartDrive.mcu_version_string +
-            '\n\tble: ' + this.smartDrive.ble_version_string);
+          sentryBreadCrumb(
+            'Got smartdrive version:' +
+              '\n\tmcu: ' +
+              this.smartDrive.mcu_version_string +
+              '\n\tble: ' +
+              this.smartDrive.ble_version_string
+          );
           resolve();
         };
         this.smartDrive.on(SmartDrive.smartdrive_mcu_version_event, onVersion);
@@ -488,64 +501,34 @@ export class UpdatesViewModel extends Observable {
     this.smartDriveOtaState = L('updates.checking-for-updates');
     // @ts-ignore
     this.updateProgressCircle.spin();
-    try {
-      this.currentVersions = await this.getFirmwareData();
-    } catch (err) {
+    this.currentVersions = await getCurrentFirmwareData().catch(err => {
       return this.updateError(err, L('updates.errors.loading'), `${err}`);
-    }
+    });
     sentryBreadCrumb(
       `Current FW Versions: ${JSON.stringify(this.currentVersions, null, 2)}`
     );
+
     let response = null;
-    const query = {
-      $or: [
-        { _filename: 'SmartDriveBLE.ota' },
-        { _filename: 'SmartDriveMCU.ota' }
-      ],
-      firmware_file: true
-    };
-    try {
-      // NOTE: This is the only kinvey service function which *DOES
-      // NOT REQUIRE USER AUTHENTICATION*, so we don't need to check
-      // this._kinveyService.hasAuth()
-      response = await this._kinveyService.getFile(undefined, query);
-    } catch (err) {
-      const errorMessage = `
-      ${L('updates.errors.connection-failure')}\n\n${err}
-      `;
+    response = await this._kinveyService.downloadFirmwareFiles().catch(err => {
+      const errorMessage = `${L(
+        'updates.errors.connection-failure'
+      )}\n\n${err}`;
       return this.updateError(err, L('updates.errors.getting'), errorMessage);
-    }
-    // Now that we have the metadata, check to see if we already
-    // have the most up to date firmware files and download them
-    // if we don't
-    const mds = response;
-    sentryBreadCrumb('mds: ' + mds);
-    let promises = [];
-    const files = [];
-    // get the max firmware version for each firmware
-    const reducedMaxes = mds.reduce((maxes, md) => {
-      const v = SmartDriveData.Firmwares.versionStringToByte(md['version']);
-      const fwName = md['_filename'];
-      if (!maxes[fwName]) maxes[fwName] = 0;
-      maxes[fwName] = Math.max(v, maxes[fwName]);
-      return maxes;
-    }, {});
-    // filter only the firmwares that we don't have or that are newer
-    // than the ones we have (and are the max)
-    const fileMetaDatas = mds.filter(f => {
-      const v = SmartDriveData.Firmwares.versionStringToByte(f['version']);
-      const fwName = f['_filename'];
-      const current = this.currentVersions[fwName];
-      const currentVersion = current && current.version;
-      const isMax = v === reducedMaxes[fwName];
-      return isMax && (!current || v > currentVersion);
     });
+
+    // Now that we have the metadata, check to see if we already have
+    // the most up to date firmware files and download them if we don't
+    const mds = response;
+    const fileMetaDatas = await checkFirmwareMetaData(mds);
+
     // @ts-ignore
     this.updateProgressCircle.stopSpinning();
     sentryBreadCrumb(
       'Got file metadatas, length: ' + (fileMetaDatas && fileMetaDatas.length)
     );
+
     // do we need to download any firmware files?
+    let files: any = [];
     if (fileMetaDatas && fileMetaDatas.length) {
       sentryBreadCrumb('downloading firmwares');
       // update progress text
@@ -553,12 +536,7 @@ export class UpdatesViewModel extends Observable {
       // reset ota progress to 0 to show downloading progress
       this.smartDriveOtaProgress = 0;
       // now download the files
-      try {
-        for (const fmd of fileMetaDatas) {
-          const f = await SmartDriveData.Firmwares.download(fmd);
-          files.push(f);
-        }
-      } catch (err) {
+      files = await saveFirmwareFiles(fileMetaDatas).catch(err => {
         const errorMessage = `
         ${L('updates.errors.connection-failure')}\n\n${err}
         `;
@@ -567,31 +545,29 @@ export class UpdatesViewModel extends Observable {
           L('updates.errors.downloading'),
           errorMessage
         );
-      }
+      });
     }
-    // Now that we have the files, write them to disk and update
-    // our local metadata
-    promises = [];
+
+    // Now that we have the files, write them to disk and update our local metadata
+    let promises = [];
     if (files && files.length) {
       sentryBreadCrumb('updating firmware data');
       promises = files.filter(f => f).map(this.updateFirmwareData.bind(this));
     }
+
     try {
       await Promise.all(promises);
     } catch (err) {
       return this.updateError(err, L('updates.errors.saving'), `${err}`);
     }
-    // Now let's connect to the SD to make sure that we get it's
-    // version information
-    try {
-      await this.getSmartDriveVersion();
-    } catch (err) {
+
+    // Now let's connect to the SD to make sure that we get it's version information
+    await this.getSmartDriveVersion().catch(err => {
       sentryBreadCrumb('Connecting to smartdrive failed');
       return this.updateError(err, L('updates.errors.connecting'), err);
-    }
-    // Now perform the SmartDrive updates if we need to
+    });
 
-    // now see what we need to do with the data
+    // Now perform the SmartDrive updates if we need to
     sentryBreadCrumb('Finished checking for updates');
     this.performSmartDriveWirelessUpdate();
   }
@@ -613,10 +589,13 @@ export class UpdatesViewModel extends Observable {
     const version = SmartDriveData.Firmwares.versionByteToString(
       Math.max(mcuVersion, bleVersion)
     );
-    const versionString = [mcuVersion, bleVersion].map(SmartDriveData.Firmwares.versionByteToString).join(', ');
+    const versionString = [mcuVersion, bleVersion]
+      .map(SmartDriveData.Firmwares.versionByteToString)
+      .join(', ');
     sentryBreadCrumb('got curent firmware versions: ' + versionString);
     // do we need to update?
-    const isUpToDate = this.smartDrive.isMcuUpToDate(mcuVersion) &&
+    const isUpToDate =
+      this.smartDrive.isMcuUpToDate(mcuVersion) &&
       this.smartDrive.isBleUpToDate(bleVersion);
     if (isUpToDate) {
       this.smartDriveOtaState = L('updates.up-to-date');
@@ -664,14 +643,20 @@ export class UpdatesViewModel extends Observable {
           300 * 1000
         );
         this._otaStarted = false;
-        sentryBreadCrumb('ota status at end: "' + otaStatus + '" type=' + typeof otaStatus);
+        sentryBreadCrumb(
+          'ota status at end: "' + otaStatus + '" type=' + typeof otaStatus
+        );
         if (otaStatus === 'updates.canceled') {
-          this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
-            label: L('ota.action.close'),
-            func: this._debouncedCloseModal.bind(this),
-            action: 'ota.action.close',
-            class: 'action-close'
-          });
+          this.smartDriveOtaActions.splice(
+            0,
+            this.smartDriveOtaActions.length,
+            {
+              label: L('ota.action.close'),
+              func: this._debouncedCloseModal.bind(this),
+              action: 'ota.action.close',
+              class: 'action-close'
+            }
+          );
         }
       } catch (err) {
         return this.updateError(err, L('updates.failed'), `${err}`);
@@ -859,39 +844,6 @@ export class UpdatesViewModel extends Observable {
   async disconnectFromSmartDrive() {
     if (this.smartDrive) {
       await this.smartDrive.disconnect();
-    }
-  }
-
-  async getFirmwareData() {
-    sentryBreadCrumb('Getting firmware data');
-    try {
-      const objs = await this._sqliteService.getAll({
-        tableName: SmartDriveData.Firmwares.TableName
-      });
-      Log.D('Done getting objects from SqliteService');
-      // @ts-ignore
-      const mds = objs.map(o => SmartDriveData.Firmwares.loadFirmware(...o));
-      // make the metadata
-      return mds.reduce((data, md) => {
-        const fname = md[SmartDriveData.Firmwares.FileName];
-        const blob = SmartDriveData.Firmwares.loadFromFileSystem({
-          filename: fname
-        });
-        if (blob && blob.length) {
-          data[md[SmartDriveData.Firmwares.FirmwareName]] = {
-            version: md[SmartDriveData.Firmwares.VersionName],
-            filename: fname,
-            id: md[SmartDriveData.Firmwares.IdName],
-            changes: md[SmartDriveData.Firmwares.ChangesName],
-            data: blob
-          };
-        }
-        return data;
-      }, {});
-    } catch (err) {
-      sentryBreadCrumb('Could not get firmware metadata: ' + err);
-      Sentry.captureException(err);
-      return {};
     }
   }
 
