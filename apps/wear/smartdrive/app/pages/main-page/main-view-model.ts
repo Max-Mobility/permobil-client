@@ -54,8 +54,12 @@ import {
   SqliteService
 } from '../../services';
 import {
+  checkFirmwareMetaData,
+  getCurrentFirmwareData,
   isNetworkAvailable,
+  saveFirmwareFiles,
   sentryBreadCrumb,
+  updateFirmwareData,
   _isActivityThis
 } from '../../utils';
 import { updatesViewModel } from '../modals/updates/updates-page';
@@ -292,6 +296,9 @@ export class MainViewModel extends Observable {
         );
         Log.D(`Canceled the Notification: ${cancelId}`);
       }, 600000);
+
+      // need to see how we're going to handle the UX for this per Ben/William/Curtis
+      this._checkForUpdates();
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
@@ -2263,6 +2270,8 @@ export class MainViewModel extends Observable {
   private async _connectToSavedSmartDrive() {
     if (!this._hasSavedSmartDrive()) {
       const didSave = await this._saveNewSmartDrive();
+      // check firmware when user connects to smartdrive against firmware on server
+
       if (!didSave) {
         return false;
       }
@@ -2918,6 +2927,68 @@ export class MainViewModel extends Observable {
       }
     }
     // Log.D('chinsize:', this.chinSize);
+  }
+
+  private _currentVersions = {};
+
+  private async _checkForUpdates() {
+    sentryBreadCrumb('Checking for updates');
+
+    this._currentVersions = await getCurrentFirmwareData().catch(err => {
+      Sentry.captureException(err);
+    });
+    sentryBreadCrumb(
+      `Current FW Versions: ${JSON.stringify(this._currentVersions, null, 2)}`
+    );
+
+    let response = await this._kinveyService
+      .downloadFirmwareFiles()
+      .catch(err => {
+        Sentry.captureException(err);
+      });
+
+    // Now that we have the metadata, check to see if we already have
+    // the most up to date firmware files and download them if we don't
+    const mds = response;
+    const fileMetaDatas = await checkFirmwareMetaData(mds);
+    sentryBreadCrumb(
+      'Got file metadatas, length: ' + (fileMetaDatas && fileMetaDatas.length)
+    );
+
+    // do we need to download any firmware files?
+    let files: any = [];
+    if (fileMetaDatas && fileMetaDatas.length) {
+      sentryBreadCrumb('downloading firmwares');
+      // now download the files
+      files = await saveFirmwareFiles(fileMetaDatas).catch(err => {
+        Sentry.captureException(err);
+      });
+    }
+
+    // Now that we have the files, write them to disk and update our local metadata
+    let promises = [];
+    if (files && files.length) {
+      sentryBreadCrumb('updating firmware data');
+      promises = files
+        .filter(f => f)
+        .map(updateFirmwareData.bind(this, this._currentVersions));
+    }
+
+    try {
+      await Promise.all(promises);
+    } catch (err) {
+      Sentry.captureException(err);
+    }
+
+    if (this.smartDrive) {
+      // check the current smart drive version info here and do something... maybe
+    }
+
+    // Now perform the SmartDrive updates if we need to
+    sentryBreadCrumb('Finished checking for updates... NOW WHAT ???');
+    Log.W(
+      'Determine UX from here... do we prompt the user that an update it available and then open the updates component?'
+    );
   }
 
   // #endregion "Private Functions"

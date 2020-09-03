@@ -43,7 +43,7 @@ export async function getCurrentFirmwareData() {
 }
 
 export async function checkFirmwareMetaData(mds) {
-  sentryBreadCrumb('mds: ' + mds);
+  sentryBreadCrumb('Firmware MetaData: ' + mds);
   // get the max firmware version for each firmware
   const reducedMaxes = mds.reduce((maxes, md) => {
     const v = SmartDriveData.Firmwares.versionStringToByte(md['version']);
@@ -78,5 +78,57 @@ export async function saveFirmwareFiles(metadata) {
     return files;
   } catch (err) {
     return err;
+  }
+}
+
+export async function updateFirmwareData(f: any, currentVersions) {
+  const _sqliteService: SqliteService = injector.get(SqliteService);
+
+  const id = currentVersions[f.name] && currentVersions[f.name].id;
+  // update the data in the db
+  const newFirmware = SmartDriveData.Firmwares.newFirmware(
+    f.version,
+    f.name,
+    undefined,
+    f.changes
+  );
+
+  // update current versions
+  currentVersions[f.name] = {
+    version: f.version,
+    changes: f.changes,
+    filename: newFirmware[SmartDriveData.Firmwares.FileName],
+    data: f.data
+  };
+
+  // save binary file to fs
+  sentryBreadCrumb(`saving file ${currentVersions[f.name].filename}`);
+  SmartDriveData.Firmwares.saveToFileSystem({
+    filename: currentVersions[f.name].filename,
+    data: f.data
+  });
+
+  if (id !== undefined) {
+    currentVersions[f.name].id = id;
+    newFirmware[SmartDriveData.Firmwares.IdName] = id;
+    await _sqliteService.updateInTable(
+      SmartDriveData.Firmwares.TableName,
+      {
+        [SmartDriveData.Firmwares.VersionName]:
+          newFirmware[SmartDriveData.Firmwares.VersionName],
+        [SmartDriveData.Firmwares.ChangesName]:
+          newFirmware[SmartDriveData.Firmwares.ChangesName],
+        [SmartDriveData.Firmwares.FileName]:
+          newFirmware[SmartDriveData.Firmwares.FileName]
+      },
+      {
+        [SmartDriveData.Firmwares.IdName]: id
+      }
+    );
+  } else {
+    await _sqliteService.insertIntoTable(
+      SmartDriveData.Firmwares.TableName,
+      newFirmware
+    );
   }
 }

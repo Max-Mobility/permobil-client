@@ -26,7 +26,8 @@ import {
   checkFirmwareMetaData,
   getCurrentFirmwareData,
   saveFirmwareFiles,
-  sentryBreadCrumb
+  sentryBreadCrumb,
+  updateFirmwareData
 } from '../../../utils';
 
 const ambientTheme = require('../../../scss/theme-ambient.css').toString();
@@ -91,7 +92,7 @@ export class UpdatesViewModel extends Observable {
     } catch (error) {
       Sentry.captureException(error);
     }
-  }
+  };
 
   private _otaStarted: boolean = false;
 
@@ -508,13 +509,14 @@ export class UpdatesViewModel extends Observable {
       `Current FW Versions: ${JSON.stringify(this.currentVersions, null, 2)}`
     );
 
-    let response = null;
-    response = await this._kinveyService.downloadFirmwareFiles().catch(err => {
-      const errorMessage = `${L(
-        'updates.errors.connection-failure'
-      )}\n\n${err}`;
-      return this.updateError(err, L('updates.errors.getting'), errorMessage);
-    });
+    let response = await this._kinveyService
+      .downloadFirmwareFiles()
+      .catch(err => {
+        const errorMessage = `${L(
+          'updates.errors.connection-failure'
+        )}\n\n${err}`;
+        return this.updateError(err, L('updates.errors.getting'), errorMessage);
+      });
 
     // Now that we have the metadata, check to see if we already have
     // the most up to date firmware files and download them if we don't
@@ -552,7 +554,9 @@ export class UpdatesViewModel extends Observable {
     let promises = [];
     if (files && files.length) {
       sentryBreadCrumb('updating firmware data');
-      promises = files.filter(f => f).map(this.updateFirmwareData.bind(this));
+      promises = files
+        .filter(f => f)
+        .map(updateFirmwareData.bind(this, this.currentVersions));
     }
 
     try {
@@ -663,53 +667,6 @@ export class UpdatesViewModel extends Observable {
       }
       const updateMsg = L(otaStatus);
       await this.stopUpdates(updateMsg, false);
-    }
-  }
-
-  async updateFirmwareData(f: any) {
-    const id = this.currentVersions[f.name] && this.currentVersions[f.name].id;
-    // update the data in the db
-    const newFirmware = SmartDriveData.Firmwares.newFirmware(
-      f.version,
-      f.name,
-      undefined,
-      f.changes
-    );
-    // update current versions
-    this.currentVersions[f.name] = {
-      version: f.version,
-      changes: f.changes,
-      filename: newFirmware[SmartDriveData.Firmwares.FileName],
-      data: f.data
-    };
-    // save binary file to fs
-    sentryBreadCrumb(`saving file ${this.currentVersions[f.name].filename}`);
-    SmartDriveData.Firmwares.saveToFileSystem({
-      filename: this.currentVersions[f.name].filename,
-      data: f.data
-    });
-    if (id !== undefined) {
-      this.currentVersions[f.name].id = id;
-      newFirmware[SmartDriveData.Firmwares.IdName] = id;
-      await this._sqliteService.updateInTable(
-        SmartDriveData.Firmwares.TableName,
-        {
-          [SmartDriveData.Firmwares.VersionName]:
-            newFirmware[SmartDriveData.Firmwares.VersionName],
-          [SmartDriveData.Firmwares.ChangesName]:
-            newFirmware[SmartDriveData.Firmwares.ChangesName],
-          [SmartDriveData.Firmwares.FileName]:
-            newFirmware[SmartDriveData.Firmwares.FileName]
-        },
-        {
-          [SmartDriveData.Firmwares.IdName]: id
-        }
-      );
-    } else {
-      await this._sqliteService.insertIntoTable(
-        SmartDriveData.Firmwares.TableName,
-        newFirmware
-      );
     }
   }
 
