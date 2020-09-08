@@ -127,21 +127,18 @@ package-lock.json
 .DS_Store
 nativescript-bluetooth/**/*.js
 apps/**/report/
-# forked-plugins/nativescript-core-6.4.1/node_modules
-# forked-plugins/nativescript-core-6.4.1/**/*.js
 
 forked-plugins/nativescript-core-3-9-2020/node_modules
 forked-plugins/nativescript-core-3-9-2020/**/*.js
+forked-plugins/nativescript-core**/**/*.d.ts
+forked-plugins/nativescript-core**/cli-hooks/**.js
+forked-plugins/nativescript-core**/js-libs/**/*.js
+forked-plugins/nativescript-core**/css-value/**/*.js
+forked-plugins/nativescript-core**/css/**/*.js
+forked-plugins/nativescript-core**/fetch/**/*.js
+forked-plugins/nativescript-core**/platforms/**
 
 ################################ DO NOT IGNORE ################################
-!forked-plugins/nativescript-core**/**/*.d.ts
-!forked-plugins/nativescript-core**/cli-hooks/**.js
-!forked-plugins/nativescript-core**/js-libs/**/*.js
-!forked-plugins/nativescript-core**/css-value/**/*.js
-!forked-plugins/nativescript-core**/css/**/*.js
-!forked-plugins/nativescript-core**/fetch/**/*.js
-!forked-plugins/nativescript-core**/platforms/**
-
 !forked-plugins/nativescript-bluetooth/base64.js
 !@permobil/core/src/packet/packet_bindings.js
 !**/references.d.ts
