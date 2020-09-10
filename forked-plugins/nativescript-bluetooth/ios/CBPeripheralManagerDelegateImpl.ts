@@ -1,7 +1,5 @@
-/// <reference path="../../../node_modules/@nativescript/types-ios/index.d.ts" />
-
-import { Device } from '@nativescript/core';
-import { CLog, CLogTypes, ConnectionState } from '../common';
+import { Device, Dialogs } from '@nativescript/core';
+import { ConnectionState } from '../common';
 import { Bluetooth, getDevice } from './ios_main';
 
 /**
@@ -32,10 +30,6 @@ export class CBPeripheralManagerDelegateImpl
 
   initWithOwner(owner: WeakRef<Bluetooth>): CBPeripheralManagerDelegateImpl {
     this._owner = owner;
-    CLog(
-      CLogTypes.info,
-      `CBPeripheralManagerDelegateImpl.initWithCallback ---- this._owner: ${this._owner}`
-    );
     return this;
   }
 
@@ -44,10 +38,6 @@ export class CBPeripheralManagerDelegateImpl
     callback: (result?) => void
   ): CBPeripheralManagerDelegateImpl {
     this._owner = owner;
-    CLog(
-      CLogTypes.info,
-      `CBPeripheralManagerDelegateImpl.initWithCallback ---- this._owner: ${this._owner}`
-    );
     return this;
   }
 
@@ -56,8 +46,6 @@ export class CBPeripheralManagerDelegateImpl
    * @param mgr [CBPeripheralManager] - The peripheral manager whose state has changed.
    */
   peripheralManagerDidUpdateState(mgr: CBPeripheralManager) {
-    CLog(CLogTypes.info, 'peripheralManagerDidUpdateState');
-
     const owner = this._owner.get();
     if (!owner) {
       return;
@@ -66,7 +54,6 @@ export class CBPeripheralManagerDelegateImpl
     this._lastObservedPeripheralState = mgr.state;
 
     const state = owner._getManagerStateString(mgr.state);
-    CLog(CLogTypes.info, `current peripheral manager state = ${state}`);
 
     owner.sendEvent(Bluetooth.peripheralmanager_update_state_event, {
       manager: mgr,
@@ -106,12 +93,6 @@ export class CBPeripheralManagerDelegateImpl
     peripheral: CBPeripheralManager,
     dict?: NSDictionary<string, any>
   ) {
-    CLog(
-      CLogTypes.info,
-      'CBPeripheralManagerDelegateImpl.peripheralManagerWillRestoreState ---- ',
-      dict
-    );
-
     const owner = this._owner.get();
     if (!owner) {
       return;
@@ -136,13 +117,12 @@ export class CBPeripheralManagerDelegateImpl
     service: CBService,
     error?: NSError
   ) {
-    CLog(
-      CLogTypes.info,
+    console.error(
       'CBPeripheralManagerDelegateImpl.peripheralManagerDidAddError ---- ',
       error
     );
 
-    alert('Peripheral Manager Did Add Error');
+    Dialogs.alert('Peripheral Manager Did Add Error');
 
     const owner = this._owner.get();
     if (!owner) {
@@ -164,8 +144,7 @@ export class CBPeripheralManagerDelegateImpl
     peripheralMgr: CBPeripheralManager,
     error?: NSError
   ) {
-    CLog(
-      CLogTypes.info,
+    console.error(
       'CBPeripheralManagerDelegateImpl.peripheralManagerDidStartAdvertisingError ----',
       error
     );
@@ -175,8 +154,7 @@ export class CBPeripheralManagerDelegateImpl
     }
 
     if (error) {
-      CLog(
-        CLogTypes.warning,
+      console.error(
         'TODO: we may need to parse out the error value here for parity with Android.'
       );
       this._owner.get().sendEvent(Bluetooth.bluetooth_advertise_failure_event, {
@@ -202,8 +180,7 @@ export class CBPeripheralManagerDelegateImpl
     central: CBCentral,
     characteristic: CBCharacteristic
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       'CBPeripheralManagerDelegateImpl.peripheralManagerCentralDidSubscribeToCharacteristic ----',
       characteristic
     );
@@ -271,8 +248,7 @@ export class CBPeripheralManagerDelegateImpl
     central: CBCentral,
     characteristic: CBCharacteristic
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       'CBPeripheralManagerDelegateImpl.peripheralManagerCentralDidUnsubscribeFromCharacteristic ----',
       central,
       characteristic
@@ -323,8 +299,7 @@ export class CBPeripheralManagerDelegateImpl
     service: CBService,
     error: NSError
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       'CBPeripheralManagerDelegateImpl.peripheralManagerDidAddServiceError ----',
       peripheral,
       service,
@@ -339,8 +314,7 @@ export class CBPeripheralManagerDelegateImpl
    * @param peripheral [CBPeripheralManager] - The peripheral manager providing this information.
    */
   peripheralManagerIsReadyToUpdateSubscribers(peripheral: CBPeripheralManager) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       'CBPeripheralManagerDelegateImpl.peripheralManagerIsReadyToUpdateSubscribers ----',
       peripheral
     );
@@ -367,8 +341,7 @@ export class CBPeripheralManagerDelegateImpl
     peripheral: CBPeripheralManager,
     request: CBATTRequest
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       'CBPeripheralManagerDelegateImpl.peripheralManagerDidReceiveReadRequest ----',
       peripheral,
       request
@@ -408,8 +381,7 @@ export class CBPeripheralManagerDelegateImpl
     peripheral: CBPeripheralManager,
     requests
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       'CBPeripheralManagerDelegateImpl.peripheralManagerDidReceiveWriteRequests ----',
       peripheral,
       requests

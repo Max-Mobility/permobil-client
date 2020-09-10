@@ -1,4 +1,3 @@
-import { CLog, CLogTypes } from '../common';
 import { Bluetooth } from './android_main';
 
 @NativeClass()
@@ -13,10 +12,6 @@ export class TNS_AdvertiseCallback extends android.bluetooth.le
 
   onInit(owner: WeakRef<Bluetooth>) {
     this._owner = owner;
-    CLog(
-      CLogTypes.info,
-      `---- TNS_AdvertiseCallback.onInit ---- this._owner: ${this._owner}`
-    );
   }
 
   /**
@@ -24,13 +19,7 @@ export class TNS_AdvertiseCallback extends android.bluetooth.le
    * @param settingsInEffect
    */
   onStartSuccess(settingsInEffect: android.bluetooth.le.AdvertiseSettings) {
-    CLog(
-      CLogTypes.info,
-      `---- TNS_AdvertiseCallback.onStartSuccess ---- settingsInEffect: ${settingsInEffect}`
-    );
-
     this._owner.get().sendEvent(Bluetooth.bluetooth_advertise_success_event);
-
     // this._owner.get()._onBluetoothAdvertiseResolve(settingsInEffect);
   }
 
@@ -39,8 +28,7 @@ export class TNS_AdvertiseCallback extends android.bluetooth.le
    * @param errorCode
    */
   onStartFailure(errorCode: number) {
-    CLog(
-      CLogTypes.info,
+    console.warn(
       `---- TNS_AdvertiseCallback.onStartFailure ---- errorCode: ${errorCode}`
     );
 

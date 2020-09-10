@@ -1,7 +1,4 @@
-/// <reference path="../../../node_modules/@nativescript/types-ios/index.d.ts" />
-
 import { Device } from '@nativescript/core';
-import { CLog, CLogTypes } from '../common';
 import { CBPeripheralDelegateImpl } from './CBPeripheralDelegateImpl';
 import { Bluetooth } from './ios_main';
 
@@ -37,11 +34,6 @@ export class CBCentralManagerDelegateImpl
 
   initWithOwner(owner: WeakRef<Bluetooth>): CBCentralManagerDelegateImpl {
     this._owner = owner;
-    CLog(
-      CLogTypes.info,
-      `CBCentralManagerDelegateImpl.initWithOwner ---- this._owner: ${this._owner}`
-    );
-    // this._callback = callback;
     return this;
   }
 
@@ -56,15 +48,13 @@ export class CBCentralManagerDelegateImpl
     central: CBCentralManager,
     peripheral: CBPeripheral
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       `----- CBCentralManagerDelegateImpl centralManager:didConnectPeripheral: ${peripheral}`
     );
 
     const owner = this._owner.get();
     if (!owner) {
-      CLog(
-        CLogTypes.error,
+      console.error(
         '----- CBCentralManagerDelegateImpl didConnectPeripheral: error - no owner!'
       );
       return;
@@ -72,8 +62,7 @@ export class CBCentralManagerDelegateImpl
 
     // find the peri in the array and attach the delegate to that
     const peri = owner.findPeripheral(peripheral.identifier.UUIDString);
-    CLog(
-      CLogTypes.info,
+    console.info(
       `----- CBCentralManagerDelegateImpl centralManager:didConnectPeripheral: cached perio: ${peri}`
     );
 
@@ -84,11 +73,6 @@ export class CBCentralManagerDelegateImpl
     );
     CFRetain(delegate);
     peri.delegate = delegate;
-
-    CLog(
-      CLogTypes.info,
-      `----- CBCentralManagerDelegateImpl centralManager:didConnectPeripheral, discover service`
-    );
     peri.discoverServices(null);
     const eventData = {
       device: peripheral,
@@ -129,8 +113,7 @@ export class CBCentralManagerDelegateImpl
         name: peripheral.name
       });
     } else {
-      CLog(
-        CLogTypes.info,
+      console.warn(
         `***** centralManagerDidDisconnectPeripheralError() no disconnect callback found *****`
       );
     }
@@ -161,8 +144,7 @@ export class CBCentralManagerDelegateImpl
     peripheral: CBPeripheral,
     error?: NSError
   ) {
-    CLog(
-      CLogTypes.info,
+    console.error(
       `CBCentralManagerDelegate.centralManagerDidFailToConnectPeripheralError ----`,
       central,
       peripheral,
@@ -202,8 +184,7 @@ export class CBCentralManagerDelegateImpl
     advData: NSDictionary<string, any>,
     RSSI: number
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       `CBCentralManagerDelegateImpl.centralManagerDidDiscoverPeripheralAdvertisementDataRSSI ---- ${peripheral.name} @ ${RSSI}`
     );
 
@@ -258,8 +239,7 @@ export class CBCentralManagerDelegateImpl
       if (owner._onDiscovered) {
         owner._onDiscovered(eventData);
       } else {
-        CLog(
-          CLogTypes.warning,
+        console.warn(
           'CBCentralManagerDelegateImpl.centralManagerDidDiscoverPeripheralAdvertisementDataRSSI ---- No onDiscovered callback specified'
         );
       }
@@ -277,8 +257,7 @@ export class CBCentralManagerDelegateImpl
    */
   centralManagerDidUpdateState(central: CBCentralManager) {
     if (central.state === CBManagerState.Unsupported) {
-      CLog(
-        CLogTypes.warning,
+      console.warn(
         `CBCentralManagerDelegateImpl.centralManagerDidUpdateState ---- This hardware does not support Bluetooth Low Energy.`
       );
     }
@@ -319,8 +298,7 @@ export class CBCentralManagerDelegateImpl
     central: CBCentralManager,
     dict: NSDictionary<string, any>
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       `CBCentralManagerDelegateImpl.centralManagerWillRestoreState ---- central: ${central}, dict: ${dict}`
     );
 
@@ -333,7 +311,7 @@ export class CBCentralManagerDelegateImpl
     const peripheralArray = dict.objectForKey(
       CBCentralManagerRestoredStatePeripheralsKey
     );
-    CLog(CLogTypes.info, 'Restoring ', peripheralArray.count);
+    console.info('Restoring ', peripheralArray.count);
     for (let i = 0; i < peripheralArray.count; i++) {
       const peripheral = peripheralArray.objectAtIndex(i);
       owner.addPeripheral(peripheral);

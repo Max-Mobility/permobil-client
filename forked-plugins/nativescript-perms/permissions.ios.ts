@@ -196,6 +196,8 @@ export namespace PermissionsIOS {
     export type SubCBPeripheralManagerDelegate = Partial<
       CBPeripheralManagerDelegate
     >;
+
+    @NativeClass()
     export class CBPeripheralManagerDelegateImpl
       extends NSObject
       implements CBPeripheralManagerDelegate {

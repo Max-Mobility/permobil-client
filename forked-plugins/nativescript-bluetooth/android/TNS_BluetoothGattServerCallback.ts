@@ -1,4 +1,4 @@
-import { CLog, CLogTypes, ConnectionState } from '../common';
+import { ConnectionState } from '../common';
 import { Bluetooth, getDevice } from './android_main';
 
 @NativeClass()
@@ -13,10 +13,6 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
 
   onInit(owner: WeakRef<Bluetooth>) {
     this._owner = owner;
-    CLog(
-      CLogTypes.info,
-      `---- TNS_BluetoothGattServerCallback.onInit ---- this._owner: ${this._owner}`
-    );
   }
 
   /**
@@ -32,17 +28,12 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
     offset: number,
     characteristic: android.bluetooth.BluetoothGattCharacteristic
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       `---- TNS_BluetoothGattServerCallback.onCharacteristicReadRequest ---- device: ${device} requestId: ${requestId}, offset: ${offset}, characteristic: ${characteristic}`
     );
 
     const owner = this._owner.get();
     if (owner === null || owner === undefined) {
-      CLog(
-        CLogTypes.error,
-        `---- TNS_BluetoothGattServerCallback.onCharacteristicReadRequest ---- could not get owner!`
-      );
       console.error('onCharacteristicReadRequest error: could not get owner!');
       return;
     }
@@ -81,17 +72,12 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
     offset: number,
     value: any[]
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       `---- TNS_BluetoothGattServerCallback.onCharacteristicWriteRequest ---- device: ${device} requestId: ${requestId}, characteristic: ${characteristic}`
     );
 
     const owner = this._owner.get();
     if (owner === null || owner === undefined) {
-      CLog(
-        CLogTypes.error,
-        `---- TNS_BluetoothGattServerCallback.onCharacteristicWriteRequest ---- could not get owner!`
-      );
       console.error('onCharacteristicWriteRequest error: could not get owner!');
       return;
     }
@@ -125,8 +111,7 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
     status: number,
     newState: number
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       `---- TNS_BluetoothGattServerCallback.onConnectionStateChange ---- device: ${device}, status: ${status}, newState: ${newState}`
     );
 
@@ -138,10 +123,6 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
 
     const owner = this._owner.get();
     if (owner === null || owner === undefined) {
-      CLog(
-        CLogTypes.error,
-        `---- TNS_BluetoothGattServerCallback.onConnectionStateChange ---- could not get owner!`
-      );
       console.error('onConnectionStateChange error: could not get owner!');
       return;
     }
@@ -166,17 +147,12 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
     offset: number,
     descriptor
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       `---- TNS_BluetoothGattServerCallback.onDescriptorReadRequest ---- device: ${device}, requestId: ${requestId}, offset: ${offset}, descriptor: ${descriptor}`
     );
 
     const owner = this._owner.get();
     if (owner === null || owner === undefined) {
-      CLog(
-        CLogTypes.error,
-        `---- TNS_BluetoothGattServerCallback.onDescriptorReadRequest ---- could not get owner!`
-      );
       console.error('onDescriptorReadRequest error: could not get owner!');
       return;
     }
@@ -218,17 +194,12 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
     offset,
     value
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       `---- TNS_BluetoothGattServerCallback.onDescriptorWriteRequest ---- device: ${device}, requestId: ${requestId}, descriptor: ${descriptor}`
     );
 
     const owner = this._owner.get();
     if (owner === null || owner === undefined) {
-      CLog(
-        CLogTypes.error,
-        `---- TNS_BluetoothGattServerCallback.onDescriptorWriteRequest ---- could not get owner!`
-      );
       console.error('onDescriptorWriteRequest error: could not get owner!');
       return;
     }
@@ -263,17 +234,12 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
     requestId: number,
     execute: boolean
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       `---- TNS_BluetoothGattServerCallback.onExecuteWrite ---- device: ${device}, requestId: ${requestId}, execute: ${execute}`
     );
 
     const owner = this._owner.get();
     if (owner === null || owner === undefined) {
-      CLog(
-        CLogTypes.error,
-        `---- TNS_BluetoothGattServerCallback.onExecuteWrite ---- could not get owner!`
-      );
       console.error('onExecuteWrite error: could not get owner!');
       return;
     }
@@ -302,17 +268,12 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
     device: android.bluetooth.BluetoothDevice,
     status: number
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       `---- TNS_BluetoothGattServerCallback.onNotificationSent ---- device: ${device}, status: ${status}`
     );
 
     const owner = this._owner.get();
     if (owner === null || owner === undefined) {
-      CLog(
-        CLogTypes.error,
-        `---- TNS_BluetoothGattServerCallback.onNotificationSent ---- could not get owner!`
-      );
       console.error('onNotificationSent error: could not get owner!');
       return;
     }
@@ -331,8 +292,7 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
     status: number,
     service: android.bluetooth.BluetoothGattService
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       `---- TNS_BluetoothGattServerCallback.onServiceAdded ---- status: ${status}, service: ${service}`
     );
   }

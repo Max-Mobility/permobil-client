@@ -1,4 +1,4 @@
-import { BondState, CLog, CLogTypes } from '../common';
+import { BondState } from '../common';
 import { Bluetooth, getDevice } from './android_main';
 
 @NativeClass()
@@ -12,10 +12,6 @@ export class TNS_BroadcastReceiver extends android.content.BroadcastReceiver {
 
   onInit(owner: WeakRef<Bluetooth>) {
     this._owner = owner;
-    CLog(
-      CLogTypes.info,
-      `---- TNS_BroadcastReceiver.onInit ---- this._owner: ${this._owner}`
-    );
   }
 
   /**
@@ -32,19 +28,17 @@ export class TNS_BroadcastReceiver extends android.content.BroadcastReceiver {
     const device = <android.bluetooth.BluetoothDevice>(
       intent.getParcelableExtra(android.bluetooth.BluetoothDevice.EXTRA_DEVICE)
     );
-    CLog(
-      CLogTypes.info,
+    console.info(
       `TNS_BroadcastReceiver.onReceive() action: ${action}, device: ${device}, context: ${context}, intent: ${intent}`
     );
     if (!device) {
-      CLog(CLogTypes.warning, `No device found in the intent: ${intent}`);
+      console.warn(`No device found in the intent: ${intent}`);
       return;
     }
 
     const owner = this._owner.get();
     if (owner === null || owner === undefined) {
-      CLog(
-        CLogTypes.error,
+      console.error(
         'TNS_BroadcastReceiver::onReceive error: could not get owner!'
       );
       return;
@@ -96,10 +90,7 @@ export class TNS_BroadcastReceiver extends android.content.BroadcastReceiver {
           uuids.push(uuidExtra[i].toString());
         }
       }
-      CLog(
-        CLogTypes.info,
-        `${uuidExtra || 0} UUIDs found in the ACTION_UUID action.`
-      );
+      console.info(`${uuidExtra || 0} UUIDs found in the ACTION_UUID action.`);
 
       owner.sendEvent(Bluetooth.device_uuid_change_event, {
         device: getDevice(device),
@@ -124,12 +115,11 @@ export class TNS_BroadcastReceiver extends android.content.BroadcastReceiver {
     } else if (
       action === android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_FINISHED
     ) {
-      CLog(CLogTypes.info, 'discovery finsihed in bluetooth adapter');
       // discovery has finished, give a call to fetchUuidsWithSdp
       const result = device.fetchUuidsWithSdp();
-      CLog(CLogTypes.info, 'fetchUuidsWithSdp result', result);
+      console.info('fetchUuidsWithSdp result', result);
     } else if (action === android.bluetooth.BluetoothDevice.ACTION_FOUND) {
-      CLog(CLogTypes.info, `Bluetooth Device Found: ${device}`);
+      console.info(`Bluetooth Device Found: ${device}`);
       owner.sendEvent(Bluetooth.device_found_event, {
         device: getDevice(device)
       });

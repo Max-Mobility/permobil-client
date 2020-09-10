@@ -1,4 +1,3 @@
-import { CLog, CLogTypes } from '../common';
 import { Bluetooth } from './android_main';
 
 /**
@@ -25,8 +24,7 @@ export class TNS_ScanCallback extends android.bluetooth.le.ScanCallback {
    * @param results [List<android.bluetooth.le.ScanResult>] - List of scan results that are previously scanned.
    */
   onBatchScanResults(results) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       `----- TNS_ScanCallback.onBatchScanResults ----- results: ${results}`
     );
   }
@@ -36,8 +34,7 @@ export class TNS_ScanCallback extends android.bluetooth.le.ScanCallback {
    * @param errorCode [number] - Error code (one of SCAN_FAILED_*) for scan failure.
    */
   onScanFailed(errorCode: number) {
-    CLog(
-      CLogTypes.info,
+    console.error(
       `----- TNS_ScanCallback.onScanFailed ----- errorCode: ${errorCode}`
     );
     let errorMessage;
@@ -64,8 +61,7 @@ export class TNS_ScanCallback extends android.bluetooth.le.ScanCallback {
     } else {
       errorMessage = 'Scan failed to start';
     }
-    CLog(
-      CLogTypes.info,
+    console.error(
       '----- TNS_ScanCallback.onScanFailed errorMessage: ' + errorMessage
     );
   }
@@ -76,8 +72,7 @@ export class TNS_ScanCallback extends android.bluetooth.le.ScanCallback {
    * @param result  [android.bluetooth.le.ScanResult] - A Bluetooth LE scan result.
    */
   onScanResult(callbackType: number, result: android.bluetooth.le.ScanResult) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       `----- TNS_ScanCallback.onScanResult ----- callbackType: ${callbackType}, result: ${result}`
     );
     const stateObject = this._owner.get().connections[
@@ -94,8 +89,7 @@ export class TNS_ScanCallback extends android.bluetooth.le.ScanCallback {
           .getScanRecord()
           .getManufacturerSpecificData()
           .keyAt(0);
-        CLog(
-          CLogTypes.info,
+        console.info(
           `---- TNS_ScanCallback.onScanResult ---- manufacturerId: ${manufacturerId}`
         );
         manufacturerData = this._owner
@@ -103,14 +97,12 @@ export class TNS_ScanCallback extends android.bluetooth.le.ScanCallback {
           .decodeValue(
             result.getScanRecord().getManufacturerSpecificData().valueAt(0)
           );
-        CLog(
-          CLogTypes.info,
+        console.info(
           `---- TNS_ScanCallback.onScanResult ---- manufacturerData: ${manufacturerData}`
         );
       }
 
-      CLog(
-        CLogTypes.info,
+      console.info(
         `---- Lollipop+ scanCallback result: ${result
           .getDevice()
           .getName()}::${result.getDevice().getAddress()}`

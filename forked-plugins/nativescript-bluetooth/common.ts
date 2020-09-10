@@ -1,40 +1,10 @@
 import { Observable } from '@nativescript/core';
 
-declare var require;
-
 require('./base64');
-
-export class BluetoothUtil {
-  static debug = false;
-}
-
-export enum CLogTypes {
-  info,
-  warning,
-  error
-}
-
-export const CLog = (type: CLogTypes = 0, ...args) => {
-  if (BluetoothUtil.debug) {
-    if (type === 0) {
-      // Info
-      console.log('NativeScript-Bluetooth: INFO', args);
-    } else if (type === 1) {
-      // Warning
-      console.log('NativeScript-Bluetooth: WARNING', args);
-    } else if (type === 2) {
-      console.log('NativeScript-Bluetooth: ERROR', args);
-    }
-  }
-};
 
 export class BluetoothCommon extends Observable {
   constructor() {
     super();
-  }
-
-  set debug(value: boolean) {
-    BluetoothUtil.debug = value;
   }
 
   /*

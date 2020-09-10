@@ -1,6 +1,3 @@
-/// <reference path="../../../node_modules/@nativescript/types-ios/index.d.ts" />
-
-import { CLog, CLogTypes } from '../common';
 import { Bluetooth } from './ios_main';
 
 /**
@@ -10,7 +7,8 @@ import { Bluetooth } from './ios_main';
  * There are no required methods in this protocol.
  */
 @NativeClass()
-export class CBPeripheralDelegateImpl extends NSObject
+export class CBPeripheralDelegateImpl
+  extends NSObject
   implements CBPeripheralDelegate {
   static ObjCProtocols = [CBPeripheralDelegate];
   _onWritePromise;
@@ -34,10 +32,6 @@ export class CBPeripheralDelegateImpl extends NSObject
     callback: (result?) => void
   ): CBPeripheralDelegateImpl {
     this._owner = owner;
-    CLog(
-      CLogTypes.info,
-      `CBPeripheralDelegateImpl.initWithCallback ---- this._owner: ${this._owner}`
-    );
     this._callback = callback;
     this._servicesWithCharacteristics = [];
     return this;
@@ -48,8 +42,7 @@ export class CBPeripheralDelegateImpl extends NSObject
     RSSI: number,
     error: NSError
   ) {
-    CLog(
-      CLogTypes.info,
+    console.error(
       `CBPeripheralDelegateImpl.peripheralDidReadRSSIError ---- peripheral: ${peripheral}, rssi: ${RSSI}, error: ${error}`
     );
   }
@@ -64,17 +57,9 @@ export class CBPeripheralDelegateImpl extends NSObject
    * @param error [NSError] - If an error occurred, the cause of the failure.
    */
   peripheralDidDiscoverServices(peripheral: CBPeripheral, error?: NSError) {
-    CLog(
-      CLogTypes.info,
-      `CBPeripheralDelegateImpl.peripheralDidDiscoverServices ---- peripheral: ${peripheral}, ${error}`
-    );
     // map native services to a JS object
     this._services = [];
     if (peripheral.services.count === 0) {
-      CLog(
-        CLogTypes.error,
-        `CBPeripheralDelegateImpl.peripheralDidDiscoverServices ---- no services found - disconnecting!`
-      );
       this._owner.get().disconnect({
         UUID: peripheral.identifier.UUIDString
       });
@@ -82,10 +67,6 @@ export class CBPeripheralDelegateImpl extends NSObject
     }
     for (let i = 0; i < peripheral.services.count; i++) {
       const service = peripheral.services.objectAtIndex(i);
-      CLog(
-        CLogTypes.info,
-        `CBPeripheralDelegateImpl.peripheralDidDiscoverServices ---- service: ${service.UUID.UUIDString}`
-      );
       this._services.push({
         UUID: service.UUID.UUIDString,
         name: service.UUID
@@ -106,8 +87,7 @@ export class CBPeripheralDelegateImpl extends NSObject
     service: CBService,
     error?: NSError
   ) {
-    CLog(
-      CLogTypes.info,
+    console.error(
       `CBPeripheralDelegateImpl.peripheralDidDiscoverIncludedServicesForServiceError ---- peripheral: ${peripheral}, service: ${service}, error: ${error}`
     );
   }
@@ -123,11 +103,6 @@ export class CBPeripheralDelegateImpl extends NSObject
     service: CBService,
     error?: NSError
   ) {
-    CLog(
-      CLogTypes.info,
-      `CBPeripheralDelegateImpl.peripheralDidDiscoverCharacteristicsForServiceError ---- peripheral: ${peripheral}, service: ${service}, error: ${error}`
-    );
-
     if (error) {
       // TODO invoke reject and stop processing
       return;
@@ -188,23 +163,9 @@ export class CBPeripheralDelegateImpl extends NSObject
     characteristic: CBCharacteristic,
     error?: NSError
   ) {
-    // NOTE that this cb won't be invoked bc we currently don't discover descriptors
-    CLog(
-      CLogTypes.info,
-      `CBPeripheralDelegateImpl.peripheralDidDiscoverDescriptorsForCharacteristicError ---- peripheral: ${peripheral}, characteristic: ${characteristic}, error: ${error}`
-    );
-
     // TODO extract details, see https://github.com/randdusing/cordova-plugin-bluetoothle/blob/master/src/ios/BluetoothLePlugin.m#L1844
-    CLog(
-      CLogTypes.info,
-      `CBPeripheralDelegateImpl.peripheralDidDiscoverDescriptorsForCharacteristicError ---- characteristic.descriptors: ${characteristic.descriptors}`
-    );
     for (let i = 0; i < characteristic.descriptors.count; i++) {
       const descriptor = characteristic.descriptors.objectAtIndex(i);
-      CLog(
-        CLogTypes.info,
-        `CBPeripheralDelegateImpl.peripheralDidDiscoverDescriptorsForCharacteristicError ---- char desc UUID: ${descriptor.UUID.UUIDString}`
-      );
     }
 
     // now let's see if we're ready to invoke the callback
@@ -232,8 +193,7 @@ export class CBPeripheralDelegateImpl extends NSObject
     error?: NSError
   ) {
     if (!characteristic) {
-      CLog(
-        CLogTypes.warning,
+      console.warn(
         `CBPeripheralDelegateImpl.peripheralDidUpdateValueForCharacteristicError ---- No CBCharacteristic.`
       );
       return;
@@ -241,8 +201,7 @@ export class CBPeripheralDelegateImpl extends NSObject
 
     if (error !== null) {
       // TODO handle.. pass in sep callback?
-      CLog(
-        CLogTypes.error,
+      console.error(
         `CBPeripheralDelegateImpl.peripheralDidUpdateValueForCharacteristicError ---- ${error}`
       );
       return;
@@ -259,13 +218,13 @@ export class CBPeripheralDelegateImpl extends NSObject
       if (this._onReadPromise) {
         this._onReadPromise(result);
       } else {
-        CLog(CLogTypes.info, 'No _onReadPromise found!');
+        console.warn('No _onReadPromise found!');
       }
     } else {
       if (this._onNotifyCallback) {
         this._onNotifyCallback(result);
       } else {
-        CLog(CLogTypes.info, '----- CALLBACK IS GONE -----');
+        console.warn('----- CALLBACK IS GONE -----');
       }
     }
   }
@@ -278,8 +237,7 @@ export class CBPeripheralDelegateImpl extends NSObject
     descriptor: CBDescriptor,
     error?: NSError
   ) {
-    CLog(
-      CLogTypes.info,
+    console.error(
       `CBPeripheralDelegateImpl.peripheralDidUpdateValueForDescriptorError ---- peripheral: ${peripheral}, descriptor: ${descriptor}, error: ${error}`
     );
   }
@@ -292,8 +250,7 @@ export class CBPeripheralDelegateImpl extends NSObject
     characteristic: CBCharacteristic,
     error?: NSError
   ) {
-    CLog(
-      CLogTypes.info,
+    console.error(
       `CBPeripheralDelegateImpl.peripheralDidWriteValueForCharacteristicError ---- peripheral: ${peripheral}, characteristic: ${characteristic}, error: ${error}`
     );
     if (this._onWriteTimeout) {
@@ -307,8 +264,7 @@ export class CBPeripheralDelegateImpl extends NSObject
         characteristicUUID: characteristic.UUID.UUIDString
       });
     } else {
-      CLog(
-        CLogTypes.warning,
+      console.warn(
         'CBPeripheralDelegateImpl.peripheralDidWriteValueForCharacteristicError ---- No _onWritePromise found!'
       );
     }
@@ -323,24 +279,20 @@ export class CBPeripheralDelegateImpl extends NSObject
     characteristic: CBCharacteristic,
     error?: NSError
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       `CBPeripheralDelegateImpl.peripheralDidUpdateNotificationStateForCharacteristicError ---- peripheral: ${peripheral}, characteristic: ${characteristic}, error: ${error}`
     );
     if (error) {
-      CLog(
-        CLogTypes.error,
+      console.error(
         `CBPeripheralDelegateImpl.peripheralDidUpdateNotificationStateForCharacteristicError ---- ${error}`
       );
     } else {
       if (characteristic.isNotifying) {
-        CLog(
-          CLogTypes.info,
+        console.info(
           `CBPeripheralDelegateImpl.peripheralDidUpdateNotificationStateForCharacteristicError ---- Notification began on ${characteristic}`
         );
       } else {
-        CLog(
-          CLogTypes.info,
+        console.info(
           `CBPeripheralDelegateImpl.peripheralDidUpdateNotificationStateForCharacteristicError ---- Notification stopped on  ${characteristic}, consider disconnecting`
         );
         // Bluetooth._manager.cancelPeripheralConnection(peripheral);
@@ -356,8 +308,7 @@ export class CBPeripheralDelegateImpl extends NSObject
     descriptor: CBDescriptor,
     error?: NSError
   ) {
-    CLog(
-      CLogTypes.info,
+    console.error(
       `CBPeripheralDelegateImpl.peripheralDidWriteValueForDescriptorError ---- peripheral: ${peripheral}, descriptor: ${descriptor}, error: ${error}`
     );
   }
@@ -413,8 +364,7 @@ export class CBPeripheralDelegateImpl extends NSObject
     const descsJs = [];
     for (let i = 0; i < descs.count; i++) {
       const desc = descs.objectAtIndex(i);
-      CLog(
-        CLogTypes.info,
+      console.info(
         `CBPeripheralDelegateImpl._getDescriptors ---- descriptor value: ${desc.value}`
       );
       descsJs.push({

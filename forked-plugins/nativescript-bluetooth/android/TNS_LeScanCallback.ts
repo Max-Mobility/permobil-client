@@ -1,4 +1,3 @@
-import { CLog, CLogTypes } from '../common';
 import { Bluetooth } from './android_main';
 
 /**
@@ -25,8 +24,7 @@ export class TNS_LeScanCallback extends android.bluetooth.BluetoothAdapter
         rssi: number,
         scanRecord
       ) {
-        CLog(
-          CLogTypes.info,
+        console.info(
           `---- TNS_LeScanCallback.onLeScan ---- device: ${device}, rssi: ${rssi}, scanRecord: ${scanRecord}`
         );
 
@@ -41,8 +39,7 @@ export class TNS_LeScanCallback extends android.bluetooth.BluetoothAdapter
           const manufacturerDataRaw = this._owner
             .get()
             .extractManufacturerRawData(scanRecord);
-          CLog(
-            CLogTypes.info,
+          console.info(
             `---- TNS_LeScanCallback.onLeScan ---- manufacturerDataRaw: ${manufacturerDataRaw}`
           );
           if (manufacturerDataRaw) {
@@ -50,19 +47,16 @@ export class TNS_LeScanCallback extends android.bluetooth.BluetoothAdapter
               0,
               true
             );
-            CLog(
-              CLogTypes.info,
+            console.info(
               `---- TNS_LeScanCallback.onLeScan ---- manufacturerId: ${manufacturerId}`
             );
             manufacturerData = manufacturerDataRaw.slice(2);
-            CLog(
-              CLogTypes.info,
+            console.info(
               `---- TNS_LeScanCallback.onLeScan ---- manufacturerData: ${manufacturerData}`
             );
           }
 
-          CLog(
-            CLogTypes.info,
+          console.info(
             `---- TNS_LeScanCallback.scanCallback ---- payload: ${device.getAddress()}::${device.getName()}`
           );
           const payload = {
@@ -75,7 +69,9 @@ export class TNS_LeScanCallback extends android.bluetooth.BluetoothAdapter
             manufacturerId: manufacturerId,
             manufacturerData: manufacturerData
           };
-          this._owner.get().sendEvent(Bluetooth.device_discovered_event, payload);
+          this._owner
+            .get()
+            .sendEvent(Bluetooth.device_discovered_event, payload);
           this.onPeripheralDiscovered && this.onPeripheralDiscovered(payload);
         }
       }
@@ -85,9 +81,5 @@ export class TNS_LeScanCallback extends android.bluetooth.BluetoothAdapter
 
   onInit(owner: WeakRef<Bluetooth>) {
     this._owner = owner;
-    CLog(
-      CLogTypes.info,
-      `---- TNS_LeScanCallback.onInit ---- this._owner: ${this._owner}`
-    );
   }
 }

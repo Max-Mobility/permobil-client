@@ -1,4 +1,4 @@
-(function() {
+(function () {
   var chars =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 
@@ -10,7 +10,7 @@
 
   // encoder
   // [https://gist.github.com/999166] by [https://github.com/nignag]
-  global.btoa = function(input) {
+  global.btoa = function (input) {
     var str = String(input);
     for (
       // initialize result and counter
@@ -35,7 +35,7 @@
 
   // decoder
   // [https://gist.github.com/1020396] by [https://github.com/atk]
-  global.atob = function(input) {
+  global.atob = function (input) {
     var str = String(input).replace(/=+$/, '');
     if (str.length % 4 == 1) {
       throw new InvalidCharacterError(

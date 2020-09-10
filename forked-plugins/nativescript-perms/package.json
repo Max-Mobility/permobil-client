@@ -13,6 +13,7 @@
   "devDependencies": {
     "@nativescript/core": "file:../../node_modules/@nativescript/core",
     "@nativescript/types": "file:../../node_modules/@nativescript/types",
+    "@nativescript/webpack": "file:../../node_modules/@nativescript/webpack",
     "typescript": "file:../../node_modules/typescript"
   },
   "keywords": [

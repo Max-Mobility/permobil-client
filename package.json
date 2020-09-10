@@ -50,7 +50,7 @@
     "clean.@permobil.angular": "cd @permobil/angular && rimraf hooks node_modules package-lock.json",
     "clean.@permobil.nativescript": "cd @permobil/nativescript && rimraf hooks node_modules package-lock.json",
     "clean.forked.plugins": "npm run clean.ns.bluetooth && npm run clean.ns.animated.circle && npm run clean.ns.core",
-    "clean.ns.bluetooth": "cd forked-plugins/nativescript-bluetooth && rimraf hooks node_modules",
+    "clean.ns.bluetooth": "cd forked-plugins/nativescript-bluetooth && rimraf hooks node_modules package-lock.json",
     "clean.ns.animated.circle": "cd forked-plugins/nativescript-animated-circle && rimraf hooks node_modules",
     "clean.ns.core": "cd forked-plugins/nativescript-core-7.0.0 && ns clean",
     "nuki": "npm run clean.all && npm run setup.all",

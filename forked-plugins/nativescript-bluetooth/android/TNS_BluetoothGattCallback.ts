@@ -1,4 +1,3 @@
-import { CLog, CLogTypes } from '../common';
 import { Bluetooth, getDevice } from './android_main';
 
 @NativeClass()
@@ -13,10 +12,6 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
 
   onInit(owner: WeakRef<Bluetooth>) {
     this._owner = owner;
-    CLog(
-      CLogTypes.info,
-      `---- TNS_BluetoothGattCallback.onInit ---- this.owner: ${this._owner}`
-    );
   }
 
   /**
@@ -30,19 +25,17 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
     status: number,
     newState: number
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       `---- TNS_BluetoothGattCallback.onConnectionStateChange ---- status: ${status}, newState: ${newState}`
     );
     if (
       newState === android.bluetooth.BluetoothProfile.STATE_CONNECTED &&
       status === android.bluetooth.BluetoothGatt.GATT_SUCCESS
     ) {
-      CLog(CLogTypes.info, '---- discovering services -----');
       // Discovers services offered by a remote device as well as their characteristics and descriptors.
       gatt.discoverServices();
     } else {
-      CLog(CLogTypes.info, `---- disconnecting the gatt: ${gatt} ----`);
+      console.info(`---- disconnecting the gatt: ${gatt} ----`);
       // perhaps the device was manually disconnected, or in use by another device
       this._owner.get().gattDisconnect(gatt);
     }
@@ -54,8 +47,7 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
    * @param status [number] - GATT_SUCCESS if the remote device has been explored successfully.
    */
   onServicesDiscovered(gatt: android.bluetooth.BluetoothGatt, status: number) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       `---- TNS_BluetoothGattCallback.onServicesDiscovered ---- status (0=success): ${status}`
     );
 
@@ -99,7 +91,6 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
               };
             }
 
-            CLog(CLogTypes.info, `pushing descriptor: ${descriptor}`);
             descriptorsJs.push(descriptorJs);
           }
 
@@ -142,7 +133,6 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
             };
           }
 
-          CLog(CLogTypes.info, `pushing characteristic: ${characteristicJs}`);
           characteristicsJs.push(characteristicJs);
         }
 
@@ -182,8 +172,7 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
     status: number
   ) {
     const device = gatt.getDevice();
-    CLog(
-      CLogTypes.info,
+    console.info(
       `----- TNS_BluetoothGattCallback.onCharacteristicRead ---- characteristic: ${characteristic}, status: ${status}, device: ${device}`
     );
     const stateObject = this._owner.get().connections[device.getAddress()];
@@ -193,8 +182,7 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
     }
 
     if (status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
-      CLog(
-        CLogTypes.info,
+      console.warn(
         `BluetoothGatt::onCharacteristicRead - bad status: ${status}`
       );
     }
@@ -219,8 +207,7 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
     characteristic: android.bluetooth.BluetoothGattCharacteristic
   ) {
     const device = gatt.getDevice();
-    CLog(
-      CLogTypes.info,
+    console.info(
       `---- TNS_BluetoothGattCallback.onCharacteristicChanged ---- gatt: ${gatt}, characteristic: ${characteristic}, device: ${device}`
     );
 
@@ -255,8 +242,7 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
     status: number
   ) {
     const device = gatt.getDevice();
-    CLog(
-      CLogTypes.info,
+    console.info(
       `---- TNS_BluetoothGattCallback.onCharacteristicWrite ---- characteristic: ${characteristic}, status: ${status}, device: ${device}`
     );
 
@@ -269,8 +255,7 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
     stateObject.isWriting = false;
 
     if (status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
-      CLog(
-        CLogTypes.info,
+      console.warn(
         `BluetoothGattCallback::onCharacteristicWrite - BAD STATUS: ${status}`
       );
     }
@@ -293,8 +278,7 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
     descriptor: android.bluetooth.BluetoothGattDescriptor,
     status: number
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       `---- TNS_BluetoothGattCallback.onDescriptorRead ---- gatt: ${gatt}, descriptor: ${descriptor}, status: ${status}`
     );
 
@@ -328,8 +312,7 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
     status: number
   ) {
     const device = gatt.getDevice();
-    CLog(
-      CLogTypes.info,
+    console.info(
       `---- TNS_BluetoothGattCallback.onDescriptorWrite ---- descriptor: ${descriptor}, status: ${status}, device: ${device}`
     );
 
@@ -342,8 +325,7 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
     stateObject.isWriting = false;
 
     if (status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
-      CLog(
-        CLogTypes.info,
+      console.warn(
         `BluetoothGattCallback::onDescriptorWrite - BAD STATUS: ${status}`
       );
     }
@@ -366,8 +348,7 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
     rssi: number,
     status: number
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       `---- TNS_BluetoothGattCallback.onReadRemoteRssi ---- gatt: ${gatt} rssi: ${rssi}, status: ${status}`
     );
 
@@ -401,8 +382,7 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
     mtu: number,
     status: number
   ) {
-    CLog(
-      CLogTypes.info,
+    console.info(
       `---- TNS_BluetoothGattCallback.onMtuChanged ---- gatt: ${gatt} mtu: ${mtu}, status: ${status}`
     );
   }
