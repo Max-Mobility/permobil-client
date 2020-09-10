@@ -1,10 +1,14 @@
 require('globals');
 import { File, Folder, knownFolders, path } from '@nativescript/core';
 import { getResources, setResources } from '@nativescript/core/application';
+import * as AppSettings from '@nativescript/core/application-settings';
 import { device } from '@nativescript/core/platform';
+import { DataKeys } from '@permobil/core/src/enums';
 
-const getDefaultLang = function() {
-  return device.language;
+// Long string that will be the unique app-settings key across multiple apps for the i18n language file the user has set
+
+const getDefaultLang = () => {
+  return AppSettings.getString(DataKeys.APP_LANGUAGE_FILE, device.language);
 };
 
 // The current translation object
@@ -14,7 +18,7 @@ const translations = {};
 // "~/assets/i18n"
 const i18nPath = path.join(knownFolders.currentApp().path, 'assets', 'i18n');
 
-const use = function(language?: string) {
+const use = (language?: string) => {
   if (language) {
     lang = language;
   } else {
@@ -22,7 +26,7 @@ const use = function(language?: string) {
   }
 };
 
-const languagePath = function(language: string) {
+const languagePath = (language: string) => {
   let l = language;
   if (!l.endsWith('.json')) {
     l += '.json';
@@ -34,7 +38,7 @@ const languagePath = function(language: string) {
  * Load is used when we want to load the translation files into memory
  * from disk. It updates the state of the translations object.
  */
-const load = async function(language?: string) {
+const load = async (language?: string) => {
   const languagesToLoad = [];
   if (language) {
     // load the specified language
@@ -78,7 +82,7 @@ const load = async function(language?: string) {
  * will save the new translation content to disk - overwriting the
  * original translation file.
  */
-const update = function(language: string, translation: any) {
+const update = (language: string, translation: any) => {
   // update translations
   translations[language] = translation;
   // save translation file
@@ -89,11 +93,11 @@ const update = function(language: string, translation: any) {
   });
 };
 
-const get = function(k, obj) {
+const get = (k, obj) => {
   return k.split('.').reduce((o, i) => o[i], obj);
 };
 
-const L = function(...args: any[]) {
+const L = (...args: any[]) => {
   let translated = get(args[0], translations['en']) || args[0];
   try {
     translated = get(args[0], translations[lang]) || args[0];
@@ -110,4 +114,3 @@ setResources(applicationResources);
 global.L = L;
 
 export { getDefaultLang, use, load, update, L };
-

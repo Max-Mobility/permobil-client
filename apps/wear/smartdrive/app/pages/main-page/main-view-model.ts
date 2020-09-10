@@ -17,20 +17,20 @@ import { ScrollView } from '@nativescript/core/ui/scroll-view';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log, wait } from '@permobil/core';
 import {
+  cancelScheduledNotification,
   getDefaultLang,
-
-
-
-  getDeviceSerialNumber, L,
+  getDeviceSerialNumber,
+  L,
   performance,
-  Prop
+  Prop,
+  scheduleSmartDriveLocalNotifications
 } from '@permobil/nativescript';
+import { SmartDriveLocalNotifications } from '@permobil/nativescript/src/enums';
 import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
 import last from 'lodash/last';
 import once from 'lodash/once';
-import * as LS from 'nativescript-localstorage';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
@@ -281,6 +281,17 @@ export class MainViewModel extends Observable {
     try {
       await this._init();
       Log.D('init finished in the main-view-model');
+      // need to think out the API for this to schedule and not always call reschedule
+      // TBD based on the UX outlined by Ben, William, Curtis regarding the reminders/notifications
+      // we might want to set specific notifications based on parameters for regions, users, etc.
+      scheduleSmartDriveLocalNotifications();
+      Log.D('scheduled local notifications for SmartDrive Wear');
+      setTimeout(async () => {
+        const cancelId = await cancelScheduledNotification(
+          SmartDriveLocalNotifications.TIRE_PRESSURE_NOTIFICATION_ID
+        );
+        Log.D(`Canceled the Notification: ${cancelId}`);
+      }, 600000);
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
@@ -346,7 +357,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-            }`,
+          }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -1773,7 +1784,7 @@ export class MainViewModel extends Observable {
         return obj.battery > max ? obj.battery : max;
       }, 0);
       const batteryData = sdData.map(e => {
-        let value = (e.battery * 100.0) / (maxBattery || 1);
+        let value = Math.round((e.battery * 100.0) / (maxBattery || 1));
         // @ts-ignore
         if (value) value += '%';
         return {
@@ -1821,7 +1832,7 @@ export class MainViewModel extends Observable {
         };
       });
       distanceData.forEach(data => {
-        data.value = (100.0 * data.value) / (maxDist || 1);
+        data.value = Math.round((100.0 * data.value) / (maxDist || 1));
         // @ts-ignore
         if (data.value) data.value += '%';
       });
@@ -2048,7 +2059,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -2113,7 +2124,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
@@ -2539,17 +2550,12 @@ export class MainViewModel extends Observable {
         // has been used. we directly overwrite the distance and
         // update the records
         const updates = SmartDriveData.Info.updateInfo(args, u);
-        await this._sqliteService.updateInTable(
-          SmartDriveData.Info.TableName,
-          updates,
-          {
-            [SmartDriveData.Info.IdName]: u.id
-          }
-        );
+        await this._updateTodaysUsageInfo(updates);
       } else {
-        // should not come here - _getTodaysUsageFromDatabase loads /
-        // creates as needed - but if it encounters an exception then
-        // it will not have an id - so we will try to make it again...
+        // should not come here - _getTodaysUsageInfoFromDatabase
+        // loads / creates as needed - but if it encounters an
+        // exception then it will not have an id - so we will try to
+        // make it again...
         this._todaysUsage = await this._makeTodaysUsage(
           battery,
           driveDistance,
@@ -2629,6 +2635,26 @@ export class MainViewModel extends Observable {
       }
     }
     return this._todaysUsage;
+  }
+
+  private async _updateTodaysUsageInfo(updates: any) {
+    if (!this._todaysUsage) {
+      Log.E('_updateTodaysUsageInfo called but we have no _todaysUsageObject!');
+      return;
+    }
+    // update the data stored in SQLite
+    const _id = this._todaysUsage[SmartDriveData.Info.IdName];
+    await this._sqliteService.updateInTable(
+      SmartDriveData.Info.TableName,
+      updates,
+      {
+        [SmartDriveData.Info.IdName]: _id
+      }
+    );
+    // now update _todaysUsage variable
+    Object.keys(updates).forEach(k => {
+      this._todaysUsage[k] = updates[k];
+    });
   }
 
   private async _updateSharedUsageInfo(sdData: any[]) {

@@ -1,12 +1,34 @@
-import { ApplicationSettings, Frame, knownFolders, Observable, Page, path, ShowModalOptions, ViewBase } from '@nativescript/core';
+import {
+  ApplicationSettings,
+  Frame,
+  knownFolders,
+  Observable,
+  Page,
+  path,
+  ShowModalOptions,
+  ViewBase
+} from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import { getFile } from '@nativescript/core/http';
+import { device } from '@nativescript/core/platform';
+import { alert, confirm } from '@nativescript/core/ui/dialogs';
 import { Device, Log, wait } from '@permobil/core';
-import { getDefaultLang, L, Prop } from '@permobil/nativescript';
+import {
+  getDefaultLang,
+  L,
+  Prop,
+  restartAndroidApp
+} from '@permobil/nativescript';
 import { Sentry } from 'nativescript-sentry';
+import { DataKeys } from '../../../enums';
 import { WatchSettings } from '../../../models';
 import { SettingsService, SmartDriveKinveyService } from '../../../services';
-import { configureLayout, isNetworkAvailable, sentryBreadCrumb, _isActivityThis } from '../../../utils';
+import {
+  configureLayout,
+  isNetworkAvailable,
+  sentryBreadCrumb,
+  _isActivityThis
+} from '../../../utils';
 
 export class SettingsViewModel extends Observable {
   @Prop() insetPadding = 0;
@@ -107,11 +129,40 @@ export class SettingsViewModel extends Observable {
           this._settingsService.hasSentSettings = false;
           this._settingsService.saveSettings();
           // warning / indication to the user that they've updated their settings
-          alert({
-            title: L('warnings.saved-settings.title'),
-            message: L('warnings.saved-settings.message'),
-            okButtonText: L('buttons.ok')
-          });
+          if (this.activeSettingToChange === 'language') {
+            confirm({
+              title: L('warnings.saved-settings.title'),
+              message: L('warnings.saved-settings.language'),
+              okButtonText: L('buttons.ok'),
+              cancelButtonText: L('buttons.cancel'),
+              cancelable: true
+            }).then(res => {
+              if (res === true) {
+                ApplicationSettings.setString(
+                  DataKeys.APP_LANGUAGE_FILE,
+                  this._settingsService.watchSettings.language
+                );
+                sentryBreadCrumb(
+                  `User confirmed language file change ${this._settingsService.watchSettings.language}`
+                );
+                // kill current app and relaunches
+                restartAndroidApp();
+              } else {
+                // revert back the watch settings language if the user cancels the change
+                this._settingsService.watchSettings.language = ApplicationSettings.getString(
+                  DataKeys.APP_LANGUAGE_FILE,
+                  device.language
+                );
+                this._settingsService.saveSettings();
+              }
+            });
+          } else {
+            alert({
+              title: L('warnings.saved-settings.title'),
+              message: L('warnings.saved-settings.message'),
+              okButtonText: L('buttons.ok')
+            });
+          }
         }
       },
       animated: false,

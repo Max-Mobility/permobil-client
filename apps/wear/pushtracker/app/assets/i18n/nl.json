@@ -1,132 +1,138 @@
 {
-	"about": {
-		"database": "Database-ID",
-		"title": "Over informatie",
-		"user-email": "Jouw email",
-		"user-name": "Uw naam",
-		"version": "PushTracker Draag OS-appversie",
-		"watch-serial-number": "Serienummer van Smartwatch"
-	},
-	"busy": {
-		"synchronizing": "Synchroniseren ..."
-	},
-	"buttons": {
-		"back": "terug",
-		"dismiss": "ontslaan",
-		"ok": "OK"
-	},
-	"charts": {
-		"coast": {
-			"title": "Kusttijd Dagelijks"
-		},
-		"distance": {
-			"title": "Dagelijks afgelegde afstand"
-		}
-	},
-	"enhancements": {
-		"coast-time": "Kusttijd Dagelijks",
-		"distance": "Dagelijkse afstand",
-		"pushes": "Dagelijks duwen"
-	},
-	"failures": {
-		"connect": "Kan geen verbinding maken met",
-		"could-not-update-profile": "Bijwerken van profiel op Permobil-server is mislukt.",
-		"must-wear-watch": "[Check for Wrist] Instelling is ingeschakeld, daarom moet de smartwatch worden gedragen om uw SmartDrive te bedienen.",
-		"no-auth-for-saving": "Om instellingen op de server op te slaan, wat optioneel is, moet u de PushTracker Wear OS-app verbinden met de PushTracker Mobile-app. Volg hiervoor de instructies op de pagina \"Device Setup\" van de PushTracker Mobile-app.",
-		"not-connected-to-mobile": "Verificatie mislukt met Permobil-server. Opnieuw verbinding maken met PushTracker Mobile-app vereist.",
-		"not-fully-initialized": "Bezig met initialiseren van verbinding met Permobil-server. Instellingen worden indien mogelijk verzonden.",
-		"permissions": "Kan de gevraagde actie niet uitvoeren. Vereiste rechten zijn niet verleend.",
-		"saving-activity": "Opslaan van activiteit mislukt.",
-		"scan": "Kon niet scannen.",
-		"title": "Merk op"
-	},
-	"goals": {
-		"coast": {
-			"units": "seconden"
-		},
-		"distance": {
-			"english": "Mijlen",
-			"metric": "kilometer"
-		}
-	},
-	"information": "Informatie",
-	"languages": {
-		"da": "Deens",
-		"de": "Duitse",
-		"en": "Engels",
-		"es": "Spaans",
-		"fr": "Frans",
-		"it": "Italiaans",
-		"ja": "Japans",
-		"ko": "Koreaans",
-		"nb": "Noors [Bokmål]",
-		"nl": "Nederlands",
-		"sv": "Zweeds",
-		"zh": "Chinese traditionele]"
-	},
-	"menu": {
-		"about": "Wat betreft",
-		"profile": "Profiel",
-		"title": "Menu"
-	},
-	"notifications": {
-		"foreground-service": "Permobil PushTracker verzamelt uw activiteit"
-	},
-	"permissions-reasons": {
-		"coarse-location": "Om via Bluetooth verbinding te maken met de PushTracker-app op uw iPhone, moet u de locatietoestemming [ACCESS_COARSE_LOCATION] op het volgende scherm toestaan. Met deze toestemming heeft Permobil geen toegang tot uw locatiegegevens.",
-		"fine-location": "OPTIONEEL: om afstand te meten met behulp van uw smartwatch GPS, hebben we u nodig om de toestemming [ACCESS_FINE_LOCATION] toe te staan op een van de volgende schermen. Met deze toestemming heeft Permobil geen toegang tot uw locatiegegevens.",
-		"phone-state": "OPTIONEEL: om toegang te krijgen tot uw smartwatch-serienummer, wat handig kan zijn voor ondersteuning en garantiedoeleinden, hebben we u de telefoonmachtiging [READ_PHONE_STATE] op een van de volgende schermen nodig. Met deze toestemming krijgt Permobil geen toegang tot uw telefoonnummer, mobiele netwerkinformatie of andere gegevens behalve het serienummer van de smartwatch."
-	},
-	"permissions-request": {
-		"title": "Toestemmingen kennisgeving"
-	},
-	"profile": "Profiel",
-	"pushes": {
-		"units": "duwt"
-	},
-	"settings": {
-		"coastgoal": {
-			"description": "Je doel voor gemiddelde kusttijd tussen elke dag duwen.",
-			"title": "Kusttijddoel",
-			"units": "s"
-		},
-		"connect-pushtracker": "Connect PushTracker mobiele app",
-		"distancegoal": {
-			"description": "Je doel voor afgelegde afstand in je rolstoel elke dag, gemeten door een SmartDrive.",
-			"title": "Afstand afgelegd doel",
-			"units": {
-				"english": "Mi",
-				"metric": "km"
-			}
-		},
-		"information": "Informatie",
-		"install-smartdrive": "Installeer de SmartDrive MX2 Wear OS-app",
-		"pushsensitivity": {
-			"description": "De gevoeligheid van de detectie die wordt gebruikt om pushen te tellen. Hoe lager het percentage, hoe minder gevoelig het is voor het detecteren van een push - 0% is het minst gevoelig en zal daarom minder pushs detecteren, en 100% is het meest gevoelig en zal daarom meer pushs detecteren.",
-			"title": "Push-gevoeligheid"
-		},
-		"title": "PushTracker-instellingen",
-		"units": {
-			"description": "Het eenhedensysteem of maateenheden om de metingen binnen de gebruikersinterfaces weer te geven. Selecteer Imperiaal [ft, mi en lbs] of Metrisch [cm, km en kg].",
-			"title": "eenheden",
-			"values": {
-				"english": "keizerlijk",
-				"metric": "Metriek"
-			}
-		}
-	},
-	"units": {
-		"distance": {
-			"english": "Mi",
-			"metric": "km"
-		},
-		"english": "keizerlijk",
-		"metric": "Metriek"
-	},
-	"wearos-comms": {
-		"errors": {
-			"bad-authorization": "Ongeldige accountautorisatiegegevens ontvangen van PushTracker Mobile-app. Zorg ervoor dat uw accountgegevens up-to-date zijn en dat uw smartwatch via Wi-Fi of uw telefoon is verbonden met internet.",
-			"bad-data": "Ongeldige gegevens ontvangen van PushTracker Mobile-app. Controleer de verbinding en probeer het opnieuw."
-		}
-	}
+  "about": {
+    "database": "Database-ID",
+    "title": "Over informatie",
+    "user-email": "Jouw email",
+    "user-name": "Uw naam",
+    "version": "PushTracker Draag OS-appversie",
+    "watch-serial-number": "Serienummer van Smartwatch"
+  },
+  "busy": {
+    "synchronizing": "Synchroniseren ..."
+  },
+  "buttons": {
+    "back": "terug",
+    "dismiss": "ontslaan",
+    "ok": "OK",
+    "cancel": "Annuleer"
+  },
+  "charts": {
+    "coast": {
+      "title": "Kusttijd Dagelijks"
+    },
+    "distance": {
+      "title": "Dagelijks afgelegde afstand"
+    }
+  },
+  "enhancements": {
+    "coast-time": "Kusttijd Dagelijks",
+    "distance": "Dagelijkse afstand",
+    "pushes": "Dagelijks duwen"
+  },
+  "failures": {
+    "connect": "Kan geen verbinding maken met",
+    "could-not-update-profile": "Bijwerken van profiel op Permobil-server is mislukt.",
+    "must-wear-watch": "[Check for Wrist] Instelling is ingeschakeld, daarom moet de smartwatch worden gedragen om uw SmartDrive te bedienen.",
+    "no-auth-for-saving": "Om instellingen op de server op te slaan, wat optioneel is, moet u de PushTracker Wear OS-app verbinden met de PushTracker Mobile-app. Volg hiervoor de instructies op de pagina \"Device Setup\" van de PushTracker Mobile-app.",
+    "not-connected-to-mobile": "Verificatie mislukt met Permobil-server. Opnieuw verbinding maken met PushTracker Mobile-app vereist.",
+    "not-fully-initialized": "Bezig met initialiseren van verbinding met Permobil-server. Instellingen worden indien mogelijk verzonden.",
+    "permissions": "Kan de gevraagde actie niet uitvoeren. Vereiste rechten zijn niet verleend.",
+    "saving-activity": "Opslaan van activiteit mislukt.",
+    "scan": "Kon niet scannen.",
+    "title": "Merk op"
+  },
+  "goals": {
+    "coast": {
+      "units": "seconden"
+    },
+    "distance": {
+      "english": "Mijlen",
+      "metric": "kilometer"
+    }
+  },
+  "information": "Informatie",
+  "languages": {
+    "da": "Deens",
+    "de": "Duitse",
+    "en": "Engels",
+    "es": "Spaans",
+    "fr": "Frans",
+    "it": "Italiaans",
+    "ja": "Japans",
+    "ko": "Koreaans",
+    "nb": "Noors [Bokmål]",
+    "nl": "Nederlands",
+    "sv": "Zweeds",
+    "zh": "Chinese traditionele]"
+  },
+  "menu": {
+    "about": "Wat betreft",
+    "profile": "Profiel",
+    "title": "Menu"
+  },
+  "notifications": {
+    "foreground-service": "Permobil PushTracker verzamelt uw activiteit"
+  },
+  "permissions-reasons": {
+    "coarse-location": "Om via Bluetooth verbinding te maken met de PushTracker-app op uw iPhone, moet u de locatietoestemming [ACCESS_COARSE_LOCATION] op het volgende scherm toestaan. Met deze toestemming heeft Permobil geen toegang tot uw locatiegegevens.",
+    "fine-location": "OPTIONEEL: om afstand te meten met behulp van uw smartwatch GPS, hebben we u nodig om de toestemming [ACCESS_FINE_LOCATION] toe te staan op een van de volgende schermen. Met deze toestemming heeft Permobil geen toegang tot uw locatiegegevens.",
+    "phone-state": "OPTIONEEL: om toegang te krijgen tot uw smartwatch-serienummer, wat handig kan zijn voor ondersteuning en garantiedoeleinden, hebben we u de telefoonmachtiging [READ_PHONE_STATE] op een van de volgende schermen nodig. Met deze toestemming krijgt Permobil geen toegang tot uw telefoonnummer, mobiele netwerkinformatie of andere gegevens behalve het serienummer van de smartwatch."
+  },
+  "permissions-request": {
+    "title": "Toestemmingen kennisgeving"
+  },
+  "profile": "Profiel",
+  "pushes": {
+    "units": "duwt"
+  },
+  "settings": {
+    "coastgoal": {
+      "description": "Je doel voor gemiddelde kusttijd tussen elke dag duwen.",
+      "title": "Kusttijddoel",
+      "units": "s"
+    },
+    "connect-pushtracker": "Connect PushTracker mobiele app",
+    "distancegoal": {
+      "description": "Je doel voor afgelegde afstand in je rolstoel elke dag, gemeten door een SmartDrive.",
+      "title": "Afstand afgelegd doel",
+      "units": {
+        "english": "Mi",
+        "metric": "km"
+      }
+    },
+    "information": "Informatie",
+    "install-smartdrive": "Installeer de SmartDrive MX2 Wear OS-app",
+    "language": {
+      "description": "The language of the text in the app.",
+      "title": "Language",
+      "change": "The app language has been changed."
+    },
+    "pushsensitivity": {
+      "description": "De gevoeligheid van de detectie die wordt gebruikt om pushen te tellen. Hoe lager het percentage, hoe minder gevoelig het is voor het detecteren van een push - 0% is het minst gevoelig en zal daarom minder pushs detecteren, en 100% is het meest gevoelig en zal daarom meer pushs detecteren.",
+      "title": "Push-gevoeligheid"
+    },
+    "title": "PushTracker-instellingen",
+    "units": {
+      "description": "Het eenhedensysteem of maateenheden om de metingen binnen de gebruikersinterfaces weer te geven. Selecteer Imperiaal [ft, mi en lbs] of Metrisch [cm, km en kg].",
+      "title": "eenheden",
+      "values": {
+        "english": "keizerlijk",
+        "metric": "Metriek"
+      }
+    }
+  },
+  "units": {
+    "distance": {
+      "english": "Mi",
+      "metric": "km"
+    },
+    "english": "keizerlijk",
+    "metric": "Metriek"
+  },
+  "wearos-comms": {
+    "errors": {
+      "bad-authorization": "Ongeldige accountautorisatiegegevens ontvangen van PushTracker Mobile-app. Zorg ervoor dat uw accountgegevens up-to-date zijn en dat uw smartwatch via Wi-Fi of uw telefoon is verbonden met internet.",
+      "bad-data": "Ongeldige gegevens ontvangen van PushTracker Mobile-app. Controleer de verbinding en probeer het opnieuw."
+    }
+  }
 }

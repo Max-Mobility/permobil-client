@@ -188,6 +188,7 @@
     "description": {
       "acceleration": "Die Beschleunigungsrate des SmartDrive.",
       "controlmode": "MX2+: Die standardmäßige Bedienung des SmartDrive. Im MX2+ Steuermodus startet ein doppeltes Antippen des Greifreifens den Antrieb des Motors durch Hochfahren seiner Drehzahl. Durch einmaliges Antippen des Greifreifens während der Beschleunigung wird ein Tempomat aktiviert. Durch erneutes zweimaliges Antippen schaltet sich der Antrieb in den Stand-by-Modus.\n\nMX2: Im MX2 Steuermodus fährt der SmartDrive los, wenn Sie über die Greifreifen den Rollstuhl antreiben. Durch einmaliges Antippen des Greifreifens deaktivieren Sie das Fahren. Bitte beachten Sie, dass dies eine Legacy-Support-Option ist.\n\nMX1: Im MX1 Steuermodus fährt der SmartDrive los, wenn Sie über die Greifreifen den Rollstuhl antreiben. Durch Bremsen der Greifreifen bzw. durch einmaliges Antippen dieser deaktivieren Sie das Fahren. Bitte beachten Sie, dass dies eine Legacy-Support-Option ist.",
+      "language": "The language of the text in the SmartDrive app.",
       "maxspeed": "Die maximale Geschwindigkeit, die der SmartDrive fahren kann, wenn er mit Ihrem PushTracker E2 (Smartwatch) gesteuert wird.",
       "powerassistbuzzer": "Wenn diese Option aktiviert ist, piept der SmartDrive jedes Mal, wenn eine Verbindung von einem Remote-Gerät hergestellt wird oder wenn SwitchControl aus dem Standby-Modus entfernt wird.",
       "powerassisttimeout": "Wenn der Motor bei eingeschalteter POWER ASSIT mit dem SmartDrive verbunden ist und nicht in der ausgewählten Zeit gefahren wurde, wird POWER ASSIST automatisch ausgeschaltet.\n\nWenn POWER ASSIST eingeschlatet ist, aber nicht mit dem SmartDrive verbunden ist, wird es nach 1 Minute automatisch ausgeschaltet.",
@@ -199,6 +200,7 @@
     },
     "error-history": "Fehlerhistorie",
     "information": "Information",
+    "language": "Sprache",
     "max-speed": "Höchstgeschwindigkeit",
     "pair-smartdrive": "SmartDrive koppeln",
     "paired-to-smartdrive": "Erfolgreich mit dem SmartDrive gekoppelt.",
@@ -264,7 +266,8 @@
   "warnings": {
     "saved-settings": {
       "message": "Warnung: Sie MÜSSEN im SmartDrive-Benutzerhandbuch nachlesen, wie sich das Ändern der Einstellungen auf den Betrieb und die Leistung auswirkt.",
-      "title": "Geänderte Einstellungen"
+      "title": "Geänderte Einstellungen",
+      "language": "The app language has been changed."
     },
     "title": {
       "notice": "Hinweis"
