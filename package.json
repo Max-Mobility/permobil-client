@@ -14,7 +14,7 @@
     "ci.sd.w.android": "cd apps/wear/smartdrive && tns build android --env.uglify",
     "*************************** /end GITHUB ACTIONS CI SPECIFIC SCRIPTS": "***************************",
     "tslint": "tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\"  --exclude \"**/platforms/**\"  --exclude \"**/hooks/**\" --exclude \"**/typings/**\" --exclude \"**/*d.ts\" --exclude \"**/forked-plugins/nativescript-core-7.0.0/**\"",
-    "global.installs": "npm i -g rimraf && npm i -g typescript",
+    "global.installs": "npm i -g rimraf && npm i -g typescript@3.9.7",
     "pretty-baby": "prettier --write '@(apps|@permobil|forked-plugins)/**/*.@(scss|component.html|xml|ts|md|js|json)'",
     "*************************** SETUP": "***************************",
     "setup": "npm run global.installs && npm run setup.@permobil && npm run setup.mobile && npm run setup.wear && npm run setup.forked.plugins",
