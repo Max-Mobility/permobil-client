@@ -1,14 +1,14 @@
-import * as appSettings from '@nativescript/core/application-settings';
-import { ad, ad as androidUtils } from '@nativescript/core/utils/utils';
+import { ApplicationSettings, Utils } from '@nativescript/core';
 import { Bluetooth } from 'nativescript-bluetooth';
-import { ResultReceiver } from './ResultReceiver';
 import { CallbackFunction, Common } from '../wear-os-comms.common';
+import { ResultReceiver } from './ResultReceiver';
 
 @JavaProxy('com.permobil.WearOsComms.CapabilityListener')
 @Interfaces([
   com.google.android.gms.wearable.CapabilityClient.OnCapabilityChangedListener
 ])
-class CapabilityListener extends androidx.fragment.app.FragmentActivity
+class CapabilityListener
+  extends androidx.fragment.app.FragmentActivity
   implements
     com.google.android.gms.wearable.CapabilityClient
       .OnCapabilityChangedListener {
@@ -123,7 +123,7 @@ export class WearOsComms extends Common {
     // now iterate through the nodes without the app and open it in the play store
     nodesWithoutApp.forEach(n => {
       com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
-        ad.getApplicationContext(),
+        Utils.android.getApplicationContext(),
         intent,
         WearOsComms._mResultReceiver,
         n.getId()
@@ -134,7 +134,7 @@ export class WearOsComms extends Common {
   public static phoneIsIos() {
     let isIos = false;
     const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType.getPhoneDeviceType(
-      ad.getApplicationContext()
+      Utils.android.getApplicationContext()
     );
     switch (phoneDeviceType) {
       case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ANDROID:
@@ -153,7 +153,7 @@ export class WearOsComms extends Common {
   public static phoneIsAndroid() {
     let isAndroid = false;
     const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType.getPhoneDeviceType(
-      ad.getApplicationContext()
+      Utils.android.getApplicationContext()
     );
     switch (phoneDeviceType) {
       case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ANDROID:
@@ -178,7 +178,7 @@ export class WearOsComms extends Common {
       .setData(android.net.Uri.parse(uri));
 
     com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
-      ad.getApplicationContext(),
+      Utils.android.getApplicationContext(),
       intent,
       WearOsComms._mResultReceiver
     );
@@ -195,7 +195,7 @@ export class WearOsComms extends Common {
       WearOsComms._mResultReceiver.onReceiveFunction = WearOsComms.onResultData;
 
       const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType.getPhoneDeviceType(
-        ad.getApplicationContext()
+        Utils.android.getApplicationContext()
       );
       switch (phoneDeviceType) {
         // Paired to Android phone, use Play Store URI.
@@ -209,7 +209,7 @@ export class WearOsComms extends Common {
             .setData(android.net.Uri.parse(androidUri));
 
           com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
-            ad.getApplicationContext(),
+            Utils.android.getApplicationContext(),
             intentAndroid,
             WearOsComms._mResultReceiver
           );
@@ -227,7 +227,7 @@ export class WearOsComms extends Common {
             .setData(android.net.Uri.parse(iosUri));
 
           com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
-            ad.getApplicationContext(),
+            Utils.android.getApplicationContext(),
             intentIOS,
             WearOsComms._mResultReceiver
           );
@@ -300,13 +300,13 @@ export class WearOsComms extends Common {
   private static async removeCapability(appCapability: string) {
     await new Promise((resolve, reject) => {
       WearOsComms.log('removeCapability()');
-      const context = ad.getApplicationContext();
+      const context = Utils.android.getApplicationContext();
       const capabilityTask = com.google.android.gms.wearable.Wearable.getCapabilityClient(
         context
       ).removeLocalCapability(appCapability);
       capabilityTask.addOnCompleteListener(
         new com.google.android.gms.tasks.OnCompleteListener({
-          onComplete: function(task: any) {
+          onComplete: function (task: any) {
             if (task.isSuccessful()) {
               WearOsComms.log('Remove Capability request succeeded');
               resolve();
@@ -324,13 +324,13 @@ export class WearOsComms extends Common {
   private static async advertiseCapability(appCapability: string) {
     await new Promise((resolve, reject) => {
       WearOsComms.log('advertiseCapability()');
-      const context = ad.getApplicationContext();
+      const context = Utils.android.getApplicationContext();
       const capabilityTask = com.google.android.gms.wearable.Wearable.getCapabilityClient(
         context
       ).addLocalCapability(appCapability);
       capabilityTask.addOnCompleteListener(
         new com.google.android.gms.tasks.OnCompleteListener({
-          onComplete: function(task: any) {
+          onComplete: function (task: any) {
             if (task.isSuccessful()) {
               WearOsComms.log('Add Capability request succeeded');
               resolve();
@@ -360,7 +360,7 @@ export class WearOsComms extends Common {
   }
 
   private static async listenForCapability(appCapability: string) {
-    const context = ad.getApplicationContext();
+    const context = Utils.android.getApplicationContext();
     const capabilityClient = com.google.android.gms.wearable.Wearable.getCapabilityClient(
       context
     );
@@ -381,7 +381,7 @@ export class WearOsComms extends Common {
   private static async findDevicesConnected(timeout?: number): Promise<any[]> {
     const devices = await new Promise((resolve, reject) => {
       WearOsComms.log('findDevicesConnected()');
-      const context = ad.getApplicationContext();
+      const context = Utils.android.getApplicationContext();
       const nodeTaskList = com.google.android.gms.wearable.Wearable.getNodeClient(
         context
       ).getConnectedNodes();
@@ -396,7 +396,7 @@ export class WearOsComms extends Common {
       }
       nodeTaskList.addOnCompleteListener(
         new com.google.android.gms.tasks.OnCompleteListener({
-          onComplete: function(task: any) {
+          onComplete: function (task: any) {
             if (tid !== null) clearTimeout(tid);
             if (task.isSuccessful()) {
               WearOsComms.log('Node request succeeded');
@@ -424,7 +424,7 @@ export class WearOsComms extends Common {
   ): Promise<any[]> {
     const devices = await new Promise((resolve, reject) => {
       WearOsComms.log('findDevicesConnected()');
-      const context = ad.getApplicationContext();
+      const context = Utils.android.getApplicationContext();
       const capabilityTaskList = com.google.android.gms.wearable.Wearable.getCapabilityClient(
         context
       ).getCapability(
@@ -433,7 +433,7 @@ export class WearOsComms extends Common {
       );
       capabilityTaskList.addOnCompleteListener(
         new com.google.android.gms.tasks.OnCompleteListener({
-          onComplete: function(task: any) {
+          onComplete: function (task: any) {
             if (task.isSuccessful()) {
               WearOsComms.log('Capability request succeeded');
               const capabilityInfo = task.getResult();
@@ -462,7 +462,7 @@ export class WearOsComms extends Common {
   public static async sendMessage(channel: string, msg: string) {
     const didSend = await new Promise(async (resolve, reject) => {
       try {
-        const context = androidUtils.getApplicationContext();
+        const context = Utils.android.getApplicationContext();
         const nodes = await WearOsComms.findDevicesConnected();
         if (nodes.length === 0) {
           reject(new Error('No devices connected!'));
@@ -482,7 +482,7 @@ export class WearOsComms extends Common {
               );
               sendMessageTask.addOnCompleteListener(
                 new com.google.android.gms.tasks.OnCompleteListener({
-                  onComplete: function(task: any) {
+                  onComplete: function (task: any) {
                     if (task.isSuccessful()) {
                       resolve(true);
                     } else {
@@ -512,7 +512,7 @@ export class WearOsComms extends Common {
     const didSend = await new Promise(async (resolve, reject) => {
       try {
         WearOsComms.log('Data to be sent:', data);
-        const context = androidUtils.getApplicationContext();
+        const context = Utils.android.getApplicationContext();
         const dataMap = com.google.android.gms.wearable.PutDataMapRequest.create(
           WearOsComms.DATA_PATH
         );
@@ -530,7 +530,7 @@ export class WearOsComms extends Common {
         const dataItemTask = dataClient.putDataItem(request);
         dataItemTask.addOnCompleteListener(
           new com.google.android.gms.tasks.OnCompleteListener({
-            onComplete: function(task: any) {
+            onComplete: function (task: any) {
               if (task.isSuccessful()) {
                 resolve(true);
               } else {
@@ -552,7 +552,7 @@ export class WearOsComms extends Common {
     if (!hasCompanion) {
       try {
         // try to load from the file system
-        WearOsComms.pairedCompanion = appSettings.getString(
+        WearOsComms.pairedCompanion = ApplicationSettings.getString(
           WearOsComms.APP_SETTINGS_COMPANION_KEY,
           ''
         );
@@ -591,7 +591,7 @@ export class WearOsComms extends Common {
     if (address && address.length) {
       WearOsComms.pairedCompanion = address;
       // save to the file system
-      appSettings.setString(
+      ApplicationSettings.setString(
         WearOsComms.APP_SETTINGS_COMPANION_KEY,
         WearOsComms.pairedCompanion
       );
@@ -604,7 +604,7 @@ export class WearOsComms extends Common {
     // do nothing
     WearOsComms.pairedCompanion = null;
     // save to the file system
-    appSettings.setString(WearOsComms.APP_SETTINGS_COMPANION_KEY, '');
+    ApplicationSettings.setString(WearOsComms.APP_SETTINGS_COMPANION_KEY, '');
   }
 
   public static connectCompanion(timeout: number = 10000) {

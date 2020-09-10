@@ -1,14 +1,14 @@
-/// <reference path="../../../node_modules/tns-platform-declarations/ios.d.ts" />
+/// <reference path="../../../node_modules/@nativescript/types-ios/index.d.ts" />
 
 import { Injectable } from '@angular/core';
 import {
+  ApplicationSettings as appSettings,
+  fromObject,
   isAndroid,
   isIOS,
   Observable,
   ObservableArray
 } from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
-import { fromObject } from '@nativescript/core/data/observable';
 import { Log, Packet } from '@permobil/core';
 import {
   Bluetooth,

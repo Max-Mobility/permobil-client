@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Page } from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
+import { ApplicationSettings as appSettings, Page } from '@nativescript/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { CONFIGURATIONS } from '../../enums';
 import { PushTrackerUser } from '../../models';

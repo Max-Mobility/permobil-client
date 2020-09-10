@@ -5,6 +5,7 @@ import { Bluetooth } from './android_main';
  * Bluetooth LE scan callbacks. Scan results are reported using these callbacks.
  * https://developer.android.com/reference/android/bluetooth/le/ScanCallback.html
  */
+@NativeClass()
 @JavaProxy('com.nativescript.TNS_ScanCallback')
 export class TNS_ScanCallback extends android.bluetooth.le.ScanCallback {
   private _owner: WeakRef<Bluetooth>;
@@ -88,12 +89,7 @@ export class TNS_ScanCallback extends android.bluetooth.le.ScanCallback {
       };
       let manufacturerId;
       let manufacturerData;
-      if (
-        result
-          .getScanRecord()
-          .getManufacturerSpecificData()
-          .size() > 0
-      ) {
+      if (result.getScanRecord().getManufacturerSpecificData().size() > 0) {
         manufacturerId = result
           .getScanRecord()
           .getManufacturerSpecificData()
@@ -102,12 +98,11 @@ export class TNS_ScanCallback extends android.bluetooth.le.ScanCallback {
           CLogTypes.info,
           `---- TNS_ScanCallback.onScanResult ---- manufacturerId: ${manufacturerId}`
         );
-        manufacturerData = this._owner.get().decodeValue(
-          result
-            .getScanRecord()
-            .getManufacturerSpecificData()
-            .valueAt(0)
-        );
+        manufacturerData = this._owner
+          .get()
+          .decodeValue(
+            result.getScanRecord().getManufacturerSpecificData().valueAt(0)
+          );
         CLog(
           CLogTypes.info,
           `---- TNS_ScanCallback.onScanResult ---- manufacturerData: ${manufacturerData}`

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import * as appSettings from '@nativescript/core/application-settings';
+import { ApplicationSettings as appSettings } from '@nativescript/core';
 import { BottomSheetParams } from 'nativescript-material-bottomsheet/angular';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../../enums';
 

@@ -132,6 +132,8 @@ apps/**/report/
 
 forked-plugins/nativescript-core-3-9-2020/node_modules
 forked-plugins/nativescript-core-3-9-2020/**/*.js
+forked-plugins/nativescript-core-7.0.0/node_modules
+forked-plugins/nativescript-core-7.0.0/**/*.js
 
 ################################ DO NOT IGNORE ################################
 !forked-plugins/nativescript-core**/**/*.d.ts

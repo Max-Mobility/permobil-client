@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "target": "ES2017",
+    "module": "esnext",
+    "moduleResolution": "node",
     "skipLibCheck": true,
-    "target": "es5",
     "removeComments": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -15,8 +16,6 @@
   "compileOnSave": false,
   "files": [
     "./node_modules/@nativescript/core/index.d.ts",
-    "./node_modules/tns-platform-declarations/android/android-platform-23.d.ts",
-    "./node_modules/tns-platform-declarations/ios.d.ts",
     "common.ts",
     "index.ts",
     "index.ios.ts",

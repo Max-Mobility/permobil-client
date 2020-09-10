@@ -1,3 +1,4 @@
+@NativeClass()
 @JavaProxy('com.permobil.pushtracker.DataBroadcastReceiver')
 export class DataBroadcastReceiver extends android.content.BroadcastReceiver {
   public onReceiveFunction: any = null;

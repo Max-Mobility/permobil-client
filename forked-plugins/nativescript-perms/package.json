@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@nativescript/core": "file:../../node_modules/@nativescript/core",
-    "tns-platform-declarations": "file:../../node_modules/tns-platform-declarations",
+    "@nativescript/types": "file:../../node_modules/@nativescript/types",
     "typescript": "file:../../node_modules/typescript"
   },
   "keywords": [

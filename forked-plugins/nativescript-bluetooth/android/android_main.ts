@@ -1,6 +1,28 @@
-import * as application from '@nativescript/core/application';
-import * as utils from '@nativescript/core/utils/utils';
-import { BluetoothCommon, CLog, CLogTypes, ConnectOptions, Device, DisconnectOptions, MakeCharacteristicOptions, MakeServiceOptions, ReadOptions, StartAdvertisingOptions, StartNotifyingOptions, StartScanningOptions, StopNotifyingOptions, WriteOptions } from '../common';
+/// <reference path="../../../node_modules/@nativescript/types-android/lib/android-23.d.ts" />
+
+import {
+  AndroidActivityRequestPermissionsEventData,
+  AndroidActivityResultEventData,
+  AndroidApplication,
+  Application,
+  Utils
+} from '@nativescript/core';
+import {
+  BluetoothCommon,
+  CLog,
+  CLogTypes,
+  ConnectOptions,
+  Device,
+  DisconnectOptions,
+  MakeCharacteristicOptions,
+  MakeServiceOptions,
+  ReadOptions,
+  StartAdvertisingOptions,
+  StartNotifyingOptions,
+  StartScanningOptions,
+  StopNotifyingOptions,
+  WriteOptions
+} from '../common';
 import { TNS_AdvertiseCallback } from './TNS_AdvertiseCallback';
 import { TNS_BluetoothGattCallback } from './TNS_BluetoothGattCallback';
 import { TNS_BluetoothGattServerCallback } from './TNS_BluetoothGattServerCallback';
@@ -65,7 +87,7 @@ export { BondState, ConnectionState, Device } from '../common';
 
 export class Bluetooth extends BluetoothCommon {
   // @link - https://developer.android.com/reference/android/content/Context.html#BLUETOOTH_SERVICE
-  bluetoothManager: android.bluetooth.BluetoothManager = utils.ad
+  bluetoothManager: android.bluetooth.BluetoothManager = Utils.android
     .getApplicationContext()
     .getSystemService(android.content.Context.BLUETOOTH_SERVICE);
   adapter: android.bluetooth.BluetoothAdapter = this.bluetoothManager.getAdapter();
@@ -144,7 +166,7 @@ export class Bluetooth extends BluetoothCommon {
         android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_FINISHED
       );
       // register the broadcast receiver
-      utils.ad
+      Utils.android
         .getApplicationContext()
         .registerReceiver(this.broadcastReceiver, deviceChangeIntent);
     } else {
@@ -180,9 +202,9 @@ export class Bluetooth extends BluetoothCommon {
   requestCoarseLocationPermission(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       // grab the permission dialog result
-      application.android.on(
-        application.AndroidApplication.activityRequestPermissionsEvent,
-        (args: application.AndroidActivityRequestPermissionsEventData) => {
+      Application.android.on(
+        AndroidApplication.activityRequestPermissionsEvent,
+        (args: AndroidActivityRequestPermissionsEventData) => {
           for (let i = 0; i < args.permissions.length; i++) {
             if (
               args.grantResults[i] ===
@@ -217,7 +239,7 @@ export class Bluetooth extends BluetoothCommon {
       try {
         // activityResult event
         const onBluetoothEnableResult = (
-          args: application.AndroidActivityResultEventData
+          args: AndroidActivityResultEventData
         ) => {
           CLog(
             CLogTypes.info,
@@ -230,8 +252,8 @@ export class Bluetooth extends BluetoothCommon {
           ) {
             try {
               // remove the event listener
-              application.android.off(
-                application.AndroidApplication.activityResultEvent,
+              Application.android.off(
+                AndroidApplication.activityResultEvent,
                 onBluetoothEnableResult
               );
 
@@ -244,8 +266,8 @@ export class Bluetooth extends BluetoothCommon {
               }
             } catch (ex) {
               CLog(CLogTypes.error, ex);
-              application.android.off(
-                application.AndroidApplication.activityResultEvent,
+              Application.android.off(
+                AndroidApplication.activityResultEvent,
                 onBluetoothEnableResult
               );
               this.sendEvent(
@@ -257,8 +279,8 @@ export class Bluetooth extends BluetoothCommon {
               return;
             }
           } else {
-            application.android.off(
-              application.AndroidApplication.activityResultEvent,
+            Application.android.off(
+              AndroidApplication.activityResultEvent,
               onBluetoothEnableResult
             );
             resolve(false);
@@ -267,8 +289,8 @@ export class Bluetooth extends BluetoothCommon {
         };
 
         // set the onBluetoothEnableResult for the intent
-        application.android.on(
-          application.AndroidApplication.activityResultEvent,
+        Application.android.on(
+          AndroidApplication.activityResultEvent,
           onBluetoothEnableResult
         );
 
@@ -277,8 +299,8 @@ export class Bluetooth extends BluetoothCommon {
           android.bluetooth.BluetoothAdapter.ACTION_REQUEST_ENABLE
         );
         const activity =
-          application.android.foregroundActivity ||
-          application.android.startActivity;
+          Application.android.foregroundActivity ||
+          Application.android.startActivity;
         activity.startActivityForResult(
           intent,
           ACTION_REQUEST_ENABLE_BLUETOOTH_REQUEST_CODE
@@ -508,13 +530,13 @@ export class Bluetooth extends BluetoothCommon {
             android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M
           ) {
             gatt = bluetoothDevice.connectGatt(
-              utils.ad.getApplicationContext(), // context
+              Utils.android.getApplicationContext(), // context
               false, // autoconnect
               this.bluetoothGattCallback
             );
           } else {
             gatt = bluetoothDevice.connectGatt(
-              utils.ad.getApplicationContext(), // context
+              Utils.android.getApplicationContext(), // context
               false, // autoconnect
               this.bluetoothGattCallback,
               android.bluetooth.BluetoothDevice.TRANSPORT_LE // 2
@@ -881,7 +903,7 @@ export class Bluetooth extends BluetoothCommon {
         if (gatt.writeDescriptor(bluetoothGattDescriptor)) {
           const cb =
             arg.onNotify ||
-            function(result) {
+            function (result) {
               CLog(
                 CLogTypes.warning,
                 `No 'onNotify' callback function specified for 'startNotifying'`
@@ -1004,7 +1026,7 @@ export class Bluetooth extends BluetoothCommon {
       android.os.Build.VERSION_CODES.JELLY_BEAN_MR2
     ) {
       this.gattServer = this.bluetoothManager.openGattServer(
-        utils.ad.getApplicationContext(),
+        Utils.android.getApplicationContext(),
         this.bluetoothGattServerCallback
       );
     }
@@ -1070,7 +1092,7 @@ export class Bluetooth extends BluetoothCommon {
       };
 
       // return the promise chain from last element
-      return devices.reduce(function(chain, item) {
+      return devices.reduce(function (chain, item) {
         // bind item to first argument of function handle, replace `null` context as necessary
         return chain.then(notify.bind(null, item));
         // start chain with promise of first item
@@ -1090,7 +1112,7 @@ export class Bluetooth extends BluetoothCommon {
         const intent = new android.content.Intent(
           android.bluetooth.BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE
         );
-        application.android.foregroundActivity.startActivityForResult(
+        Application.android.foregroundActivity.startActivityForResult(
           intent,
           ACTION_REQUEST_BLUETOOTH_DISCOVERABLE_REQUEST_CODE
         );
@@ -1472,7 +1494,8 @@ export class Bluetooth extends BluetoothCommon {
       }
 
       const type = scanRecord[offset++] & 0xff;
-      if (type === 0xff) { // Manufacturer Specific Data
+      if (type === 0xff) {
+        // Manufacturer Specific Data
         return this.decodeValue(
           java.util.Arrays.copyOfRange(scanRecord, offset, offset + len - 1)
         );
@@ -1600,8 +1623,8 @@ export class Bluetooth extends BluetoothCommon {
 
   private _getActivity() {
     const activity =
-      application.android.foregroundActivity ||
-      application.android.startActivity;
+      Application.android.foregroundActivity ||
+      Application.android.startActivity;
     if (activity === null) {
       // Throw this off into the future since an activity is not available....
       setTimeout(() => {

@@ -1,5 +1,9 @@
-import { Color, ContentView, Style } from '@nativescript/core';
-import { InheritedCssProperty } from '@nativescript/core/ui/core/view';
+import {
+  Color,
+  ContentView,
+  InheritedCssProperty,
+  Style
+} from '@nativescript/core';
 
 export const spinBarColorProperty = new InheritedCssProperty<Style, Color>({
   name: 'spinBarColor',

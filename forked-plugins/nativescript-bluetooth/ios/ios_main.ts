@@ -1,4 +1,16 @@
-import { BluetoothCommon, CLog, CLogTypes, ConnectOptions, Device, MakeCharacteristicOptions, MakeServiceOptions, StartAdvertisingOptions, StartNotifyingOptions, StartScanningOptions, StopNotifyingOptions } from '../common';
+import {
+  BluetoothCommon,
+  CLog,
+  CLogTypes,
+  ConnectOptions,
+  Device,
+  MakeCharacteristicOptions,
+  MakeServiceOptions,
+  StartAdvertisingOptions,
+  StartNotifyingOptions,
+  StartScanningOptions,
+  StopNotifyingOptions
+} from '../common';
 import { CBCentralManagerDelegateImpl } from './CBCentralManagerDelegateImpl';
 import { CBPeripheralDelegateImpl } from './CBPeripheralDelegateImpl';
 import { CBPeripheralManagerDelegateImpl } from './CBPeripheralManagerDelegateImpl';
@@ -880,7 +892,7 @@ export class Bluetooth extends BluetoothCommon {
 
         const cb =
           args.onNotify ||
-          function(result) {
+          function (result) {
             CLog(
               CLogTypes.info,
               `Bluetooth.startNotifying ---- No 'onNotify' callback function specified for 'startNotifying()'`

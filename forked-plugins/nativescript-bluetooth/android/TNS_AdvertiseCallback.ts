@@ -1,6 +1,7 @@
 import { CLog, CLogTypes } from '../common';
 import { Bluetooth } from './android_main';
 
+@NativeClass()
 @JavaProxy('com.nativescript.TNS_AdvertiseCallback')
 export class TNS_AdvertiseCallback extends android.bluetooth.le
   .AdvertiseCallback {

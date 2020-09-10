@@ -1,3 +1,5 @@
+/// <reference path="../../../node_modules/@nativescript/types-ios/index.d.ts" />
+
 import { CLog, CLogTypes } from '../common';
 import { Bluetooth } from './ios_main';
 
@@ -7,6 +9,7 @@ import { Bluetooth } from './ios_main';
  * The delegate uses this protocol’s methods to monitor the discovery, exploration, and interaction of a remote peripheral’s services and properties.
  * There are no required methods in this protocol.
  */
+@NativeClass()
 export class CBPeripheralDelegateImpl extends NSObject
   implements CBPeripheralDelegate {
   static ObjCProtocols = [CBPeripheralDelegate];

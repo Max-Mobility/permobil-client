@@ -1,6 +1,7 @@
 import { CLog, CLogTypes } from '../common';
 import { Bluetooth, getDevice } from './android_main';
 
+@NativeClass()
 @JavaProxy('com.nativescript.TNS_BluetoothGattCallback')
 export class TNS_BluetoothGattCallback extends android.bluetooth
   .BluetoothGattCallback {

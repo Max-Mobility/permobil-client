@@ -1,15 +1,15 @@
 import { Component, NgZone } from '@angular/core';
 import { RouterExtensions } from '@nativescript/angular';
 import {
+  ApplicationSettings as appSettings,
   BottomNavigation,
+  Dialogs,
   isAndroid,
   isIOS,
   Page,
   SelectedIndexChangedEventData
 } from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
 import { setTimeout } from '@nativescript/core/timer';
-import { action, alert, confirm } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBar } from '@nstudio/nativescript-snackbar';
 import { Device, Log } from '@permobil/core';
@@ -203,7 +203,7 @@ export class TabsComponent {
             // only show our permissions alert on android - on iOS the
             // system has already shown the permissions request at this
             // point, and the text for it comes from Info.plist
-            await alert({
+            await Dialogs.alert({
               title: this._translateService.instant(
                 'permissions-request.title'
               ),
@@ -374,7 +374,7 @@ export class TabsComponent {
 
   private onBluetoothAdvertiseError(args: any) {
     const error = args.data.error;
-    alert({
+    Dialogs.alert({
       title: this._translateService.instant('bluetooth.service-failure'),
       okButtonText: this._translateService.instant('general.ok'),
       message: `${error}`
@@ -423,7 +423,7 @@ export class TabsComponent {
     // TODO: should get this version from the server somewhere!
     if (!smartDriveUpToDate && !ptUpToDate) {
       // both the pushtrackers and the smartdrives are not up to date
-      alert({
+      Dialogs.alert({
         title: this._translateService.instant(
           'profile-settings.update-notice.title'
         ),
@@ -434,7 +434,7 @@ export class TabsComponent {
       });
     } else if (!smartDriveUpToDate) {
       // the pushtrackers are up to date but the smartdrives are not
-      alert({
+      Dialogs.alert({
         title: this._translateService.instant(
           'profile-settings.update-notice.title'
         ),
@@ -445,7 +445,7 @@ export class TabsComponent {
       });
     } else if (!ptUpToDate) {
       // only the pushtrackers are out of date
-      alert({
+      Dialogs.alert({
         title: this._translateService.instant(
           'profile-settings.update-notice.title'
         ),
@@ -719,7 +719,7 @@ export class TabsComponent {
     const pushTracker = args.pushTracker;
     const settings = args.settings;
     const switchControlSettings = args.switchControlSettings;
-    const selection = await action({
+    const selection = await Dialogs.action({
       cancelable: false,
       title: this._translateService.instant('settings-different.title'),
       message: this._translateService.instant('settings-different.message'),
@@ -808,7 +808,7 @@ export class TabsComponent {
         TabsComponent.name,
         'Asking user to open settings on iOS'
       );
-      const confirmResult = await confirm({
+      const confirmResult = await Dialogs.confirm({
         message: this._translateService.instant('bluetooth.ios-open-settings'),
         cancelable: true,
         okButtonText: this._translateService.instant('dialogs.yes'),

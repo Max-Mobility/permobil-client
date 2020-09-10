@@ -1,18 +1,41 @@
-import { Component, ElementRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  ViewContainerRef
+} from '@angular/core';
 import { ModalDialogService, RouterExtensions } from '@nativescript/angular';
-import { isAndroid, isIOS, Page, TextField } from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
-import { device } from '@nativescript/core/platform';
-import { alert } from '@nativescript/core/ui/dialogs';
+import {
+  ApplicationSettings as appSettings,
+  Device,
+  Dialogs,
+  isAndroid,
+  isIOS,
+  Page,
+  TextField
+} from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
-import { APP_KEY, APP_SECRET, preventKeyboardFromShowing } from '@permobil/nativescript';
+import {
+  APP_KEY,
+  APP_SECRET,
+  preventKeyboardFromShowing
+} from '@permobil/nativescript';
 import { validate } from 'email-validator';
 import * as Kinvey from 'kinvey-nativescript-sdk';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import { PrivacyPolicyComponent } from '..';
-import { AppResourceIcons, APP_THEMES, DISTANCE_UNITS, HEIGHT_UNITS, STORAGE_KEYS, TIME_FORMAT, WEIGHT_UNITS } from '../../enums';
+import {
+  AppResourceIcons,
+  APP_THEMES,
+  DISTANCE_UNITS,
+  HEIGHT_UNITS,
+  STORAGE_KEYS,
+  TIME_FORMAT,
+  WEIGHT_UNITS
+} from '../../enums';
 import { LoggingService } from '../../services';
 
 @Component({
@@ -107,7 +130,7 @@ export class SignUpComponent implements OnInit {
     if (isIOS) {
       const uiTF = (args.object as TextField).ios as UITextField;
       uiTF.textContentType = UITextContentTypeEmailAddress;
-    } else if (isAndroid && device.sdkVersion >= '26') {
+    } else if (isAndroid && Device.sdkVersion >= '26') {
       const et = (args.object as TextField).android; // android.widget.EditText
       et.setAutofillHints([
         (android.view.View as any).AUTOFILL_HINT_EMAIL_ADDRESS
@@ -122,7 +145,7 @@ export class SignUpComponent implements OnInit {
     if (isIOS) {
       const uiTF = (args.object as TextField).ios as UITextField;
       uiTF.textContentType = UITextContentTypePassword;
-    } else if (isAndroid && device.sdkVersion >= '26') {
+    } else if (isAndroid && Device.sdkVersion >= '26') {
       const et = (args.object as TextField).android; // android.widget.EditText
       et.setAutofillHints([(android.view.View as any).AUTOFILL_HINT_PASSWORD]);
       et.setImportantForAutofill(
@@ -248,7 +271,7 @@ export class SignUpComponent implements OnInit {
     try {
       const user = await KinveyUser.signup(this.user);
       this._loadingIndicator.hide();
-      alert({
+      Dialogs.alert({
         title: this._translateService.instant('general.success'),
         message:
           this._translateService.instant('sign-up.sign-up-success') +
@@ -275,7 +298,7 @@ export class SignUpComponent implements OnInit {
     } catch (err) {
       this._loadingIndicator.hide();
       this._logService.logException(err);
-      alert({
+      Dialogs.alert({
         title: this._translateService.instant('general.error'),
         message: this._translateService.instant('sign-up.sign-up-error') + err,
         okButtonText: this._translateService.instant('general.ok')

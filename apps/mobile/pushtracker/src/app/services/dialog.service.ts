@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { action } from '@nativescript/core/ui/dialogs';
+import { Dialogs } from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
 
@@ -9,7 +9,7 @@ export class DialogService {
 
   public action(title: string, actions: any): Promise<string> {
     return new Promise((resolve, reject) => {
-      action({
+      Dialogs.action({
         title,
         cancelButtonText: this._translateService.instant('general.cancel'),
         actions

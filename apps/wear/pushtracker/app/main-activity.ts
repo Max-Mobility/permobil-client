@@ -1,9 +1,14 @@
-import * as application from '@nativescript/core/application';
-import { AndroidActivityCallbacks, setActivityCallbacks } from '@nativescript/core/ui/frame';
+import {
+  AndroidActivityCallbacks,
+  Application,
+  setActivityCallbacks
+} from '@nativescript/core';
 
+@NativeClass()
 @JavaProxy('com.permobil.pushtracker.MainActivity')
 @Interfaces([androidx.wear.ambient.AmbientModeSupport.AmbientCallbackProvider])
-class MainActivity extends androidx.appcompat.app.AppCompatActivity
+class MainActivity
+  extends androidx.appcompat.app.AppCompatActivity
   implements androidx.wear.ambient.AmbientModeSupport.AmbientCallbackProvider {
   constructor() {
     super();
@@ -126,7 +131,7 @@ class MyAmbientCallback extends androidx.wear.ambient.AmbientModeSupport
         doBurnInProtection: this.mDoBurnInProtection
       }
     };
-    application.notify(eventData);
+    Application.notify(eventData);
   }
 
   public onExitAmbient(): void {
@@ -139,7 +144,7 @@ class MyAmbientCallback extends androidx.wear.ambient.AmbientModeSupport
         doBurnInProtection: this.mDoBurnInProtection
       }
     };
-    application.notify(eventData);
+    Application.notify(eventData);
   }
 
   public onUpdateAmbient(): void {
@@ -152,6 +157,6 @@ class MyAmbientCallback extends androidx.wear.ambient.AmbientModeSupport
         doBurnInProtection: this.mDoBurnInProtection
       }
     };
-    application.notify(eventData);
+    Application.notify(eventData);
   }
 }

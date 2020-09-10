@@ -1,5 +1,4 @@
-import { isIOS } from '@nativescript/core';
-import * as application from '@nativescript/core/application';
+import { Application, isIOS } from '@nativescript/core';
 import { hasPermission } from 'nativescript-permissions';
 
 /**
@@ -8,10 +7,10 @@ import { hasPermission } from 'nativescript-permissions';
  * will be defaulted to use the safe area insets for iOS.
  */
 export function addBottomSafeAreaForIOS(): void {
-  if (isIOS && application.ios.window.safeAreaInsets) {
-    const bottomSafeArea: number = application.ios.window.safeAreaInsets.bottom;
+  if (isIOS && Application.ios.window.safeAreaInsets) {
+    const bottomSafeArea: number = Application.ios.window.safeAreaInsets.bottom;
     if (bottomSafeArea > 0) {
-      application.addCss(`
+      Application.addCss(`
               Page { margin-bottom: ${bottomSafeArea} !important }
           `);
     }

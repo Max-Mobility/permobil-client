@@ -59,7 +59,7 @@
   "readmeFilename": "README.md",
   "devDependencies": {
     "@nativescript/core": "../../node_modules/@nativescript/core",
-    "tns-platform-declarations": "../../node_modules/tns-platform-declarations",
+    "@nativescript/types": "../../node_modules/@nativescript/types",
     "typescript": "../../node_modules/typescript"
   },
   "dependencies": {}

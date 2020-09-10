@@ -1,5 +1,4 @@
-import { Color } from '@nativescript/core';
-import * as utils from '@nativescript/core/utils/utils';
+import { Color, Utils } from '@nativescript/core';
 import {
   barColorProperty,
   Common,
@@ -33,8 +32,8 @@ export class AnimatedCircle extends Common {
 
   onLayout(left, top, right, bottom) {
     super.onLayout(left, top, right, bottom);
-    const dpWidth = utils.layout.toDeviceIndependentPixels(this.effectiveWidth);
-    const dpHeight = utils.layout.toDeviceIndependentPixels(
+    const dpWidth = Utils.layout.toDeviceIndependentPixels(this.effectiveWidth);
+    const dpHeight = Utils.layout.toDeviceIndependentPixels(
       this.effectiveHeight
     );
 

@@ -2,17 +2,23 @@ import { Component, NgZone, Optional } from '@angular/core';
 import { Router } from '@angular/router';
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 import { ModalDialogParams } from '@nativescript/angular';
-import { isAndroid, isIOS, Page } from '@nativescript/core';
-import * as application from '@nativescript/core/application';
-import * as appSettings from '@nativescript/core/application-settings';
-import { action, alert, confirm } from '@nativescript/core/ui/dialogs';
+import {
+  ApplicationSettings as appSettings,
+  Dialogs,
+  isAndroid,
+  isIOS,
+  Page
+} from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { ToastDuration, Toasty } from 'nativescript-toasty';
 import { APP_THEMES, CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
 import { PushTracker, PushTrackerUser } from '../../models';
-import { BluetoothService, LoggingCategory, LoggingService } from '../../services';
+import {
+  BluetoothService,
+  LoggingCategory,
+  LoggingService
+} from '../../services';
 
 // TODO: activity indicator for E2 on ios (during scanning /
 // connection / etc.)
@@ -74,7 +80,8 @@ export class DeviceSetupComponent {
   }
 
   async init() {
-    const config = this.user && this.user.data && this.user.data.control_configuration;
+    const config =
+      this.user && this.user.data && this.user.data.control_configuration;
     if (config === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE) {
       this.initPushTracker();
     } else if (config === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE) {
@@ -93,7 +100,7 @@ export class DeviceSetupComponent {
 
     if (!this._bluetoothService.advertising) {
       this._askForPermissions()
-        .then((didGetPermissions) => {
+        .then(didGetPermissions => {
           if (didGetPermissions) {
             this._logService.logBreadCrumb(
               DeviceSetupComponent.name,
@@ -181,7 +188,7 @@ export class DeviceSetupComponent {
 
   private async _confirmToOpenSettingsOnIOS() {
     if (isIOS) {
-      const confirmResult = await confirm({
+      const confirmResult = await Dialogs.confirm({
         message: this._translateService.instant('bluetooth.ios-open-settings'),
         cancelable: true,
         okButtonText: this._translateService.instant('dialogs.yes'),
@@ -216,9 +223,7 @@ export class DeviceSetupComponent {
       // system has already shown the permissions request at this
       // point, and the text for it comes from Info.plist
       await alert({
-        title: this._translateService.instant(
-          'permissions-request.title'
-        ),
+        title: this._translateService.instant('permissions-request.title'),
         message: this._translateService.instant(
           'permissions-reasons.coarse-location'
         ),
@@ -264,7 +269,9 @@ export class DeviceSetupComponent {
         );
       } else {
         // we are aware of pushtrackers - register for their events
-        BluetoothService.PushTrackers.forEach(this.registerPushTrackerEvents.bind(this));
+        BluetoothService.PushTrackers.forEach(
+          this.registerPushTrackerEvents.bind(this)
+        );
         // now see if any are currently connected
         const pts = BluetoothService.PushTrackers.filter(pt => pt.connected);
         if (pts.length === 0) {
@@ -486,7 +493,7 @@ export class DeviceSetupComponent {
     }
     // ask user which companion is theirs
     const actions = possiblePeripherals.map(p => p.name);
-    const result = await action({
+    const result = await Dialogs.action({
       message: this._translateService.instant('device-setup.e2.select-device'),
       cancelButtonText: this._translateService.instant('dialogs.cancel'),
       actions: actions

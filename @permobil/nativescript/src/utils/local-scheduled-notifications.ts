@@ -1,9 +1,10 @@
 import { Color } from '@nativescript/core';
 import { LocalNotifications } from 'nativescript-local-notifications';
 import {
-  PushTrackerLocalNotifications, PushTrackerWearNotificationChannels,
-
-  SmartDriveLocalNotifications, SmartDriveWearNotificationChannels
+  PushTrackerLocalNotifications,
+  PushTrackerWearNotificationChannels,
+  SmartDriveLocalNotifications,
+  SmartDriveWearNotificationChannels
 } from '../enums';
 
 export function scheduleSmartDriveLocalNotifications() {

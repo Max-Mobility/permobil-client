@@ -2,19 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 import { ModalDialogParams } from '@nativescript/angular';
 import {
+  ApplicationSettings as appSettings,
   Color,
   EventData,
   isAndroid,
   ObservableArray,
   SegmentedBar,
-  SegmentedBarItem
+  SegmentedBarItem,
+  Utils
 } from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
-import { layout } from '@nativescript/core/utils/utils';
 import { TranslateService } from '@ngx-translate/core';
-import { Query as KinveyQuery } from 'kinvey-nativescript-sdk';
 import { PushTrackerUser } from '@permobil/core';
 import { differenceInCalendarDays } from 'date-fns';
+import { Query as KinveyQuery } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import {
   CalendarFontStyle,
@@ -30,7 +30,11 @@ import {
   STORAGE_KEYS
 } from '../../enums';
 import { DeviceBase } from '../../models';
-import { ActivityService, SmartDriveUsageService, LoggingService } from '../../services';
+import {
+  ActivityService,
+  LoggingService,
+  SmartDriveUsageService
+} from '../../services';
 import {
   areDatesSame,
   convertToMilesIfUnitPreferenceIsMiles,
@@ -218,12 +222,10 @@ export class ActivityComponent implements OnInit {
     // actually synchronize with the server
     try {
       await this._activityService.refreshWeekly();
-    } catch (err) {
-    }
+    } catch (err) {}
     try {
       await this._usageService.refreshWeekly();
-    } catch (err) {
-    }
+    } catch (err) {}
 
     this.onSelectedIndexChanged({
       object: { selectedIndex: this.currentTab },
@@ -428,7 +430,7 @@ export class ActivityComponent implements OnInit {
     // Increasing the height of dayNameCells in RadCalendar
     // https://stackoverflow.com/questions/56720589/increasing-the-height-of-daynamecells-in-radcalendar
     if (isAndroid) {
-      calendar.android.setDayNamesHeight(layout.toDevicePixels(40));
+      calendar.android.setDayNamesHeight(Utils.layout.toDevicePixels(40));
     } else {
       calendar.ios.presenter.style.dayNameCellHeight = 40;
     }
@@ -488,7 +490,7 @@ export class ActivityComponent implements OnInit {
     this._loadWeeklyActivity(forcePullFromDatabase)
       .then(() => {
         // If the start fo the week is 0th element in an array of size 7, what is the index of date?
-        const getIndex = function(date1, date2) {
+        const getIndex = function (date1, date2) {
           // date1 = Week start, date2 = current date
           const index = differenceInCalendarDays(date2, date1);
           return index;
@@ -566,8 +568,8 @@ export class ActivityComponent implements OnInit {
                     convertToMilesIfUnitPreferenceIsMiles(
                       DeviceBase.caseTicksToKilometers(
                         this._dailyUsageFromKinvey.distance_smartdrive_coast -
-                        this._dailyUsageFromKinvey
-                          .distance_smartdrive_coast_start
+                          this._dailyUsageFromKinvey
+                            .distance_smartdrive_coast_start
                       ),
                       this.user.data.distance_unit_preference
                     ) || 0
@@ -583,12 +585,18 @@ export class ActivityComponent implements OnInit {
             this._updateWeekStartAndEnd();
           })
           .catch(err => {
-            this._logService.logBreadCrumb(ActivityComponent.name, 'Failed to format activity for view when loading daily activity');
+            this._logService.logBreadCrumb(
+              ActivityComponent.name,
+              'Failed to format activity for view when loading daily activity'
+            );
             // this._logService.logException(err);
           });
       })
       .catch(err => {
-        this._logService.logBreadCrumb(ActivityComponent.name, 'Failed to load daily activity');
+        this._logService.logBreadCrumb(
+          ActivityComponent.name,
+          'Failed to load daily activity'
+        );
         // this._logService.logException(err);
       });
   }
@@ -636,7 +644,8 @@ export class ActivityComponent implements OnInit {
     query.equalTo('date', date);
     query.descending('_kmd.lmt');
     query.limit = 1;
-    return this._activityService.getWeeklyActivityWithQuery(query)
+    return this._activityService
+      .getWeeklyActivityWithQuery(query)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -655,7 +664,10 @@ export class ActivityComponent implements OnInit {
         return Promise.resolve(this._weeklyActivityFromKinvey);
       })
       .catch(err => {
-        this._logService.logBreadCrumb(ActivityComponent.name, 'Failed to load weekly activity');
+        this._logService.logBreadCrumb(
+          ActivityComponent.name,
+          'Failed to load weekly activity'
+        );
         // this._logService.logException(err);
         return Promise.reject([]);
       });
@@ -675,7 +687,8 @@ export class ActivityComponent implements OnInit {
     query.equalTo('date', date);
     query.descending('_kmd.lmt');
     query.limit = 1;
-    return this._usageService.getWeeklyActivityWithQuery(query)
+    return this._usageService
+      .getWeeklyActivityWithQuery(query)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -694,7 +707,10 @@ export class ActivityComponent implements OnInit {
         return Promise.resolve(this._weeklyUsageFromKinvey);
       })
       .catch(err => {
-        this._logService.logBreadCrumb(ActivityComponent.name, 'Failed to load weekly smartdrive usage');
+        this._logService.logBreadCrumb(
+          ActivityComponent.name,
+          'Failed to load weekly smartdrive usage'
+        );
         // this._logService.logException(err);
         return Promise.reject([]);
       });
@@ -732,13 +748,19 @@ export class ActivityComponent implements OnInit {
                 return true;
               })
               .catch(err => {
-                this._logService.logBreadCrumb(ActivityComponent.name, 'Failed to format weekly activity for view');
+                this._logService.logBreadCrumb(
+                  ActivityComponent.name,
+                  'Failed to format weekly activity for view'
+                );
                 // this._logService.logException(err);
                 return false;
               });
           })
           .catch(err => {
-            this._logService.logBreadCrumb(ActivityComponent.name, 'Failed to load smartdrive usage from kinvey');
+            this._logService.logBreadCrumb(
+              ActivityComponent.name,
+              'Failed to load smartdrive usage from kinvey'
+            );
             // this._logService.logException(err);
             return false;
           });
@@ -767,13 +789,19 @@ export class ActivityComponent implements OnInit {
                 return true;
               })
               .catch(err => {
-                this._logService.logBreadCrumb(ActivityComponent.name, 'Failed to format weekly activity');
+                this._logService.logBreadCrumb(
+                  ActivityComponent.name,
+                  'Failed to format weekly activity'
+                );
                 // this._logService.logException(err);
                 return false;
               });
           })
           .catch(err => {
-            this._logService.logBreadCrumb(ActivityComponent.name, 'Failed to load weekly activity from kinvey');
+            this._logService.logBreadCrumb(
+              ActivityComponent.name,
+              'Failed to load weekly activity from kinvey'
+            );
             // this._logService.logException(err);
             return false;
           });
@@ -808,7 +836,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   cache.weeklyActivity.distance_smartdrive_coast -
-                  cache.weeklyActivity.distance_smartdrive_coast_start
+                    cache.weeklyActivity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -879,7 +907,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   activity.distance_smartdrive_coast -
-                  activity.distance_smartdrive_coast_start
+                    activity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -1115,7 +1143,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   activity.distance_smartdrive_coast -
-                  activity.distance_smartdrive_coast_start
+                    activity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -1168,7 +1196,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.motorTicksToKilometers(
                   dailyActivity.distance_smartdrive_drive -
-                  dailyActivity.distance_smartdrive_drive_start
+                    dailyActivity.distance_smartdrive_drive_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0;
@@ -1177,7 +1205,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   dailyActivity.distance_smartdrive_coast -
-                  dailyActivity.distance_smartdrive_coast_start
+                    dailyActivity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0;
@@ -1420,7 +1448,7 @@ export class ActivityComponent implements OnInit {
             convertToMilesIfUnitPreferenceIsMiles(
               DeviceBase.caseTicksToKilometers(
                 activity.distance_smartdrive_coast -
-                activity.distance_smartdrive_coast_start
+                  activity.distance_smartdrive_coast_start
               ),
               this.user.data.distance_unit_preference
             ) || 0
@@ -1466,7 +1494,7 @@ export class ActivityComponent implements OnInit {
           convertToMilesIfUnitPreferenceIsMiles(
             DeviceBase.caseTicksToKilometers(
               activity.distance_smartdrive_coast -
-              activity.distance_smartdrive_coast_start
+                activity.distance_smartdrive_coast_start
             ),
             this.user.data.distance_unit_preference
           ) || 0;
@@ -1525,7 +1553,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   activity.distance_smartdrive_coast -
-                  activity.distance_smartdrive_coast_start
+                    activity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -1542,7 +1570,7 @@ export class ActivityComponent implements OnInit {
             convertToMilesIfUnitPreferenceIsMiles(
               DeviceBase.caseTicksToKilometers(
                 cache.weeklyActivity.distance_smartdrive_coast -
-                cache.weeklyActivity.distance_smartdrive_coast_start
+                  cache.weeklyActivity.distance_smartdrive_coast_start
               ),
               this.user.data.distance_unit_preference
             ) || 0
@@ -1618,7 +1646,7 @@ export class ActivityComponent implements OnInit {
             convertToMilesIfUnitPreferenceIsMiles(
               DeviceBase.caseTicksToKilometers(
                 activity.distance_smartdrive_coast -
-                activity.distance_smartdrive_coast_start
+                  activity.distance_smartdrive_coast_start
               ),
               this.user.data.distance_unit_preference
             ) || 0;
@@ -1646,7 +1674,7 @@ export class ActivityComponent implements OnInit {
           convertToMilesIfUnitPreferenceIsMiles(
             DeviceBase.caseTicksToKilometers(
               cache.weeklyActivity.distance_smartdrive_coast -
-              cache.weeklyActivity.distance_smartdrive_coast_start
+                cache.weeklyActivity.distance_smartdrive_coast_start
             ),
             this.user.data.distance_unit_preference
           ) || 0;

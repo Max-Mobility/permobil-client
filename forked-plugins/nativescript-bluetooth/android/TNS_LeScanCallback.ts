@@ -5,6 +5,7 @@ import { Bluetooth } from './android_main';
  * Callback interface used to deliver LE scan results.
  * https://developer.android.com/reference/android/bluetooth/BluetoothAdapter.LeScanCallback.html
  */
+@NativeClass()
 @JavaProxy('com.nativescript.TNS_LeScanCallback')
 export class TNS_LeScanCallback extends android.bluetooth.BluetoothAdapter
   .LeScanCallback {

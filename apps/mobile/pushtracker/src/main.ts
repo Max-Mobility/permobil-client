@@ -1,14 +1,16 @@
-import 'reflect-metadata';
-// this import should be first in order to load some required settings (like globals and reflect-metadata)
-import { platformNativeScriptDynamic } from '@nativescript/angular';
 /**
  * be sure to keep the above imports first
  */
 import { enableProdMode } from '@angular/core';
-import { isIOS } from '@nativescript/core';
-import * as application from '@nativescript/core/application';
-import * as appSettings from '@nativescript/core/application-settings';
+// this import should be first in order to load some required settings (like globals and reflect-metadata)
+import { platformNativeScriptDynamic } from '@nativescript/angular';
+import {
+  Application,
+  ApplicationSettings as appSettings,
+  isIOS
+} from '@nativescript/core';
 import * as themes from 'nativescript-themes';
+import 'reflect-metadata';
 import { AppModule } from './app/app.module';
 import { APP_THEMES, STORAGE_KEYS } from './app/enums';
 import { Ratings } from './app/utils/ratings-utils';
@@ -45,7 +47,8 @@ if (SAVED_THEME === APP_THEMES.DEFAULT) {
 }
 
 if (isIOS) {
-  class PushTrackerIOSDelegate extends UIResponder
+  class PushTrackerIOSDelegate
+    extends UIResponder
     implements UIApplicationDelegate {
     public static ObjCProtocols = [UIApplicationDelegate];
     applicationDidBecomeActive(application: UIApplication): void {
@@ -61,7 +64,7 @@ if (isIOS) {
       ratings.increment();
     }
   }
-  application.ios.delegate = PushTrackerIOSDelegate;
+  Application.ios.delegate = PushTrackerIOSDelegate;
 }
 
 // A traditional NativeScript application starts by initializing global objects,

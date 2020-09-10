@@ -1,17 +1,17 @@
 import { Component, NgZone, ViewContainerRef } from '@angular/core';
 import { ModalDialogService, RouterExtensions } from '@nativescript/angular';
 import {
+  ApplicationSettings as appSettings,
   Color,
-  EventData,
+  Dialogs, EventData,
   ImageSource,
+  isAndroid,
   Label,
   Page,
+  Screen,
   StackLayout
 } from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
-import { isAndroid, screen } from '@nativescript/core/platform';
 import { setTimeout } from '@nativescript/core/timer';
-import { action } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { subYears } from 'date-fns';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
@@ -151,7 +151,7 @@ export class ProfileTabComponent {
   async onProfileTabLoaded() {
     this._logService.logBreadCrumb(ProfileTabComponent.name, 'Loaded');
     this._page.actionBarHidden = true;
-    this.screenHeight = screen.mainScreen.heightDIPs;
+    this.screenHeight = Screen.mainScreen.heightDIPs;
     this._barcodeScanner = new BarcodeScanner();
 
     this.user = KinveyUser.getActiveUser() as PushTrackerUser;
@@ -284,7 +284,7 @@ export class ProfileTabComponent {
 
   onAvatarTap() {
     const signOut = this._translateService.instant('general.sign-out');
-    action({
+    Dialogs.action({
       title: '',
       cancelButtonText: this._translateService.instant('general.cancel'),
       actions: [signOut]

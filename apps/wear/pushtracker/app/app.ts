@@ -1,8 +1,13 @@
-﻿import * as application from '@nativescript/core/application';
+﻿import {
+  Application,
+  DiscardedErrorEventData,
+  UnhandledErrorEventData
+} from '@nativescript/core';
 import { Log } from '@permobil/core';
 import { getDefaultLang, load, use } from '@permobil/nativescript';
 import { Sentry } from 'nativescript-sentry';
 import 'reflect-metadata';
+
 
 console.time('App_Start_Time');
 
@@ -13,9 +18,9 @@ load(defaultLanguage);
 use(defaultLanguage);
 
 // setup application level events
-application.on(
-  application.uncaughtErrorEvent,
-  (args?: application.UnhandledErrorEventData) => {
+Application.on(
+  Application.uncaughtErrorEvent,
+  (args?: UnhandledErrorEventData) => {
     if (args) {
       Sentry.captureException(args.error, {
         tags: {
@@ -27,9 +32,9 @@ application.on(
   }
 );
 
-application.on(
-  application.discardedErrorEvent,
-  (args: application.DiscardedErrorEventData) => {
+Application.on(
+  Application.discardedErrorEvent,
+  (args: DiscardedErrorEventData) => {
     Sentry.captureException(args.error, {
       tags: {
         type: 'discardedErrorEvent'
@@ -41,4 +46,4 @@ application.on(
 console.timeEnd('App_Start_Time');
 
 // start the app
-application.run({ moduleName: 'app-root' });
+Application.run({ moduleName: 'app-root' });

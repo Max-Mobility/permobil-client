@@ -17,6 +17,6 @@
     "@nativescript/core": "file:../../node_modules/@nativescript/core"
   },
   "devDependencies": {
-    "tns-platform-declarations": "file:../../node_modules/tns-platform-declarations"
+    "@nativescript/types": "file:../../node_modules/@nativescript/types"
   }
 }

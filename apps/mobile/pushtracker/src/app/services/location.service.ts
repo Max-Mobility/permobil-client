@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MapboxKeys } from '@maxmobility/private-keys';
-import * as httpModule from '@nativescript/core/http';
-import { Accuracy } from '@nativescript/core/ui/enums'; // used to describe at what accuracy the location should be get
+import { Enums, Http } from '@nativescript/core';
 import * as Kinvey from 'kinvey-nativescript-sdk';
 import * as geolocation from 'nativescript-geolocation';
 
@@ -12,7 +11,7 @@ export class LocationService {
   static getCoordinates(): Promise<any> {
     // Get current location with high accuracy
     return geolocation.getCurrentLocation({
-      desiredAccuracy: Accuracy.high,
+      desiredAccuracy: Enums.Accuracy.high,
       maximumAge: 5000,
       timeout: 20000
     });
@@ -50,7 +49,7 @@ export class LocationService {
         lang;
 
       // TODO: might also add '&types=postcode' to the query to only get postcode
-      httpModule.getJSON(query).then(
+      Http.getJSON(query).then(
         r => {
           // const location = (r as any).features.filter(f => f.place_type.indexOf('postcode') > -1)[0].place_name;
           // BRAD - using POI to get street address

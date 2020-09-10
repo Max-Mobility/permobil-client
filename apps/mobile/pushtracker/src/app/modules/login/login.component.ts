@@ -1,9 +1,17 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { RouterExtensions } from '@nativescript/angular';
-import { Animation, AnimationDefinition, isAndroid, isIOS, Page, TextField, View } from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
-import { device } from '@nativescript/core/platform';
-import { PercentLength } from '@nativescript/core/ui/styling/style-properties';
+import {
+  Animation,
+  AnimationDefinition,
+  ApplicationSettings as appSettings,
+  Device,
+  isAndroid,
+  isIOS,
+  Page,
+  PercentLength,
+  TextField,
+  View
+} from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { preventKeyboardFromShowing } from '@permobil/nativescript';
@@ -205,7 +213,7 @@ export class LoginComponent implements OnInit {
     if (isIOS) {
       const uiTF = (args.object as TextField).ios as UITextField;
       uiTF.textContentType = UITextContentTypeEmailAddress;
-    } else if (isAndroid && device.sdkVersion >= '26') {
+    } else if (isAndroid && Device.sdkVersion >= '26') {
       const et = (args.object as TextField).android; // android.widget.EditText
       et.setAutofillHints([
         (android.view.View as any).AUTOFILL_HINT_EMAIL_ADDRESS
@@ -220,7 +228,7 @@ export class LoginComponent implements OnInit {
     if (isIOS) {
       const uiTF = (args.object as TextField).ios as UITextField;
       uiTF.textContentType = UITextContentTypePassword;
-    } else if (isAndroid && device.sdkVersion >= '26') {
+    } else if (isAndroid && Device.sdkVersion >= '26') {
       const et = (args.object as TextField).android; // android.widget.EditText
       et.setAutofillHints([(android.view.View as any).AUTOFILL_HINT_PASSWORD]);
       et.setImportantForAutofill(

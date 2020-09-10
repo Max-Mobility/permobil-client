@@ -1,11 +1,22 @@
 import { Injectable } from '@angular/core';
-import { DataStore as KinveyDataStore, DataStoreType as DataStoreType, Query as KinveyQuery, User as KinveyUser } from 'kinvey-nativescript-sdk';
+import {
+  DataStore as KinveyDataStore,
+  DataStoreType,
+  Query as KinveyQuery,
+  User as KinveyUser
+} from 'kinvey-nativescript-sdk';
 import { LoggingService } from './logging.service';
 
 @Injectable()
 export class ActivityService {
-  private dailyDatastore = KinveyDataStore.collection('DailyPushTrackerActivity', DataStoreType.Sync);
-  private weeklyDatastore = KinveyDataStore.collection('WeeklyPushTrackerActivity', DataStoreType.Sync);
+  private dailyDatastore = KinveyDataStore.collection(
+    'DailyPushTrackerActivity',
+    DataStoreType.Sync
+  );
+  private weeklyDatastore = KinveyDataStore.collection(
+    'WeeklyPushTrackerActivity',
+    DataStoreType.Sync
+  );
   public dailyActivity: any;
   public weeklyActivity: any;
 
@@ -44,18 +55,21 @@ export class ActivityService {
 
   async _query(db: any, query: KinveyQuery): Promise<any[]> {
     return new Promise((resolve, reject) => {
-      db.find(query)
-        .subscribe((data: any[]) => {
+      db.find(query).subscribe(
+        (data: any[]) => {
           resolve(data);
-        }, (err) => {
+        },
+        err => {
           console.error('\n', 'error finding weekly activity', err);
           reject(err);
-        }, () => {
+        },
+        () => {
           // this seems to be called right at the very end - after
           // we've gotten data, so this resolve will have been
           // superceded by the resolve(data) above
           resolve([]);
-        });
+        }
+      );
     });
   }
 
@@ -99,23 +113,26 @@ export class ActivityService {
       const query = this.makeQuery();
       query.equalTo('date', dailyActivity.date);
 
-      return this.dailyQuery(query)
-        .then((data: any[]) => {
-          if (data && data.length) {
-            const id = data[0]._id;
-            dailyActivity._id = id;
-          }
-          return this.dailyDatastore.save(dailyActivity)
-            .then((_) => {
-              return true;
-            }).catch((error) => {
-              this._logService.logException(error);
-              return false;
-            });
-        });
-
+      return this.dailyQuery(query).then((data: any[]) => {
+        if (data && data.length) {
+          const id = data[0]._id;
+          dailyActivity._id = id;
+        }
+        return this.dailyDatastore
+          .save(dailyActivity)
+          .then(_ => {
+            return true;
+          })
+          .catch(error => {
+            this._logService.logException(error);
+            return false;
+          });
+      });
     } catch (err) {
-      this._logService.logBreadCrumb(ActivityService.name, 'Failed to save daily activity from pushtracker in Kinvey');
+      this._logService.logBreadCrumb(
+        ActivityService.name,
+        'Failed to save daily activity from pushtracker in Kinvey'
+      );
       // this._logService.logException(err);
       return false;
     }

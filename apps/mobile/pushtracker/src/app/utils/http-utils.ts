@@ -1,4 +1,4 @@
-import * as TNS_HTTP from '@nativescript/core/http';
+import { Http as TNS_HTTP } from '@nativescript/core';
 import { Log } from '@permobil/core/src';
 import { APP_KEY } from '@permobil/nativescript';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';

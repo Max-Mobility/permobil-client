@@ -1,7 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ModalDialogParams } from '@nativescript/angular';
-import { TextField } from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
+import { ApplicationSettings as appSettings, TextField } from '@nativescript/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { PushTrackerUser } from '../../models';

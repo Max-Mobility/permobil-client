@@ -1,4 +1,6 @@
-import { device } from '@nativescript/core/platform';
+/// <reference path="../../../node_modules/@nativescript/types-ios/index.d.ts" />
+
+import { Device } from '@nativescript/core';
 import { CLog, CLogTypes, ConnectionState } from '../common';
 import { Bluetooth, getDevice } from './ios_main';
 
@@ -8,7 +10,9 @@ import { Bluetooth, getDevice } from './ios_main';
  * The protocol’s optional methods are used by the delegate to verify publishing and advertising, and to monitor read, write, and subscription requests from remote central devices.
  * The protocol’s required method, which indicates whether the peripheral manager is available, is called when the peripheral manager’s state is updated.
  */
-export class CBPeripheralManagerDelegateImpl extends NSObject
+@NativeClass()
+export class CBPeripheralManagerDelegateImpl
+  extends NSObject
   implements CBPeripheralManagerDelegate {
   static ObjCProtocols = [CBPeripheralManagerDelegate];
   private _owner: WeakRef<Bluetooth>;
@@ -69,7 +73,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
       state
     });
 
-    if (device.sdkVersion < '13.0') {
+    if (Device.sdkVersion < '13.0') {
       let status;
       const value = CBPeripheralManager.authorizationStatus();
       switch (value) {

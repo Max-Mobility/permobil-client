@@ -1,4 +1,6 @@
-import { device } from '@nativescript/core/platform';
+/// <reference path="../../../node_modules/@nativescript/types-ios/index.d.ts" />
+
+import { Device } from '@nativescript/core';
 import { CLog, CLogTypes } from '../common';
 import { CBPeripheralDelegateImpl } from './CBPeripheralDelegateImpl';
 import { Bluetooth } from './ios_main';
@@ -12,7 +14,9 @@ declare var DataView; // not recognized by platform-declarations
  * The optional methods of the protocol allow the delegate to monitor the discovery, connectivity, and retrieval of peripheral devices.
  * The only required method of the protocol indicates the availability of the central manager, and is called when the central manager’s state is updated.
  */
-export class CBCentralManagerDelegateImpl extends NSObject
+@NativeClass()
+export class CBCentralManagerDelegateImpl
+  extends NSObject
   implements CBCentralManagerDelegate {
   static ObjCProtocols = [CBCentralManagerDelegate];
 
@@ -292,10 +296,10 @@ export class CBCentralManagerDelegateImpl extends NSObject
     let status;
     // checking the auth state of the Manager to emit the authorization event
     // so the app can know the auth/permission
-    if (device.sdkVersion < '13.0') {
+    if (Device.sdkVersion < '13.0') {
       const value = CBPeripheralManager.authorizationStatus();
       status = this._checkPeripheralManagerStatus(value);
-    } else if (device.sdkVersion >= '13.0') {
+    } else if (Device.sdkVersion >= '13.0') {
       const value = central.authorization;
       status = this._checkCentralManagerStatus(value);
     }

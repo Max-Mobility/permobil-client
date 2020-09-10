@@ -1,6 +1,7 @@
 import { BondState, CLog, CLogTypes } from '../common';
 import { Bluetooth, getDevice } from './android_main';
 
+@NativeClass()
 @JavaProxy('com.nativescript.TNS_BroadcastReceiver')
 export class TNS_BroadcastReceiver extends android.content.BroadcastReceiver {
   private _owner: WeakRef<Bluetooth>;

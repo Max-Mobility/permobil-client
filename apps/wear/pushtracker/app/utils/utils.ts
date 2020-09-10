@@ -1,4 +1,4 @@
-import { ad as androidUtils } from '@nativescript/core/utils/utils';
+import { Utils } from '@nativescript/core';
 import { hasPermission } from 'nativescript-permissions';
 
 declare const com: any;
@@ -11,7 +11,7 @@ export function getSerialNumber() {
 export function saveSerialNumber(sn: string) {
   // save it to datastore for service to use
   const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-  const sharedPreferences = androidUtils
+  const sharedPreferences = Utils.android
     .getApplicationContext()
     .getSharedPreferences('prefs.db', 0);
   const editor = sharedPreferences.edit();
@@ -24,7 +24,7 @@ export function saveSerialNumber(sn: string) {
 
 export function loadSerialNumber() {
   const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-  const sharedPreferences = androidUtils
+  const sharedPreferences = Utils.android
     .getApplicationContext()
     .getSharedPreferences('prefs.db', 0);
   const savedSerial = sharedPreferences.getString(

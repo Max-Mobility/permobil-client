@@ -1,22 +1,64 @@
-import { Component, NgZone, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  Component,
+  NgZone,
+  OnInit,
+  ViewChild,
+  ViewContainerRef
+} from '@angular/core';
 import { ModalDialogParams } from '@nativescript/angular';
-import { Page, PropertyChangeData, Switch } from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
-import { device } from '@nativescript/core/platform';
+import {
+  ApplicationSettings as appSettings,
+  Device,
+  Dialogs,
+  Page,
+  PropertyChangeData,
+  Switch
+} from '@nativescript/core';
 import { setTimeout } from '@nativescript/core/timer';
-import { alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { Device as PermobilCoreDevice } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import once from 'lodash/once';
-import { getVersionCodeSync, getVersionNameSync } from 'nativescript-appversion';
-import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
-import { APP_LANGUAGES, APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, STORAGE_KEYS, TIME_FORMAT, WEIGHT_UNITS } from '../../enums';
-import { DeviceBase, PushTracker, PushTrackerUser, SmartDrive } from '../../models';
-import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService, ThemeService, TranslationService } from '../../services';
+import {
+  getVersionCodeSync,
+  getVersionNameSync
+} from 'nativescript-appversion';
+import {
+  BottomSheetOptions,
+  BottomSheetService
+} from 'nativescript-material-bottomsheet/angular';
+import {
+  APP_LANGUAGES,
+  APP_THEMES,
+  CONFIGURATIONS,
+  DISTANCE_UNITS,
+  HEIGHT_UNITS,
+  STORAGE_KEYS,
+  TIME_FORMAT,
+  WEIGHT_UNITS
+} from '../../enums';
+import {
+  DeviceBase,
+  PushTracker,
+  PushTrackerUser,
+  SmartDrive
+} from '../../models';
+import {
+  BluetoothService,
+  LoggingService,
+  PushTrackerState,
+  PushTrackerUserService,
+  SettingsService,
+  ThemeService,
+  TranslationService
+} from '../../services';
 import { applyTheme } from '../../utils';
-import { ListPickerSheetComponent, PushTrackerStatusButtonComponent, SliderSheetComponent } from '../shared/components';
+import {
+  ListPickerSheetComponent,
+  PushTrackerStatusButtonComponent,
+  SliderSheetComponent
+} from '../shared/components';
 
 @Component({
   selector: 'profile-settings',
@@ -75,12 +117,13 @@ export class ProfileSettingsComponent implements OnInit {
     private _zone: NgZone,
     private _bottomSheet: BottomSheetService,
     private _vcRef: ViewContainerRef
-  ) { }
+  ) {}
 
   ngOnInit() {
     this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'ngOnInit');
 
-    this._translationService.updateTranslationFilesFromKinvey()
+    this._translationService
+      .updateTranslationFilesFromKinvey()
       .then(() => {
         this._logService.logBreadCrumb(
           ProfileSettingsComponent.name,
@@ -245,12 +288,13 @@ export class ProfileSettingsComponent implements OnInit {
     this.user = KinveyUser.getActiveUser() as PushTrackerUser;
     let defaultLanguage = 'English';
     Object.entries(APP_LANGUAGES).forEach(([key, value]) => {
-      if (device.language.startsWith(value)) {
+      if (Device.language.startsWith(value)) {
         defaultLanguage = key;
       }
     });
     if (this.user && this.user.data) {
-      this.CURRENT_LANGUAGE = this.user.data.language_preference || defaultLanguage;
+      this.CURRENT_LANGUAGE =
+        this.user.data.language_preference || defaultLanguage;
     } else {
       this.CURRENT_LANGUAGE = defaultLanguage;
     }
@@ -338,7 +382,9 @@ export class ProfileSettingsComponent implements OnInit {
         // since the value we use is actually the OPPOSITE of the
         // switch
         isChecked = !isChecked;
-        if (isChecked !== this.settingsService.settings.disablePowerAssistBeep) {
+        if (
+          isChecked !== this.settingsService.settings.disablePowerAssistBeep
+        ) {
           this._changedSettingsWhichRequireUpdate = true;
           updatedSmartDriveSettings = true;
         }
@@ -421,10 +467,13 @@ export class ProfileSettingsComponent implements OnInit {
         this.activeSetting = 'switch-control-mode';
         options.context = {
           title: this._translateService.instant('general.switch-control-mode'),
-          primaryItems: PermobilCoreDevice.SwitchControlSettings.Mode.Options.map(o => {
-            const translationKey = 'sd.switch-settings.mode.' + o.toLowerCase();
-            return this._translateService.instant(translationKey);
-          }),
+          primaryItems: PermobilCoreDevice.SwitchControlSettings.Mode.Options.map(
+            o => {
+              const translationKey =
+                'sd.switch-settings.mode.' + o.toLowerCase();
+              return this._translateService.instant(translationKey);
+            }
+          ),
           primaryIndex: PermobilCoreDevice.SwitchControlSettings.Mode.Options.indexOf(
             this.settingsService.switchControlSettings.mode
           ),
@@ -543,9 +592,13 @@ export class ProfileSettingsComponent implements OnInit {
         'Could not update the user - ' + err
       );
       setTimeout(() => {
-        alert({
-          title: this._translateService.instant('profile-tab.network-error.title'),
-          message: this._translateService.instant('profile-tab.network-error.message'),
+        Dialogs.alert({
+          title: this._translateService.instant(
+            'profile-tab.network-error.title'
+          ),
+          message: this._translateService.instant(
+            'profile-tab.network-error.message'
+          ),
           okButtonText: this._translateService.instant('profile-tab.ok')
         });
       }, 1000);
@@ -596,12 +649,12 @@ export class ProfileSettingsComponent implements OnInit {
         break;
       case 'mode':
         this.settingsService.settings.controlMode =
-        PermobilCoreDevice.Settings.ControlMode.Options[index];
+          PermobilCoreDevice.Settings.ControlMode.Options[index];
         break;
       case 'switch-control-mode':
         this._changedSettingsWhichRequireUpdate = true;
         this.settingsService.switchControlSettings.mode =
-        PermobilCoreDevice.SwitchControlSettings.Mode.Options[index];
+          PermobilCoreDevice.SwitchControlSettings.Mode.Options[index];
         break;
       case 'time format':
         didUpdate = await this.updateUser({
@@ -680,7 +733,7 @@ export class ProfileSettingsComponent implements OnInit {
         // TODO: should get this version from the server somewhere!
         if (!sdsUpToDate && !ptsUpToDate) {
           // both the pushtrackers and the smartdrives are not up to date
-          alert({
+          Dialogs.alert({
             title: this._translateService.instant(
               'profile-settings.update-notice.title'
             ),
@@ -691,7 +744,7 @@ export class ProfileSettingsComponent implements OnInit {
           });
         } else if (!sdsUpToDate) {
           // the pushtrackers are up to date but the smartdrives are not
-          alert({
+          Dialogs.alert({
             title: this._translateService.instant(
               'profile-settings.update-notice.title'
             ),
@@ -702,7 +755,7 @@ export class ProfileSettingsComponent implements OnInit {
           });
         } else if (!ptsUpToDate) {
           // only the pushtrackers are out of date
-          alert({
+          Dialogs.alert({
             title: this._translateService.instant(
               'profile-settings.update-notice.title'
             ),
@@ -734,8 +787,10 @@ export class ProfileSettingsComponent implements OnInit {
         if (pts && pts.length > 0) {
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
-            'Sending to pushtrackers: ' + pts.map(pt => pt.address) +
-            ' - ' + this._changedSettingsWhichRequireUpdate
+            'Sending to pushtrackers: ' +
+              pts.map(pt => pt.address) +
+              ' - ' +
+              this._changedSettingsWhichRequireUpdate
           );
 
           const ptsUpToDate = pts.reduce((upToDate, pt) => {
@@ -798,7 +853,7 @@ export class ProfileSettingsComponent implements OnInit {
       this._logService.logBreadCrumb(
         ProfileSettingsComponent.name,
         'Scan is not forced - Already have a SmartDrive: ' +
-        this.smartDrive.address
+          this.smartDrive.address
       );
       return true;
     }
@@ -811,7 +866,7 @@ export class ProfileSettingsComponent implements OnInit {
         .then(() => {
           const drives = BluetoothService.SmartDrives;
           if (drives.length === 0) {
-            alert({
+            Dialogs.alert({
               message:
                 'Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby.',
               okButtonText: this._translateService.instant('general.ok')
@@ -819,7 +874,7 @@ export class ProfileSettingsComponent implements OnInit {
             this.syncingWithSmartDrive = false;
             return false;
           } else if (drives.length > 1) {
-            alert({
+            Dialogs.alert({
               message:
                 'More than one SmartDrive detected! Please switch OFF all but one of the SmartDrives and retry',
               okButtonText: this._translateService.instant('general.ok')
@@ -914,7 +969,7 @@ export class ProfileSettingsComponent implements OnInit {
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
             'Settings successfully commited to SmartDrive: ' +
-            this.smartDrive.address
+              this.smartDrive.address
           );
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
@@ -927,7 +982,7 @@ export class ProfileSettingsComponent implements OnInit {
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
             'Error committing settings to SmartDrive: ' +
-            this.smartDrive.address
+              this.smartDrive.address
           );
           this._logService.logBreadCrumb(ProfileSettingsComponent.name, err);
           this._logService.logException(err);
