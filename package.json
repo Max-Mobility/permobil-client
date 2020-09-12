@@ -112,10 +112,10 @@
     "//************************** end PushTracker Wear": "***************************"
   },
   "dependencies": {
-    "@nativescript/core": "~7.0.2"
+    "@nativescript/core": "~7.0.3"
   },
   "devDependencies": {
-    "@nativescript/types": "~7.0.1",
+    "@nativescript/types": "~7.0.3",
     "@nativescript/webpack": "~3.0.4",
     "@types/lodash": "~4.14.161",
     "husky": "~4.3.0",

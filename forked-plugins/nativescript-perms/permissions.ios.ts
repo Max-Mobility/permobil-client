@@ -39,7 +39,7 @@ export namespace PermissionsIOS {
     >;
 
     @NativeClass()
-    export class CLLocationManagerDelegateImpl
+    class CLLocationManagerDelegateImpl
       extends NSObject
       implements CLLocationManagerDelegate {
       public static ObjCProtocols = [CLLocationManagerDelegate];
@@ -192,7 +192,7 @@ export namespace PermissionsIOS {
     >;
 
     @NativeClass()
-    export class CBPeripheralManagerDelegateImpl
+    class CBPeripheralManagerDelegateImpl
       extends NSObject
       implements CBPeripheralManagerDelegate {
       public static ObjCProtocols = [CBPeripheralManagerDelegate];

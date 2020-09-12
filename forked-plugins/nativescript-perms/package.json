@@ -1,6 +1,6 @@
 {
   "name": "nativescript-perms",
-  "version": "1.0.12",
+  "version": "2.0.0",
   "description": "Nativescript Permissions plugin.",
   "main": "permissions",
   "typings": "permissions.d.ts",
@@ -11,7 +11,7 @@
     }
   },
   "scripts": {
-    "build": "npm i && ts-patch install && tsc"
+    "build": "rimraf node_modules package-lock.json *tgz && npm i && ts-patch install && tsc"
   },
   "devDependencies": {
     "@nativescript/core": "file:../../node_modules/@nativescript/core",
