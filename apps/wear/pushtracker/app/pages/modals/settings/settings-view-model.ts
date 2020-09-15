@@ -1,6 +1,11 @@
-import { Observable, Page, ShowModalOptions, View } from '@nativescript/core';
-import { screen } from '@nativescript/core/platform';
-import { ad as androidUtils } from '@nativescript/core/utils/utils';
+import {
+  Observable,
+  Page,
+  Screen,
+  ShowModalOptions,
+  Utils,
+  View
+} from '@nativescript/core';
 import { Log } from '@permobil/core';
 import { L, Prop } from '@permobil/nativescript';
 import { WearOsLayout } from 'nativescript-wear-os';
@@ -81,13 +86,13 @@ export class SettingsViewModel extends Observable {
 
   private _configureLayout(layout: WearOsLayout) {
     // determine inset padding
-    const androidConfig = androidUtils
+    const androidConfig = Utils.android
       .getApplicationContext()
       .getResources()
       .getConfiguration();
     const isCircleWatch = androidConfig.isScreenRound();
-    const screenWidth = screen.mainScreen.widthPixels;
-    const screenHeight = screen.mainScreen.heightPixels;
+    const screenWidth = Screen.mainScreen.widthPixels;
+    const screenHeight = Screen.mainScreen.heightPixels;
 
     if (isCircleWatch) {
       this.insetPadding = Math.round(0.146467 * screenWidth);

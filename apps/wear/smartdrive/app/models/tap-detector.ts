@@ -1,4 +1,4 @@
-import { android as androidApp } from '@nativescript/core/application';
+import { Application } from '@nativescript/core';
 import { Log } from '@permobil/core';
 
 declare const org: any;
@@ -48,7 +48,8 @@ export class TapDetector {
   private minJerkThreshold: number = 15.0;
   // subtracted from jerkThreshold when motor on to produce
   // jerkThresholdDynamic
-  private jerkThresholdOnOffDiff: number = (this.maxJerkThreshold - this.minJerkThreshold) * 0.25;
+  private jerkThresholdOnOffDiff: number =
+    (this.maxJerkThreshold - this.minJerkThreshold) * 0.25;
   // base jerk threshold calculated from min/max/sensitivity - default
   // value does not matter
   private jerkThreshold: number;
@@ -157,10 +158,10 @@ export class TapDetector {
         if (inputShapes[i] !== inputShape[1]) {
           Log.E(
             `TapDetector::TapDetector(): input tensor ${dataType} at ${i}  misconfigured!\n` +
-            '  Expected shape of ' +
-            inputShapes[i] +
-            ' but got ' +
-            inputShape[1]
+              '  Expected shape of ' +
+              inputShapes[i] +
+              ' but got ' +
+              inputShape[1]
           );
         }
       }
@@ -175,10 +176,10 @@ export class TapDetector {
         if (outputShapes[i] !== outputShape[1]) {
           Log.E(
             `TapDetector::TapDetector(): output tensor ${dataType} at ${i}  misconfigured!\n` +
-            '  Expected shape of ' +
-            outputShapes[i] +
-            ' but got ' +
-            outputShape[1]
+              '  Expected shape of ' +
+              outputShapes[i] +
+              ' but got ' +
+              outputShape[1]
           );
         }
       }
@@ -205,10 +206,7 @@ export class TapDetector {
    * @param motorOn [boolean]: increase sensitivity from setting if
    *                           motor is on.
    */
-  public setSensitivity(
-    sensitivity: number,
-    motorOn: boolean
-  ) {
+  public setSensitivity(sensitivity: number, motorOn: boolean) {
     // ensure sensitivity is in range [0, 100]
     sensitivity = Math.min(100, Math.max(sensitivity, 0));
 
@@ -384,7 +382,9 @@ export class TapDetector {
    * TFLite model loading function
    */
   private loadModelFile() {
-    const activity = androidApp.foregroundActivity || androidApp.startActivity;
+    const activity =
+      Application.android.foregroundActivity ||
+      Application.android.startActivity;
     const fileDescriptor = activity
       .getAssets()
       .openFd(this.tapDetectorModelFileName);

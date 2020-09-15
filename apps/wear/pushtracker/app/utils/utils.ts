@@ -5,7 +5,7 @@ declare const com: any;
 
 export function getSerialNumber() {
   if (!hasPermission(android.Manifest.permission.READ_PHONE_STATE)) return null;
-  return android.os.Build.getSerial();
+  return (android.os.Build as any).getSerial();
 }
 
 export function saveSerialNumber(sn: string) {

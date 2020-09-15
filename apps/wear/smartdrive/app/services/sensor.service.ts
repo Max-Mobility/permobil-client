@@ -1,9 +1,11 @@
 import { EventData, Observable } from '@nativescript/core';
-import * as app from '@nativescript/core/application';
-import { device } from '@nativescript/core/platform';
 import { Log } from '@permobil/core';
 import { Injectable } from 'injection-js';
-import { AndroidSensorListener, AndroidSensors, SensorDelay } from 'nativescript-android-sensors';
+import {
+  AndroidSensorListener,
+  AndroidSensors,
+  SensorDelay
+} from 'nativescript-android-sensors';
 import { Level, Sentry } from 'nativescript-sentry';
 
 @Injectable()

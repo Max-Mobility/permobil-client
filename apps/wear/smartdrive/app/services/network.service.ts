@@ -1,5 +1,4 @@
-import { Observable } from '@nativescript/core';
-import * as app from '@nativescript/core/application';
+import { Application, Observable } from '@nativescript/core';
 import { Injectable } from 'injection-js';
 
 function cbExists(cb) {
@@ -21,7 +20,7 @@ export class NetworkService extends Observable {
     super();
     // set up the connectivity manager and network callback
     const context = android.content.Context;
-    this.connectivityManager = app.android.context.getSystemService(
+    this.connectivityManager = Application.android.context.getSystemService(
       context.CONNECTIVITY_SERVICE
     );
     this.networkCallback = new Callback({

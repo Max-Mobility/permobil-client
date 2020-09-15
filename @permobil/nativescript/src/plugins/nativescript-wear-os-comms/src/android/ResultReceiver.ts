@@ -1,4 +1,5 @@
 @JavaProxy('com.permobil.WearOsComms.ResultReceiver')
+@NativeClass()
 export class ResultReceiver extends android.os.ResultReceiver {
   public onReceiveFunction: any = null;
   constructor(handler: android.os.Handler) {

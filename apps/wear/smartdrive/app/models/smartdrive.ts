@@ -1,12 +1,17 @@
-import * as timer from '@nativescript/core/timer';
-import { bindingTypeToString, Device, ISmartDriveEvents, Packet, SD_OTA_State } from '@permobil/core';
+import { Utils } from '@nativescript/core';
+import * as appSettings from '@nativescript/core/application-settings';
+import {
+  bindingTypeToString,
+  Device,
+  ISmartDriveEvents,
+  Packet,
+  SD_OTA_State
+} from '@permobil/core';
 import { Prop } from '@permobil/nativescript';
+import * as LS from 'nativescript-localstorage';
+import { DataKeys } from '../enums';
 import { BluetoothService } from '../services/bluetooth.service';
 import { DeviceBase } from './device-base';
-
-import * as LS from 'nativescript-localstorage';
-import * as appSettings from '@nativescript/core/application-settings';
-import { DataKeys } from '../enums';
 
 export class SmartDrive extends DeviceBase {
   // STATIC:
@@ -369,10 +374,10 @@ export class SmartDrive extends DeviceBase {
           register();
           // stop the timer
           if (otaIntervalID) {
-            timer.clearInterval(otaIntervalID);
+            Utils.clearInterval(otaIntervalID);
           }
           // now actually start the ota
-          otaIntervalID = timer.setInterval(runOTA, 250);
+          otaIntervalID = Utils.setInterval(runOTA, 250);
         };
         const otaStartHandler = () => {
           // set the progresses
@@ -385,9 +390,9 @@ export class SmartDrive extends DeviceBase {
           this.otaState = SmartDrive.OTAState.awaiting_versions;
           // start the timeout timer
           if (otaTimeoutID) {
-            timer.clearTimeout(otaTimeoutID);
+            Utils.clearTimeout(otaTimeoutID);
           }
-          otaTimeoutID = timer.setTimeout(() => {
+          otaTimeoutID = Utils.setTimeout(() => {
             this.sendEvent(SmartDrive.ota_timeout_event);
           }, otaTimeout);
         };
@@ -419,16 +424,16 @@ export class SmartDrive extends DeviceBase {
         };
         const connectHandler = () => {
           // clear out the connection interval
-          timer.clearInterval(connectionIntervalID);
+          Utils.clearInterval(connectionIntervalID);
         };
         const disconnectHandler = () => {
           hasRebooted = true;
           if (connectionIntervalID) {
-            timer.clearInterval(connectionIntervalID);
+            Utils.clearInterval(connectionIntervalID);
           }
           if (!cancelOTA) {
             // try to connect to it again
-            connectionIntervalID = timer.setInterval(() => {
+            connectionIntervalID = Utils.setInterval(() => {
               // console.log(`Disconnected - reconnecting to ${this.address}`);
               this.connect();
             }, smartDriveConnectionInterval);
@@ -474,7 +479,7 @@ export class SmartDrive extends DeviceBase {
           nextState: any
         ) => {
           if (writeFirmwareTimeoutID) {
-            timer.clearTimeout(writeFirmwareTimeoutID);
+            Utils.clearTimeout(writeFirmwareTimeoutID);
           }
           writeFirmwareTimeoutID = null;
           if (index < 0) {
@@ -496,7 +501,7 @@ export class SmartDrive extends DeviceBase {
               !this.notifying
             ) {
               // console.log('NOT WRITING TO SD!');
-              writeFirmwareTimeoutID = timer.setTimeout(() => {
+              writeFirmwareTimeoutID = Utils.setTimeout(() => {
                 // console.log('trying now!');
                 writeFirmwareSector(device, fw, characteristic, nextState);
               }, 500);
@@ -528,7 +533,7 @@ export class SmartDrive extends DeviceBase {
                   ) {
                     throw 'bad status: ' + ret.status;
                   } else {
-                    writeFirmwareTimeoutID = timer.setTimeout(() => {
+                    writeFirmwareTimeoutID = Utils.setTimeout(() => {
                       // this.ableToSend = true;
                       index += payloadSize;
                       writeFirmwareSector(
@@ -542,7 +547,7 @@ export class SmartDrive extends DeviceBase {
                 })
                 .catch(err => {
                   // console.log(`Could not send fw to ${device}: ${err}`);
-                  writeFirmwareTimeoutID = timer.setTimeout(() => {
+                  writeFirmwareTimeoutID = Utils.setTimeout(() => {
                     // console.log('Retrying');
                     writeFirmwareSector(device, fw, characteristic, nextState);
                   }, 500);
@@ -554,7 +559,7 @@ export class SmartDrive extends DeviceBase {
             }
           } catch (err) {
             // console.log(`WriteFirmwareSector error: ${err}`);
-            writeFirmwareTimeoutID = timer.setTimeout(() => {
+            writeFirmwareTimeoutID = Utils.setTimeout(() => {
               writeFirmwareSector(device, fw, characteristic, nextState);
             }, 500);
           }
@@ -569,13 +574,13 @@ export class SmartDrive extends DeviceBase {
           this.setOtaActions();
           // stop timers
           if (connectionIntervalID) {
-            timer.clearInterval(connectionIntervalID);
+            Utils.clearInterval(connectionIntervalID);
           }
           if (otaIntervalID) {
-            timer.clearInterval(otaIntervalID);
+            Utils.clearInterval(otaIntervalID);
           }
           if (otaTimeoutID) {
-            timer.clearInterval(otaTimeoutID);
+            Utils.clearInterval(otaTimeoutID);
           }
           // unregister from all events
           unregister();
@@ -586,7 +591,7 @@ export class SmartDrive extends DeviceBase {
             this.on(SmartDrive.ota_retry_event, otaRetryHandler);
             this.on(SmartDrive.ota_cancel_event, otaCancelHandler);
             this.setOtaActions(['ota.action.retry']);
-            otaIntervalID = timer.setInterval(runOTA, 250);
+            otaIntervalID = Utils.setInterval(runOTA, 250);
           };
 
           const finish = () => {
@@ -605,9 +610,7 @@ export class SmartDrive extends DeviceBase {
             actions: this.otaActions.slice(),
             state: this.otaState
           });
-          return this.disconnect()
-            .then(finish)
-            .catch(finish);
+          return this.disconnect().then(finish).catch(finish);
         };
         const runOTA = () => {
           // send a state update
@@ -642,7 +645,7 @@ export class SmartDrive extends DeviceBase {
                 }
               } else if (haveMCUVersion && !haveBLEVersion) {
                 this.otaState = SmartDrive.OTAState.comm_failure;
-                timer.setTimeout(() => {
+                Utils.setTimeout(() => {
                   stopOTA('updates.communications-failed', false, false);
                 }, 2500);
               }
@@ -663,7 +666,7 @@ export class SmartDrive extends DeviceBase {
                   'OTADevice',
                   'PacketOTAType',
                   'SmartDrive'
-                ).catch(err => { });
+                ).catch(err => {});
               }
               break;
             case SmartDrive.OTAState.updating_mcu:
@@ -673,15 +676,15 @@ export class SmartDrive extends DeviceBase {
               // now that we've successfully gotten the
               // SD connected - don't timeout
               if (otaTimeoutID) {
-                timer.clearTimeout(otaTimeoutID);
+                Utils.clearTimeout(otaTimeoutID);
               }
 
               // what state do we go to next?
               const nextState = this.doBLEUpdate
                 ? SmartDrive.OTAState.awaiting_ble_ready
                 : this.doMCUUpdate
-                  ? SmartDrive.OTAState.rebooting_mcu
-                  : SmartDrive.OTAState.complete;
+                ? SmartDrive.OTAState.rebooting_mcu
+                : SmartDrive.OTAState.complete;
 
               if (this.doMCUUpdate) {
                 // we need to reboot after the OTA
@@ -693,7 +696,7 @@ export class SmartDrive extends DeviceBase {
                 // the interval for now? - shouldn't need
                 // to
                 if (index === -1) {
-                  writeFirmwareTimeoutID = timer.setTimeout(() => {
+                  writeFirmwareTimeoutID = Utils.setTimeout(() => {
                     writeFirmwareSector(
                       'SmartDrive',
                       mcuFirmware,
@@ -731,7 +734,7 @@ export class SmartDrive extends DeviceBase {
                   .then(() => {
                     // this.ableToSend = true;
                   })
-                  .catch(err => { });
+                  .catch(err => {});
               }
               break;
             case SmartDrive.OTAState.updating_ble:
@@ -741,7 +744,7 @@ export class SmartDrive extends DeviceBase {
               // now that we've successfully gotten the
               // SD connected - don't timeout
               if (otaTimeoutID) {
-                timer.clearTimeout(otaTimeoutID);
+                Utils.clearTimeout(otaTimeoutID);
               }
               if (this.doBLEUpdate) {
                 // we need to reboot after the OTA
@@ -750,7 +753,7 @@ export class SmartDrive extends DeviceBase {
                 haveBLEVersion = false;
                 // now send data to SD BLE
                 if (index === -1) {
-                  writeFirmwareTimeoutID = timer.setTimeout(() => {
+                  writeFirmwareTimeoutID = Utils.setTimeout(() => {
                     writeFirmwareSector(
                       'SmartDriveBluetooth',
                       bleFirmware,
@@ -793,7 +796,7 @@ export class SmartDrive extends DeviceBase {
                   .then(() => {
                     // this.ableToSend = true;
                   })
-                  .catch(err => { });
+                  .catch(err => {});
               }
               break;
             case SmartDrive.OTAState.rebooting_mcu:
@@ -816,7 +819,7 @@ export class SmartDrive extends DeviceBase {
                   'OTADevice',
                   'PacketOTAType',
                   'SmartDrive'
-                ).catch(() => { });
+                ).catch(() => {});
               }
               break;
             case SmartDrive.OTAState.verifying_update:
@@ -830,10 +833,12 @@ export class SmartDrive extends DeviceBase {
                 // can't do a strict check on MCU since if the SD is
                 // at a higher version than what we were told to use,
                 // it won't take it
-                ((this.doMCUUpdate && mcuVersion >= mcuFWVersion) || !this.doMCUUpdate) &&
+                ((this.doMCUUpdate && mcuVersion >= mcuFWVersion) ||
+                  !this.doMCUUpdate) &&
                 // can do a strict check on BLE since it will go to
                 // whatever version (even downgrade) that we give it.
-                ((this.doBLEUpdate && bleVersion === bleFWVersion) || !this.doBLEUpdate);
+                ((this.doBLEUpdate && bleVersion === bleFWVersion) ||
+                  !this.doBLEUpdate);
               if (otaSuccess) {
                 this.otaState = SmartDrive.OTAState.complete;
               } else {
@@ -1104,7 +1109,7 @@ export class SmartDrive extends DeviceBase {
     // now that we're connected, subscribe to the characteristics
     try {
       await this.startNotifyCharacteristics(SmartDrive.Characteristics);
-    } catch (err) { }
+    } catch (err) {}
   }
 
   public async handleDisconnect() {
@@ -1116,7 +1121,7 @@ export class SmartDrive extends DeviceBase {
       // now that we're disconnected - make sure we unsubscribe to the characteristics
       await this.stopNotifyCharacteristics(SmartDrive.Characteristics);
       this.sendEvent(SmartDrive.smartdrive_disconnect_event);
-    } catch (err) { }
+    } catch (err) {}
   }
 
   public handleNotify(args: any) {

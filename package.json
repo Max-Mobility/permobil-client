@@ -111,7 +111,11 @@
   },
   "dependencies": {
     "@nativescript/core": "~7.0.3",
-    "nativescript-sentry": "~1.10.3"
+    "@nativescript/angular": "~10.1.0",
+    "@nstudio/nativescript-loading-indicator": "~4.0.0",
+    "@nstudio/nativescript-pulltorefresh": "~3.0.0",
+    "@nstudio/nativescript-snackbar": "~2.0.0",
+    "email-validator": "~2.0.4"
   },
   "devDependencies": {
     "@nativescript/types": "~7.0.3",

@@ -3,6 +3,7 @@ import { Bluetooth } from 'nativescript-bluetooth';
 import { CallbackFunction, Common } from '../wear-os-comms.common';
 import { ResultReceiver } from './ResultReceiver';
 
+@NativeClass()
 @JavaProxy('com.permobil.WearOsComms.CapabilityListener')
 @Interfaces([
   com.google.android.gms.wearable.CapabilityClient.OnCapabilityChangedListener

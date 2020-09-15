@@ -1,30 +1,29 @@
-import * as application from '@nativescript/core/application';
-import { screen } from '@nativescript/core/platform';
-import { ad as androidUtils } from '@nativescript/core/utils/utils';
+import { Application, Screen, Utils } from '@nativescript/core';
 import { hasPermission } from 'nativescript-permissions';
 import { WearOsLayout } from 'nativescript-wear-os';
 
 declare const com: any;
 
 export function _isActivityThis(activity: any) {
-  return `${activity}`.includes(application.android.packageName);
+  return `${activity}`.includes(Application.android.packageName);
 }
 
 export function isNetworkAvailable(minBandwidthKbps?: number) {
   let isAvailable = false;
-  const networkManager = application.android.context.getSystemService(
+  const networkManager = Application.android.context.getSystemService(
     android.content.Context.CONNECTIVITY_SERVICE
   );
   const activeNetwork = networkManager.getActiveNetwork();
   const networkInfo = networkManager.getNetworkInfo(activeNetwork);
   isAvailable = networkInfo !== null && networkInfo.isConnected();
   if (minBandwidthKbps) {
-    const wifiManager = application.android.context.getSystemService(
+    const wifiManager = Application.android.context.getSystemService(
       android.content.Context.WIFI_SERVICE
     );
     const wifiInfo = wifiManager.getConnectionInfo();
     const currentNetworkSpeedMbps = wifiInfo.getLinkSpeed();
-    isAvailable = isAvailable && (currentNetworkSpeedMbps * 1024) >= minBandwidthKbps;
+    isAvailable =
+      isAvailable && currentNetworkSpeedMbps * 1024 >= minBandwidthKbps;
     /* keeping this here in case we decide to move back to it
     const networkCapabilities = networkManager.getNetworkCapabilities(activeNetwork);
     const downloadKbps = networkCapabilities.getLinkDownstreamBandwidthKbps();
@@ -126,7 +125,7 @@ export function getSerialNumber() {
 export function saveSerialNumber(sn: string) {
   // save it to datastore for service to use
   const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-  const sharedPreferences = androidUtils
+  const sharedPreferences = Utils.android
     .getApplicationContext()
     .getSharedPreferences('prefs.db', 0);
   const editor = sharedPreferences.edit();
@@ -139,7 +138,7 @@ export function saveSerialNumber(sn: string) {
 
 export function loadSerialNumber() {
   const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-  const sharedPreferences = androidUtils
+  const sharedPreferences = Utils.android
     .getApplicationContext()
     .getSharedPreferences('prefs.db', 0);
   const savedSerial = sharedPreferences.getString(
@@ -154,13 +153,13 @@ export function configureLayout(layout: WearOsLayout) {
   let chinSize = 0;
 
   // determine inset padding
-  const androidConfig = androidUtils
+  const androidConfig = Utils.android
     .getApplicationContext()
     .getResources()
     .getConfiguration();
   const isCircleWatch = androidConfig.isScreenRound();
-  const screenWidth = screen.mainScreen.widthPixels;
-  const screenHeight = screen.mainScreen.heightPixels;
+  const screenWidth = Screen.mainScreen.widthPixels;
+  const screenHeight = Screen.mainScreen.heightPixels;
 
   if (isCircleWatch) {
     insetPadding = Math.round(0.146467 * screenWidth);
