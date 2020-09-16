@@ -1,7 +1,6 @@
 import { ApplicationSettings, Utils } from '@nativescript/core';
 import { Bluetooth } from 'nativescript-bluetooth';
 import { CallbackFunction, Common } from '../wear-os-comms.common';
-import { ResultReceiver } from './ResultReceiver';
 
 @NativeClass()
 @JavaProxy('com.permobil.WearOsComms.CapabilityListener')
@@ -22,6 +21,19 @@ class CapabilityListener
     capabilityInfo: com.google.android.gms.wearable.CapabilityInfo
   ) {
     this.callback && this.callback(capabilityInfo);
+  }
+}
+
+@NativeClass()
+@JavaProxy('com.permobil.WearOsComms.ResultReceiver')
+class ResultReceiver extends android.os.ResultReceiver {
+  public onReceiveFunction: any = null;
+  constructor(handler: android.os.Handler) {
+    super(handler);
+    return global.__native(this);
+  }
+  onReceiveResult(resultCode: number, resultData: android.os.Bundle) {
+    if (this.onReceiveFunction) this.onReceiveFunction(resultCode, resultData);
   }
 }
 
