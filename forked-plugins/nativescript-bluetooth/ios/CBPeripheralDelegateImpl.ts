@@ -377,7 +377,7 @@ function setupPeriDelegateImpl() {
     }
   }
 
-  return CBPeripheralDelegate;
+  return CBPeripheralDelegateImpl;
 }
 
-export const CBPeripheralDelegate = setupPeriDelegateImpl();
+export const CBPeripheralDelegateImpl = setupPeriDelegateImpl();
