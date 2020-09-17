@@ -7,371 +7,377 @@ import { Bluetooth } from './ios_main';
  * There are no required methods in this protocol.
  */
 @NativeClass()
-export class CBPeripheralDelegateImpl
-  extends NSObject
-  implements CBPeripheralDelegate {
-  static ObjCProtocols = [CBPeripheralDelegate];
-  _onWritePromise;
-  _onWriteReject;
-  _onWriteTimeout;
-  _onReadPromise;
-  _onReadReject;
-  _onReadTimeout;
-  _onNotifyCallback;
-  private _servicesWithCharacteristics;
-  private _services;
-  private _owner: WeakRef<Bluetooth>;
-  private _callback: (result?) => void;
+function setupPeriDelegateImpl() {
+  class CBPeripheralDelegateImpl
+    extends NSObject
+    implements CBPeripheralDelegate {
+    static ObjCProtocols = [CBPeripheralDelegate];
+    _onWritePromise;
+    _onWriteReject;
+    _onWriteTimeout;
+    _onReadPromise;
+    _onReadReject;
+    _onReadTimeout;
+    _onNotifyCallback;
+    private _servicesWithCharacteristics;
+    private _services;
+    private _owner: WeakRef<Bluetooth>;
+    private _callback: (result?) => void;
 
-  static new(): CBPeripheralDelegateImpl {
-    return <CBPeripheralDelegateImpl>super.new();
-  }
-
-  initWithCallback(
-    owner: WeakRef<Bluetooth>,
-    callback: (result?) => void
-  ): CBPeripheralDelegateImpl {
-    this._owner = owner;
-    this._callback = callback;
-    this._servicesWithCharacteristics = [];
-    return this;
-  }
-
-  peripheralDidReadRSSIError(
-    peripheral: CBPeripheral,
-    RSSI: number,
-    error: NSError
-  ) {
-    console.error(
-      `CBPeripheralDelegateImpl.peripheralDidReadRSSIError ---- peripheral: ${peripheral}, rssi: ${RSSI}, error: ${error}`
-    );
-  }
-
-  /**
-   * Invoked when you discover the peripheral’s available services.
-   * This method is invoked when your app calls the discoverServices(_:) method.
-   * If the services of the peripheral are successfully discovered, you can access them through the peripheral’s services property.
-   * If successful, the error parameter is nil.
-   * If unsuccessful, the error parameter returns the cause of the failure.
-   * @param peripheral [CBPeripheral] - The peripheral that the services belong to.
-   * @param error [NSError] - If an error occurred, the cause of the failure.
-   */
-  peripheralDidDiscoverServices(peripheral: CBPeripheral, error?: NSError) {
-    // map native services to a JS object
-    this._services = [];
-    if (peripheral.services.count === 0) {
-      this._owner.get().disconnect({
-        UUID: peripheral.identifier.UUIDString
-      });
-      return;
+    static new(): CBPeripheralDelegateImpl {
+      return <CBPeripheralDelegateImpl>super.new();
     }
-    for (let i = 0; i < peripheral.services.count; i++) {
-      const service = peripheral.services.objectAtIndex(i);
-      this._services.push({
-        UUID: service.UUID.UUIDString,
-        name: service.UUID
-      });
-      // NOTE: discover all is slow
-      peripheral.discoverCharacteristicsForService(null, service);
+
+    initWithCallback(
+      owner: WeakRef<Bluetooth>,
+      callback: (result?) => void
+    ): CBPeripheralDelegateImpl {
+      this._owner = owner;
+      this._callback = callback;
+      this._servicesWithCharacteristics = [];
+      return this;
     }
-  }
 
-  /**
-   * Invoked when you discover the included services of a specified service.
-   * @param peripheral [CBPeripheral] - The peripheral providing this information.
-   * @param service [CBService] - The CBService object containing the included service.
-   * @param error [NSError] - If an error occurred, the cause of the failure.
-   */
-  peripheralDidDiscoverIncludedServicesForServiceError(
-    peripheral: CBPeripheral,
-    service: CBService,
-    error?: NSError
-  ) {
-    console.error(
-      `CBPeripheralDelegateImpl.peripheralDidDiscoverIncludedServicesForServiceError ---- peripheral: ${peripheral}, service: ${service}, error: ${error}`
-    );
-  }
-
-  /**
-   * Invoked when you discover the characteristics of a specified service.
-   * @param peripheral [CBPeripheral] - The peripheral providing this information.
-   * @param service [CBService] - The CBService object containing the included service.
-   * @param error [NSError] - If an error occurred, the cause of the failure.
-   */
-  peripheralDidDiscoverCharacteristicsForServiceError(
-    peripheral: CBPeripheral,
-    service: CBService,
-    error?: NSError
-  ) {
-    if (error) {
-      // TODO invoke reject and stop processing
-      return;
+    peripheralDidReadRSSIError(
+      peripheral: CBPeripheral,
+      RSSI: number,
+      error: NSError
+    ) {
+      console.error(
+        `CBPeripheralDelegateImpl.peripheralDidReadRSSIError ---- peripheral: ${peripheral}, rssi: ${RSSI}, error: ${error}`
+      );
     }
-    const characteristics = [];
-    for (let i = 0; i < service.characteristics.count; i++) {
-      const characteristic = service.characteristics.objectAtIndex(i);
-      const result = {
-        UUID: characteristic.UUID.UUIDString,
-        name: characteristic.UUID,
-        // see serviceAndCharacteristicInfo in CBPer+Ext of Cordova plugin
-        value: characteristic.value
-          ? characteristic.value.base64EncodedStringWithOptions(0)
-          : null,
-        properties: this._getProperties(characteristic),
-        // descriptors: this._getDescriptors(characteristic), // TODO we're not currently discovering these
-        isNotifying: characteristic.isNotifying
-        // permissions: characteristic.permissions // prolly not too useful - don't think we need this for iOS (BradMartin)
-      };
-      characteristics.push(result);
 
-      for (let j = 0; j < this._services.length; j++) {
-        const s = this._services[j];
-        if (s.UUID === service.UUID.UUIDString) {
-          s.characteristics = characteristics;
-          this._servicesWithCharacteristics.push(s);
-          // the same service may be found multiple times, so make sure it's not added yet
-          this._services.splice(j, 1);
-          break;
+    /**
+     * Invoked when you discover the peripheral’s available services.
+     * This method is invoked when your app calls the discoverServices(_:) method.
+     * If the services of the peripheral are successfully discovered, you can access them through the peripheral’s services property.
+     * If successful, the error parameter is nil.
+     * If unsuccessful, the error parameter returns the cause of the failure.
+     * @param peripheral [CBPeripheral] - The peripheral that the services belong to.
+     * @param error [NSError] - If an error occurred, the cause of the failure.
+     */
+    peripheralDidDiscoverServices(peripheral: CBPeripheral, error?: NSError) {
+      // map native services to a JS object
+      this._services = [];
+      if (peripheral.services.count === 0) {
+        this._owner.get().disconnect({
+          UUID: peripheral.identifier.UUIDString
+        });
+        return;
+      }
+      for (let i = 0; i < peripheral.services.count; i++) {
+        const service = peripheral.services.objectAtIndex(i);
+        this._services.push({
+          UUID: service.UUID.UUIDString,
+          name: service.UUID
+        });
+        // NOTE: discover all is slow
+        peripheral.discoverCharacteristicsForService(null, service);
+      }
+    }
+
+    /**
+     * Invoked when you discover the included services of a specified service.
+     * @param peripheral [CBPeripheral] - The peripheral providing this information.
+     * @param service [CBService] - The CBService object containing the included service.
+     * @param error [NSError] - If an error occurred, the cause of the failure.
+     */
+    peripheralDidDiscoverIncludedServicesForServiceError(
+      peripheral: CBPeripheral,
+      service: CBService,
+      error?: NSError
+    ) {
+      console.error(
+        `CBPeripheralDelegateImpl.peripheralDidDiscoverIncludedServicesForServiceError ---- peripheral: ${peripheral}, service: ${service}, error: ${error}`
+      );
+    }
+
+    /**
+     * Invoked when you discover the characteristics of a specified service.
+     * @param peripheral [CBPeripheral] - The peripheral providing this information.
+     * @param service [CBService] - The CBService object containing the included service.
+     * @param error [NSError] - If an error occurred, the cause of the failure.
+     */
+    peripheralDidDiscoverCharacteristicsForServiceError(
+      peripheral: CBPeripheral,
+      service: CBService,
+      error?: NSError
+    ) {
+      if (error) {
+        // TODO invoke reject and stop processing
+        return;
+      }
+      const characteristics = [];
+      for (let i = 0; i < service.characteristics.count; i++) {
+        const characteristic = service.characteristics.objectAtIndex(i);
+        const result = {
+          UUID: characteristic.UUID.UUIDString,
+          name: characteristic.UUID,
+          // see serviceAndCharacteristicInfo in CBPer+Ext of Cordova plugin
+          value: characteristic.value
+            ? characteristic.value.base64EncodedStringWithOptions(0)
+            : null,
+          properties: this._getProperties(characteristic),
+          // descriptors: this._getDescriptors(characteristic), // TODO we're not currently discovering these
+          isNotifying: characteristic.isNotifying
+          // permissions: characteristic.permissions // prolly not too useful - don't think we need this for iOS (BradMartin)
+        };
+        characteristics.push(result);
+
+        for (let j = 0; j < this._services.length; j++) {
+          const s = this._services[j];
+          if (s.UUID === service.UUID.UUIDString) {
+            s.characteristics = characteristics;
+            this._servicesWithCharacteristics.push(s);
+            // the same service may be found multiple times, so make sure it's not added yet
+            this._services.splice(j, 1);
+            break;
+          }
+        }
+
+        // Could add this one day: get details about the characteristic
+        // peripheral.discoverDescriptorsForCharacteristic(characteristic);
+      }
+
+      if (this._services.length === 0) {
+        if (this._callback) {
+          this._callback({
+            UUID: peripheral.identifier.UUIDString,
+            name: peripheral.name,
+            state: this._owner.get()._getState(peripheral.state),
+            services: this._servicesWithCharacteristics
+          });
+          this._callback = null;
         }
       }
-
-      // Could add this one day: get details about the characteristic
-      // peripheral.discoverDescriptorsForCharacteristic(characteristic);
     }
 
-    if (this._services.length === 0) {
-      if (this._callback) {
-        this._callback({
-          UUID: peripheral.identifier.UUIDString,
-          name: peripheral.name,
-          state: this._owner.get()._getState(peripheral.state),
-          services: this._servicesWithCharacteristics
-        });
-        this._callback = null;
+    /**
+     * Invoked when you discover the descriptors of a specified characteristic.
+     * @param peripheral [CBPeripheral] - The peripheral providing this information.
+     * @param characteristic [CBCharacteristic] - The characteristic that the characteristic descriptors belong to.
+     * @param error [NSError] - If an error occurred, the cause of the failure.
+     */
+    peripheralDidDiscoverDescriptorsForCharacteristicError(
+      peripheral: CBPeripheral,
+      characteristic: CBCharacteristic,
+      error?: NSError
+    ) {
+      // TODO extract details, see https://github.com/randdusing/cordova-plugin-bluetoothle/blob/master/src/ios/BluetoothLePlugin.m#L1844
+      for (let i = 0; i < characteristic.descriptors.count; i++) {
+        const descriptor = characteristic.descriptors.objectAtIndex(i);
+      }
+
+      // now let's see if we're ready to invoke the callback
+      if (this._services.length === this._servicesWithCharacteristics.length) {
+        if (this._callback) {
+          this._callback({
+            UUID: peripheral.identifier.UUIDString,
+            name: peripheral.name,
+            state: this._owner.get()._getState(peripheral.state),
+            services: this._services
+          });
+          this._callback = null;
+        }
       }
     }
-  }
 
-  /**
-   * Invoked when you discover the descriptors of a specified characteristic.
-   * @param peripheral [CBPeripheral] - The peripheral providing this information.
-   * @param characteristic [CBCharacteristic] - The characteristic that the characteristic descriptors belong to.
-   * @param error [NSError] - If an error occurred, the cause of the failure.
-   */
-  peripheralDidDiscoverDescriptorsForCharacteristicError(
-    peripheral: CBPeripheral,
-    characteristic: CBCharacteristic,
-    error?: NSError
-  ) {
-    // TODO extract details, see https://github.com/randdusing/cordova-plugin-bluetoothle/blob/master/src/ios/BluetoothLePlugin.m#L1844
-    for (let i = 0; i < characteristic.descriptors.count; i++) {
-      const descriptor = characteristic.descriptors.objectAtIndex(i);
-    }
-
-    // now let's see if we're ready to invoke the callback
-    if (this._services.length === this._servicesWithCharacteristics.length) {
-      if (this._callback) {
-        this._callback({
-          UUID: peripheral.identifier.UUIDString,
-          name: peripheral.name,
-          state: this._owner.get()._getState(peripheral.state),
-          services: this._services
-        });
-        this._callback = null;
-      }
-    }
-  }
-
-  /**
-   * Invoked when you retrieve a specified characteristic’s value, or when
-   * the peripheral device notifies your app that the characteristic’s
-   * value has changed.
-   */
-  peripheralDidUpdateValueForCharacteristicError(
-    peripheral: CBPeripheral,
-    characteristic: CBCharacteristic,
-    error?: NSError
-  ) {
-    if (!characteristic) {
-      console.warn(
-        `CBPeripheralDelegateImpl.peripheralDidUpdateValueForCharacteristicError ---- No CBCharacteristic.`
-      );
-      return;
-    }
-
-    if (error !== null) {
-      // TODO handle.. pass in sep callback?
-      console.error(
-        `CBPeripheralDelegateImpl.peripheralDidUpdateValueForCharacteristicError ---- ${error}`
-      );
-      return;
-    }
-
-    const result = {
-      type: characteristic.isNotifying ? 'notification' : 'read',
-      characteristicUUID: characteristic.UUID.UUIDString,
-      valueRaw: characteristic.value,
-      value: this._owner.get().toArrayBuffer(characteristic.value)
-    };
-
-    if (result.type === 'read') {
-      if (this._onReadPromise) {
-        this._onReadPromise(result);
-      } else {
-        console.warn('No _onReadPromise found!');
-      }
-    } else {
-      if (this._onNotifyCallback) {
-        this._onNotifyCallback(result);
-      } else {
-        console.warn('----- CALLBACK IS GONE -----');
-      }
-    }
-  }
-
-  /**
-   * Invoked when you retrieve a specified characteristic descriptor’s value.
-   */
-  peripheralDidUpdateValueForDescriptorError(
-    peripheral: CBPeripheral,
-    descriptor: CBDescriptor,
-    error?: NSError
-  ) {
-    console.error(
-      `CBPeripheralDelegateImpl.peripheralDidUpdateValueForDescriptorError ---- peripheral: ${peripheral}, descriptor: ${descriptor}, error: ${error}`
-    );
-  }
-
-  /**
-   * Invoked when you write data to a characteristic’s value.
-   */
-  peripheralDidWriteValueForCharacteristicError(
-    peripheral: CBPeripheral,
-    characteristic: CBCharacteristic,
-    error?: NSError
-  ) {
-    console.error(
-      `CBPeripheralDelegateImpl.peripheralDidWriteValueForCharacteristicError ---- peripheral: ${peripheral}, characteristic: ${characteristic}, error: ${error}`
-    );
-    if (this._onWriteTimeout) {
-      clearTimeout(this._onWriteTimeout);
-      this._onWriteTimeout = null;
-    }
-    if (error && this._onWriteReject) {
-      this._onWriteReject(`Could not write - error: ${error}`);
-    } else if (this._onWritePromise) {
-      this._onWritePromise({
-        characteristicUUID: characteristic.UUID.UUIDString
-      });
-    } else {
-      console.warn(
-        'CBPeripheralDelegateImpl.peripheralDidWriteValueForCharacteristicError ---- No _onWritePromise found!'
-      );
-    }
-  }
-
-  /**
-   * Invoked when the peripheral receives a request to start or stop
-   * providing notifications for a specified characteristic’s value.
-   */
-  peripheralDidUpdateNotificationStateForCharacteristicError(
-    peripheral: CBPeripheral,
-    characteristic: CBCharacteristic,
-    error?: NSError
-  ) {
-    console.info(
-      `CBPeripheralDelegateImpl.peripheralDidUpdateNotificationStateForCharacteristicError ---- peripheral: ${peripheral}, characteristic: ${characteristic}, error: ${error}`
-    );
-    if (error) {
-      console.error(
-        `CBPeripheralDelegateImpl.peripheralDidUpdateNotificationStateForCharacteristicError ---- ${error}`
-      );
-    } else {
-      if (characteristic.isNotifying) {
-        console.info(
-          `CBPeripheralDelegateImpl.peripheralDidUpdateNotificationStateForCharacteristicError ---- Notification began on ${characteristic}`
+    /**
+     * Invoked when you retrieve a specified characteristic’s value, or when
+     * the peripheral device notifies your app that the characteristic’s
+     * value has changed.
+     */
+    peripheralDidUpdateValueForCharacteristicError(
+      peripheral: CBPeripheral,
+      characteristic: CBCharacteristic,
+      error?: NSError
+    ) {
+      if (!characteristic) {
+        console.warn(
+          `CBPeripheralDelegateImpl.peripheralDidUpdateValueForCharacteristicError ---- No CBCharacteristic.`
         );
-      } else {
-        console.info(
-          `CBPeripheralDelegateImpl.peripheralDidUpdateNotificationStateForCharacteristicError ---- Notification stopped on  ${characteristic}, consider disconnecting`
+        return;
+      }
+
+      if (error !== null) {
+        // TODO handle.. pass in sep callback?
+        console.error(
+          `CBPeripheralDelegateImpl.peripheralDidUpdateValueForCharacteristicError ---- ${error}`
         );
-        // Bluetooth._manager.cancelPeripheralConnection(peripheral);
+        return;
+      }
+
+      const result = {
+        type: characteristic.isNotifying ? 'notification' : 'read',
+        characteristicUUID: characteristic.UUID.UUIDString,
+        valueRaw: characteristic.value,
+        value: this._owner.get().toArrayBuffer(characteristic.value)
+      };
+
+      if (result.type === 'read') {
+        if (this._onReadPromise) {
+          this._onReadPromise(result);
+        } else {
+          console.warn('No _onReadPromise found!');
+        }
+      } else {
+        if (this._onNotifyCallback) {
+          this._onNotifyCallback(result);
+        } else {
+          console.warn('----- CALLBACK IS GONE -----');
+        }
       }
     }
-  }
 
-  /**
-   * IInvoked when you write data to a characteristic descriptor’s value.
-   */
-  peripheralDidWriteValueForDescriptorError(
-    peripheral: CBPeripheral,
-    descriptor: CBDescriptor,
-    error?: NSError
-  ) {
-    console.error(
-      `CBPeripheralDelegateImpl.peripheralDidWriteValueForDescriptorError ---- peripheral: ${peripheral}, descriptor: ${descriptor}, error: ${error}`
-    );
-  }
+    /**
+     * Invoked when you retrieve a specified characteristic descriptor’s value.
+     */
+    peripheralDidUpdateValueForDescriptorError(
+      peripheral: CBPeripheral,
+      descriptor: CBDescriptor,
+      error?: NSError
+    ) {
+      console.error(
+        `CBPeripheralDelegateImpl.peripheralDidUpdateValueForDescriptorError ---- peripheral: ${peripheral}, descriptor: ${descriptor}, error: ${error}`
+      );
+    }
 
-  private _getProperties(characteristic: CBCharacteristic) {
-    const props = characteristic.properties;
-    return {
-      // broadcast: (props & CBCharacteristicPropertyBroadcast) === CBCharacteristicPropertyBroadcast,
-      broadcast:
-        (props & CBCharacteristicProperties.PropertyBroadcast) ===
-        CBCharacteristicProperties.PropertyBroadcast,
-      read:
-        (props & CBCharacteristicProperties.PropertyRead) ===
-        CBCharacteristicProperties.PropertyRead,
-      broadcast2:
-        (props & CBCharacteristicProperties.PropertyBroadcast) ===
-        CBCharacteristicProperties.PropertyBroadcast,
-      read2:
-        (props & CBCharacteristicProperties.PropertyRead) ===
-        CBCharacteristicProperties.PropertyRead,
-      write:
-        (props & CBCharacteristicProperties.PropertyWrite) ===
-        CBCharacteristicProperties.PropertyWrite,
-      writeWithoutResponse:
-        (props & CBCharacteristicProperties.PropertyWriteWithoutResponse) ===
-        CBCharacteristicProperties.PropertyWriteWithoutResponse,
-      notify:
-        (props & CBCharacteristicProperties.PropertyNotify) ===
-        CBCharacteristicProperties.PropertyNotify,
-      indicate:
-        (props & CBCharacteristicProperties.PropertyIndicate) ===
-        CBCharacteristicProperties.PropertyIndicate,
-      authenticatedSignedWrites:
-        (props &
-          CBCharacteristicProperties.PropertyAuthenticatedSignedWrites) ===
-        CBCharacteristicProperties.PropertyAuthenticatedSignedWrites,
-      extendedProperties:
-        (props & CBCharacteristicProperties.PropertyExtendedProperties) ===
-        CBCharacteristicProperties.PropertyExtendedProperties,
-      notifyEncryptionRequired:
-        (props &
-          CBCharacteristicProperties.PropertyNotifyEncryptionRequired) ===
-        CBCharacteristicProperties.PropertyNotifyEncryptionRequired,
-      indicateEncryptionRequired:
-        (props &
-          CBCharacteristicProperties.PropertyIndicateEncryptionRequired) ===
-        CBCharacteristicProperties.PropertyIndicateEncryptionRequired
-    };
-  }
+    /**
+     * Invoked when you write data to a characteristic’s value.
+     */
+    peripheralDidWriteValueForCharacteristicError(
+      peripheral: CBPeripheral,
+      characteristic: CBCharacteristic,
+      error?: NSError
+    ) {
+      console.error(
+        `CBPeripheralDelegateImpl.peripheralDidWriteValueForCharacteristicError ---- peripheral: ${peripheral}, characteristic: ${characteristic}, error: ${error}`
+      );
+      if (this._onWriteTimeout) {
+        clearTimeout(this._onWriteTimeout);
+        this._onWriteTimeout = null;
+      }
+      if (error && this._onWriteReject) {
+        this._onWriteReject(`Could not write - error: ${error}`);
+      } else if (this._onWritePromise) {
+        this._onWritePromise({
+          characteristicUUID: characteristic.UUID.UUIDString
+        });
+      } else {
+        console.warn(
+          'CBPeripheralDelegateImpl.peripheralDidWriteValueForCharacteristicError ---- No _onWritePromise found!'
+        );
+      }
+    }
 
-  private _getDescriptors(characteristic) {
-    const descs = characteristic.descriptors;
-    const descsJs = [];
-    for (let i = 0; i < descs.count; i++) {
-      const desc = descs.objectAtIndex(i);
+    /**
+     * Invoked when the peripheral receives a request to start or stop
+     * providing notifications for a specified characteristic’s value.
+     */
+    peripheralDidUpdateNotificationStateForCharacteristicError(
+      peripheral: CBPeripheral,
+      characteristic: CBCharacteristic,
+      error?: NSError
+    ) {
       console.info(
-        `CBPeripheralDelegateImpl._getDescriptors ---- descriptor value: ${desc.value}`
+        `CBPeripheralDelegateImpl.peripheralDidUpdateNotificationStateForCharacteristicError ---- peripheral: ${peripheral}, characteristic: ${characteristic}, error: ${error}`
       );
-      descsJs.push({
-        UUID: desc.UUID.UUIDString,
-        value: desc.value
-      });
+      if (error) {
+        console.error(
+          `CBPeripheralDelegateImpl.peripheralDidUpdateNotificationStateForCharacteristicError ---- ${error}`
+        );
+      } else {
+        if (characteristic.isNotifying) {
+          console.info(
+            `CBPeripheralDelegateImpl.peripheralDidUpdateNotificationStateForCharacteristicError ---- Notification began on ${characteristic}`
+          );
+        } else {
+          console.info(
+            `CBPeripheralDelegateImpl.peripheralDidUpdateNotificationStateForCharacteristicError ---- Notification stopped on  ${characteristic}, consider disconnecting`
+          );
+          // Bluetooth._manager.cancelPeripheralConnection(peripheral);
+        }
+      }
     }
-    return descsJs;
+
+    /**
+     * IInvoked when you write data to a characteristic descriptor’s value.
+     */
+    peripheralDidWriteValueForDescriptorError(
+      peripheral: CBPeripheral,
+      descriptor: CBDescriptor,
+      error?: NSError
+    ) {
+      console.error(
+        `CBPeripheralDelegateImpl.peripheralDidWriteValueForDescriptorError ---- peripheral: ${peripheral}, descriptor: ${descriptor}, error: ${error}`
+      );
+    }
+
+    private _getProperties(characteristic: CBCharacteristic) {
+      const props = characteristic.properties;
+      return {
+        // broadcast: (props & CBCharacteristicPropertyBroadcast) === CBCharacteristicPropertyBroadcast,
+        broadcast:
+          (props & CBCharacteristicProperties.PropertyBroadcast) ===
+          CBCharacteristicProperties.PropertyBroadcast,
+        read:
+          (props & CBCharacteristicProperties.PropertyRead) ===
+          CBCharacteristicProperties.PropertyRead,
+        broadcast2:
+          (props & CBCharacteristicProperties.PropertyBroadcast) ===
+          CBCharacteristicProperties.PropertyBroadcast,
+        read2:
+          (props & CBCharacteristicProperties.PropertyRead) ===
+          CBCharacteristicProperties.PropertyRead,
+        write:
+          (props & CBCharacteristicProperties.PropertyWrite) ===
+          CBCharacteristicProperties.PropertyWrite,
+        writeWithoutResponse:
+          (props & CBCharacteristicProperties.PropertyWriteWithoutResponse) ===
+          CBCharacteristicProperties.PropertyWriteWithoutResponse,
+        notify:
+          (props & CBCharacteristicProperties.PropertyNotify) ===
+          CBCharacteristicProperties.PropertyNotify,
+        indicate:
+          (props & CBCharacteristicProperties.PropertyIndicate) ===
+          CBCharacteristicProperties.PropertyIndicate,
+        authenticatedSignedWrites:
+          (props &
+            CBCharacteristicProperties.PropertyAuthenticatedSignedWrites) ===
+          CBCharacteristicProperties.PropertyAuthenticatedSignedWrites,
+        extendedProperties:
+          (props & CBCharacteristicProperties.PropertyExtendedProperties) ===
+          CBCharacteristicProperties.PropertyExtendedProperties,
+        notifyEncryptionRequired:
+          (props &
+            CBCharacteristicProperties.PropertyNotifyEncryptionRequired) ===
+          CBCharacteristicProperties.PropertyNotifyEncryptionRequired,
+        indicateEncryptionRequired:
+          (props &
+            CBCharacteristicProperties.PropertyIndicateEncryptionRequired) ===
+          CBCharacteristicProperties.PropertyIndicateEncryptionRequired
+      };
+    }
+
+    private _getDescriptors(characteristic) {
+      const descs = characteristic.descriptors;
+      const descsJs = [];
+      for (let i = 0; i < descs.count; i++) {
+        const desc = descs.objectAtIndex(i);
+        console.info(
+          `CBPeripheralDelegateImpl._getDescriptors ---- descriptor value: ${desc.value}`
+        );
+        descsJs.push({
+          UUID: desc.UUID.UUIDString,
+          value: desc.value
+        });
+      }
+      return descsJs;
+    }
   }
+
+  return CBPeripheralDelegate;
 }
+
+export const CBPeripheralDelegate = setupPeriDelegateImpl();

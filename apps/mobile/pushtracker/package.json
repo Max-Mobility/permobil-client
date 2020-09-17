@@ -18,7 +18,7 @@
     "@nstudio/nativescript-loading-indicator": "file:../../../node_modules/@nstudio/nativescript-loading-indicator",
     "@nstudio/nativescript-mapbox": "rc",
     "@nstudio/nativescript-pulltorefresh": "file:../../../node_modules/@nstudio/nativescript-pulltorefresh",
-    "@nstudio/nativescript-snackbar": "file:../../../node_modules/@nstudio/snackbar",
+    "@nstudio/nativescript-snackbar": "file:../../../node_modules/@nstudio/nativescript-snackbar",
     "@permobil/angular": "file:../../../@permobil/angular",
     "@permobil/core": "file:../../../@permobil/core",
     "@permobil/nativescript": "file:../../../@permobil/nativescript",
@@ -56,7 +56,7 @@
   },
   "devDependencies": {
     "@angular/compiler-cli": "~10.0.0",
-    "@nativescript/android": "~7.0.0",
+    "@nativescript/android": "7.0.0",
     "@nativescript/ios": "~7.0.0",
     "@nativescript/types": "~7.0.1",
     "@nativescript/webpack": "~3.0.4",

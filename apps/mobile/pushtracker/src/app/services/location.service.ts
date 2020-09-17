@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { MapboxKeys } from '@maxmobility/private-keys';
 import { Enums, Http } from '@nativescript/core';
+import { getCurrentLocation } from '@nativescript/geolocation';
 import * as Kinvey from 'kinvey-nativescript-sdk';
-import * as geolocation from 'nativescript-geolocation';
 
 // see https://www.mapbox.com/api-documentation/?language=cURL#retrieve-places-near-a-location
 
@@ -10,7 +10,7 @@ import * as geolocation from 'nativescript-geolocation';
 export class LocationService {
   static getCoordinates(): Promise<any> {
     // Get current location with high accuracy
-    return geolocation.getCurrentLocation({
+    return getCurrentLocation({
       desiredAccuracy: Enums.Accuracy.high,
       maximumAge: 5000,
       timeout: 20000

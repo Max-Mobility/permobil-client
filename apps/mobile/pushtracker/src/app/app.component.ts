@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { SentryKeys } from '@maxmobility/private-keys';
-import { registerElement } from '@nativescript/angular/element-registry';
-import { RouterExtensions } from '@nativescript/angular/router';
+import { registerElement, RouterExtensions } from '@nativescript/angular';
 import {
-  AndroidApplication, Application,
+  AndroidApplication,
+  Application,
   ApplicationSettings,
   Device,
   DiscardedErrorEventData,
@@ -21,10 +21,6 @@ import { LoggingService } from './services';
 import { applyTheme } from './utils';
 import { Ratings } from './utils/ratings-utils';
 
-registerElement(
-  'AnimatedCircle',
-  () => require('nativescript-animated-circle').AnimatedCircle
-);
 registerElement('LottieView', () => require('nativescript-lottie').LottieView);
 registerElement(
   'BarcodeScanner',

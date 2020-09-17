@@ -1,11 +1,11 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { BottomSheetParams } from '@nativescript-community/ui-material-bottomsheet/angular';
 import {
   ApplicationSettings as appSettings,
   isAndroid,
   TextField
 } from '@nativescript/core';
 import { setTimeout } from '@nativescript/core/timer';
-import { BottomSheetParams } from 'nativescript-material-bottomsheet/angular';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../../enums';
 
 declare const IQKeyboardManager: any;

@@ -1,19 +1,16 @@
+import { platformNativeScriptDynamic } from '@nativescript/angular';
+// this import should be first in order to load some required settings (like globals and reflect-metadata)
 /**
  * be sure to keep the above imports first
  */
 import { enableProdMode } from '@angular/core';
-// this import should be first in order to load some required settings (like globals and reflect-metadata)
-import { platformNativeScriptDynamic } from '@nativescript/angular';
-import {
-  Application,
-  ApplicationSettings as appSettings,
-  isIOS
-} from '@nativescript/core';
+import { Application, ApplicationSettings, isIOS } from '@nativescript/core';
 import * as themes from 'nativescript-themes';
 import 'reflect-metadata';
 import { AppModule } from './app/app.module';
 import { APP_THEMES, STORAGE_KEYS } from './app/enums';
 import { Ratings } from './app/utils/ratings-utils';
+
 require('nativescript-plugin-firebase'); // for configuring push notifications
 
 // If built with env.uglify
@@ -30,7 +27,7 @@ if (typeof __UGLIFIED__ !== 'undefined' && __UGLIFIED__) {
 //   require('./app/scss/theme-default.scss').toString(),
 //   'theme-default.scss'
 // );
-const SAVED_THEME = appSettings.getString(
+const SAVED_THEME = ApplicationSettings.getString(
   STORAGE_KEYS.APP_THEME,
   APP_THEMES.DEFAULT
 );
@@ -47,6 +44,7 @@ if (SAVED_THEME === APP_THEMES.DEFAULT) {
 }
 
 if (isIOS) {
+  @NativeClass()
   class PushTrackerIOSDelegate
     extends UIResponder
     implements UIApplicationDelegate {

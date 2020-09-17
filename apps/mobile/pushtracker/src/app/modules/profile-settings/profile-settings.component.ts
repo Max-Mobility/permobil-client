@@ -5,7 +5,15 @@ import {
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
+import {
+  BottomSheetOptions,
+  BottomSheetService
+} from '@nativescript-community/ui-material-bottomsheet/angular';
 import { ModalDialogParams } from '@nativescript/angular';
+import {
+  getVersionCodeSync,
+  getVersionNameSync
+} from '@nativescript/appversion';
 import {
   ApplicationSettings as appSettings,
   Device,
@@ -20,14 +28,6 @@ import { Device as PermobilCoreDevice } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import once from 'lodash/once';
-import {
-  getVersionCodeSync,
-  getVersionNameSync
-} from 'nativescript-appversion';
-import {
-  BottomSheetOptions,
-  BottomSheetService
-} from 'nativescript-material-bottomsheet/angular';
 import {
   APP_LANGUAGES,
   APP_THEMES,

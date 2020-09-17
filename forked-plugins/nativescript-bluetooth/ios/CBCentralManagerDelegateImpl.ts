@@ -12,7 +12,9 @@ declare var DataView; // not recognized by platform-declarations
  * The only required method of the protocol indicates the availability of the central manager, and is called when the central manager’s state is updated.
  */
 @NativeClass()
-export class CBCentralManagerDelegateImpl
+function setupCentralManagerDelegateImpl() {
+
+} class CBCentralManagerDelegateImpl
   extends NSObject
   implements CBCentralManagerDelegate {
   static ObjCProtocols = [CBCentralManagerDelegate];
@@ -366,3 +368,7 @@ export class CBCentralManagerDelegateImpl
     }
   }
 }
+return CBCentralManagerDelegateImpl;
+}
+
+export const CBCentralManagerDelegateImpl = setupCentralManagerDelegateImpl()dd

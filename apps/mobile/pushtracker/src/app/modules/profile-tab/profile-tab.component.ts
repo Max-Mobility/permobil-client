@@ -1,9 +1,14 @@
 import { Component, NgZone, ViewContainerRef } from '@angular/core';
+import {
+  BottomSheetOptions,
+  BottomSheetService
+} from '@nativescript-community/ui-material-bottomsheet/angular';
 import { ModalDialogService, RouterExtensions } from '@nativescript/angular';
 import {
   ApplicationSettings as appSettings,
   Color,
-  Dialogs, EventData,
+  Dialogs,
+  EventData,
   ImageSource,
   isAndroid,
   Label,
@@ -12,19 +17,15 @@ import {
   StackLayout
 } from '@nativescript/core';
 import { setTimeout } from '@nativescript/core/timer';
+import {
+  DateTimePicker,
+  DateTimePickerStyle
+} from '@nativescript/datetimepicker';
 import { TranslateService } from '@ngx-translate/core';
 import { subYears } from 'date-fns';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
-import {
-  DateTimePicker,
-  DateTimePickerStyle
-} from 'nativescript-datetimepicker';
 import * as LS from 'nativescript-localstorage';
-import {
-  BottomSheetOptions,
-  BottomSheetService
-} from 'nativescript-material-bottomsheet/angular';
 import { Sentry } from 'nativescript-sentry';
 import { Toasty } from 'nativescript-toasty';
 import {

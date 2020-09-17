@@ -1,21 +1,19 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
-import { ModalDialogParams } from '@nativescript/angular';
-import {
-  EventData,
-
-
-
-  isIOS, ItemEventData,
-  TextField,
-  Utils
-} from '@nativescript/core';
-import { TranslateService } from '@ngx-translate/core';
-import { validate } from 'email-validator';
-import { compose } from 'nativescript-email';
 import {
   BottomSheetOptions,
   BottomSheetService
-} from 'nativescript-material-bottomsheet/angular';
+} from '@nativescript-community/ui-material-bottomsheet/angular';
+import { ModalDialogParams } from '@nativescript/angular';
+import {
+  EventData,
+  isIOS,
+  ItemEventData,
+  TextField,
+  Utils
+} from '@nativescript/core';
+import { compose } from '@nativescript/email';
+import { TranslateService } from '@ngx-translate/core';
+import { validate } from 'email-validator';
 import { LoggingService } from '../../services';
 import { ListPickerSheetComponent } from '../shared/components';
 
