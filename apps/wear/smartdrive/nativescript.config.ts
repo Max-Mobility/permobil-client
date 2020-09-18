@@ -7,7 +7,7 @@ export default {
     v8Flags: '--nolazy --expose_gc',
     markingMode: 'none',
     handleTimeZoneChanges: true,
-    codeCache: 'true',
+    codeCache: true,
     suppressCallJSMethodExceptions: false
   },
   appPath: 'app'

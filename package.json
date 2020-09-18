@@ -34,7 +34,7 @@
     "setup.ns.bluetooth": "cd forked-plugins/nativescript-bluetooth && npm run build",
     "setup.ns.perms": "cd forked-plugins/nativescript-perms && npm run build",
     "setup.ns.core": "cd forked-plugins/nativescript-core-7.0.0 && npm i && tsc",
-    "setup.wearoscomms": "cd @permobil/nativescript/src/plugins/nativescript-wear-os-comms/src && npm i && tsc",
+    "setup.wearoscomms": "cd @permobil/nativescript/src/plugins/nativescript-wear-os-comms/src && npm run build",
     "*************************** end SETUP": "***************************",
     "*************************** CLEAN SECTION": "***************************",
     "clean": "rimraf hooks node_modules package-lock.json",
