@@ -101,6 +101,7 @@ class MainActivity
   }
 }
 
+@NativeClass()
 class MyAmbientCallback extends androidx.wear.ambient.AmbientModeSupport
   .AmbientCallback {
   /** If the display is low-bit in ambient mode. i.e. it requires anti-aliased fonts. */
@@ -111,6 +112,20 @@ class MyAmbientCallback extends androidx.wear.ambient.AmbientModeSupport
    * intermittently offset to avoid screen burn-in.
    */
   public mDoBurnInProtection: boolean;
+
+  onAmbientOffloadInvalidated(): void {
+    // Called to inform an activity that whatever decomposition it has sent to Sidekick
+    // is no longer valid and should be re-sent before enabling ambient offload.
+    const eventData = {
+      eventName: 'ambientOffloadInvalidated',
+      object: null,
+      data: {
+        isLowBitAmbient: this.mIsLowBitAmbient,
+        doBurnInProtection: this.mDoBurnInProtection
+      }
+    };
+    Application.notify(eventData);
+  }
 
   public onEnterAmbient(ambientDetails: android.os.Bundle): void {
     this.mIsLowBitAmbient = ambientDetails.getBoolean(

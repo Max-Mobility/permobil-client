@@ -1,4 +1,4 @@
-/// <reference path="../../../node_modules/@nativescript/types-android/lib/android-23.d.ts" />
+/// <reference path="../../../node_modules/@nativescript/types/node_modules/@nativescript/types-android/lib/android-23.d.ts" />
 
 import {
   AndroidActivityRequestPermissionsEventData,
@@ -95,9 +95,9 @@ export class Bluetooth extends BluetoothCommon {
   advertiseCallback = new TNS_AdvertiseCallback();
 
   // not initializing here, if the Android API is < 21  use LeScanCallback
-  scanCallback: TNS_ScanCallback;
-  LeScanCallback: TNS_LeScanCallback;
-  broadcastReceiver: TNS_BroadcastReceiver;
+  scanCallback;
+  LeScanCallback;
+  broadcastReceiver;
 
   /**
    * Connections are stored as key-val pairs of UUID-Connection.

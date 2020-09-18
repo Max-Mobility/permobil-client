@@ -1,9 +1,9 @@
 import { BondState } from '../common';
 import { Bluetooth, getDevice } from './android_main';
 
-@NativeClass()
-@JavaProxy('com.nativescript.TNS_BroadcastReceiver')
 function setupReceiver() {
+  @NativeClass()
+  @JavaProxy('com.nativescript.TNS_BroadcastReceiver')
   class TNS_BroadcastReceiver extends android.content.BroadcastReceiver {
     private _owner: WeakRef<Bluetooth>;
     constructor() {

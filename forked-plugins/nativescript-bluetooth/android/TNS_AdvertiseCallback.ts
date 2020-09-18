@@ -1,8 +1,8 @@
 import { Bluetooth } from './android_main';
 
-@NativeClass()
-@JavaProxy('com.nativescript.TNS_AdvertiseCallback')
 function setupAdvertiseCallback() {
+  @NativeClass()
+  @JavaProxy('com.nativescript.TNS_AdvertiseCallback')
   class TNS_AdvertiseCallback extends android.bluetooth.le.AdvertiseCallback {
     private _owner: WeakRef<Bluetooth>;
     constructor() {

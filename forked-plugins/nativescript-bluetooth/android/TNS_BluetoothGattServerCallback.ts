@@ -1,9 +1,9 @@
 import { ConnectionState } from '../common';
 import { Bluetooth, getDevice } from './android_main';
 
-@NativeClass()
-@JavaProxy('com.nativescript.TNS_BluetoothGattServerCallback')
 function setupGattServerCallback() {
+  @NativeClass()
+  @JavaProxy('com.nativescript.TNS_BluetoothGattServerCallback')
   class TNS_BluetoothGattServerCallback extends android.bluetooth
     .BluetoothGattServerCallback {
     private _owner: WeakRef<Bluetooth>;
