@@ -1,8 +1,8 @@
 // Definitions.
 import { CustomLayoutView as CustomLayoutViewDefinition, dip, Point } from '.';
 import {
-	android as androidApp,
-	AndroidActivityBackPressedEventData
+  android as androidApp,
+  AndroidActivityBackPressedEventData
 } from '../../../application';
 import { EventData } from '../../../data/observable';
 import { Device, Screen } from '../../../platform';
@@ -14,49 +14,49 @@ import { topmost } from '../../frame/frame-stack';
 import { GestureEventData, GestureTypes } from '../../gestures';
 import { ad as androidBackground, Background } from '../../styling/background';
 import {
-	androidDynamicElevationOffsetProperty,
-	androidElevationProperty,
-	backgroundInternalProperty,
-	heightProperty,
-	HorizontalAlignment,
-	horizontalAlignmentProperty,
-	Length,
-	marginBottomProperty,
-	marginLeftProperty,
-	marginRightProperty,
-	marginTopProperty,
-	minHeightProperty,
-	minWidthProperty,
-	opacityProperty,
-	paddingBottomProperty,
-	paddingLeftProperty,
-	paddingRightProperty,
-	paddingTopProperty,
-	PercentLength,
-	perspectiveProperty,
-	rotateProperty,
-	rotateXProperty,
-	rotateYProperty,
-	scaleXProperty,
-	scaleYProperty,
-	translateXProperty,
-	translateYProperty,
-	VerticalAlignment,
-	verticalAlignmentProperty,
-	Visibility,
-	visibilityProperty,
-	widthProperty,
-	zIndexProperty
+  androidDynamicElevationOffsetProperty,
+  androidElevationProperty,
+  backgroundInternalProperty,
+  heightProperty,
+  HorizontalAlignment,
+  horizontalAlignmentProperty,
+  Length,
+  marginBottomProperty,
+  marginLeftProperty,
+  marginRightProperty,
+  marginTopProperty,
+  minHeightProperty,
+  minWidthProperty,
+  opacityProperty,
+  paddingBottomProperty,
+  paddingLeftProperty,
+  paddingRightProperty,
+  paddingTopProperty,
+  PercentLength,
+  perspectiveProperty,
+  rotateProperty,
+  rotateXProperty,
+  rotateYProperty,
+  scaleXProperty,
+  scaleYProperty,
+  translateXProperty,
+  translateYProperty,
+  VerticalAlignment,
+  verticalAlignmentProperty,
+  Visibility,
+  visibilityProperty,
+  widthProperty,
+  zIndexProperty
 } from '../../styling/style-properties';
 import { ShowModalOptions } from '../view-base';
 // Types.
 import {
-	automationTextProperty,
-	isEnabledProperty,
-	isUserInteractionEnabledProperty,
-	originXProperty,
-	originYProperty,
-	ViewCommon
+  automationTextProperty,
+  isEnabledProperty,
+  isUserInteractionEnabledProperty,
+  originXProperty,
+  originYProperty,
+  ViewCommon
 } from './view-common';
 
 // This one can eventually be cleaned up but causes issues with a lot of ui-suite plugins in particular if not exported here

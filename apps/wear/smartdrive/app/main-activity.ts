@@ -1,8 +1,9 @@
 import {
   AndroidActivityCallbacks,
-  Application,
   setActivityCallbacks
 } from '@nativescript/core';
+import * as application from '@nativescript/core/application';
+
 
 @NativeClass()
 @JavaProxy('com.permobil.smartdrive.wearos.MainActivity')
@@ -124,7 +125,7 @@ class MyAmbientCallback extends androidx.wear.ambient.AmbientModeSupport
         doBurnInProtection: this.mDoBurnInProtection
       }
     };
-    Application.notify(eventData);
+    application.notify(eventData);
   }
 
   public onEnterAmbient(ambientDetails: android.os.Bundle): void {
@@ -146,7 +147,7 @@ class MyAmbientCallback extends androidx.wear.ambient.AmbientModeSupport
         doBurnInProtection: this.mDoBurnInProtection
       }
     };
-    Application.notify(eventData);
+    application.notify(eventData);
   }
 
   public onExitAmbient(): void {
@@ -159,7 +160,7 @@ class MyAmbientCallback extends androidx.wear.ambient.AmbientModeSupport
         doBurnInProtection: this.mDoBurnInProtection
       }
     };
-    Application.notify(eventData);
+    application.notify(eventData);
   }
 
   public onUpdateAmbient(): void {
@@ -172,6 +173,6 @@ class MyAmbientCallback extends androidx.wear.ambient.AmbientModeSupport
         doBurnInProtection: this.mDoBurnInProtection
       }
     };
-    Application.notify(eventData);
+    application.notify(eventData);
   }
 }

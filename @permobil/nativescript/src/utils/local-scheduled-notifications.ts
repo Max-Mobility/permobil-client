@@ -1,5 +1,5 @@
 import { Color } from '@nativescript/core';
-import { LocalNotifications } from 'nativescript-local-notifications';
+import { LocalNotifications } from '@nativescript/local-notifications';
 import {
   PushTrackerLocalNotifications,
   PushTrackerWearNotificationChannels,
