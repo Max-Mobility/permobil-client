@@ -830,7 +830,9 @@ public class ActivityService
         if (notificationManager != null) {
             notificationManager.createNotificationChannel(notificationChannel);
         } else {
-            Sentry.captureException("NotificationManager was null. Unable to create the NotificationChannel to start the service with the notification.");
+          String err = "NotificationManager was null. Unable to create the NotificationChannel to start the service with the notification.";
+          Exception ex = new Exception(err);
+          Sentry.captureException(ex); 
         }
 
         String contentText = getString(R.string.foreground_service_notification);
