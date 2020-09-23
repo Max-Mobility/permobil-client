@@ -11,6 +11,7 @@
     "maxmobility/nativescript-bluetooth/node_modules/**": true,
     "maxmobility/nativescript-bluetooth/typings/**": true
   },
+  "editor.codeActionsOnSave": { "source.organizeImports": false },
   "[html]": {
     "editor.formatOnSave": false
   },

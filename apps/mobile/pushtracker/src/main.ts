@@ -1,15 +1,15 @@
 // this import should be first in order to load some required settings (like globals and reflect-metadata)
+import 'reflect-metadata';
 import { enableProdMode } from '@angular/core';
 import { platformNativeScriptDynamic } from '@nativescript/angular';
+import { isIOS } from '@nativescript/core';
+import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import * as themes from 'nativescript-themes';
-import 'reflect-metadata';
 import { AppModule } from './app/app.module';
-import * as application from 'application';
 import { APP_THEMES, STORAGE_KEYS } from './app/enums';
-require('nativescript-plugin-firebase'); // for configuring push notifications
 import { Ratings } from './app/utils/ratings-utils';
-import { isIOS } from '@nativescript/core';
+require('nativescript-plugin-firebase'); // for configuring push notifications
 
 // If built with env.uglify
 declare const __UGLIFIED__;
@@ -42,7 +42,8 @@ if (SAVED_THEME === APP_THEMES.DEFAULT) {
 }
 
 if (isIOS) {
-  class PushTrackerIOSDelegate extends UIResponder implements UIApplicationDelegate {
+  class PushTrackerIOSDelegate extends UIResponder
+    implements UIApplicationDelegate {
     public static ObjCProtocols = [UIApplicationDelegate];
     applicationDidBecomeActive(application: UIApplication): void {
       const ratings = new Ratings({
