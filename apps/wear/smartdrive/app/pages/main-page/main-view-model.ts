@@ -723,9 +723,9 @@ export class MainViewModel extends Observable {
     }
 
     // init sentry - DNS key for permobil-wear Sentry project
-    Sentry.init(
-      'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1376181'
-    );
+    // Sentry.init(
+    //   'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1376181'
+    // );
 
     // log the build version
     this._logVersions();

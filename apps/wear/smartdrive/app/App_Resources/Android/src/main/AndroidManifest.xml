@@ -63,6 +63,8 @@
             android:value="
           com.permobil.smartdrive.wearos.watchface/com.permobil.smartdrive.wearos.watchface.DigitalWatchFaceService" />
 
+        <meta-data android:name="io.sentry.dsn" android:value="https://234acf21357a45c897c3708fcab7135d@o138545.ingest.sentry.io/1376181" />
+
         <!-- for main activity -->
         <activity
             android:name="com.permobil.smartdrive.wearos.MainActivity"

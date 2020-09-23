@@ -26,13 +26,7 @@
       "nativescript-bluetooth": [
         "../../forked-plugins/nativescript-bluetooth/*"
       ]
-    },
-    "plugins": [
-      {
-        "transform": "@nativescript/webpack/transformers/ns-transform-native-classes",
-        "type": "raw"
-      }
-    ]
+    }
   },
   "exclude": [
     "node_modules",
