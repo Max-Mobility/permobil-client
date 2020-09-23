@@ -8,7 +8,6 @@ import { getDefaultLang, load, use } from '@permobil/nativescript';
 import { Sentry } from 'nativescript-sentry';
 import 'reflect-metadata';
 
-
 console.time('App_Start_Time');
 
 // get the user set language file, if none, we load the device.language

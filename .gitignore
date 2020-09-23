@@ -118,7 +118,6 @@ apps/wear/smartdrive/platforms/
 apps/wear/pushtracker/platforms/
 @permobil/**/*.d.ts
 forked-plugins/nativescript-perms/**/*.d.ts
-forked-plugins/nativescript-animated-circle/**/*.d.ts
 hooks/
 package-lock.json
 *.js
@@ -127,11 +126,6 @@ package-lock.json
 .DS_Store
 nativescript-bluetooth/**/*.js
 apps/**/report/
-# forked-plugins/nativescript-core-6.4.1/node_modules
-# forked-plugins/nativescript-core-6.4.1/**/*.js
-
-forked-plugins/nativescript-core-3-9-2020/node_modules
-forked-plugins/nativescript-core-3-9-2020/**/*.js
 forked-plugins/nativescript-core-7.0.0/node_modules
 forked-plugins/nativescript-core-7.0.0/**/*.js
 

@@ -1,14 +1,14 @@
 import {
+  Application,
+  ApplicationSettings,
+  Device,
+  Dialogs,
   EventData,
   Observable,
   Page,
-  ShowModalOptions
+  ShowModalOptions,
+  Utils
 } from '@nativescript/core';
-import * as application from '@nativescript/core/application';
-import * as appSettings from '@nativescript/core/application-settings';
-import { device } from '@nativescript/core/platform';
-import { alert, confirm } from '@nativescript/core/ui/dialogs';
-import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { DataKeys as PermobilDataKeys, Log } from '@permobil/core';
 import { L, Prop, restartAndroidApp } from '@permobil/nativescript';
 import * as LS from 'nativescript-localstorage';
@@ -80,7 +80,7 @@ export class ChangeSettingsViewModel extends Observable {
     // if user is changing the language we need to confirm the change with them
     // then restart the app to force the language change app wide
     if (this.activeSettingToChange === 'language') {
-      confirm({
+      Dialogs.confirm({
         title: L('settings.information'),
         message: L('settings.language.change'),
         okButtonText: L('buttons.ok'),
@@ -88,7 +88,7 @@ export class ChangeSettingsViewModel extends Observable {
         cancelable: true
       }).then(res => {
         if (res === true) {
-          appSettings.setString(
+          ApplicationSettings.setString(
             PermobilDataKeys.APP_LANGUAGE_FILE,
             this._settings.language
           );
@@ -99,9 +99,9 @@ export class ChangeSettingsViewModel extends Observable {
           restartAndroidApp();
         } else {
           // revert back the watch settings language if the user cancels the change
-          this._settings.language = appSettings.getString(
+          this._settings.language = ApplicationSettings.getString(
             PermobilDataKeys.APP_LANGUAGE_FILE,
-            device.language
+            Device.language
           );
           this.saveSettings();
         }
@@ -135,10 +135,11 @@ export class ChangeSettingsViewModel extends Observable {
     );
     this._settings.copy(savedSettings);
     this._hasSentSettings =
-      appSettings.getBoolean(DataKeys.PROFILE_SETTINGS_DIRTY_FLAG) || false;
+      ApplicationSettings.getBoolean(DataKeys.PROFILE_SETTINGS_DIRTY_FLAG) ||
+      false;
 
     const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-    const sharedPreferences = androidUtils
+    const sharedPreferences = Utils.android
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0);
     // load disable wear check
@@ -217,7 +218,7 @@ export class ChangeSettingsViewModel extends Observable {
 
   private saveSettings() {
     const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-    const sharedPreferences = androidUtils
+    const sharedPreferences = Utils.android
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0) as android.content.SharedPreferences;
     const editor = sharedPreferences.edit();
@@ -237,7 +238,7 @@ export class ChangeSettingsViewModel extends Observable {
       this._pushSensitivity
     );
     editor.apply();
-    appSettings.setBoolean(DataKeys.PROFILE_SETTINGS_DIRTY_FLAG, false);
+    ApplicationSettings.setBoolean(DataKeys.PROFILE_SETTINGS_DIRTY_FLAG, false);
     LS.setItemObject(
       'com.permobil.pushtracker.profile.settings',
       this._settings.toObj()
@@ -334,7 +335,7 @@ export class ChangeSettingsViewModel extends Observable {
 
   private async showConfirmation(animationType: number, message?: string) {
     const intent = new android.content.Intent(
-      androidUtils.getApplicationContext(),
+      Utils.android.getApplicationContext(),
       android.support.wearable.activity.ConfirmationActivity.class
     );
     intent.putExtra(
@@ -349,8 +350,8 @@ export class ChangeSettingsViewModel extends Observable {
       );
     }
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
-    application.android.foregroundActivity.startActivity(intent);
-    application.android.foregroundActivity.overridePendingTransition(0, 0);
+    Application.android.foregroundActivity.startActivity(intent);
+    Application.android.foregroundActivity.overridePendingTransition(0, 0);
   }
 
   /**
@@ -362,7 +363,7 @@ export class ChangeSettingsViewModel extends Observable {
     let authorization = null;
     let userId = null;
     const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-    const sharedPreferences = androidUtils
+    const sharedPreferences = Utils.android
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0) as android.content.SharedPreferences;
 
@@ -384,7 +385,7 @@ export class ChangeSettingsViewModel extends Observable {
       // Mobile app
       Log.D('No authorization found in app settings!');
       try {
-        const contentResolver = androidUtils
+        const contentResolver = Utils.android
           .getApplicationContext()
           .getContentResolver();
         const authCursor = contentResolver.query(

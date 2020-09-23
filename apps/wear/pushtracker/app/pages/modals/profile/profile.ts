@@ -1,7 +1,12 @@
-import { Page, ShowModalOptions, ShownModallyData, View } from '@nativescript/core';
-import { fromObject } from '@nativescript/core/data/observable';
-import { screen } from '@nativescript/core/platform';
-import { ad as androidUtils } from '@nativescript/core/utils/utils';
+import {
+  fromObject,
+  Page,
+  Screen,
+  ShowModalOptions,
+  ShownModallyData,
+  Utils,
+  View
+} from '@nativescript/core';
 import { Log } from '@permobil/core';
 import { L } from '@permobil/nativescript';
 import { WearOsLayout } from 'nativescript-wear-os';
@@ -74,13 +79,13 @@ export function onChangeSettingsItemTap(args) {
 
 function configureLayout(layout: WearOsLayout) {
   // determine inset padding
-  const androidConfig = androidUtils
+  const androidConfig = Utils.android
     .getApplicationContext()
     .getResources()
     .getConfiguration();
   const isCircleWatch = androidConfig.isScreenRound();
-  const screenWidth = screen.mainScreen.widthPixels;
-  const screenHeight = screen.mainScreen.heightPixels;
+  const screenWidth = Screen.mainScreen.widthPixels;
+  const screenHeight = Screen.mainScreen.heightPixels;
 
   if (isCircleWatch) {
     data.insetPadding = Math.round(0.146467 * screenWidth);

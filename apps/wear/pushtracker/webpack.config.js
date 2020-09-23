@@ -24,10 +24,10 @@ module.exports = env => {
     ...[
       '@nativescript/core/ui/frame',
       '@nativescript/core/ui/frame/activity',
-      resolve(
-        __dirname,
-        'node_modules/@maxmobility/nativescript-wear-os-comms/android/ResultReceiver'
-      ),
+      // resolve(
+      //   __dirname,
+      //   'node_modules/@maxmobility/nativescript-wear-os-comms/android/ResultReceiver'
+      // ),
       resolve(
         __dirname,
         'node_modules/nativescript-bluetooth/android/TNS_AdvertiseCallback'

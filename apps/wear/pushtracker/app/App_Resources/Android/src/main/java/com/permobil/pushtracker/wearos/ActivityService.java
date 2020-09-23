@@ -159,10 +159,10 @@ public class ActivityService
     super.onCreate();
     Log.d(TAG, "ActivityService onCreate...");
 
-    Log.d(TAG, "Initializing Sentry");
-    Sentry.init(
-                "https://5670a4108fb84bc6b2a8c427ab353472@sentry.io/1485857"
-                );
+    // Log.d(TAG, "Initializing Sentry");
+    // Sentry.init(
+    //             "https://5670a4108fb84bc6b2a8c427ab353472@sentry.io/1485857"
+    //             );
 
     // create objects
     activityDetector = new ActivityDetector(this);

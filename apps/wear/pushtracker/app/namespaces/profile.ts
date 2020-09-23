@@ -1,5 +1,4 @@
-import { Observable } from '@nativescript/core';
-import { device } from '@nativescript/core/platform';
+import { Device, Observable } from '@nativescript/core';
 import { mod } from '@permobil/core';
 
 export class Profile extends Observable {
@@ -72,7 +71,7 @@ export namespace Profile {
       height: 1.778, // meters
       weight: 80, // kg
       units: Profile.Units.Default,
-      language: device.language
+      language: Device.language
     };
 
     chairMake: string = Profile.Settings.Defaults.chairMake;
