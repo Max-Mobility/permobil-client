@@ -35,15 +35,15 @@
   },
   "devDependencies": {
     "@nativescript/android": "7.0.0",
-    "@nativescript/types": "~7.0.3",
-    "@nativescript/webpack": "~3.0.4",
-    "@types/lodash": "~4.14.161",
-    "mkdirp": "~0.5.1",
+    "@nativescript/types": "file:../../../node_modules/@nativescript/types",
+    "@nativescript/webpack": "file:../../../node_modules/@nativescript/webpack",
+    "@types/lodash": "file:../../../node_modules/@types/lodash",
+    "mkdirp": "file:../../../node_modules/mkdirp",
     "nativescript-worker-loader": "~0.12.1",
-    "node-sass": "~4.14.1",
-    "prompts": "~2.3.2",
-    "rimraf": "~3.0.2",
+    "node-sass": "file:../../../node_modules/node-sass",
+    "prompts": "file:../../../node_modules/prompts",
+    "rimraf": "file:../../../node_modules/rimraf",
     "tslint": "file:../../../node_modules/tslint",
-    "typescript": "~3.9.7"
+    "typescript": "file:../../../node_modules/typescript"
   }
 }
