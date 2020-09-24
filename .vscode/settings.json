@@ -10,7 +10,6 @@
     "forked-plugins/nativescript-bluetooth/node_modules/**": true,
     "nativescript-bluetooth/typings/**": true
   },
-  "editor.formatOnSave": false,
   "[html]": {
     "editor.formatOnSave": false
   },

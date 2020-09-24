@@ -31,7 +31,35 @@ module.exports = env => {
   // Add your custom Activities, Services and other Android app components here.
   const appComponents = [
     '@nativescript/core/ui/frame',
-    '@nativescript/core/ui/frame/activity'
+    '@nativescript/core/ui/frame/activity',
+    resolve(
+      __dirname,
+      'node_modules/@maxmobility/nativescript-wear-os-comms/android/ResultReceiver'
+    ),
+    resolve(
+      __dirname,
+      'node_modules/nativescript-bluetooth/android/TNS_AdvertiseCallback'
+    ),
+    resolve(
+      __dirname,
+      'node_modules/nativescript-bluetooth/android/TNS_BluetoothGattCallback'
+    ),
+    resolve(
+      __dirname,
+      'node_modules/nativescript-bluetooth/android/TNS_BluetoothGattServerCallback'
+    ),
+    resolve(
+      __dirname,
+      'node_modules/nativescript-bluetooth/android/TNS_BroadcastReceiver'
+    ),
+    resolve(
+      __dirname,
+      'node_modules/nativescript-bluetooth/android/TNS_LeScanCallback'
+    ),
+    resolve(
+      __dirname,
+      'node_modules/nativescript-bluetooth/android/TNS_ScanCallback'
+    )
   ];
 
   const platform = env && ((env.android && 'android') || (env.ios && 'ios'));

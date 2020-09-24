@@ -11,7 +11,7 @@ import { AppModule } from './app/app.module';
 import { APP_THEMES, STORAGE_KEYS } from './app/enums';
 import { Ratings } from './app/utils/ratings-utils';
 
-require('nativescript-plugin-firebase'); // for configuring push notifications
+require('@nativescript/firebase'); // for configuring push notifications
 
 // If built with env.uglify
 declare const __UGLIFIED__;

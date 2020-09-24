@@ -294,7 +294,7 @@ export class MainViewModel extends Observable {
           SmartDriveLocalNotifications.TIRE_PRESSURE_NOTIFICATION_ID
         );
         Log.D(`Canceled the Notification: ${cancelId}`);
-      }, 600000);
+      }, 30000);
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
