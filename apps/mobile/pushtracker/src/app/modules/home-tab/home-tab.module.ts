@@ -1,7 +1,10 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
-import { NativeScriptCommonModule, NativeScriptRouterModule } from '@nativescript/angular';
+import {
+  NativeScriptCommonModule,
+  NativeScriptRouterModule
+} from '@nativescript/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgRippleModule } from 'nativescript-ng-ripple';
+import { NgRippleModule } from 'nativescript-ripple';
 import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
 import { SharedModule } from '../shared/shared.module';
 

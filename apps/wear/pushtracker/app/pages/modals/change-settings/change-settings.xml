@@ -1,6 +1,6 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" 
-    xmlns:wol="nativescript-wear-os/packages/wear-os-layout" 
-    xmlns:RL="nativescript-ng-ripple/ripple-view" shownModally="onShownModally" actionBarHidden="true">
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+    xmlns:wol="nativescript-wear-os/packages/wear-os-layout"
+    xmlns:RL="nativescript-ripple/ripple-view" shownModally="onShownModally" actionBarHidden="true">
     <GridLayout id="changeSettingsPage" rows="auto, *, auto" columns="auto, *, auto" width="100%" height="100%" paddingBottom="{{ insetPadding }}">
         // Increase the config value
         <RL:Ripple row="0" col="1" rippleColor="#ddd" class="increase-btn">

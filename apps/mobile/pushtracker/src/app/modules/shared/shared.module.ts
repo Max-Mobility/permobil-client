@@ -6,7 +6,7 @@ import {
   NativeScriptRouterModule
 } from '@nativescript/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgRippleModule } from 'nativescript-ng-ripple';
+import { NgRippleModule } from 'nativescript-ripple';
 import {
   ListPickerSheetComponent,
   SHARED_COMPONENTS,

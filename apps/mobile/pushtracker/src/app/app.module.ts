@@ -12,7 +12,7 @@ import { NativeScriptDateTimePickerModule } from '@nativescript/datetimepicker/a
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { PermobilCoreModule } from '@permobil/angular';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
-import { NgRippleModule } from 'nativescript-ng-ripple';
+import { NgRippleModule } from 'nativescript-ripple';
 import { NativeScriptUICalendarModule } from 'nativescript-ui-calendar/angular';
 import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
 import { AppRoutingModule } from './app-routing.module';
