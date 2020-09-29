@@ -6,7 +6,6 @@ import {
   NativeScriptRouterModule
 } from '@nativescript/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgRippleModule } from 'nativescript-ripple';
 import {
   ListPickerSheetComponent,
   SHARED_COMPONENTS,
@@ -18,7 +17,6 @@ const SHARED_MODULES = [
   NativeScriptCommonModule,
   NativeScriptFormsModule,
   NativeScriptRouterModule,
-  NgRippleModule,
   TranslateModule
 ];
 

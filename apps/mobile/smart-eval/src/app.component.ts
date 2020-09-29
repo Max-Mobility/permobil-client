@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
+import { Kinvey } from '@bradmartin/kinvey-nativescript-sdk';
 import { SentryKeys } from '@maxmobility/private-keys';
 import { TranslateService } from '@ngx-translate/core';
-import { Kinvey } from 'kinvey-nativescript-sdk';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { Carousel, CarouselItem } from 'nativescript-carousel';

@@ -3,7 +3,10 @@ import * as timer from '@nativescript/core/timer';
 import { bindingTypeToString, Device, Packet } from '@permobil/core';
 import { differenceInCalendarDays } from 'date-fns';
 import throttle from 'lodash/throttle';
-import { DownloadProgress } from 'nativescript-download-progress';
+import {
+  DownloadProgress,
+  RequestOptions
+} from 'nativescript-download-progress';
 import { BluetoothService } from '../services';
 import { DeviceBase } from './device-base.model';
 
@@ -1023,8 +1026,12 @@ export namespace PushTrackerData {
       console.log('Downloading FW update', f['_filename']);
 
       const download = new DownloadProgress();
+      const requestOptions: RequestOptions = {
+        method: 'GET',
+        headers: {}
+      };
       return download
-        .downloadFile(url)
+        .downloadFile(url, requestOptions)
         .then(file => {
           const fileData = File.fromPath(file.path).readSync();
           return {

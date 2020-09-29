@@ -4,7 +4,6 @@ import {
   NativeScriptRouterModule
 } from '@nativescript/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgRippleModule } from 'nativescript-ripple';
 import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
 import {
   HomeTabComponent,
@@ -23,8 +22,7 @@ import { SharedModule } from '../shared/shared.module';
     ]),
     NativeScriptUIChartModule,
     SharedModule,
-    TranslateModule,
-    NgRippleModule
+    TranslateModule
   ],
   exports: [SharedModule],
   declarations: [

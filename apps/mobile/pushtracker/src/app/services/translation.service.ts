@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
-import {
-  ApplicationSettings, File,
-  knownFolders,
-  Observable,
-  path
-} from '@nativescript/core';
 // for querying kinvey for translation files
 import {
   Files as KinveyFiles,
   Query as KinveyQuery
-} from 'kinvey-nativescript-sdk';
+} from '@bradmartin/kinvey-nativescript-sdk';
+import {
+  ApplicationSettings,
+  File,
+  knownFolders,
+  Observable,
+  path
+} from '@nativescript/core';
 import { DownloadProgress } from 'nativescript-download-progress';
 import { LoggingService } from './logging.service';
 

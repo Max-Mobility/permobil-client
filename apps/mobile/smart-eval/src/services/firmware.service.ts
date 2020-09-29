@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Kinvey } from 'kinvey-nativescript-sdk';
+import { Kinvey } from '@bradmartin/kinvey-nativescript-sdk';
 import * as LS from 'nativescript-localstorage';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { knownFolders, path } from 'tns-core-modules/file-system';

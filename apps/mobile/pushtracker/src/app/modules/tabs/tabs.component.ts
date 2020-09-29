@@ -1,4 +1,5 @@
 import { Component, NgZone } from '@angular/core';
+import { User as KinveyUser } from '@bradmartin/kinvey-nativescript-sdk';
 import { RouterExtensions } from '@nativescript/angular';
 import {
   ApplicationSettings as appSettings,
@@ -13,7 +14,6 @@ import { setTimeout } from '@nativescript/core/timer';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBar } from '@nstudio/nativescript-snackbar';
 import { Device, Log } from '@permobil/core';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import assign from 'lodash/assign';
 import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';

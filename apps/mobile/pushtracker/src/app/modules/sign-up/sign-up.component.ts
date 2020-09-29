@@ -5,6 +5,8 @@ import {
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
+import * as Kinvey from '@bradmartin/kinvey-nativescript-sdk';
+import { User as KinveyUser } from '@bradmartin/kinvey-nativescript-sdk';
 import { ModalDialogService, RouterExtensions } from '@nativescript/angular';
 import {
   ApplicationSettings as appSettings,
@@ -23,8 +25,6 @@ import {
   preventKeyboardFromShowing
 } from '@permobil/nativescript';
 import { validate } from 'email-validator';
-import * as Kinvey from 'kinvey-nativescript-sdk';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import { PrivacyPolicyComponent } from '..';
 import {

@@ -1,4 +1,5 @@
 import { Component, NgZone, ViewContainerRef } from '@angular/core';
+import { User as KinveyUser } from '@bradmartin/kinvey-nativescript-sdk';
 import {
   BottomSheetOptions,
   BottomSheetService
@@ -14,16 +15,15 @@ import {
   Label,
   Page,
   Screen,
-  StackLayout
+  StackLayout,
+  Utils
 } from '@nativescript/core';
-import { setTimeout } from '@nativescript/core/timer';
 import {
   DateTimePicker,
   DateTimePickerStyle
 } from '@nativescript/datetimepicker';
 import { TranslateService } from '@ngx-translate/core';
 import { subYears } from 'date-fns';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import * as LS from 'nativescript-localstorage';
 import { Sentry } from 'nativescript-sentry';
@@ -1052,7 +1052,7 @@ export class ProfileTabComponent {
   }
 
   onPushTrackerE2SerialNumberTap(_) {
-    alert({
+    Dialogs.alert({
       title: this._translateService.instant(
         'profile-tab.pushtracker-e2-serial-number-dialog-title'
       ),
@@ -1087,8 +1087,8 @@ export class ProfileTabComponent {
         ProfileTabComponent.name,
         'Could not update the user - ' + err
       );
-      setTimeout(() => {
-        alert({
+      Utils.setTimeout(() => {
+        Dialogs.alert({
           title: this._translateService.instant(
             'profile-tab.network-error.title'
           ),
@@ -1316,7 +1316,7 @@ export class ProfileTabComponent {
       ProfileTabComponent.name,
       `Wrong device entered/scanned --- text: ${text}, forDevices: ${forDevices}`
     );
-    setTimeout(() => {
+    Utils.setTimeout(() => {
       let message = '';
       let title = '';
       if (forDevices.includes('smartdrive')) {
@@ -1334,7 +1334,7 @@ export class ProfileTabComponent {
           'profile-tab.bad-pushtracker-serial-message'
         );
       }
-      alert({
+      Dialogs.alert({
         title: title,
         message: message,
         okButtonText: this._translateService.instant('profile-tab.ok')

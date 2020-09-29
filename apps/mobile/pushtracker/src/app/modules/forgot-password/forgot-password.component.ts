@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { User as KinveyUser } from '@bradmartin/kinvey-nativescript-sdk';
 import { RouterExtensions } from '@nativescript/angular/router';
 import {
   ApplicationSettings as appSettings,
@@ -13,7 +14,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { preventKeyboardFromShowing } from '@permobil/nativescript';
 import { validate } from 'email-validator';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { AppResourceIcons, APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
 

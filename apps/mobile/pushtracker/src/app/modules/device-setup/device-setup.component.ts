@@ -1,5 +1,6 @@
 import { Component, NgZone, Optional } from '@angular/core';
 import { Router } from '@angular/router';
+import { User as KinveyUser } from '@bradmartin/kinvey-nativescript-sdk';
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 import { ModalDialogParams } from '@nativescript/angular';
 import {
@@ -10,7 +11,6 @@ import {
   Page
 } from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ToastDuration, Toasty } from 'nativescript-toasty';
 import { APP_THEMES, CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
 import { PushTracker, PushTrackerUser } from '../../models';

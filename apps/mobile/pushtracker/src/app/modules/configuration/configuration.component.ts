@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { User as KinveyUser } from '@bradmartin/kinvey-nativescript-sdk';
 import { ApplicationSettings as appSettings, Page } from '@nativescript/core';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { CONFIGURATIONS } from '../../enums';
 import { PushTrackerUser } from '../../models';
 
@@ -14,10 +14,7 @@ export class ConfigurationComponent implements OnInit {
   public CONFIGURATIONS = CONFIGURATIONS;
   private _user: PushTrackerUser;
 
-  constructor(
-    private _router: Router,
-    private _page: Page
-  ) {
+  constructor(private _router: Router, private _page: Page) {
     this._page.actionBarHidden = true;
   }
 

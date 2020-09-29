@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
+import * as Kinvey from '@bradmartin/kinvey-nativescript-sdk';
 import { MapboxKeys } from '@maxmobility/private-keys';
 import { Enums, Http } from '@nativescript/core';
 import { getCurrentLocation } from '@nativescript/geolocation';
-import * as Kinvey from 'kinvey-nativescript-sdk';
 
 // see https://www.mapbox.com/api-documentation/?language=cURL#retrieve-places-near-a-location
 

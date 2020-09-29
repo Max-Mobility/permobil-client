@@ -4,9 +4,9 @@ import { platformNativeScriptDynamic } from '@nativescript/angular';
  * be sure to keep the above imports first
  */
 import { enableProdMode } from '@angular/core';
+import 'reflect-metadata';
 import { Application, ApplicationSettings, isIOS } from '@nativescript/core';
 import * as themes from 'nativescript-themes';
-import 'reflect-metadata';
 import { AppModule } from './app/app.module';
 import { APP_THEMES, STORAGE_KEYS } from './app/enums';
 import { Ratings } from './app/utils/ratings-utils';

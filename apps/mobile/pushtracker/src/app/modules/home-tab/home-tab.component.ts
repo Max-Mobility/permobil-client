@@ -1,14 +1,14 @@
 import { Component, NgZone, ViewContainerRef } from '@angular/core';
+import { User as KinveyUser } from '@bradmartin/kinvey-nativescript-sdk';
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 import { ModalDialogService } from '@nativescript/angular';
 import {
-  ApplicationSettings as appSettings, Color,
+  ApplicationSettings as appSettings,
+  Color,
   ObservableArray,
-
   Screen
 } from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import { Toasty } from 'nativescript-toasty';
 import { ActivityComponent } from '..';
@@ -22,8 +22,8 @@ import { DeviceBase, PushTracker, PushTrackerUser } from '../../models';
 import {
   ActivityService,
   BluetoothService,
-
-  LoggingService, SmartDriveUsageService
+  LoggingService,
+  SmartDriveUsageService
 } from '../../services';
 import {
   convertToMilesIfUnitPreferenceIsMiles,

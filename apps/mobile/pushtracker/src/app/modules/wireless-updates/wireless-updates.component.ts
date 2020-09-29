@@ -4,6 +4,10 @@ import {
   OnInit,
   ViewContainerRef
 } from '@angular/core';
+import {
+  Files as KinveyFiles,
+  Query as KinveyQuery
+} from '@bradmartin/kinvey-nativescript-sdk';
 import { ModalDialogParams, ModalDialogService } from '@nativescript/angular';
 import {
   AndroidActivityBackPressedEventData,
@@ -19,10 +23,6 @@ import {
   Screen
 } from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  Files as KinveyFiles,
-  Query as KinveyQuery
-} from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import last from 'lodash/last';
 import throttle from 'lodash/throttle';

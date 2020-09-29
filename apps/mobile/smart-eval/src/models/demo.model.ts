@@ -1,6 +1,6 @@
 // import { PushTracker } from '@maxmobility/core';
 // import { LocationService } from '@maxmobility/mobile';
-import { Kinvey } from 'kinvey-nativescript-sdk';
+import { Kinvey } from '@bradmartin/kinvey-nativescript-sdk';
 import * as LS from 'nativescript-localstorage';
 import { Observable } from 'tns-core-modules/data/observable';
 import * as imageSource from 'tns-core-modules/image-source';

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Query as KinveyQuery } from '@bradmartin/kinvey-nativescript-sdk';
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 import { ModalDialogParams } from '@nativescript/angular';
 import {
@@ -14,7 +15,6 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { PushTrackerUser } from '@permobil/core';
 import { differenceInCalendarDays } from 'date-fns';
-import { Query as KinveyQuery } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import {
   CalendarFontStyle,

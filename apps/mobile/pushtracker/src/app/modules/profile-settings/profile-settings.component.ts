@@ -5,6 +5,7 @@ import {
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
+import { User as KinveyUser } from '@bradmartin/kinvey-nativescript-sdk';
 import {
   BottomSheetOptions,
   BottomSheetService
@@ -20,12 +21,11 @@ import {
   Dialogs,
   Page,
   PropertyChangeData,
-  Switch
+  Switch,
+  Utils
 } from '@nativescript/core';
-import { setTimeout } from '@nativescript/core/timer';
 import { TranslateService } from '@ngx-translate/core';
 import { Device as PermobilCoreDevice } from '@permobil/core';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import once from 'lodash/once';
 import {
@@ -591,7 +591,7 @@ export class ProfileSettingsComponent implements OnInit {
         ProfileSettingsComponent.name,
         'Could not update the user - ' + err
       );
-      setTimeout(() => {
+      Utils.setTimeout(() => {
         Dialogs.alert({
           title: this._translateService.instant(
             'profile-tab.network-error.title'
@@ -724,7 +724,7 @@ export class ProfileSettingsComponent implements OnInit {
 
   private async _showUpdateWarning(ptsUpToDate: boolean, sdsUpToDate: boolean) {
     // use set timeout so iOS can show the alert
-    setTimeout(() => {
+    Utils.setTimeout(() => {
       if (this._changedSettingsWhichRequireUpdate) {
         this._changedSettingsWhichRequireUpdate = false;
         // Alert user if they are sync-ing settings to a pushtracker
@@ -1068,6 +1068,6 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   private _sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => Utils.setTimeout(resolve, ms));
   }
 }

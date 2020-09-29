@@ -1,4 +1,8 @@
 import { Component, ViewContainerRef } from '@angular/core';
+import {
+  Query as KinveyQuery,
+  User as KinveyUser
+} from '@bradmartin/kinvey-nativescript-sdk';
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 import { ModalDialogService } from '@nativescript/angular';
 import {
@@ -9,7 +13,6 @@ import {
   Page
 } from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Query as KinveyQuery, User as KinveyUser } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
 import { Toasty } from 'nativescript-toasty';
@@ -23,8 +26,8 @@ import {
 import { DeviceBase, PushTrackerUser } from '../../models';
 import {
   ActivityService,
-
-  LoggingService, SmartDriveUsageService
+  LoggingService,
+  SmartDriveUsageService
 } from '../../services';
 import {
   areDatesSame,

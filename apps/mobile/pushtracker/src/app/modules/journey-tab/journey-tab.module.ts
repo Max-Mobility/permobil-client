@@ -4,7 +4,6 @@ import {
   NativeScriptRouterModule
 } from '@nativescript/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgRippleModule } from 'nativescript-ripple';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
@@ -12,8 +11,7 @@ import { SharedModule } from '../shared/shared.module';
     NativeScriptCommonModule,
     NativeScriptRouterModule,
     SharedModule,
-    TranslateModule,
-    NgRippleModule
+    TranslateModule
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

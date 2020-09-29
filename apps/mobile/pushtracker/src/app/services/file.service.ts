@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
+import * as Kinvey from '@bradmartin/kinvey-nativescript-sdk';
 import { Http, knownFolders, path } from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
-import * as Kinvey from 'kinvey-nativescript-sdk';
 import * as localStorage from 'nativescript-localstorage';
 import { LoggingService } from './logging.service';
 

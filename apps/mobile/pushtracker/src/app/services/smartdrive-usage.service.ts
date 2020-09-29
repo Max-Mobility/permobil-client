@@ -4,7 +4,7 @@ import {
   DataStoreType,
   Query as KinveyQuery,
   User as KinveyUser
-} from 'kinvey-nativescript-sdk';
+} from '@bradmartin/kinvey-nativescript-sdk';
 import { LoggingService } from './logging.service';
 
 @Injectable()

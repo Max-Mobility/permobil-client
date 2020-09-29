@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
+import * as Kinvey from '@bradmartin/kinvey-nativescript-sdk';
 import {
-  Http, isIOS,
+  Http,
+  isIOS,
   knownFolders,
   ObservableArray,
   path
 } from '@nativescript/core';
-import * as Kinvey from 'kinvey-nativescript-sdk';
 import * as LS from 'nativescript-localstorage';
 
 @Injectable()

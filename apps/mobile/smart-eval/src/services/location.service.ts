@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Kinvey } from '@bradmartin/kinvey-nativescript-sdk';
 import { MapboxKeys } from '@maxmobility/private-keys';
-import { Kinvey } from 'kinvey-nativescript-sdk';
 import * as geolocation from 'nativescript-geolocation';
 import * as httpModule from 'tns-core-modules/http';
 import { Accuracy } from 'tns-core-modules/ui/enums'; // used to describe at what accuracy the location should be get

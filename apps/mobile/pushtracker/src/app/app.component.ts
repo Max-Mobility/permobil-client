@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import * as Kinvey from '@bradmartin/kinvey-nativescript-sdk';
+import { AppURL, handleOpenURL } from '@bradmartin/nativescript-urlhandler';
 import { SentryKeys } from '@maxmobility/private-keys';
 import { registerElement, RouterExtensions } from '@nativescript/angular';
 import {
@@ -13,9 +15,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { APP_KEY, APP_SECRET } from '@permobil/nativescript';
-import * as Kinvey from 'kinvey-nativescript-sdk';
-import { Sentry } from 'nativescript-sentry';
-import { AppURL, handleOpenURL } from 'nativescript-urlhandler';
+// import { Sentry } from 'nativescript-sentry';
 import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService } from './services';
 import { applyTheme } from './utils';
@@ -28,7 +28,7 @@ registerElement(
 );
 registerElement(
   'PreviousNextView',
-  () => require('nativescript-iqkeyboardmanager').PreviousNextView
+  () => require('@nativescript/iqkeyboardmanager').PreviousNextView
 );
 registerElement(
   'PullToRefresh',
@@ -46,7 +46,7 @@ export class AppComponent implements OnInit {
     private _router: RouterExtensions
   ) {
     // init sentry - DNS key is in the SmartEvalKinvey package
-    Sentry.init(SentryKeys.PUSHTRACKER_MOBILE_DSN);
+    // Sentry.init();
 
     // Brad - sets the default language for ngx-translate
     // *** The value being set must match a translation .json file in assets/i18n/ or it will fail ***

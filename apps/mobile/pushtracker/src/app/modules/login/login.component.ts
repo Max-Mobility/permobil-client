@@ -1,4 +1,5 @@
 import { Component, NgZone, OnInit } from '@angular/core';
+import * as Kinvey from '@bradmartin/kinvey-nativescript-sdk';
 import { RouterExtensions } from '@nativescript/angular';
 import {
   Animation,
@@ -16,7 +17,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { preventKeyboardFromShowing } from '@permobil/nativescript';
 import { validate } from 'email-validator';
-import * as Kinvey from 'kinvey-nativescript-sdk';
 import { LottieView } from 'nativescript-lottie';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';

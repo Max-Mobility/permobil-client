@@ -6,7 +6,6 @@ import {
 } from '@nativescript/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
-import { NgRippleModule } from 'nativescript-ripple';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
@@ -15,8 +14,7 @@ import { SharedModule } from '../shared/shared.module';
     NativeScriptRouterModule,
     NativeScriptFormsModule,
     SharedModule,
-    TranslateModule,
-    NgRippleModule
+    TranslateModule
   ],
   providers: [BarcodeScanner],
   schemas: [NO_ERRORS_SCHEMA]

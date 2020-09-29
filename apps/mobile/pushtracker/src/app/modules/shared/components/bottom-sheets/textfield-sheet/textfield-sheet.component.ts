@@ -3,9 +3,9 @@ import { BottomSheetParams } from '@nativescript-community/ui-material-bottomshe
 import {
   ApplicationSettings as appSettings,
   isAndroid,
-  TextField
+  TextField,
+  Utils
 } from '@nativescript/core';
-import { setTimeout } from '@nativescript/core/timer';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../../enums';
 
 declare const IQKeyboardManager: any;
@@ -52,7 +52,7 @@ export class TextFieldSheetComponent {
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
+    Utils.setTimeout(() => {
       if (this.textField) (this.textField.nativeElement as TextField).focus();
       // Move cursor to end of text field
       if (isAndroid) {

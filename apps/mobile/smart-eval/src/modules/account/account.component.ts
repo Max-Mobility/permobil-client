@@ -1,13 +1,19 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Kinvey } from '@bradmartin/kinvey-nativescript-sdk';
 import { TranslateService } from '@ngx-translate/core';
-import { Kinvey } from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
 import * as appversion from 'nativescript-appversion';
 import * as camera from 'nativescript-camera';
-import { SelectedIndexChangedEventData, ValueList } from 'nativescript-drop-down';
+import {
+  SelectedIndexChangedEventData,
+  ValueList
+} from 'nativescript-drop-down';
 import * as email from 'nativescript-email';
-import { ImageCropper, Result as ImageCropperResult } from 'nativescript-imagecropper';
+import {
+  ImageCropper,
+  Result as ImageCropperResult
+} from 'nativescript-imagecropper';
 import * as LS from 'nativescript-localstorage';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import { Subscription } from 'rxjs';
@@ -19,7 +25,12 @@ import { isIOS } from 'tns-core-modules/platform';
 import { alert, confirm, prompt } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
 import { Demo, DidYouKnow, User, UserTypes } from '../../models';
-import { DemoService, FileService, LoggingService, UserService } from '../../services';
+import {
+  DemoService,
+  FileService,
+  LoggingService,
+  UserService
+} from '../../services';
 import { APP_KEY, HOST_URL } from '../../utils/kinvey-keys';
 
 @Component({
