@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" package="__PACKAGE__">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools" package="__PACKAGE__">
 
   <supports-screens android:smallScreens="true" android:normalScreens="true" android:largeScreens="true" android:xlargeScreens="true"/>
 
@@ -26,26 +27,28 @@
 
       <meta-data android:name="SET_THEME_ON_LAUNCH" android:resource="@style/AppTheme" />
 
+      <meta-data android:name="io.sentry.dsn" android:value="https://398940c4c03b4bb48554d43ba24547a1@o138545.ingest.sentry.io/1485862" />
+
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
-   </intent-filter>
+      </intent-filter>
 
-   <intent-filter>
-     <action android:name="android.intent.action.VIEW" />
-     <category android:name="android.intent.category.DEFAULT" />
-     <category android:name="android.intent.category.BROWSABLE" />
-     <!-- accepts URLs that begin with "permobil://pushtracker" -->
-     <data android:scheme="permobil" android:host="pushtracker" />
-   </intent-filter>
-   <intent-filter>
-     <action android:name="android.intent.action.VIEW" />
-     <category android:name="android.intent.category.DEFAULT" />
-     <category android:name="android.intent.category.BROWSABLE" />
-     <!-- accepts URLs that begin with "https://com.permobil.pushtracker" -->
-     <data android:scheme="https" android:host="__PACKAGE__" />
-   </intent-filter>
-  </activity>
-  <activity android:screenOrientation="portrait" android:name="com.tns.ErrorReportActivity"/>
- </application>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <!-- accepts URLs that begin with "permobil://pushtracker" -->
+        <data android:scheme="permobil" android:host="pushtracker" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <!-- accepts URLs that begin with "https://com.permobil.pushtracker" -->
+        <data android:scheme="https" android:host="__PACKAGE__" />
+      </intent-filter>
+    </activity>
+    <activity android:screenOrientation="portrait" android:name="com.tns.ErrorReportActivity"/>
+  </application>
 </manifest>
