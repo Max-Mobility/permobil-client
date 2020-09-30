@@ -11,7 +11,7 @@ import {
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
-import { action, alert } from '@nativescript/core/ui/dialogs';
+import { action, alert, confirm } from '@nativescript/core/ui/dialogs';
 import { AnimationCurve } from '@nativescript/core/ui/enums';
 import { ScrollView } from '@nativescript/core/ui/scroll-view';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
@@ -565,12 +565,22 @@ export class MainViewModel extends Observable {
     this._clearPowerAssistTimeout();
     // disable power assist
     this.disablePowerAssist();
-    // and alert the user that we timed out
-    alert({
-      title: L('failures.title'),
-      message: L('failures.power-assist-timeout'),
-      okButtonText: L('buttons.ok')
-    });
+    const showDialog = appSettings.getBoolean(DataKeys.SHOULD_SHOW_POWER_ASSIST_TIMEOUT, true);
+    if (showDialog) {
+      // and alert the user that we timed out
+      confirm({
+        title: L('failures.title'),
+        message: L('failures.power-assist-timeout'),
+        okButtonText: L('buttons.dismiss'),
+        cancelButtonText: L('buttons.do-not-show-again'),
+        cancelable: false
+      }).then((res: boolean) => {
+        // res is TRUE if they pressed OK (dismiss) and FALSE if they
+        // pressed CANCEL (do not show again), s owe can simply store
+        // the result
+        appSettings.setBoolean(DataKeys.SHOULD_SHOW_POWER_ASSIST_TIMEOUT, res);
+      });
+    }
   }
 
   private _enablingPowerAssist: boolean = false;
