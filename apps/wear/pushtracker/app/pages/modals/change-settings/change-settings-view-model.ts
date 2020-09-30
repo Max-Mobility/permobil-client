@@ -6,10 +6,8 @@ import {
 } from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
-import { device } from '@nativescript/core/platform';
 import { alert, confirm } from '@nativescript/core/ui/dialogs';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
-import { DataKeys as PermobilDataKeys, Log } from '@permobil/core';
 import { getDefaultLang, setDefaultLang, L, Prop, restartAndroidApp } from '@permobil/nativescript';
 import * as LS from 'nativescript-localstorage';
 import { DataKeys } from '../../../enums';
