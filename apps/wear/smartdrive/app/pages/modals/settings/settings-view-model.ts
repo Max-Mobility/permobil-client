@@ -10,7 +10,6 @@ import {
 } from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import { getFile } from '@nativescript/core/http';
-import { device } from '@nativescript/core/platform';
 import { alert, confirm } from '@nativescript/core/ui/dialogs';
 import { Device, Log, wait } from '@permobil/core';
 import {
@@ -21,7 +20,6 @@ import {
   restartAndroidApp
 } from '@permobil/nativescript';
 import { Sentry } from 'nativescript-sentry';
-import { DataKeys } from '../../../enums';
 import { WatchSettings } from '../../../models';
 import { SettingsService, SmartDriveKinveyService } from '../../../services';
 import {
