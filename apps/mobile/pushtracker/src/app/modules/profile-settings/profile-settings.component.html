@@ -102,12 +102,12 @@
                 width="30"
 	              margin="10"
                 class="align-center"
-                [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'bluetooth_default.json' : 'bluetooth_dark.json'"
+                [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'res://bluetooth_default.json' : 'res://bluetooth_dark.json'"
                 loop="true"
                 autoPlay="true"
                 *ngIf="!syncSuccessful"
               ></LottieView>
-              <LottieView height="30" width="30" class="align-center" src="success.json" loop="false" autoPlay="true" *ngIf="syncSuccessful || !syncingWithSmartDrive"></LottieView>
+              <LottieView height="30" width="30" class="align-center" src="res://success.json" loop="false" autoPlay="true" *ngIf="syncSuccessful || !syncingWithSmartDrive"></LottieView>
               <Label horizontalAlignment="center" verticalAlignment="center" class="sync-status" [text]="syncState" *ngIf="syncingWithSmartDrive"></Label>
             </StackLayout>
           </GridLayout>

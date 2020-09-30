@@ -2,8 +2,8 @@
   <Label row="0" col="0" [text]="'device-setup.title' | translate" class="device-setup-title" textWrap="true"></Label>
   <GridLayout row="1" col="0" rows="auto, auto, auto, *" columns="*">
     // Main Lottie
-    <LottieView row="0" src="PushTracker_E2.json" class="align-center" loop="true" autoPlay="true" width="100%" height="40%" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE"></LottieView>
-    <LottieView row="0" src="PushTracker.json" class="align-center" loop="true" autoPlay="true" width="100%" height="40%" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE"> </LottieView>
+    <LottieView row="0" src="res://PushTracker_E2.json" class="align-center" loop="true" autoPlay="true" width="100%" height="40%" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE"></LottieView>
+    <LottieView row="0" src="res://PushTracker.json" class="align-center" loop="true" autoPlay="true" width="100%" height="40%" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE"> </LottieView>
 
     // Slide Title
     <label row="1" [text]="slide['Label']" class="slideTitle" textWrap="true"></label>
@@ -26,13 +26,13 @@
               width="30"
 	            margin="10"
               class="align-center"
-              [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'bluetooth_default.json' : 'bluetooth_dark.json'"
+              [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'res://bluetooth_default.json' : 'res://bluetooth_dark.json'"
               loop="true"
               autoPlay="true"
               *ngIf="!showDoneButton && !showFailure && slide"
             ></LottieView>
-            <LottieView height="25" width="25" margin="10" class="align-center" src="success_green.json" loop="false" autoPlay="true" *ngIf="showDoneButton"></LottieView>
-            <LottieView height="25" width="25" margin="10" class="align-center" src="failure_red.json" loop="false" autoPlay="true" *ngIf="showFailure"></LottieView>
+            <LottieView height="25" width="25" margin="10" class="align-center" src="res://success_green.json" loop="false" autoPlay="true" *ngIf="showDoneButton"></LottieView>
+            <LottieView height="25" width="25" margin="10" class="align-center" src="res://failure_red.json" loop="false" autoPlay="true" *ngIf="showFailure"></LottieView>
             <Label class="device-setup-status-label align-center" textWrap="true" [text]="statusMessage"></Label>
           </StackLayout>
 
