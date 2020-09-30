@@ -1,10 +1,10 @@
 export enum DataKeys {
   'USER_IDENTIFIER' = 'user_identifier',
   'SHOULD_SHOW_PERMISSIONS_REQUEST' = 'should_show_permissions_request',
+  'SHOULD_SHOW_POWER_ASSIST_TIMEOUT' = 'should_show_power_assist_timeout',
   'HEART_RATE' = 'heart_rate',
   'WATCH_SERIAL_NUMBER' = 'watch.serial-number',
   'REQUIRE_WATCH_BEING_WORN' = 'watch.require-being-worn',
-  'APP_LANGUAGE_FILE' = 'watch.language',
   'SD_SETTINGS_DIRTY_FLAG' = 'sd.settings.dirty-flag',
   'SD_ESTIMATED_RANGE' = 'sd.estimated_range',
   'SD_DISTANCE_DAILY' = 'sd.distance.daily',

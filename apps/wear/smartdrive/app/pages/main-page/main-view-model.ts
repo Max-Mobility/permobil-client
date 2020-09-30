@@ -332,6 +332,14 @@ export class MainViewModel extends Observable {
     this.displayTime = !this.displayTime;
   }
 
+  async onSetTimeTap() {
+    // open the date/time settings page
+    const intent = new android.content.Intent(
+      android.provider.Settings.ACTION_DATE_SETTINGS
+    );
+    application.android.foregroundActivity.startActivity(intent);
+  }
+
   async onConnectPushTrackerTap() {
     if (!this._checkPackageInstalled('com.permobil.pushtracker')) {
       this._openInPlayStore('com.permobil.pushtracker');
@@ -360,7 +368,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-          }`,
+            }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -560,12 +568,22 @@ export class MainViewModel extends Observable {
     this._clearPowerAssistTimeout();
     // disable power assist
     this.disablePowerAssist();
-    // and alert the user that we timed out
-    alert({
-      title: L('failures.title'),
-      message: L('failures.power-assist-timeout'),
-      okButtonText: L('buttons.ok')
-    });
+    const showDialog = appSettings.getBoolean(DataKeys.SHOULD_SHOW_POWER_ASSIST_TIMEOUT, true);
+    if (showDialog) {
+      // and alert the user that we timed out
+      confirm({
+        title: L('failures.title'),
+        message: L('failures.power-assist-timeout'),
+        okButtonText: L('buttons.dismiss'),
+        cancelButtonText: L('buttons.do-not-show-again'),
+        cancelable: false
+      }).then((res: boolean) => {
+        // res is TRUE if they pressed OK (dismiss) and FALSE if they
+        // pressed CANCEL (do not show again), s owe can simply store
+        // the result
+        appSettings.setBoolean(DataKeys.SHOULD_SHOW_POWER_ASSIST_TIMEOUT, res);
+      });
+    }
   }
 
   private _enablingPowerAssist: boolean = false;
@@ -2055,7 +2073,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     Application.android.foregroundActivity.startActivity(intent);
@@ -2120,7 +2138,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     Application.android.foregroundActivity.startActivity(intent);

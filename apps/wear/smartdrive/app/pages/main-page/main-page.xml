@@ -132,7 +132,7 @@
           <Label text="{{ L('menu.title') }}" class="chart-title" textWrap="true" />
           <Label text="" class="hr-blue" />
         </StackLayout>
-        <GridLayout rows="*, *, *, *, *, *" columns="auto, *" loaded="{{ setLeftRightPadding }}" style="z-index: 0;">
+        <GridLayout rows="*, *, *, *, *, *, *" columns="auto, *" loaded="{{ setLeftRightPadding }}" style="z-index: 0;">
           // Settings
           <Label row="0" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
           <Label row="0" col="1" text="{{ L('menu.settings') }}" class="settings-label" textWrap="true" tap="{{ onSettingsTap }}" />
@@ -145,12 +145,15 @@
           // Updates
           <Label row="3" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
           <Label row="3" col="1" text="{{ L('menu.updates') }}" class="settings-label" textWrap="true" tap="{{ onUpdatesTap }}" />
-          // Pair SmartDrive
+          // Set Time
           <Label row="4" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
-          <Label row="4" col="1" text="{{ L('settings.pair-smartdrive') }}" class="settings-label" textWrap="true" tap="{{ onPairingTap }}" />
+          <Label row="4" col="1" text="{{ L('settings.set-time') }}" class="settings-label" textWrap="true" tap="{{ onSetTimeTap }}" />
+          // Pair SmartDrive
+          <Label row="5" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
+          <Label row="5" col="1" text="{{ L('settings.pair-smartdrive') }}" class="settings-label" textWrap="true" tap="{{ onPairingTap }}" />
           // Connect PushTracker
-          <Label row="5" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" marginBottom="{{ insetPadding }}" />
-          <Label row="5" col="1" text="{{ L('settings.connect-pushtracker') }}" class="settings-label" textWrap="true" tap="{{ onConnectPushTrackerTap }}" marginBottom="{{ insetPadding }}" />
+          <Label row="6" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" marginBottom="{{ insetPadding }}" />
+          <Label row="6" col="1" text="{{ L('settings.connect-pushtracker') }}" class="settings-label" textWrap="true" tap="{{ onConnectPushTrackerTap }}" marginBottom="{{ insetPadding }}" />
         </GridLayout>
       </StackLayout>
 

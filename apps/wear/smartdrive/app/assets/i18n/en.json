@@ -23,6 +23,7 @@
     "deny": "Deny",
     "disable": "Disable",
     "dismiss": "Dismiss",
+    "do-not-show-again": "Do not show again",
     "enable": "Enable",
     "ok": "OK"
   },
@@ -212,6 +213,7 @@
     },
     "scanning": "Scanning for SmartDrive to pair with...",
     "select-smartdrive": "Select SmartDrive",
+    "set-time": "Date & Time",
     "syncing-with-server": "Synchronizing with server...",
     "tap-sensitivity": "Tap Sensitivity",
     "title": "SmartDrive Settings",
