@@ -1,5 +1,4 @@
 import { Observable } from '@nativescript/core';
-import { device } from '@nativescript/core/platform';
 import { mod } from '@permobil/core';
 import { L, getDefaultLang } from '@permobil/nativescript/src/utils';
 
