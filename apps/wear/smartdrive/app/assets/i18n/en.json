@@ -212,6 +212,7 @@
     },
     "scanning": "Scanning for SmartDrive to pair with...",
     "select-smartdrive": "Select SmartDrive",
+    "set-time": "Date & Time",
     "syncing-with-server": "Synchronizing with server...",
     "tap-sensitivity": "Tap Sensitivity",
     "title": "SmartDrive Settings",

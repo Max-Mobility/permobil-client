@@ -329,6 +329,14 @@ export class MainViewModel extends Observable {
     this.displayTime = !this.displayTime;
   }
 
+  async onSetTimeTap() {
+    // open the date/time settings page
+    const intent = new android.content.Intent(
+      android.provider.Settings.ACTION_DATE_SETTINGS
+    );
+    application.android.foregroundActivity.startActivity(intent);
+  }
+
   async onConnectPushTrackerTap() {
     if (!this._checkPackageInstalled('com.permobil.pushtracker')) {
       this._openInPlayStore('com.permobil.pushtracker');
@@ -357,7 +365,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-          }`,
+            }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -2045,7 +2053,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -2110,7 +2118,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
