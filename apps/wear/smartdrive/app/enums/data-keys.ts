@@ -4,7 +4,6 @@ export enum DataKeys {
   'HEART_RATE' = 'heart_rate',
   'WATCH_SERIAL_NUMBER' = 'watch.serial-number',
   'REQUIRE_WATCH_BEING_WORN' = 'watch.require-being-worn',
-  'APP_LANGUAGE_FILE' = 'watch.language',
   'SD_SETTINGS_DIRTY_FLAG' = 'sd.settings.dirty-flag',
   'SD_ESTIMATED_RANGE' = 'sd.estimated_range',
   'SD_DISTANCE_DAILY' = 'sd.distance.daily',

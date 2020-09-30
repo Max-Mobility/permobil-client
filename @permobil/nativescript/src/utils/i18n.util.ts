@@ -11,6 +11,10 @@ const getDefaultLang = () => {
   return AppSettings.getString(DataKeys.APP_LANGUAGE_FILE, device.language);
 };
 
+const setDefaultLang = (language: string) => {
+  AppSettings.setString(DataKeys.APP_LANGUAGE_FILE, language);
+};
+
 // The current translation object
 let lang = getDefaultLang();
 const translations = {};
@@ -100,7 +104,7 @@ const get = (k, obj) => {
 const L = (...args: any[]) => {
   let translated = get(args[0], translations['en']) || args[0];
   try {
-    translated = get(args[0], translations[lang]) || args[0];
+    translated = get(args[0], translations[lang]) || translated;
   } catch {
     // do nothing - we have our defaults
   }
@@ -113,4 +117,4 @@ setResources(applicationResources);
 // @ts-ignore
 global.L = L;
 
-export { getDefaultLang, use, load, update, L };
+export { getDefaultLang, setDefaultLang, use, load, update, L };

@@ -6,11 +6,9 @@ import {
 } from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
-import { device } from '@nativescript/core/platform';
 import { alert, confirm } from '@nativescript/core/ui/dialogs';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
-import { DataKeys as PermobilDataKeys, Log } from '@permobil/core';
-import { L, Prop, restartAndroidApp } from '@permobil/nativescript';
+import { getDefaultLang, setDefaultLang, L, Prop, restartAndroidApp } from '@permobil/nativescript';
 import * as LS from 'nativescript-localstorage';
 import { DataKeys } from '../../../enums';
 import { Profile } from '../../../namespaces';
@@ -88,10 +86,7 @@ export class ChangeSettingsViewModel extends Observable {
         cancelable: true
       }).then(res => {
         if (res === true) {
-          appSettings.setString(
-            PermobilDataKeys.APP_LANGUAGE_FILE,
-            this._settings.language
-          );
+          setDefaultLang(this._settings.language);
           sentryBreadCrumb(
             `User confirmed language file change ${this._settings.language}`
           );
@@ -99,10 +94,7 @@ export class ChangeSettingsViewModel extends Observable {
           restartAndroidApp();
         } else {
           // revert back the watch settings language if the user cancels the change
-          this._settings.language = appSettings.getString(
-            PermobilDataKeys.APP_LANGUAGE_FILE,
-            device.language
-          );
+          this._settings.language = getDefaultLang();
           this.saveSettings();
         }
       });
