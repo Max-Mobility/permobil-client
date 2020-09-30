@@ -24,7 +24,7 @@
     "nativescript-bluetooth": "file:../../../forked-plugins/nativescript-bluetooth-2.0.0.tgz",
     "nativescript-localstorage": "file:../../../forked-plugins/nativescript-localstorage-2.0.1.tgz",
     "nativescript-permissions": "file:../../../forked-plugins/nativescript-permissions-1.3.9.tgz",
-    "nativescript-sentry": "file:../../../forked-plugins/nativescript-sentry-2.0.0.tgz",
+    "nativescript-sentry": "~2.0.0",
     "nativescript-sqlite": "file:../../../forked-plugins/nativescript-sqlite-2.6.4.tgz",
     "nativescript-theme-core": "~1.0.6",
     "nativescript-themes": "file:../../../forked-plugins/nativescript-themes-2.0.2.tgz",

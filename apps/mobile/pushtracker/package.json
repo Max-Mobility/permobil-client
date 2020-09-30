@@ -21,7 +21,7 @@
     "@nativescript/geolocation": "~7.0.0",
     "@nativescript/iqkeyboardmanager": "~2.0.0",
     "@nativescript-community/ui-material-bottomsheet": "~5.0.10",
-    "@ngx-translate/core": "~13.0.0",
+    "@ngx-translate/core": "^13.0.0",
     "@nstudio/nativescript-loading-indicator": "~4.0.0",
     "@nstudio/nativescript-mapbox": "rc",
     "@nstudio/nativescript-pulltorefresh": "~3.0.1",

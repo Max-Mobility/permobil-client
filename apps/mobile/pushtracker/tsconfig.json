@@ -37,8 +37,5 @@
     "node_modules",
     "platforms",
     "../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/demo/**/*.ts"
-  ],
-  "angularCompilerOptions": {
-    "enableIvy": false
-  }
+  ]
 }

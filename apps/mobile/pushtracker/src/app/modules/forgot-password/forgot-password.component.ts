@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { User as KinveyUser } from '@bradmartin/kinvey-nativescript-sdk';
-import { RouterExtensions } from '@nativescript/angular/router';
+import { RouterExtensions } from '@nativescript/angular';
 import {
   ApplicationSettings as appSettings,
   Device,
