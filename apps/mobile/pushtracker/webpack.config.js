@@ -59,6 +59,10 @@ module.exports = env => {
     resolve(
       __dirname,
       'node_modules/nativescript-bluetooth/android/TNS_ScanCallback'
+    ),
+    resolve(
+      __dirname,
+      'node_modules/@maxmobility/nativescript-wear-os-comms/android/wear-os-comms'
     )
   ];
 
@@ -143,6 +147,11 @@ module.exports = env => {
     },
     {
       from: 'fonts/**',
+      noErrorOnMissing: true,
+      globOptions: { dot: false, ...copyIgnore }
+    },
+    {
+      from: '**/i18n/**',
       noErrorOnMissing: true,
       globOptions: { dot: false, ...copyIgnore }
     }
