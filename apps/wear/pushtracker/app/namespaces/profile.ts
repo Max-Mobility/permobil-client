@@ -1,5 +1,6 @@
-import { Device, Observable } from '@nativescript/core';
+import { Observable } from '@nativescript/core';
 import { mod } from '@permobil/core';
+import { L, getDefaultLang } from '@permobil/nativescript/src/utils';
 
 export class Profile extends Observable {
   public settings = new Profile.Settings();
@@ -47,20 +48,7 @@ export namespace Profile {
 
   export class Settings extends Observable {
     static Languages = class {
-      static Options: string[] = [
-        'da',
-        'de',
-        'en',
-        'es',
-        'fr',
-        'it',
-        'ja',
-        'ko',
-        'nb',
-        'nl',
-        'sv',
-        'zh'
-      ];
+      static Options: string[];
     };
 
     public static Defaults = {
@@ -71,7 +59,7 @@ export namespace Profile {
       height: 1.778, // meters
       weight: 80, // kg
       units: Profile.Units.Default,
-      language: Device.language
+      language: getDefaultLang()
     };
 
     chairMake: string = Profile.Settings.Defaults.chairMake;
@@ -85,6 +73,7 @@ export namespace Profile {
 
     constructor() {
       super();
+      Profile.Settings.Languages.Options = Object.keys(L('language-list'));
     }
 
     getHeightDisplay(): string {
