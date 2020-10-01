@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
+import { Kinvey } from '@bradmartin/kinvey-nativescript-sdk';
 import { TranslateService } from '@ngx-translate/core';
-import { Kinvey } from 'kinvey-nativescript-sdk';
 import * as mustache from 'mustache';
 import { RouterExtensions } from 'nativescript-angular/router';
 import * as email from 'nativescript-email';
@@ -193,21 +193,21 @@ export class SummaryComponent {
       pushDiff: this.pushDiff.toFixed(0),
       coastDiff: this.coastDiff.toFixed(1),
       speedDiff: this.speedDiff.toFixed(1),
-      toFixed: function() {
+      toFixed: function () {
         let str = this.toFixed(2);
         if (!str.length) {
           str = '0';
         }
         return str;
       },
-      round: function() {
+      round: function () {
         let str = this.toFixed(0);
         if (!str.length) {
           str = '0';
         }
         return str;
       },
-      toTimeString: function() {
+      toTimeString: function () {
         return Trial.timeToString(this * 60);
       },
       pushComparison: () => {

@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.util.Log;
 
-import io.sentry.Sentry;
+import io.sentry.core.Sentry;
 
 import com.google.gson.Gson;
 
@@ -168,7 +168,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
       }
     } catch (Exception e) {
       Log.e(TAG, "Exception updating data in table: " + e.getMessage());
-      Sentry.capture(e);
+      Sentry.captureException(e);
     }
 
     db.close();
@@ -206,7 +206,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
       Log.d(TAG, "Saving new RECORD to SQL Table: " + data._id);
     } catch (Exception e) {
       Log.e(TAG, "Exception adding data to table: " + e.getMessage());
-      Sentry.capture(e);
+      Sentry.captureException(e);
     }
 
     db.close();
@@ -224,7 +224,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
       Log.d(TAG, "Marking record as sent in SQL Table: " + id);
     } catch (Exception e) {
       Log.e(TAG, "Exception marking record as sent in table: " + e.getMessage());
-      Sentry.capture(e);
+      Sentry.captureException(e);
     }
 
     db.close();
@@ -246,7 +246,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
       Log.d(TAG, "Updating RECORD in SQL Table: " + data._id);
     } catch (Exception e) {
       Log.e(TAG, "Exception updating data in table: " + e.getMessage());
-      Sentry.capture(e);
+      Sentry.captureException(e);
     }
 
     db.close();
@@ -283,7 +283,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Log.d(TAG, "record id: " + index + " - " + uuid);
       } catch (Exception e) {
         Log.e(TAG, "Exception parsing json:" + e.getMessage());
-        Sentry.capture(e);
+        Sentry.captureException(e);
       }
     }
 
@@ -330,7 +330,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         } while (cursor.moveToNext());
       } catch (Exception e) {
         Log.e(TAG, "Exception parsing json:" + e.getMessage());
-        Sentry.capture(e);
+        Sentry.captureException(e);
       }
     }
 
@@ -371,7 +371,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Log.d(TAG, "record id: " + index + " - " + record.id);
       } catch (Exception e) {
         Log.e(TAG, "Exception getting record from db:" + e.getMessage());
-        Sentry.capture(e);
+        Sentry.captureException(e);
       }
     }
 

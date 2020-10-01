@@ -1,12 +1,19 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import {
+  BottomSheetOptions,
+  BottomSheetService
+} from '@nativescript-community/ui-material-bottomsheet/angular';
 import { ModalDialogParams } from '@nativescript/angular';
-import { isIOS } from '@nativescript/core';
-import { EventData, ItemEventData, TextField } from '@nativescript/core';
-import { openUrl } from '@nativescript/core/utils/utils';
-import { validate } from 'email-validator';
-import { compose } from 'nativescript-email';
+import {
+  EventData,
+  isIOS,
+  ItemEventData,
+  TextField,
+  Utils
+} from '@nativescript/core';
+import { compose } from '@nativescript/email';
 import { TranslateService } from '@ngx-translate/core';
-import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
+import { validate } from 'email-validator';
 import { LoggingService } from '../../services';
 import { ListPickerSheetComponent } from '../shared/components';
 
@@ -19,7 +26,9 @@ export class SupportComponent implements OnInit {
   supportItems;
   searchPhrase: string = '';
 
-  allCategory: string = this._translateService.instant('support-component.category.all');
+  allCategory: string = this._translateService.instant(
+    'support-component.category.all'
+  );
   selectedCategory: string = this.allCategory;
   categories: string[] = [];
 
@@ -32,7 +41,7 @@ export class SupportComponent implements OnInit {
     private _params: ModalDialogParams,
     private _bottomSheet: BottomSheetService,
     private _vcRef: ViewContainerRef
-  ) { }
+  ) {}
 
   ngOnInit() {
     this._logService.logBreadCrumb(SupportComponent.name, 'OnInit');
@@ -40,13 +49,9 @@ export class SupportComponent implements OnInit {
     // since this is an array object it appears we can't simply pass
     // the parameters as the second argument to the instant function -
     // the templates don't render
-    const faqs = this._translateService.instant(
-      'support-component.faqs'
-    );
+    const faqs = this._translateService.instant('support-component.faqs');
 
-    this.categories = [
-      this.allCategory
-    ];
+    this.categories = [this.allCategory];
 
     this.supportItems = Object.values(faqs).map((i: any) => {
       if (this.categories.indexOf(i.category) === -1) {
@@ -89,8 +94,12 @@ export class SupportComponent implements OnInit {
       viewContainerRef: this._vcRef,
       dismissOnBackgroundTap: true,
       context: {
-        title: this._translateService.instant('support-component.category.title'),
-        description: this._translateService.instant('support-component.category.description'),
+        title: this._translateService.instant(
+          'support-component.category.title'
+        ),
+        description: this._translateService.instant(
+          'support-component.category.description'
+        ),
         primaryItems: this.categories,
         primaryIndex,
         listPickerNeedsSecondary: false
@@ -111,7 +120,7 @@ export class SupportComponent implements OnInit {
 
   async onLinkTapped(link: string) {
     try {
-      const emailRegex = new RegExp('@permobil\.com', 'i');
+      const emailRegex = new RegExp('@permobil.com', 'i');
       const isEmail = emailRegex.test(link);
       if (isEmail || validate(link)) {
         await compose({
@@ -119,13 +128,12 @@ export class SupportComponent implements OnInit {
           body: '',
           to: [link]
         })
-          .then(() => {
-          })
-          .catch((err) => {
+          .then(() => {})
+          .catch(err => {
             this._logService.logException(err);
           });
       } else {
-        openUrl(link);
+        Utils.openUrl(link);
       }
     } catch (err) {
       this._logService.logException(err);
@@ -147,8 +155,12 @@ export class SupportComponent implements OnInit {
     if (this.searchPhrase && this.searchPhrase.length) {
       const regex = new RegExp(this.searchPhrase, 'i');
       const relevant = this._allSupportItems.filter(i => {
-        return regex.test(i.a) || regex.test(i.q) &&
-          (this.selectedCategory === this.allCategory || i.category === this.selectedCategory);
+        return (
+          regex.test(i.a) ||
+          (regex.test(i.q) &&
+            (this.selectedCategory === this.allCategory ||
+              i.category === this.selectedCategory))
+        );
       });
       this.supportItems.splice(0, this.supportItems.length, ...relevant);
       if (this._searchBar) {
@@ -181,7 +193,11 @@ export class SupportComponent implements OnInit {
   onClear() {
     this.selectedCategory = this.allCategory;
     this.searchPhrase = '';
-    this.supportItems.splice(0, this.supportItems.length, ...this._allSupportItems);
+    this.supportItems.splice(
+      0,
+      this.supportItems.length,
+      ...this._allSupportItems
+    );
     if (this._searchBar) {
       this._searchBar.text = '';
       this._searchBar.dismissSoftInput();

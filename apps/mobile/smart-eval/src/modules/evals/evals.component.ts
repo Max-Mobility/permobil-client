@@ -1,9 +1,12 @@
 import { Component, NgZone, OnInit } from '@angular/core';
+import { Kinvey } from '@bradmartin/kinvey-nativescript-sdk';
 import { TranslateService } from '@ngx-translate/core';
-import { Kinvey } from 'kinvey-nativescript-sdk';
 import * as mustache from 'mustache';
 import * as email from 'nativescript-email';
-import { DateResponse, ModalDatetimepicker } from 'nativescript-modal-datetimepicker';
+import {
+  DateResponse,
+  ModalDatetimepicker
+} from 'nativescript-modal-datetimepicker';
 import { Toasty } from 'nativescript-toasty';
 import { isIOS } from 'tns-core-modules/platform';
 import { alert, confirm } from 'tns-core-modules/ui/dialogs';
@@ -312,7 +315,7 @@ export class EvalsComponent implements OnInit {
       coastDiff: this.coastDiff.toFixed(1),
       speedDiff: this.speedDiff.toFixed(1),
       // tslint:disable-next-line:object-literal-shorthand
-      toFixed: function() {
+      toFixed: function () {
         let str = this.toFixed(2);
         if (!str.length) {
           str = '0';
@@ -327,7 +330,7 @@ export class EvalsComponent implements OnInit {
         return str;
       },
       // tslint:disable-next-line:object-literal-shorthand
-      toTimeString: function() {
+      toTimeString: function () {
         return Trial.timeToString(this * 60);
       },
       pushComparison: () => {

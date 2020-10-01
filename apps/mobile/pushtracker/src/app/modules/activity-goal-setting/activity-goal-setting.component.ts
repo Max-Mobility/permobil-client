@@ -1,8 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { User as KinveyUser } from '@bradmartin/kinvey-nativescript-sdk';
 import { ModalDialogParams } from '@nativescript/angular';
-import { TextField } from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import { ApplicationSettings, TextField, Frame } from '@nativescript/core';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { PushTrackerUser } from '../../models';
 import { LoggingService } from '../../services';
@@ -13,7 +12,7 @@ import { LoggingService } from '../../services';
   templateUrl: './activity-goal-setting.component.html'
 })
 export class ActivityGoalSettingComponent implements OnInit {
-  public APP_THEMES = APP_THEMES;
+  APP_THEMES = APP_THEMES;
   config: {
     title: string;
     description: string;
@@ -26,8 +25,7 @@ export class ActivityGoalSettingComponent implements OnInit {
 
   private _user: PushTrackerUser;
 
-  @ViewChild('textField', { read: false, static: false })
-  textField: ElementRef;
+  private _textField: TextField;
 
   constructor(
     private _logService: LoggingService,
@@ -48,13 +46,17 @@ export class ActivityGoalSettingComponent implements OnInit {
     // in this._params.context - So we're not bothering to run this text through the translate
     // service here. https://github.com/Max-Mobility/permobil-client/issues/280
     Object.assign(this.config, this._params.context);
-    this.CURRENT_THEME = appSettings.getString(
+    this.CURRENT_THEME = ApplicationSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
     if (this.config.value && typeof this.config.value === 'number') {
       this.config.value = parseFloat(this.config.value.toFixed(1));
     }
+  }
+
+  textFieldLoaded(args) {
+    this._textField = args.object as TextField;
   }
 
   closeModal() {
@@ -110,8 +112,9 @@ export class ActivityGoalSettingComponent implements OnInit {
   }
 
   onSetGoalBtnTap() {
-    const textField = this.textField.nativeElement as TextField;
-    const goalValue = textField.text;
+    console.log('onSetGoalBtnTap', this._textField);
+    console.log('have the textField');
+    const goalValue = this._textField.text;
 
     // update this.config.value and convert it appropriately
     this._validateGoalValueFromText(goalValue);

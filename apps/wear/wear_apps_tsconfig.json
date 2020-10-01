@@ -1,18 +1,18 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es5",
-    "esModuleInterop": true,
+    "module": "esnext",
+    "target": "es2017",
+    "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "diagnostics": false,
     "noEmitHelpers": true,
-    "noEmitOnError": false,
+    "noEmitOnError": true,
     "skipLibCheck": true,
+    "esModuleInterop": true,
     "removeComments": true,
-    "noImplicitUseStrict": true,
     "declaration": false,
-    "lib": ["es6", "dom", "ES2020", "es2015.iterable"],
+    "noImplicitUseStrict": true,
+    "lib": ["es2017", "dom", "es6"],
     "baseUrl": ".",
     "paths": {
       "~/*": ["app/*"],
@@ -21,7 +21,7 @@
       "@permobil/core/*": ["../../@permobil/core/*"],
       "@permobil/nativescript/*": ["../../@permobil/nativescript/*"],
       "@nativescript/core": [
-        "../../../forked-plugins/nativescript-core-3-9-2020/*"
+        "../../../forked-plugins/nativescript-core-7.0.0/*"
       ],
       "nativescript-bluetooth": [
         "../../forked-plugins/nativescript-bluetooth/*"

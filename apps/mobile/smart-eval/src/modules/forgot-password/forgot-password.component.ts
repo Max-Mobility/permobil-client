@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { User as KinveyUser } from '@bradmartin/kinvey-nativescript-sdk';
 import { RouterExtensions } from '@nativescript/angular';
 import { Page, PropertyChangeData } from '@nativescript/core';
 import { alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
-import { preventKeyboardFromShowing, setMarginForIosSafeArea } from '@permobil/nativescript';
+import {
+  preventKeyboardFromShowing,
+  setMarginForIosSafeArea
+} from '@permobil/nativescript';
 import { validate } from 'email-validator';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { LoggingService, ProgressService, UserService } from '../../services';
 
 @Component({

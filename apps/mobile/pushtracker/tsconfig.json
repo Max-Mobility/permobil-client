@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es5",
-    "esModuleInterop": true,
+    "module": "ESNext",
+    "target": "es2017",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true, // for lodash
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "diagnostics": false,
@@ -13,7 +14,7 @@
     "skipLibCheck": true,
     "noImplicitUseStrict": true,
     "declaration": false,
-    "lib": ["es2017", "dom", "es6"],
+    "lib": ["es2018", "es2017", "dom", "es6"],
     "baseUrl": ".",
     "paths": {
       "~/*": ["src/*"],
@@ -24,19 +25,15 @@
       "*": ["./node_modules/tns-core-modules/*", "./node_modules/*"]
     }
   },
-  "files": ["./src/main.ts"],
   "include": [
+    "./src/main.ts",
+    "./references.d.ts",
     "./src/app/**/*.module.ts",
-    "../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/src/**/*.ts",
-    "../../../@permobil/nativescript/src/**/*.ts",
-    "../../../forked-plugins/nativescript-bluetooth/**/*.ts"
+    "../../../@permobil/nativescript/src/**/*.ts"
   ],
   "exclude": [
     "node_modules",
     "platforms",
-    "../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/demo/**/*.ts"
-  ],
-  "angularCompilerOptions": {
-    "enableIvy": false
-  }
+    "../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/**/*.ts"
+  ]
 }

@@ -11,53 +11,53 @@ export class SmartDrive extends DeviceBase {
   readonly OTAState = SmartDrive.OTAState;
 
   // bluetooth info
-  public static ServiceUUID = '0cd51666-e7cb-469b-8e4d-2742f1ba7723';
-  public static Characteristics = [
+  static ServiceUUID = '0cd51666-e7cb-469b-8e4d-2742f1ba7723';
+  static Characteristics = [
     'e7add780-b042-4876-aae1-112855353cc1',
     'e8add780-b042-4876-aae1-112855353cc1',
     'e9add780-b042-4876-aae1-112855353cc1',
     // 'eaadd780-b042-4876-aae1-112855353cc1',
     'ebadd780-b042-4876-aae1-112855353cc1'
   ];
-  public static BLEOTADataCharacteristic = SmartDrive.Characteristics[0];
-  public static DataCharacteristic = SmartDrive.Characteristics[1];
-  public static ControlCharacteristic = SmartDrive.Characteristics[2];
-  public static BLEOTAControlCharacteristic = SmartDrive.Characteristics[3];
-  // public static BLEOTADongleCharacteristic = SmartDrive.Characteristics[3];
+  static BLEOTADataCharacteristic = SmartDrive.Characteristics[0];
+  static DataCharacteristic = SmartDrive.Characteristics[1];
+  static ControlCharacteristic = SmartDrive.Characteristics[2];
+  static BLEOTAControlCharacteristic = SmartDrive.Characteristics[3];
+  // static BLEOTADongleCharacteristic = SmartDrive.Characteristics[3];
 
   // Event names
-  public static smartdrive_connect_event = 'smartdrive_connect_event';
-  public static smartdrive_disconnect_event = 'smartdrive_disconnect_event';
-  public static smartdrive_service_discovered_event =
+  static smartdrive_connect_event = 'smartdrive_connect_event';
+  static smartdrive_disconnect_event = 'smartdrive_disconnect_event';
+  static smartdrive_service_discovered_event =
     'smartdrive_service_discovered_event';
-  public static smartdrive_characteristic_discovered_event =
+  static smartdrive_characteristic_discovered_event =
     'smartdrive_characteristic_discovered_event';
-  public static smartdrive_ble_version_event = 'smartdrive_ble_version_event';
-  public static smartdrive_mcu_version_event = 'smartdrive_mcu_version_event';
-  public static smartdrive_distance_event = 'smartdrive_distance_event';
-  public static smartdrive_motor_info_event = 'smartdrive_motor_info_event';
-  public static smartdrive_error_event = 'smartdrive_error_event';
+  static smartdrive_ble_version_event = 'smartdrive_ble_version_event';
+  static smartdrive_mcu_version_event = 'smartdrive_mcu_version_event';
+  static smartdrive_distance_event = 'smartdrive_distance_event';
+  static smartdrive_motor_info_event = 'smartdrive_motor_info_event';
+  static smartdrive_error_event = 'smartdrive_error_event';
   // ota events
-  public static smartdrive_ota_ready_event = 'smartdrive_ota_ready_event';
-  public static smartdrive_ota_ready_ble_event =
+  static smartdrive_ota_ready_event = 'smartdrive_ota_ready_event';
+  static smartdrive_ota_ready_ble_event =
     'smartdrive_ota_ready_ble_event';
-  public static smartdrive_ota_ready_mcu_event =
+  static smartdrive_ota_ready_mcu_event =
     'smartdrive_ota_ready_mcu_event';
-  public static smartdrive_ota_status_event = 'smartdrive_ota_status_event'; // sends state, actions, progress
-  public static smartdrive_ota_started_event = 'smartdrive_ota_started_event';
-  public static smartdrive_ota_canceled_event = 'smartdrive_ota_canceled_event';
-  public static smartdrive_ota_completed_event =
+  static smartdrive_ota_status_event = 'smartdrive_ota_status_event'; // sends state, actions, progress
+  static smartdrive_ota_started_event = 'smartdrive_ota_started_event';
+  static smartdrive_ota_canceled_event = 'smartdrive_ota_canceled_event';
+  static smartdrive_ota_completed_event =
     'smartdrive_ota_completed_event';
-  public static smartdrive_ota_failed_event = 'smartdrive_ota_failed_event';
+  static smartdrive_ota_failed_event = 'smartdrive_ota_failed_event';
 
   // NON STATIC:
-  public events: ISmartDriveEvents;
+  events: ISmartDriveEvents;
 
-  // public members
-  public driveDistance: number = 0; // cumulative total distance the smartDrive has driven
-  public coastDistance: number = 0; // cumulative total distance the smartDrive has gone
-  public settings = new Device.Settings();
-  public switchControlSettings = new Device.SwitchControlSettings();
+  // members
+  driveDistance: number = 0; // cumulative total distance the smartDrive has driven
+  coastDistance: number = 0; // cumulative total distance the smartDrive has gone
+  settings = new Device.Settings();
+  switchControlSettings = new Device.SwitchControlSettings();
 
   // not serialized
   @Prop() device: any = null; // the actual bluetooth device associated with this smartdrive
@@ -82,11 +82,11 @@ export class SmartDrive extends DeviceBase {
     }
   }
 
-  public toString(): string {
+  toString(): string {
     return `${this.data()}`;
   }
 
-  public data(): any {
+  data(): any {
     return {
       mcu_version: this.mcu_version,
       ble_version: this.ble_version,
@@ -97,7 +97,7 @@ export class SmartDrive extends DeviceBase {
     };
   }
 
-  public fromObject(obj: any): void {
+  fromObject(obj: any): void {
     this.mcu_version = (obj && obj.mcu_version) || 0xff;
     this.ble_version = (obj && obj.ble_version) || 0xff;
     this.battery = (obj && obj.battery) || 0;
@@ -122,7 +122,7 @@ export class SmartDrive extends DeviceBase {
     return SmartDrive.versionByteToString(this.ble_version);
   }
 
-  public isMcuUpToDate(version: string | number): boolean {
+  isMcuUpToDate(version: string | number): boolean {
     const v =
       typeof version === 'number'
         ? version
@@ -136,7 +136,7 @@ export class SmartDrive extends DeviceBase {
     }, true);
   }
 
-  public isBleUpToDate(version: string | number): boolean {
+  isBleUpToDate(version: string | number): boolean {
     const v =
       typeof version === 'number'
         ? version
@@ -150,7 +150,7 @@ export class SmartDrive extends DeviceBase {
     }, true);
   }
 
-  public isUpToDate(version: string | number): boolean {
+  isUpToDate(version: string | number): boolean {
     const v =
       typeof version === 'number'
         ? version
@@ -176,15 +176,15 @@ export class SmartDrive extends DeviceBase {
     }
   }
 
-  public otaProgressToString(): string {
+  otaProgressToString(): string {
     return `${this.otaProgress.toFixed(1)} %`;
   }
 
-  public otaStateToString(): string {
+  otaStateToString(): string {
     return this.otaState;
   }
 
-  public onOTAActionTap(action: string) {
+  onOTAActionTap(action: string) {
     console.log(`OTA Action: ${action}`);
     switch (action) {
       case 'ota.action.start':
@@ -210,11 +210,11 @@ export class SmartDrive extends DeviceBase {
     }
   }
 
-  public cancelOTA() {
+  cancelOTA() {
     this.sendEvent(SmartDrive.ota_cancel_event);
   }
 
-  public performOTA(
+  performOTA(
     bleFirmware: any,
     mcuFirmware: any,
     bleFWVersion: number,
@@ -862,7 +862,7 @@ export class SmartDrive extends DeviceBase {
     });
   }
 
-  public sendPacket(
+  sendPacket(
     Type: string,
     SubType: string,
     dataKey?: string,
@@ -895,11 +895,11 @@ export class SmartDrive extends DeviceBase {
     }
   }
 
-  public sendTap() {
+  sendTap() {
     return this.sendPacket('Command', 'Tap');
   }
 
-  public stopMotor() {
+  stopMotor() {
     return this.sendPacket('Command', 'TurnOffMotor');
   }
 
@@ -948,7 +948,7 @@ export class SmartDrive extends DeviceBase {
     }
   }
 
-  public connect() {
+  connect() {
     return this._bluetoothService.connect(
       this.address,
       this.handleConnect.bind(this),
@@ -956,7 +956,7 @@ export class SmartDrive extends DeviceBase {
     );
   }
 
-  public async disconnect() {
+  async disconnect() {
     try {
       if (this.connected && this.ableToSend && this.notifying) {
         // TODO: THIS IS A HACK TO FORCE THE BLE CHIP TO REBOOT AND CLOSE THE CONNECTION
@@ -981,7 +981,7 @@ export class SmartDrive extends DeviceBase {
     }
   }
 
-  public requestHighPriorityConnection(): boolean {
+  requestHighPriorityConnection(): boolean {
     let priority = 0;
     if (isAndroid)
       priority = android.bluetooth.BluetoothGatt.CONNECTION_PRIORITY_HIGH;
@@ -991,7 +991,7 @@ export class SmartDrive extends DeviceBase {
     );
   }
 
-  public releaseHighPriorityConnection(): boolean {
+  releaseHighPriorityConnection(): boolean {
     let priority = 0;
     if (isAndroid)
       priority = android.bluetooth.BluetoothGatt.CONNECTION_PRIORITY_BALANCED;
@@ -1001,7 +1001,7 @@ export class SmartDrive extends DeviceBase {
     );
   }
 
-  public async handleConnect(_?: any) {
+  async handleConnect(_?: any) {
     // update state
     this.connected = true;
     this.notifying = false;
@@ -1013,7 +1013,7 @@ export class SmartDrive extends DeviceBase {
     } catch (err) { }
   }
 
-  public handleDisconnect() {
+  handleDisconnect() {
     // update state
     this.notifying = false;
     this.connected = false;
@@ -1024,7 +1024,7 @@ export class SmartDrive extends DeviceBase {
     });
   }
 
-  public handleNotify(args: any) {
+  handleNotify(args: any) {
     // Notify is called when the SmartDrive sends us data, args.value is the data
     // now that we're receiving data we can definitly send data
     if (!this.notifying || !this.ableToSend) {
@@ -1046,7 +1046,7 @@ export class SmartDrive extends DeviceBase {
     p.destroy();
   }
 
-  public handlePacket(p: Packet) {
+  handlePacket(p: Packet) {
     const packetType = p.Type();
     const subType = p.SubType();
     if (!packetType || !subType) {
@@ -1074,7 +1074,7 @@ export class SmartDrive extends DeviceBase {
     }
   }
 
-  public getBleDisconnectError() {
+  getBleDisconnectError() {
     /*
 	  const boundError = Packet.makeBoundData('PacketErrorType', 'BLEDisconnect');
 	  return bindingTypeToString('PacketErrorType', boundError);

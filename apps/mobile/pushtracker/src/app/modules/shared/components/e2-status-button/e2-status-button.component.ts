@@ -1,16 +1,23 @@
 import { Component, Input, NgZone, ViewContainerRef } from '@angular/core';
+import { User as KinveyUser } from '@bradmartin/kinvey-nativescript-sdk';
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 import { ModalDialogService, registerElement } from '@nativescript/angular';
-import { ImageSource, isAndroid } from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
-import { alert } from '@nativescript/core/ui/dialogs';
+import {
+  ApplicationSettings as appSettings,
+  Dialogs,
+  ImageSource,
+  isAndroid
+} from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ToastDuration, Toasty } from 'nativescript-toasty';
 import { DeviceSetupComponent } from '../../..';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
-import { LoggingCategory, LoggingService, ThemeService } from '../../../../services';
+import {
+  LoggingCategory,
+  LoggingService,
+  ThemeService
+} from '../../../../services';
 
 @Component({
   selector: 'e2-status-button',
@@ -18,11 +25,11 @@ import { LoggingCategory, LoggingService, ThemeService } from '../../../../servi
   templateUrl: 'e2-status-button.component.html'
 })
 export class E2StatusButtonComponent {
-  public APP_THEMES = APP_THEMES;
-  public CURRENT_THEME: string;
-  public iconString: string;
-  public icon: ImageSource;
-  public updateWatchIcon;
+  APP_THEMES = APP_THEMES;
+  CURRENT_THEME: string;
+  iconString: string;
+  icon: ImageSource;
+  updateWatchIcon;
   /**
    * For showing indication that we're sending data to the wear os apps
    */
@@ -95,7 +102,7 @@ export class E2StatusButtonComponent {
         }).show();
       } else {
         // TODO: set status display to 'x'
-        alert({
+        Dialogs.alert({
           title: this._translateService.instant(
             'wearos-comms.errors.pte2-send-error.title'
           ),
@@ -108,7 +115,7 @@ export class E2StatusButtonComponent {
     } else {
       // TODO: set status display to 'x'
       this._loadingIndicator.hide();
-      alert({
+      Dialogs.alert({
         title: this._translateService.instant(
           'wearos-comms.errors.pte2-connection-error.title'
         ),

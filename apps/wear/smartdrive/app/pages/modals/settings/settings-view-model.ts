@@ -1,6 +1,12 @@
 import {
+  AndroidActivityEventData,
+  AndroidApplication,
+  Application,
   ApplicationSettings,
+  Device as nsDevice,
+  Dialogs,
   Frame,
+  Http,
   knownFolders,
   Observable,
   Page,
@@ -8,9 +14,6 @@ import {
   ShowModalOptions,
   ViewBase
 } from '@nativescript/core';
-import * as application from '@nativescript/core/application';
-import { getFile } from '@nativescript/core/http';
-import { alert, confirm } from '@nativescript/core/ui/dialogs';
 import { Device, Log, wait } from '@permobil/core';
 import {
   getDefaultLang,
@@ -68,9 +71,9 @@ export class SettingsViewModel extends Observable {
 
     // set event listener so we do not DOWNLOAD the files when the activity resumes
     // related https://github.com/Max-Mobility/permobil-client/issues/794
-    application.android.on(
-      application.AndroidApplication.activityResumedEvent,
-      (args: application.AndroidActivityEventData) => {
+    Application.android.on(
+      AndroidApplication.activityResumedEvent,
+      (args: AndroidActivityEventData) => {
         if (_isActivityThis(args.activity)) {
           // we dont want to download anything
           this._shouldDownloadFiles = false;
@@ -129,7 +132,7 @@ export class SettingsViewModel extends Observable {
           this._settingsService.saveSettings();
           // warning / indication to the user that they've updated their settings
           if (this.activeSettingToChange === 'language') {
-            confirm({
+            Dialogs.confirm({
               title: L('warnings.saved-settings.title'),
               message: L('warnings.saved-settings.language'),
               okButtonText: L('buttons.ok'),
@@ -262,7 +265,7 @@ export class SettingsViewModel extends Observable {
     for (f of filesToDownload) {
       // need to make sure the downloadUrl of the file uses `https` and not `http` to avoid IOExceptions
       const fileUrl = f._downloadURL.replace(/^http:\/\//i, 'https://');
-      await getFile(
+      await Http.getFile(
         {
           url: fileUrl,
           timeout: 30000,

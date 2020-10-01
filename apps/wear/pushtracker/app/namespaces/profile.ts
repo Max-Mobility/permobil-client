@@ -3,7 +3,7 @@ import { mod } from '@permobil/core';
 import { L, getDefaultLang } from '@permobil/nativescript/src/utils';
 
 export class Profile extends Observable {
-  public settings = new Profile.Settings();
+  settings = new Profile.Settings();
 
   constructor() {
     super();
@@ -51,7 +51,7 @@ export namespace Profile {
       static Options: string[];
     };
 
-    public static Defaults = {
+    static Defaults = {
       chairMake: Profile.ChairMake.Default,
       chairType: Profile.ChairType.Default,
       coastGoal: 10.0, // seconds

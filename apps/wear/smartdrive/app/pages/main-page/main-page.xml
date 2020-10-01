@@ -1,14 +1,10 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd"
-  xmlns:nac="nativescript-animated-circle"
+  xmlns:nac="@nativescript/animated-circle"
   xmlns:wol="nativescript-wear-os/packages/wear-os-layout"
-  xmlns:ui="nativescript-auto-fit-text" navigatingTo="onNavigatingTo" marginBottom="{{ chinSize / 2 }}" actionBarHidden="true">
+  xmlns:ui="@nativescript/auto-fit-text" navigatingTo="onNavigatingTo" marginBottom="{{ chinSize / 2 }}" actionBarHidden="true">
   <GridLayout rows="*" columns="*">
-    <wol:WearOsLayout disableInsetConstraint="true"
-                      height="{{ screenHeight }}" width="{{ screenWidth }}"
-                      verticalAlignment="center" horizontalAlignment="center"
-                      visibility="{{ isAmbient, isAmbient ? 'visible':'collapsed' }}">
-      <GridLayout rows="32, auto, *" columns="*, auto, *"
-                  verticalAlignment="center" horizontalAlignment="center">
+    <wol:WearOsLayout disableInsetConstraint="true" height="{{ screenHeight }}" width="{{ screenWidth }}" verticalAlignment="center" horizontalAlignment="center" visibility="{{ isAmbient, isAmbient ? 'visible':'collapsed' }}">
+      <GridLayout rows="32, auto, *" columns="*, auto, *" verticalAlignment="center" horizontalAlignment="center">
         // SmartDrive Battery Circle
         <nac:AnimatedCircle id="smartDriveBatteryCircle" rowSpan="3" colSpan="3" class="sdBatteryCircle" width="90%" height="90%" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ smartDriveCurrentBatteryPercentage }}">
         </nac:AnimatedCircle>

@@ -1,15 +1,18 @@
-import { EventData, Observable, ObservableArray } from '@nativescript/core';
-import * as application from '@nativescript/core/application';
-import * as appSettings from '@nativescript/core/application-settings';
-import { alert } from '@nativescript/core/ui/dialogs';
-import { ad as androidUtils } from '@nativescript/core/utils/utils';
+import { AnimatedCircle } from '@nativescript/animated-circle';
+import {
+  Application,
+  ApplicationSettings,
+  EventData,
+  Observable,
+  ObservableArray,
+  Utils
+} from '@nativescript/core';
 import { Log } from '@permobil/core';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';
 import { format } from 'date-fns';
 import debounce from 'lodash/debounce';
 import flatten from 'lodash/flatten';
 import last from 'lodash/last';
-import { AnimatedCircle } from 'nativescript-animated-circle';
 import * as LS from 'nativescript-localstorage';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Sentry } from 'nativescript-sentry';
@@ -104,7 +107,7 @@ export class UpdatesViewModel extends Observable {
       return this.wakeLock;
     } else {
       // initialize the wake lock here
-      const powerManager = application.android.context.getSystemService(
+      const powerManager = Application.android.context.getSystemService(
         android.content.Context.POWER_SERVICE
       ) as android.os.PowerManager;
       this.wakeLock = powerManager.newWakeLock(
@@ -131,7 +134,9 @@ export class UpdatesViewModel extends Observable {
     sentryBreadCrumb('Time updates registered.');
 
     // load savedSmartDriveAddress from settings / memory
-    const savedSDAddr = appSettings.getString(DataKeys.SD_SAVED_ADDRESS);
+    const savedSDAddr = ApplicationSettings.getString(
+      DataKeys.SD_SAVED_ADDRESS
+    );
     if (savedSDAddr && savedSDAddr.length) {
       this.updateSmartDrive(savedSDAddr);
     }
@@ -220,7 +225,9 @@ export class UpdatesViewModel extends Observable {
     // sentryBreadCrumb('asking for permissions');
     // determine if we have shown the permissions request
     const hasShownRequest =
-      appSettings.getBoolean(DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST) || false;
+      ApplicationSettings.getBoolean(
+        DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST
+      ) || false;
     // will throw an error if permissions are denied, else will
     // return either true or a permissions object detailing all the
     // granted permissions. The error thrown details which
@@ -230,13 +237,16 @@ export class UpdatesViewModel extends Observable {
     const neededPermissions = this.permissionsNeeded.filter(
       p =>
         !hasPermission(p) &&
-        (application.android.foregroundActivity.shouldShowRequestPermissionRationale(
+        (Application.android.foregroundActivity.shouldShowRequestPermissionRationale(
           p
         ) ||
           !hasShownRequest)
     );
     // update the has-shown-request
-    appSettings.setBoolean(DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST, true);
+    ApplicationSettings.setBoolean(
+      DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST,
+      true
+    );
     const reasoning = {
       [android.Manifest.permission.ACCESS_COARSE_LOCATION]: L(
         'permissions-reasons.coarse-location'
@@ -276,9 +286,13 @@ export class UpdatesViewModel extends Observable {
       if (this.smartDrive && this.smartDrive.hasVersionInfo()) {
         // if we've already talked to this SD and gotten its
         // version info then we can just resolve
-        sentryBreadCrumb('Already have smartdrive version:' +
-          '\n\tmcu: ' + this.smartDrive.mcu_version_string +
-          '\n\tble: ' + this.smartDrive.ble_version_string);
+        sentryBreadCrumb(
+          'Already have smartdrive version:' +
+            '\n\tmcu: ' +
+            this.smartDrive.mcu_version_string +
+            '\n\tble: ' +
+            this.smartDrive.ble_version_string
+        );
         resolve(true);
         return;
       } else {
@@ -299,9 +313,13 @@ export class UpdatesViewModel extends Observable {
         const onVersion = () => {
           remove();
           clearTimeout(connectTimeoutId);
-          sentryBreadCrumb('Got smartdrive version:' +
-            '\n\tmcu: ' + this.smartDrive.mcu_version_string +
-            '\n\tble: ' + this.smartDrive.ble_version_string);
+          sentryBreadCrumb(
+            'Got smartdrive version:' +
+              '\n\tmcu: ' +
+              this.smartDrive.mcu_version_string +
+              '\n\tble: ' +
+              this.smartDrive.ble_version_string
+          );
           resolve();
         };
         this.smartDrive.on(SmartDrive.smartdrive_mcu_version_event, onVersion);
@@ -334,7 +352,10 @@ export class UpdatesViewModel extends Observable {
     const serialNumberPermission = android.Manifest.permission.READ_PHONE_STATE;
     if (!hasPermission(serialNumberPermission)) return;
     this.watchSerialNumber = android.os.Build.getSerial();
-    appSettings.setString(DataKeys.WATCH_SERIAL_NUMBER, this.watchSerialNumber);
+    ApplicationSettings.setString(
+      DataKeys.WATCH_SERIAL_NUMBER,
+      this.watchSerialNumber
+    );
     this._kinveyService.watch_serial_number = this.watchSerialNumber;
 
     // Set the Sentry Context Tags
@@ -613,10 +634,13 @@ export class UpdatesViewModel extends Observable {
     const version = SmartDriveData.Firmwares.versionByteToString(
       Math.max(mcuVersion, bleVersion)
     );
-    const versionString = [mcuVersion, bleVersion].map(SmartDriveData.Firmwares.versionByteToString).join(', ');
+    const versionString = [mcuVersion, bleVersion]
+      .map(SmartDriveData.Firmwares.versionByteToString)
+      .join(', ');
     sentryBreadCrumb('got curent firmware versions: ' + versionString);
     // do we need to update?
-    const isUpToDate = this.smartDrive.isMcuUpToDate(mcuVersion) &&
+    const isUpToDate =
+      this.smartDrive.isMcuUpToDate(mcuVersion) &&
       this.smartDrive.isBleUpToDate(bleVersion);
     if (isUpToDate) {
       this.smartDriveOtaState = L('updates.up-to-date');
@@ -664,14 +688,20 @@ export class UpdatesViewModel extends Observable {
           300 * 1000
         );
         this._otaStarted = false;
-        sentryBreadCrumb('ota status at end: "' + otaStatus + '" type=' + typeof otaStatus);
+        sentryBreadCrumb(
+          'ota status at end: "' + otaStatus + '" type=' + typeof otaStatus
+        );
         if (otaStatus === 'updates.canceled') {
-          this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
-            label: L('ota.action.close'),
-            func: this._debouncedCloseModal.bind(this),
-            action: 'ota.action.close',
-            class: 'action-close'
-          });
+          this.smartDriveOtaActions.splice(
+            0,
+            this.smartDriveOtaActions.length,
+            {
+              label: L('ota.action.close'),
+              func: this._debouncedCloseModal.bind(this),
+              action: 'ota.action.close',
+              class: 'action-close'
+            }
+          );
         }
       } catch (err) {
         return this.updateError(err, L('updates.failed'), `${err}`);
@@ -896,10 +926,10 @@ export class UpdatesViewModel extends Observable {
   }
 
   unregisterForTimeUpdates() {
-    application.android.unregisterBroadcastReceiver(
+    Application.android.unregisterBroadcastReceiver(
       android.content.Intent.ACTION_TIME_TICK
     );
-    application.android.unregisterBroadcastReceiver(
+    Application.android.unregisterBroadcastReceiver(
       android.content.Intent.ACTION_TIMEZONE_CHANGED
     );
   }
@@ -907,11 +937,11 @@ export class UpdatesViewModel extends Observable {
   registerForTimeUpdates() {
     // monitor the clock / system time for display and logging:
     this.updateTimeDisplay();
-    application.android.registerBroadcastReceiver(
+    Application.android.registerBroadcastReceiver(
       android.content.Intent.ACTION_TIME_TICK,
       this.timeReceiverCallback
     );
-    application.android.registerBroadcastReceiver(
+    Application.android.registerBroadcastReceiver(
       android.content.Intent.ACTION_TIMEZONE_CHANGED,
       this.timeReceiverCallback
     );
@@ -925,7 +955,7 @@ export class UpdatesViewModel extends Observable {
 
   updateTimeDisplay() {
     const now = new Date();
-    const context = androidUtils.getApplicationContext();
+    const context = Utils.android.getApplicationContext();
     const is24HourFormat = android.text.format.DateFormat.is24HourFormat(
       context
     );

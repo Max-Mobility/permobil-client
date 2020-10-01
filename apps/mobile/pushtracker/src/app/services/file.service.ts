@@ -1,18 +1,16 @@
 import { Injectable } from '@angular/core';
-import * as fs from '@nativescript/core/file-system';
-import * as http from '@nativescript/core/http';
+import * as Kinvey from '@bradmartin/kinvey-nativescript-sdk';
+import { Http, knownFolders, path } from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
-import * as Kinvey from 'kinvey-nativescript-sdk';
 import * as localStorage from 'nativescript-localstorage';
 import { LoggingService } from './logging.service';
-import { knownFolders } from '@nativescript/core';
 
 @Injectable()
 export class FileService {
   constructor(
     private _translateService: TranslateService,
     private _loggingService: LoggingService
-  ) { }
+  ) {}
 
   private static fsKeyMetadata = 'Metadata';
 
@@ -39,11 +37,8 @@ export class FileService {
         }
 
         const i18n = knownFolders.documents().getFolder('i18n'); // creates i18n if it doesn't exist
-        const filePath = fs.path.join(
-          i18n.path,
-          file._filename
-        );
-        await http.getFile(file._downloadURL, filePath).catch(err => {
+        const filePath = path.join(i18n.path, file._filename);
+        await Http.getFile(file._downloadURL, filePath).catch(err => {
           this._loggingService.logException(err);
         });
 

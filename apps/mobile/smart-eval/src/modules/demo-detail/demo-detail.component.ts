@@ -1,7 +1,7 @@
 import { Component, NgZone, OnInit } from '@angular/core';
+import { Kinvey } from '@bradmartin/kinvey-nativescript-sdk';
 import { MapboxKeys } from '@maxmobility/private-keys';
 import { TranslateService } from '@ngx-translate/core';
-import { Kinvey } from 'kinvey-nativescript-sdk';
 import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import * as camera from 'nativescript-camera';
@@ -26,7 +26,6 @@ import { setTimeout } from 'tns-core-modules/timer';
 import { View } from 'tns-core-modules/ui/core/view';
 import { action, alert, confirm, prompt } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
-import * as utils from 'tns-core-modules/utils/utils';
 // import { Demo, PushTracker } from '@maxmobility/core';
 // import { BluetoothService, DemoService, FirmwareService, LocationService, LoggingService, ProgressService } from '@maxmobility/mobile';
 import { Demo, PushTracker } from '../../models';
@@ -268,10 +267,9 @@ export class DemoDetailComponent implements OnInit {
         formats: 'QR_CODE, EAN_13',
         cancelLabel: this._translateService.instant('demo-detail.cancel-scan'), // iOS only
         cancelLabelBackgroundColor: '#333333', // iOS only
-        message: `${this._translateService.instant(
-          'demo-detail.scan-msg'
-        )} ${deviceName ||
-          this._translateService.instant('demo-detail.sd-or-pt')}`, // Android only
+        message: `${this._translateService.instant('demo-detail.scan-msg')} ${
+          deviceName || this._translateService.instant('demo-detail.sd-or-pt')
+        }`, // Android only
         showFlipCameraButton: true,
         preferFrontCamera: false,
         showTorchButton: true,

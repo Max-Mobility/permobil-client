@@ -4,9 +4,9 @@ import { Log } from '@permobil/core';
 declare const org: any;
 
 export class ActivityDetector {
-  public static ActivityLockoutTimeMs: number = 200;
+  static ActivityLockoutTimeMs: number = 200;
 
-  public activityDetectorModelFileName: string = 'activityDetectorLSTM.tflite';
+  activityDetectorModelFileName: string = 'activityDetectorLSTM.tflite';
 
   /**
    * Higher-level activity detection configuration
@@ -154,7 +154,7 @@ export class ActivityDetector {
   /**
    * Reset the histories to clear out old data
    */
-  public reset() {
+  reset() {
     this.inputHistory = [];
     this.predictionHistory = [];
   }
@@ -164,7 +164,7 @@ export class ActivityDetector {
    *
    * @param sensitivity [number]: [0-100] percent sensitivity.
    */
-  public setSensitivity(sensitivity: number) {
+  setSensitivity(sensitivity: number) {
     // ensure sensitivity is in range [0, 100]
     sensitivity = Math.min(100, Math.max(sensitivity, 0));
     // update jerk threshold
@@ -176,7 +176,7 @@ export class ActivityDetector {
   /**
    * Main inference Function for detecting activity
    */
-  public detectActivity(acceleration: any, timestamp: number) {
+  detectActivity(acceleration: any, timestamp: number) {
     try {
       const inputData = [acceleration.x, acceleration.y, acceleration.z];
       // update the input history

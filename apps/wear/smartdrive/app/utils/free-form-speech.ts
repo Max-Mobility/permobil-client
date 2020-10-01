@@ -1,4 +1,8 @@
-import * as app from '@nativescript/core/application';
+import {
+  AndroidActivityResultEventData,
+  AndroidApplication,
+  Application
+} from '@nativescript/core';
 import { Log } from '@permobil/core';
 
 export const SMARTDRIVE_SPEECH_REQUEST_CODE = 5425;
@@ -16,9 +20,9 @@ export function promptUserForSpeech() {
       );
 
       // handle the speech result
-      app.android.on(
-        app.AndroidApplication.activityResultEvent,
-        (args: app.AndroidActivityResultEventData) => {
+      Application.android.on(
+        AndroidApplication.activityResultEvent,
+        (args: AndroidActivityResultEventData) => {
           if (
             args.requestCode === SMARTDRIVE_SPEECH_REQUEST_CODE &&
             args.resultCode === android.app.Activity.RESULT_OK
@@ -38,7 +42,8 @@ export function promptUserForSpeech() {
 
       // start the speech activity
       const activity: android.app.Activity =
-        app.android.foregroundActivity || app.android.startActivity;
+        Application.android.foregroundActivity ||
+        Application.android.startActivity;
       activity.startActivityForResult(intent, SMARTDRIVE_SPEECH_REQUEST_CODE);
     } catch (error) {
       reject(error);

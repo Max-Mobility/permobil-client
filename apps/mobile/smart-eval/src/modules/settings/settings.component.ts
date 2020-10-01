@@ -1,8 +1,13 @@
 import { Component } from '@angular/core';
-import { Kinvey } from 'kinvey-nativescript-sdk';
+import { Kinvey } from '@bradmartin/kinvey-nativescript-sdk';
 import * as fs from 'tns-core-modules/file-system';
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
-import { BluetoothService, FirmwareService, LoggingService, ProgressService } from '../../services';
+import {
+  BluetoothService,
+  FirmwareService,
+  LoggingService,
+  ProgressService
+} from '../../services';
 
 @Component({
   selector: 'settings',
