@@ -44,7 +44,7 @@
     "nativescript-perms": "file:../../../forked-plugins/nativescript-perms-2.0.0.tgz",
     "nativescript-sentry": "~2.0.0",
     "nativescript-theme-core": "~1.0.6",
-    "nativescript-themes": "file:../../../forked-plugins/nativescript-themes-2.0.2.tgz",
+    "nativescript-themes": "file:../../../forked-plugins/nativescript-themes-2.3.0.tgz",
     "nativescript-toasty": "file:../../../forked-plugins/nativescript-toasty-4.0.0.tgz",
     "nativescript-ui-calendar": "~7.0.2",
     "nativescript-ui-chart": "~8.0.2",

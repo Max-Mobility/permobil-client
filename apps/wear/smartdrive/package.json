@@ -27,7 +27,7 @@
     "nativescript-sentry": "~2.0.0",
     "nativescript-sqlite": "file:../../../forked-plugins/nativescript-sqlite-2.6.4.tgz",
     "nativescript-theme-core": "~1.0.6",
-    "nativescript-themes": "file:../../../forked-plugins/nativescript-themes-2.0.2.tgz",
+    "nativescript-themes": "file:../../../forked-plugins/nativescript-themes-2.3.0.tgz",
     "nativescript-ui-listview": "~9.0.2",
     "nativescript-vibrate": "~4.0.1",
     "nativescript-wear-os": "~3.0.0",
