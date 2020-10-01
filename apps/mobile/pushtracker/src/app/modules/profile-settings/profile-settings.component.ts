@@ -404,11 +404,12 @@ export class ProfileSettingsComponent implements OnInit {
       dismissOnBackgroundTap: true
     };
 
+    let primaryIndex;
+
     switch (item.toLowerCase()) {
       case 'height':
         this.activeSetting = 'height';
         let userHeightUnitPreference = null;
-        let primaryIndex;
         if (this.user)
           userHeightUnitPreference = this.user.data.height_unit_preference;
         primaryIndex = this.heightUnits.indexOf(userHeightUnitPreference);
