@@ -14,6 +14,7 @@ import { PermobilCoreModule } from '@permobil/angular';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { NativeScriptUICalendarModule } from 'nativescript-ui-calendar/angular';
 import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
+import { NgRippleModule } from 'nativescript-ripple/angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { COMPONENTS, ENTRY_COMPONENTS } from './modules';
@@ -50,6 +51,7 @@ export function createTranslateLoader() {
         useFactory: createTranslateLoader
       }
     }),
+    NgRippleModule,
     // This will call the install method and inject a global service called BottomSheetService
     NativeScriptMaterialBottomSheetModule.forRoot()
   ],
