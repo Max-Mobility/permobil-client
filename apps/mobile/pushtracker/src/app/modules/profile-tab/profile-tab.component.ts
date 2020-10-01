@@ -1118,14 +1118,16 @@ export class ProfileTabComponent {
   }
 
   private updateUserDisplay() {
-    this._initDisplayActivityGoalCoastTime();
-    this._initDisplayActivityGoalDistance();
-    this._initDisplayGender();
-    this._initDisplayWeight();
-    this._initDisplayHeight();
-    this._initDisplayChairType();
-    this._initDisplayChairMake();
-    this._initDisplayControlConfiguration();
+    this._zone.run(() => {
+      this._initDisplayActivityGoalCoastTime();
+      this._initDisplayActivityGoalDistance();
+      this._initDisplayGender();
+      this._initDisplayWeight();
+      this._initDisplayHeight();
+      this._initDisplayChairType();
+      this._initDisplayChairMake();
+      this._initDisplayControlConfiguration();
+    });
   }
 
   private _initDisplayActivityGoalCoastTime() {
