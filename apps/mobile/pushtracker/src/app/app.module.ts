@@ -49,9 +49,9 @@ export function createTranslateLoader() {
         provide: TranslateLoader,
         useFactory: createTranslateLoader
       }
-    })
+    }),
     // This will call the install method and inject a global service called BottomSheetService
-    // NativeScriptMaterialBottomSheetModule.forRoot()
+    NativeScriptMaterialBottomSheetModule.forRoot()
   ],
   exports: [SharedModule],
   declarations: [AppComponent, ...COMPONENTS],
