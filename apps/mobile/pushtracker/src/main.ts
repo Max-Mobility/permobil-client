@@ -3,15 +3,16 @@ import { platformNativeScriptDynamic } from '@nativescript/angular';
 /**
  * be sure to keep the above imports first
  */
-import { enableProdMode } from '@angular/core';
+
 import 'reflect-metadata';
+import { enableProdMode } from '@angular/core';
 import { Application, ApplicationSettings, isIOS } from '@nativescript/core';
 import * as themes from 'nativescript-themes';
 import { AppModule } from './app/app.module';
 import { APP_THEMES, STORAGE_KEYS } from './app/enums';
 import { Ratings } from './app/utils/ratings-utils';
 
-require('@nativescript/firebase'); // for configuring push notifications
+// require('@nativescript/firebase'); // for configuring push notifications
 
 // If built with env.uglify
 declare const __UGLIFIED__;
@@ -48,7 +49,7 @@ if (isIOS) {
   class PushTrackerIOSDelegate
     extends UIResponder
     implements UIApplicationDelegate {
-    public static ObjCProtocols = [UIApplicationDelegate];
+    static ObjCProtocols = [UIApplicationDelegate];
     applicationDidBecomeActive(application: UIApplication): void {
       const ratings = new Ratings({
         id: 'PUSHTRACKER.RATER.COUNT',

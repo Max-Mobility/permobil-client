@@ -3,32 +3,32 @@ import { Packet } from '@permobil/core';
 import { BluetoothService } from './../services';
 
 export class DeviceBase extends Observable {
-  public static ota_start_event = 'ota_start_event';
-  public static ota_pause_event = 'ota_pause_event';
-  public static ota_resume_event = 'ota_resume_event';
-  public static ota_cancel_event = 'ota_cancel_event';
-  public static ota_force_event = 'ota_force_event';
-  public static ota_retry_event = 'ota_retry_event';
-  public static ota_failed_event = 'ota_failed_event';
-  public static ota_timeout_event = 'ota_timeout_event';
+  static ota_start_event = 'ota_start_event';
+  static ota_pause_event = 'ota_pause_event';
+  static ota_resume_event = 'ota_resume_event';
+  static ota_cancel_event = 'ota_cancel_event';
+  static ota_force_event = 'ota_force_event';
+  static ota_retry_event = 'ota_retry_event';
+  static ota_failed_event = 'ota_failed_event';
+  static ota_timeout_event = 'ota_timeout_event';
 
-  public static motorTicksToMiles(ticks: number): number {
+  static motorTicksToMiles(ticks: number): number {
     return (ticks * (2.0 * 3.14159265358 * 3.8)) / (265.714 * 63360.0);
   }
 
-  public static caseTicksToMiles(ticks: number): number {
+  static caseTicksToMiles(ticks: number): number {
     return (ticks * (2.0 * 3.14159265358 * 3.8)) / (36.0 * 63360.0);
   }
 
-  public static milesToMotorTicks(miles: number): number {
+  static milesToMotorTicks(miles: number): number {
     return (miles * (265.714 * 63360.0)) / (2.0 * 3.14159265358 * 3.8);
   }
 
-  public static milesToCaseTicks(miles: number): number {
+  static milesToCaseTicks(miles: number): number {
     return (miles * (36.0 * 63360.0)) / (2.0 * 3.14159265358 * 3.8);
   }
 
-  public static versionStringToByte(version: string): number {
+  static versionStringToByte(version: string): number {
     if (version.includes('.')) {
       const [major, minor] = version.split('.');
       return (parseInt(major) << 4) | parseInt(minor);
@@ -37,7 +37,7 @@ export class DeviceBase extends Observable {
     }
   }
 
-  public static versionByteToString(version: number): string {
+  static versionByteToString(version: number): string {
     if (version === 0xff || version === 0x00) {
       return 'unknown';
     } else {
@@ -48,51 +48,51 @@ export class DeviceBase extends Observable {
   /**
    * Microcontroller firmware version number
    */
-  public mcu_version: number = 0xff;
+  mcu_version: number = 0xff;
 
   /**
    * Bluetooth chip firmware version number
    */
-  public ble_version: number = 0xff;
+  ble_version: number = 0xff;
 
   /**
    * Battery percent Stat of Charge (SoC)
    */
-  public battery: number = 0;
+  battery: number = 0;
 
   /**
    * MAC Address
    */
-  public address: string = '';
+  address: string = '';
 
   /**
    * Is this device connected?
    */
-  public connected: boolean = false;
+  connected: boolean = false;
 
   /**
    * The actual device (ios:CBPeripheral, android:BluetoothDevice)
    */
-  public device: any = null;
-  public ableToSend: boolean = false;
-  public otaStartTime: Date;
-  public otaCurrentTime: Date;
-  public otaEndTime: Date;
-  public otaActions = new ObservableArray();
+  device: any = null;
+  ableToSend: boolean = false;
+  otaStartTime: Date;
+  otaCurrentTime: Date;
+  otaEndTime: Date;
+  otaActions = new ObservableArray();
 
-  public _bluetoothService: BluetoothService;
+  _bluetoothService: BluetoothService;
 
   constructor(btService: BluetoothService) {
     super();
     this._bluetoothService = btService;
   }
 
-  public setOtaActions(actions?: string[]) {
+  setOtaActions(actions?: string[]) {
     if (actions) this.otaActions.splice(0, this.otaActions.length, ...actions);
     else this.otaActions.splice(0, this.otaActions.length);
   }
 
-  public sendSettings(
+  sendSettings(
     mode: string,
     units: string,
     flags: number,
@@ -128,7 +128,7 @@ export class DeviceBase extends Observable {
     return settings;
   }
 
-  public sendSwitchControlSettings(
+  sendSwitchControlSettings(
     mode: string,
     max_speed: number
   ): Promise<any> {
@@ -151,7 +151,7 @@ export class DeviceBase extends Observable {
   /**
    * Notify events by name and optionally pass data
    */
-  public sendEvent(eventName: string, data?: any, msg?: string) {
+  sendEvent(eventName: string, data?: any, msg?: string) {
     this.notify({
       eventName,
       object: this,

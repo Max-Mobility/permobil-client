@@ -68,7 +68,6 @@ import {
 export class ProfileSettingsComponent implements OnInit {
   @ViewChild('ptStatusButton', { static: false })
   ptStatusButton: PushTrackerStatusButtonComponent;
-
   APP_THEMES = APP_THEMES;
   CONFIGURATIONS = CONFIGURATIONS;
   heightUnits: string[] = [];
@@ -399,6 +398,7 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   onListPickerItemTap(item: string) {
+    console.log('list picker item tap', item);
     const options: BottomSheetOptions = {
       viewContainerRef: this._vcRef,
       dismissOnBackgroundTap: true

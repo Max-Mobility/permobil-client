@@ -40,8 +40,8 @@ import { BluetoothService, LoggingService } from '../../services';
   templateUrl: 'wireless-updates.component.html'
 })
 export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
-  public APP_THEMES = APP_THEMES;
-  public CONFIGURATIONS = CONFIGURATIONS;
+  APP_THEMES = APP_THEMES;
+  CONFIGURATIONS = CONFIGURATIONS;
   languagePreference: string = '';
   controlConfiguration: string = '';
   screenWidth = Screen.mainScreen.widthDIPs;
@@ -59,10 +59,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   /**
    * SmartDrive Data / state management
    */
-  public smartDrive: SmartDrive;
-  public smartDriveCheckedForUpdates = false;
-  public smartDriveUpToDate = false;
-  public noSmartDriveDetected = false;
+  smartDrive: SmartDrive;
+  smartDriveCheckedForUpdates = false;
+  smartDriveUpToDate = false;
+  noSmartDriveDetected = false;
   private _throttledOtaAction: any = null;
   private _throttledOtaStatus: any = null;
 
@@ -72,10 +72,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   pushTrackerOtaProgress: number = 0;
   pushTrackerOtaState: string = null;
   pushTrackerOtaActions = [];
-  public pushTracker: PushTracker;
-  public pushTrackerCheckedForUpdates = false;
-  public pushTrackerUpToDate = false;
-  public noPushTrackerDetected = false;
+  pushTracker: PushTracker;
+  pushTrackerCheckedForUpdates = false;
+  pushTrackerUpToDate = false;
+  noPushTrackerDetected = false;
   private _throttledPTOtaAction: any = null;
   private _throttledPTOtaStatus: any = null;
   CURRENT_THEME: string;

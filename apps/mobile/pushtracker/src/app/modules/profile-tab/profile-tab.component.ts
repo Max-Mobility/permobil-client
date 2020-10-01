@@ -73,8 +73,8 @@ import {
   templateUrl: './profile-tab.component.html'
 })
 export class ProfileTabComponent {
-  public APP_THEMES = APP_THEMES;
-  public CONFIGURATIONS = CONFIGURATIONS;
+  APP_THEMES = APP_THEMES;
+  CONFIGURATIONS = CONFIGURATIONS;
   user: PushTrackerUser; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
   displayActivityGoalCoastTime: string;
   displayActivityGoalDistance: string;

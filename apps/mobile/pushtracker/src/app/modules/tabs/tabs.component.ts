@@ -49,7 +49,7 @@ interface DeferredSettings {
   templateUrl: './tabs.component.html'
 })
 export class TabsComponent {
-  public CONFIGURATIONS = CONFIGURATIONS;
+  CONFIGURATIONS = CONFIGURATIONS;
   pushTracker: PushTracker;
   user: PushTrackerUser;
   private _debouncedSettingsAlert: any = null;

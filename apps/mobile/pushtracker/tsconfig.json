@@ -34,6 +34,6 @@
   "exclude": [
     "node_modules",
     "platforms",
-    "../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/demo/**/*.ts"
+    "../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/**/*.ts"
   ]
 }

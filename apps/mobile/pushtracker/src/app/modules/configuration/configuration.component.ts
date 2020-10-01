@@ -11,7 +11,7 @@ import { PushTrackerUser } from '../../models';
   templateUrl: './configuration.component.html'
 })
 export class ConfigurationComponent implements OnInit {
-  public CONFIGURATIONS = CONFIGURATIONS;
+  CONFIGURATIONS = CONFIGURATIONS;
   private _user: PushTrackerUser;
 
   constructor(private _router: Router, private _page: Page) {

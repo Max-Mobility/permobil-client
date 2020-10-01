@@ -10,13 +10,13 @@ export class WatchSettings {
     static Options: string[];
   };
 
-  public static Defaults = {
+  static Defaults = {
     disableWearCheck: false,
     powerAssistTimeoutMinutes: 5,
     language: getDefaultLang()
   };
 
-  // public members:
+  // members:
   disableWearCheck: boolean = WatchSettings.Defaults.disableWearCheck;
   powerAssistTimeoutMinutes: number =
     WatchSettings.Defaults.powerAssistTimeoutMinutes;

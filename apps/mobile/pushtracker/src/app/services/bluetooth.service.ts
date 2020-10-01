@@ -416,7 +416,7 @@ export class BluetoothService extends Observable {
     return this._bluetooth.stopNotifying(opts);
   }
 
-  public async getIOSPermissions() {
+  async getIOSPermissions() {
     if (isIOS) {
       return await checkPermission('bluetooth');
     } else {
@@ -424,7 +424,7 @@ export class BluetoothService extends Observable {
     }
   }
 
-  public async hasPermissions() {
+  async hasPermissions() {
     let _has = false;
     if (isAndroid) {
       _has = await this._bluetooth.hasCoarseLocationPermission();
@@ -436,7 +436,7 @@ export class BluetoothService extends Observable {
     return _has;
   }
 
-  public async requestPermissions() {
+  async requestPermissions() {
     const _hasPerms = await this.hasPermissions();
     this._logService.logBreadCrumb(
       BluetoothService.name,
@@ -455,7 +455,7 @@ export class BluetoothService extends Observable {
     }
   }
 
-  public requestConnectionPriority(address: string, priority: number) {
+  requestConnectionPriority(address: string, priority: number) {
     return isAndroid
       ? this._bluetooth.requestConnectionPriority(address, priority)
       : false;

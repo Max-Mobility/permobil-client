@@ -58,15 +58,15 @@ export class PushTracker extends DeviceBase {
   static ota_ready_event = 'ota_ready_event';
 
   // user interaction events
-  public static ota_start_event = 'ota_start_event';
-  public static ota_pause_event = 'ota_pause_event';
-  public static ota_resume_event = 'ota_resume_event';
-  public static ota_cancel_event = 'ota_cancel_event';
-  public static ota_force_event = 'ota_force_event';
-  public static ota_retry_event = 'ota_retry_event';
-  public static ota_failed_event = 'ota_failed_event';
-  public static ota_timeout_event = 'ota_timeout_event';
-  public static pushtracker_ota_status_event = 'pushtracker_ota_status_event'; // sends state, actions, progress
+  static ota_start_event = 'ota_start_event';
+  static ota_pause_event = 'ota_pause_event';
+  static ota_resume_event = 'ota_resume_event';
+  static ota_cancel_event = 'ota_cancel_event';
+  static ota_force_event = 'ota_force_event';
+  static ota_retry_event = 'ota_retry_event';
+  static ota_failed_event = 'ota_failed_event';
+  static ota_timeout_event = 'ota_timeout_event';
+  static pushtracker_ota_status_event = 'pushtracker_ota_status_event'; // sends state, actions, progress
 
   canBackNavigate = true;
 
@@ -665,7 +665,7 @@ export class PushTracker extends DeviceBase {
     );
   }
 
-  public sendTime(d?: Date) {
+  sendTime(d?: Date) {
     const p = new Packet();
     const timeSettings = p.data('timeInfo');
     const date = d !== undefined ? new Date(d) : new Date();

@@ -17,11 +17,10 @@ export interface StoredAcceleration {
 type TimeStamp = number;
 
 export class TapDetector {
-  public static TapLockoutTimeMs: number = 150;
-  public static TapLockoutTimeNs: number =
-    TapDetector.TapLockoutTimeMs * 1000 * 1000;
+  static TapLockoutTimeMs: number = 150;
+  static TapLockoutTimeNs: number = TapDetector.TapLockoutTimeMs * 1000 * 1000;
 
-  public tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
+  tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
 
   /**
    * Higher-level model prediction thresholds for determining if the
@@ -192,7 +191,7 @@ export class TapDetector {
   /**
    * Reset the histories to clear out old data
    */
-  public reset() {
+  reset() {
     this.inputHistory = [];
     this.predictionHistory = [];
     this.inputRawHistory = [];
@@ -206,7 +205,7 @@ export class TapDetector {
    * @param motorOn [boolean]: increase sensitivity from setting if
    *                           motor is on.
    */
-  public setSensitivity(sensitivity: number, motorOn: boolean) {
+  setSensitivity(sensitivity: number, motorOn: boolean) {
     // ensure sensitivity is in range [0, 100]
     sensitivity = Math.min(100, Math.max(sensitivity, 0));
 
@@ -238,7 +237,7 @@ export class TapDetector {
    * Main inference Function for detecting tap
    * @return result [boolean]: true if there was a tap
    */
-  public detectTap(acceleration: Acceleration, timestamp: TimeStamp) {
+  detectTap(acceleration: Acceleration, timestamp: TimeStamp) {
     try {
       // vectorize the input
       const inputData = [acceleration.x, acceleration.y, acceleration.z];
@@ -364,7 +363,7 @@ export class TapDetector {
     }
   }
 
-  public updateRawHistory(accel: Acceleration) {
+  updateRawHistory(accel: Acceleration) {
     this.inputRawHistory.push(accel);
     if (this.inputRawHistory.length > TapDetector.InputRawHistorySize) {
       this.inputRawHistory.shift(); // remove the oldest element

@@ -6,7 +6,7 @@ import { APP_THEMES, STORAGE_KEYS } from '../enums';
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
   private _theme: BehaviorSubject<string>;
-  public theme: Observable<string>;
+  theme: Observable<string>;
 
   constructor() {
     this._theme = new BehaviorSubject<string>(

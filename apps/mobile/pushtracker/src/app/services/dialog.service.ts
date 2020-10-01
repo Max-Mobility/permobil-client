@@ -7,7 +7,7 @@ import { Log } from '@permobil/core';
 export class DialogService {
   constructor(private _translateService: TranslateService) {}
 
-  public action(title: string, actions: any): Promise<string> {
+  action(title: string, actions: any): Promise<string> {
     return new Promise((resolve, reject) => {
       Dialogs.action({
         title,

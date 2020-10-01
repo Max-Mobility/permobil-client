@@ -7,11 +7,11 @@ function cbExists(cb) {
 
 @Injectable()
 export class NetworkService extends Observable {
-  public static network_available_event = 'network_available_event';
-  public static network_capabilities_changed_event =
+  static network_available_event = 'network_available_event';
+  static network_capabilities_changed_event =
     'network_capabilities_changed_event';
-  public static network_unavailable_event = 'network_unavailable_event';
-  public static network_lost_event = 'network_lost_event';
+  static network_unavailable_event = 'network_unavailable_event';
+  static network_lost_event = 'network_lost_event';
 
   private connectivityManager: android.net.ConnectivityManager;
   private networkCallback: Callback;
@@ -142,7 +142,7 @@ export class NetworkService extends Observable {
 }
 
 class Callback extends android.net.ConnectivityManager.NetworkCallback {
-  public isRegistered: boolean = false;
+  isRegistered: boolean = false;
 
   private _onAvailableCallback: any = null;
   private _onCapabilitiesChangedCallback: any = null;

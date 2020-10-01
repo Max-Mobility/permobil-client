@@ -17,8 +17,8 @@ export class ActivityService {
     'WeeklyPushTrackerActivity',
     DataStoreType.Sync
   );
-  public dailyActivity: any;
-  public weeklyActivity: any;
+  dailyActivity: any;
+  weeklyActivity: any;
 
   constructor(private _logService: LoggingService) {
     this.reset();

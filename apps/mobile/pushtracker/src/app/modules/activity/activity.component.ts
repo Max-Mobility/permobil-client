@@ -60,21 +60,18 @@ enum CHART_Y_AXIS {
   templateUrl: 'activity.component.html'
 })
 export class ActivityComponent implements OnInit {
-  public APP_THEMES = APP_THEMES;
-  public CONFIGURATIONS = CONFIGURATIONS;
-  public TAB = TAB;
-  public CHART_Y_AXIS = CHART_Y_AXIS;
+  APP_THEMES = APP_THEMES;
+  CONFIGURATIONS = CONFIGURATIONS;
+  TAB = TAB;
+  CHART_Y_AXIS = CHART_Y_AXIS;
   user: PushTrackerUser;
   tabItems: SegmentedBarItem[];
   currentTab: TAB = TAB.DAY;
-
   chartTitle: string;
   chartDescription: string;
   chartYAxis: CHART_Y_AXIS = CHART_Y_AXIS.COAST_TIME; // 0 = Coast Time is plotted, 1 = Push Count is plotted
   CURRENT_THEME: string;
-
   dailyActivity: ObservableArray<any[]>;
-
   dayNames: string[] = [
     this._translateService.instant('days.sunday'),
     this._translateService.instant('days.monday'),
@@ -84,7 +81,6 @@ export class ActivityComponent implements OnInit {
     this._translateService.instant('days.friday'),
     this._translateService.instant('days.saturday')
   ];
-
   monthNames: string[] = [
     this._translateService.instant('months.january'),
     this._translateService.instant('months.february'),
@@ -131,15 +127,13 @@ export class ActivityComponent implements OnInit {
   private _colorGrey = new Color('#b1b1b1');
   private _colorDarkGrey = new Color('#727377');
   private _colorPermobilCousteau = new Color('#00c1d5');
-
   private distanceUnit: string;
   private _debouncedLoadDailyActivity: any = null;
   private _debouncedLoadWeeklyActivity: any = null;
   private MAX_COMMIT_INTERVAL_MS: number = 1 * 500;
-
-  public static api_base = PushTrackerKinveyKeys.HOST_URL;
-  public static api_app_key = PushTrackerKinveyKeys.DEV_KEY;
-  public static api_app_secret = PushTrackerKinveyKeys.DEV_SECRET;
+  static api_base = PushTrackerKinveyKeys.HOST_URL;
+  static api_app_key = PushTrackerKinveyKeys.DEV_KEY;
+  static api_app_secret = PushTrackerKinveyKeys.DEV_SECRET;
   private _weeklyActivityFromKinvey: any;
   private _dailyActivityFromKinvey: any;
   private _weeklyUsageFromKinvey: any;

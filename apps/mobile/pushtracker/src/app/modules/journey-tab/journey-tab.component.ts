@@ -60,8 +60,8 @@ class JourneyItem {
   templateUrl: './journey-tab.component.html'
 })
 export class JourneyTabComponent {
-  public APP_THEMES = APP_THEMES;
-  public DISTANCE_UNITS = DISTANCE_UNITS;
+  APP_THEMES = APP_THEMES;
+  DISTANCE_UNITS = DISTANCE_UNITS;
   journeyItems = undefined;
   CURRENT_THEME: string;
   savedTimeFormat: string;
@@ -76,13 +76,13 @@ export class JourneyTabComponent {
   private _weekStart: Date;
   private _rollingWeekStart: Date;
   private _journeyMap = {};
-  public noMorePushTrackerActivityDataAvailable = false;
-  public noMoreSmartDriveUsageDataAvailable = false;
-  public noMoreDataAvailable = false;
+  noMorePushTrackerActivityDataAvailable = false;
+  noMoreSmartDriveUsageDataAvailable = false;
+  noMoreDataAvailable = false;
 
-  public static api_base = PushTrackerKinveyKeys.HOST_URL;
-  public static api_app_key = PushTrackerKinveyKeys.DEV_KEY;
-  public static api_app_secret = PushTrackerKinveyKeys.DEV_SECRET;
+  static api_base = PushTrackerKinveyKeys.HOST_URL;
+  static api_app_key = PushTrackerKinveyKeys.DEV_KEY;
+  static api_app_secret = PushTrackerKinveyKeys.DEV_SECRET;
   private _weeklyActivityFromKinvey: any;
   private _weeklyUsageFromKinvey: any;
   private MAX_COMMIT_INTERVAL_MS: number = 1 * 3000; // 3 seconds

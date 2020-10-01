@@ -25,11 +25,11 @@ import {
   templateUrl: 'e2-status-button.component.html'
 })
 export class E2StatusButtonComponent {
-  public APP_THEMES = APP_THEMES;
-  public CURRENT_THEME: string;
-  public iconString: string;
-  public icon: ImageSource;
-  public updateWatchIcon;
+  APP_THEMES = APP_THEMES;
+  CURRENT_THEME: string;
+  iconString: string;
+  icon: ImageSource;
+  updateWatchIcon;
   /**
    * For showing indication that we're sending data to the wear os apps
    */
