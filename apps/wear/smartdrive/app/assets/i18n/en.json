@@ -61,6 +61,7 @@
       "bledisconnect": "[ERR: 007] Bluetooth Disconnect",
       "gyrorange": "[ERR: 005] SD Angle",
       "motorphases": "[ERR: 002] SD Motor",
+      "motordriverfault": "[ERR: 008] SD Motor Chip",
       "otaunavailable": "[ERR: 006] Updates Unavailable",
       "overcurrent": "[ERR: 003] SD Current Spike",
       "overtemperature": "[ERR: 004] SD Overheating"
