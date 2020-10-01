@@ -20,6 +20,7 @@ import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService } from './services';
 import { applyTheme } from './utils';
 import { Ratings } from './utils/ratings-utils';
+import { Sentry } from 'nativescript-sentry';
 
 registerElement('LottieView', () => require('nativescript-lottie').LottieView);
 registerElement(
@@ -46,7 +47,7 @@ export class AppComponent implements OnInit {
     private _router: RouterExtensions
   ) {
     // init sentry - DNS key is in the SmartEvalKinvey package
-    // Sentry.init();
+    Sentry.init(SentryKeys.PUSHTRACKER_MOBILE_DSN);
 
     // Brad - sets the default language for ngx-translate
     // *** The value being set must match a translation .json file in assets/i18n/ or it will fail ***
