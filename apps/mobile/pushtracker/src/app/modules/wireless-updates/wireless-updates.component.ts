@@ -1,13 +1,28 @@
-import { AfterViewInit, Component, OnInit, ViewContainerRef } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnInit,
+  ViewContainerRef
+} from '@angular/core';
+import {
+  Files as KinveyFiles,
+  Query as KinveyQuery
+} from '@bradmartin/kinvey-nativescript-sdk';
 import { ModalDialogParams, ModalDialogService } from '@nativescript/angular';
-import { Color, isAndroid, isIOS, Page } from '@nativescript/core';
-import * as app from '@nativescript/core/application';
-import * as appSettings from '@nativescript/core/application-settings';
-import { connectionType, getConnectionType } from '@nativescript/core/connectivity';
-import { screen } from '@nativescript/core/platform';
-import { confirm } from '@nativescript/core/ui/dialogs';
+import {
+  AndroidActivityBackPressedEventData,
+  AndroidApplication,
+  Application,
+  ApplicationSettings as appSettings,
+  Color,
+  Connectivity,
+  Dialogs,
+  isAndroid,
+  isIOS,
+  Page,
+  Screen
+} from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Files as KinveyFiles, Query as KinveyQuery } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import last from 'lodash/last';
 import throttle from 'lodash/throttle';
@@ -25,11 +40,11 @@ import { BluetoothService, LoggingService } from '../../services';
   templateUrl: 'wireless-updates.component.html'
 })
 export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
-  public APP_THEMES = APP_THEMES;
-  public CONFIGURATIONS = CONFIGURATIONS;
+  APP_THEMES = APP_THEMES;
+  CONFIGURATIONS = CONFIGURATIONS;
   languagePreference: string = '';
   controlConfiguration: string = '';
-  screenWidth = screen.mainScreen.widthDIPs;
+  screenWidth = Screen.mainScreen.widthDIPs;
   allowBackNav: boolean = true;
 
   /**
@@ -44,10 +59,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   /**
    * SmartDrive Data / state management
    */
-  public smartDrive: SmartDrive;
-  public smartDriveCheckedForUpdates = false;
-  public smartDriveUpToDate = false;
-  public noSmartDriveDetected = false;
+  smartDrive: SmartDrive;
+  smartDriveCheckedForUpdates = false;
+  smartDriveUpToDate = false;
+  noSmartDriveDetected = false;
   private _throttledOtaAction: any = null;
   private _throttledOtaStatus: any = null;
 
@@ -57,10 +72,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   pushTrackerOtaProgress: number = 0;
   pushTrackerOtaState: string = null;
   pushTrackerOtaActions = [];
-  public pushTracker: PushTracker;
-  public pushTrackerCheckedForUpdates = false;
-  public pushTrackerUpToDate = false;
-  public noPushTrackerDetected = false;
+  pushTracker: PushTracker;
+  pushTrackerCheckedForUpdates = false;
+  pushTrackerUpToDate = false;
+  noPushTrackerDetected = false;
   private _throttledPTOtaAction: any = null;
   private _throttledPTOtaStatus: any = null;
   CURRENT_THEME: string;
@@ -274,8 +289,8 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this._logService.logException(err);
     }
 
-    const _connType = getConnectionType();
-    if (_connType === connectionType.none) {
+    const _connType = Connectivity.getConnectionType();
+    if (_connType === Connectivity.connectionType.none) {
       try {
         await this._loadSmartDriveFirmwareFromFileSystem();
       } catch (err) {
@@ -727,8 +742,8 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this._logService.logException(err);
     }
 
-    const _connType = getConnectionType();
-    if (_connType === connectionType.none) {
+    const _connType = Connectivity.getConnectionType();
+    if (_connType === Connectivity.connectionType.none) {
       try {
         await this._loadPushTrackerFirmwareFromFileSystem();
       } catch (err) {
@@ -1053,17 +1068,17 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this._page.enableSwipeBackNavigation = allowed;
     } else if (isAndroid) {
       if (allowed) {
-        app.android.off(app.AndroidApplication.activityBackPressedEvent);
+        Application.android.off(AndroidApplication.activityBackPressedEvent);
       } else {
         // setting the event listener for the android back pressed event
-        app.android.on(
-          app.AndroidApplication.activityBackPressedEvent,
-          (args: app.AndroidActivityBackPressedEventData) => {
+        Application.android.on(
+          AndroidApplication.activityBackPressedEvent,
+          (args: AndroidActivityBackPressedEventData) => {
             // cancel the back nav for now then confirm with user to leave
             args.cancel = true;
 
             let closeModal = false;
-            confirm({
+            Dialogs.confirm({
               title: this._translateService.instant(
                 'ota.warnings.leaving.title'
               ),
@@ -1077,8 +1092,8 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
               .then((result: boolean) => {
                 if (result === true) {
                   // user wants to leave so remove the back pressed event
-                  app.android.off(
-                    app.AndroidApplication.activityBackPressedEvent
+                  Application.android.off(
+                    AndroidApplication.activityBackPressedEvent
                   );
                   closeModal = true;
                 }

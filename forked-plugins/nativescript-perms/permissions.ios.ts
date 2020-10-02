@@ -1,10 +1,5 @@
-import { device } from '@nativescript/core/platform';
-import {
-  CheckOptions,
-  CLog,
-  CLogTypes,
-  RequestOptions
-} from './permissions.common';
+import { Device } from '@nativescript/core';
+import { CheckOptions, RequestOptions } from './permissions.common';
 export * from './permissions.common';
 
 export namespace PermissionsIOS {
@@ -12,7 +7,7 @@ export namespace PermissionsIOS {
     Undetermined = 'undetermined',
     Denied = 'denied',
     Authorized = 'authorized',
-    Restricted = 'restricted',
+    Restricted = 'restricted'
   }
 
   namespace NSPLocation {
@@ -43,7 +38,9 @@ export namespace PermissionsIOS {
       CLLocationManagerDelegate
     >;
 
-    export class CLLocationManagerDelegateImpl extends NSObject
+    @NativeClass()
+    class CLLocationManagerDelegateImpl
+      extends NSObject
       implements CLLocationManagerDelegate {
       public static ObjCProtocols = [CLLocationManagerDelegate];
 
@@ -77,7 +74,7 @@ export namespace PermissionsIOS {
         status: CLAuthorizationStatus
       ) {
         this.subDelegates &&
-          this.subDelegates.forEach((d) => {
+          this.subDelegates.forEach(d => {
             if (d.locationManagerDidChangeAuthorizationStatus) {
               d.locationManagerDidChangeAuthorizationStatus(manager, status);
             }
@@ -86,7 +83,7 @@ export namespace PermissionsIOS {
     }
     export function request(type): Promise<Status> {
       const status = getStatusForType(undefined);
-      CLog(CLogTypes.info, 'NSPLocation request', type, status);
+      console.info('NSPLocation request', type, status);
       if (status === Status.Undetermined) {
         return new Promise((resolve, reject) => {
           if (!locationManager) {
@@ -98,8 +95,7 @@ export namespace PermissionsIOS {
               manager,
               status: CLAuthorizationStatus
             ) => {
-              CLog(
-                CLogTypes.info,
+              console.info(
                 'locationManagerDidChangeAuthorizationStatus',
                 status
               );
@@ -119,13 +115,13 @@ export namespace PermissionsIOS {
                 // } else {
                 // reject('kCLAuthorizationStatusNotDetermined');
               }
-            },
+            }
           };
           (locationManager.delegate as CLLocationManagerDelegateImpl).addSubDelegate(
             subD
           );
           try {
-            CLog(CLogTypes.info, 'NSPLocation requestAuthorization', type);
+            console.info('NSPLocation requestAuthorization', type);
             if (type === 'always') {
               locationManager.requestAlwaysAuthorization();
             } else {
@@ -158,10 +154,10 @@ export namespace PermissionsIOS {
 
   namespace NSPBluetooth {
     export function getStatus(): Status {
-      CLog(CLogTypes.info, 'Device SDK ', device.sdkVersion);
-      if (device.sdkVersion < '13.0') {
+      console.info('Device SDK ', Device.sdkVersion);
+      if (Device.sdkVersion < '13.0') {
         const status = CBPeripheralManager.authorizationStatus();
-        CLog(CLogTypes.info, 'authorization status ', status);
+        console.info('authorization status ', status);
         switch (status) {
           case CBPeripheralManagerAuthorizationStatus.Authorized:
             return Status.Authorized;
@@ -172,7 +168,7 @@ export namespace PermissionsIOS {
           default:
             return Status.Undetermined;
         }
-      } else if (device.sdkVersion >= '13.0') {
+      } else if (Device.sdkVersion >= '13.0') {
         const centralManager = CBCentralManager.alloc().initWithDelegateQueue(
           null,
           null
@@ -194,7 +190,10 @@ export namespace PermissionsIOS {
     export type SubCBPeripheralManagerDelegate = Partial<
       CBPeripheralManagerDelegate
     >;
-    export class CBPeripheralManagerDelegateImpl extends NSObject
+
+    @NativeClass()
+    class CBPeripheralManagerDelegateImpl
+      extends NSObject
       implements CBPeripheralManagerDelegate {
       public static ObjCProtocols = [CBPeripheralManagerDelegate];
 
@@ -221,7 +220,7 @@ export namespace PermissionsIOS {
         return this;
       }
       peripheralManagerDidUpdateState(peripheralManager) {
-        this.subDelegates.forEach((d) => {
+        this.subDelegates.forEach(d => {
           if (d.peripheralManagerDidUpdateState) {
             d.peripheralManagerDidUpdateState(peripheralManager);
           }
@@ -238,7 +237,7 @@ export namespace PermissionsIOS {
             peripheralManager.delegate = CBPeripheralManagerDelegateImpl.new().initDelegate();
           }
           const subD = {
-            peripheralManagerDidUpdateState: (peripheralManager) => {
+            peripheralManagerDidUpdateState: peripheralManager => {
               if (peripheralManager) {
                 peripheralManager.stopAdvertising();
                 (peripheralManager.delegate as CBPeripheralManagerDelegateImpl).removeSubDelegate(
@@ -251,7 +250,7 @@ export namespace PermissionsIOS {
               setTimeout(() => {
                 resolve(getStatus());
               }, 100);
-            },
+            }
           };
           (peripheralManager.delegate as CBPeripheralManagerDelegateImpl).addSubDelegate(
             subD
@@ -295,7 +294,7 @@ export namespace PermissionsIOS {
       return new Promise((resolve, reject) => {
         AVCaptureDevice.requestAccessForMediaTypeCompletionHandler(
           type,
-          (granted) => resolve(getStatus(type))
+          granted => resolve(getStatus(type))
         );
       });
     }
@@ -316,7 +315,7 @@ export namespace PermissionsIOS {
     }
 
     export function request(): Promise<Status> {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         SFSpeechRecognizer.requestAuthorization(() => resolve(getStatus()));
       });
     }
@@ -337,7 +336,7 @@ export namespace PermissionsIOS {
     }
 
     export function request(): Promise<Status> {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         PHPhotoLibrary.requestAuthorization(() => resolve(getStatus()));
       });
     }
@@ -364,10 +363,10 @@ export namespace PermissionsIOS {
 
     export function request(): Promise<Status> {
       if (status === Status.Undetermined) {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           let activityManager = CMMotionActivityManager.new();
           let motionActivityQueue = NSOperationQueue.new();
-          CLog(CLogTypes.info, 'NSPMotion request', status);
+          console.info('NSPMotion request', status);
           activityManager.queryActivityStartingFromDateToDateToQueueWithHandler(
             NSDate.distantPast,
             new Date(),
@@ -378,8 +377,7 @@ export namespace PermissionsIOS {
               } else if (activities || !error) {
                 status = Status.Authorized;
               }
-              CLog(
-                CLogTypes.info,
+              console.info(
                 'NSPMotion got response',
                 activities,
                 error,
@@ -413,7 +411,7 @@ export namespace PermissionsIOS {
     }
 
     export function request(): Promise<Status> {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         MPMediaLibrary.requestAuthorization(() => resolve(getStatus()));
       });
     }
@@ -439,7 +437,7 @@ export namespace PermissionsIOS {
       const status = getStatus();
 
       if (status === Status.Undetermined) {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           const observer = function () {
             resolve(getStatus());
             NSNotificationCenter.defaultCenter.removeObserver(observer);
@@ -489,7 +487,7 @@ export namespace PermissionsIOS {
     }
 
     export function request(): Promise<Status> {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const contactStore = CNContactStore.new();
         contactStore.requestAccessForEntityTypeCompletionHandler(
           CNEntityType.Contacts,
@@ -514,7 +512,7 @@ export namespace PermissionsIOS {
     }
 
     export function request(): Promise<Status> {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const contactStore = CNContactStore.new();
         contactStore.requestAccessForEntityTypeCompletionHandler(
           CNEntityType.Contacts,
@@ -548,7 +546,7 @@ export namespace PermissionsIOS {
     }
 
     export function request(type?: string): Promise<Status> {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const aStore = EKEventStore.new();
         aStore.requestAccessToEntityTypeCompletion(typeFromString(type), () =>
           resolve(getStatus(type))
@@ -571,7 +569,7 @@ export namespace PermissionsIOS {
     BackgroundRefresh = 'backgroundRefresh',
     NSPTypeSpeechRecognition = 'speechRecognition',
     MediaLibrary = 'mediaLibrary',
-    Motion = 'motion',
+    Motion = 'motion'
   }
 
   export function openSettings() {
@@ -597,7 +595,7 @@ export namespace PermissionsIOS {
   }
   export function getPermissionStatus(type, json): Promise<Status> {
     let status;
-    CLog(CLogTypes.info, `nativescript-perms: getPermissionStatus ${type}`);
+    console.info(`nativescript-perms: getPermissionStatus ${type}`);
 
     switch (type) {
       case NSType.Location: {
@@ -648,7 +646,7 @@ export namespace PermissionsIOS {
     return Promise.resolve(status);
   }
   export function requestPermission(type, json): Promise<Status> {
-    CLog(CLogTypes.info, `nativescript-perms: requestPermission ${type}`);
+    console.info(`nativescript-perms: requestPermission ${type}`);
     switch (type) {
       case NSType.Location:
         return NSPLocation.request(json);
@@ -693,11 +691,11 @@ export namespace PermissionsIOS {
 
 const DEFAULTS = {
   location: 'whenInUse',
-  notification: ['alert', 'badge', 'sound'],
+  notification: ['alert', 'badge', 'sound']
 };
 
 const permissionTypes = Object.keys(PermissionsIOS.NSType).map(
-  (k) => PermissionsIOS.NSType[k]
+  k => PermissionsIOS.NSType[k]
 ) as string[];
 
 export function canOpenSettings() {
@@ -713,13 +711,12 @@ export function getTypes() {
 }
 
 export function check(permission: string, options?: CheckOptions) {
-  CLog(CLogTypes.info, `nativescript-perms: check ${permission}`);
+  console.info(`nativescript-perms: check ${permission}`);
   if (permissionTypes.indexOf(permission) === -1) {
     // const error = new Error(`ReactNativePermissions: ${permission} is not a valid permission type on iOS`);
 
     // return Promise.reject(error);
-    CLog(
-      CLogTypes.warning,
+    console.warn(
       `nativescript-perms: ${permission} is not a valid permission type on iOS`
     );
     // const error = new Error(`nativescript-perms: ${permission} is not a valid permission type on Android`);
@@ -742,11 +739,10 @@ export function check(permission: string, options?: CheckOptions) {
 }
 
 export function request(permission: string, options?: RequestOptions) {
-  CLog(CLogTypes.info, `nativescript-perms: request ${permission}`);
+  console.info(`nativescript-perms: request ${permission}`);
   if (permissionTypes.indexOf(permission) === -1) {
     // const error = new Error(`ReactNativePermissions: ${permission} is not a valid permission type on iOS`);
-    CLog(
-      CLogTypes.warning,
+    console.warn(
       `nativescript-perms: ${permission} is not a valid permission type on iOS`
     );
 
@@ -777,8 +773,8 @@ export function request(permission: string, options?: RequestOptions) {
 
 export function checkMultiple(permissions: string[]) {
   return Promise.all(
-    permissions.map((permission) => this.check(permission))
-  ).then((result) =>
+    permissions.map(permission => this.check(permission))
+  ).then(result =>
     result.reduce((acc, value, index) => {
       const name = permissions[index];
       acc[name] = value;

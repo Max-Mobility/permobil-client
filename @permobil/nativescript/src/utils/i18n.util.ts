@@ -1,14 +1,22 @@
 require('globals');
-import { File, Folder, knownFolders, path } from '@nativescript/core';
-import { getResources, setResources } from '@nativescript/core/application';
-import * as AppSettings from '@nativescript/core/application-settings';
-import { device } from '@nativescript/core/platform';
+import {
+  Application,
+  ApplicationSettings as AppSettings, Device,
+  File,
+  Folder,
+  knownFolders,
+  path
+} from '@nativescript/core';
 import { DataKeys } from '@permobil/core/src/enums';
 
 // Long string that will be the unique app-settings key across multiple apps for the i18n language file the user has set
 
 const getDefaultLang = () => {
-  return AppSettings.getString(DataKeys.APP_LANGUAGE_FILE, device.language);
+  return AppSettings.getString(DataKeys.APP_LANGUAGE_FILE, Device.language);
+};
+
+const setDefaultLang = (language: string) => {
+  AppSettings.setString(DataKeys.APP_LANGUAGE_FILE, language);
 };
 
 // The current translation object
@@ -100,17 +108,17 @@ const get = (k, obj) => {
 const L = (...args: any[]) => {
   let translated = get(args[0], translations['en']) || args[0];
   try {
-    translated = get(args[0], translations[lang]) || args[0];
+    translated = get(args[0], translations[lang]) || translated;
   } catch {
     // do nothing - we have our defaults
   }
   return translated;
 };
 
-const applicationResources = getResources();
+const applicationResources = Application.getResources();
 applicationResources.L = L;
-setResources(applicationResources);
+Application.setResources(applicationResources);
 // @ts-ignore
 global.L = L;
 
-export { getDefaultLang, use, load, update, L };
+export { getDefaultLang, setDefaultLang, use, load, update, L };

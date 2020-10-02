@@ -1,7 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes } from '@angular/router';
-import { NativeScriptRouterModule } from '@nativescript/angular/router';
-import { ConfigurationComponent, DeviceSetupComponent, ForgotPasswordComponent, LoginComponent, SignUpComponent } from './modules';
+import { NativeScriptRouterModule } from '@nativescript/angular';
+import {
+  ConfigurationComponent,
+  DeviceSetupComponent,
+  ForgotPasswordComponent,
+  LoginComponent,
+  SignUpComponent
+} from './modules';
 import { AuthGuardService } from './services';
 
 const routes: Routes = [
@@ -28,7 +34,8 @@ const routes: Routes = [
   },
   {
     path: 'tabs',
-    loadChildren: './modules/tabs/tabs.module#TabsModule',
+    loadChildren: () =>
+      import('./modules/tabs/tabs.module').then(m => m.TabsModule),
     canActivate: [AuthGuardService]
   }
 ];

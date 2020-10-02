@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
+import { Kinvey } from '@bradmartin/kinvey-nativescript-sdk';
 import { SentryKeys } from '@maxmobility/private-keys';
 import { TranslateService } from '@ngx-translate/core';
-import { Kinvey } from 'kinvey-nativescript-sdk';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { Carousel, CarouselItem } from 'nativescript-carousel';
@@ -12,7 +12,11 @@ import * as orientation from 'nativescript-orientation';
 import { Sentry } from 'nativescript-sentry';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import * as application from 'tns-core-modules/application';
-import { connectionType, startMonitoring, stopMonitoring } from 'tns-core-modules/connectivity';
+import {
+  connectionType,
+  startMonitoring,
+  stopMonitoring
+} from 'tns-core-modules/connectivity';
 import { User } from './models';
 import { LoggingService, UserService } from './services';
 import { APP_KEY, APP_SECRET } from './utils/kinvey-keys';

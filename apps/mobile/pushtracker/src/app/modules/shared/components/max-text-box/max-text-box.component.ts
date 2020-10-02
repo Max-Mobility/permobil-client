@@ -1,6 +1,13 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { registerElement } from '@nativescript/angular';
-import { EventData, GridLayout, isAndroid, PropertyChangeData, StackLayout, TextField } from '@nativescript/core';
+import {
+  EventData,
+  GridLayout,
+  isAndroid,
+  PropertyChangeData,
+  StackLayout,
+  TextField
+} from '@nativescript/core';
 
 @Component({
   selector: 'MaxTextBox',

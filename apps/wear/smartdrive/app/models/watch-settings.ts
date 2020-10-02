@@ -1,4 +1,5 @@
 import { mod } from '@permobil/core/src/utils';
+import { L, getDefaultLang } from '@permobil/nativescript/src/utils';
 
 type TranslateFunction = (translationKey: string) => string;
 
@@ -6,39 +7,24 @@ type TranslateFunction = (translationKey: string) => string;
 // server or the SmartDrive
 export class WatchSettings {
   static Languages = class {
-    static Options: string[] = [
-      'cs',
-      'da',
-      'de',
-      'en',
-      'es',
-      'fi',
-      'fr',
-      'it',
-      'ja',
-      'ko',
-      'nb',
-      'nl',
-      'pl',
-      'pt',
-      'sv',
-      'zh'
-    ];
+    static Options: string[];
   };
 
-  public static Defaults = {
+  static Defaults = {
     disableWearCheck: false,
     powerAssistTimeoutMinutes: 5,
-    language: WatchSettings.Languages.Options[3]
+    language: getDefaultLang()
   };
 
-  // public members:
+  // members:
   disableWearCheck: boolean = WatchSettings.Defaults.disableWearCheck;
   powerAssistTimeoutMinutes: number =
     WatchSettings.Defaults.powerAssistTimeoutMinutes;
   language: string = WatchSettings.Defaults.language;
 
-  constructor() {}
+  constructor() {
+    WatchSettings.Languages.Options = Object.keys(L('language-list'));
+  }
 
   toObj(): any {
     return Object.keys(WatchSettings.Defaults).reduce((obj, key) => {

@@ -1,4 +1,4 @@
-import { android as androidApp } from '@nativescript/core/application';
+import { Application } from '@nativescript/core';
 import { Log } from '@permobil/core';
 
 declare const org: any;
@@ -17,11 +17,10 @@ export interface StoredAcceleration {
 type TimeStamp = number;
 
 export class TapDetector {
-  public static TapLockoutTimeMs: number = 150;
-  public static TapLockoutTimeNs: number =
-    TapDetector.TapLockoutTimeMs * 1000 * 1000;
+  static TapLockoutTimeMs: number = 150;
+  static TapLockoutTimeNs: number = TapDetector.TapLockoutTimeMs * 1000 * 1000;
 
-  public tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
+  tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
 
   /**
    * Higher-level model prediction thresholds for determining if the
@@ -48,7 +47,8 @@ export class TapDetector {
   private minJerkThreshold: number = 15.0;
   // subtracted from jerkThreshold when motor on to produce
   // jerkThresholdDynamic
-  private jerkThresholdOnOffDiff: number = (this.maxJerkThreshold - this.minJerkThreshold) * 0.25;
+  private jerkThresholdOnOffDiff: number =
+    (this.maxJerkThreshold - this.minJerkThreshold) * 0.25;
   // base jerk threshold calculated from min/max/sensitivity - default
   // value does not matter
   private jerkThreshold: number;
@@ -157,10 +157,10 @@ export class TapDetector {
         if (inputShapes[i] !== inputShape[1]) {
           Log.E(
             `TapDetector::TapDetector(): input tensor ${dataType} at ${i}  misconfigured!\n` +
-            '  Expected shape of ' +
-            inputShapes[i] +
-            ' but got ' +
-            inputShape[1]
+              '  Expected shape of ' +
+              inputShapes[i] +
+              ' but got ' +
+              inputShape[1]
           );
         }
       }
@@ -175,10 +175,10 @@ export class TapDetector {
         if (outputShapes[i] !== outputShape[1]) {
           Log.E(
             `TapDetector::TapDetector(): output tensor ${dataType} at ${i}  misconfigured!\n` +
-            '  Expected shape of ' +
-            outputShapes[i] +
-            ' but got ' +
-            outputShape[1]
+              '  Expected shape of ' +
+              outputShapes[i] +
+              ' but got ' +
+              outputShape[1]
           );
         }
       }
@@ -191,7 +191,7 @@ export class TapDetector {
   /**
    * Reset the histories to clear out old data
    */
-  public reset() {
+  reset() {
     this.inputHistory = [];
     this.predictionHistory = [];
     this.inputRawHistory = [];
@@ -205,10 +205,7 @@ export class TapDetector {
    * @param motorOn [boolean]: increase sensitivity from setting if
    *                           motor is on.
    */
-  public setSensitivity(
-    sensitivity: number,
-    motorOn: boolean
-  ) {
+  setSensitivity(sensitivity: number, motorOn: boolean) {
     // ensure sensitivity is in range [0, 100]
     sensitivity = Math.min(100, Math.max(sensitivity, 0));
 
@@ -240,7 +237,7 @@ export class TapDetector {
    * Main inference Function for detecting tap
    * @return result [boolean]: true if there was a tap
    */
-  public detectTap(acceleration: Acceleration, timestamp: TimeStamp) {
+  detectTap(acceleration: Acceleration, timestamp: TimeStamp) {
     try {
       // vectorize the input
       const inputData = [acceleration.x, acceleration.y, acceleration.z];
@@ -366,7 +363,7 @@ export class TapDetector {
     }
   }
 
-  public updateRawHistory(accel: Acceleration) {
+  updateRawHistory(accel: Acceleration) {
     this.inputRawHistory.push(accel);
     if (this.inputRawHistory.length > TapDetector.InputRawHistorySize) {
       this.inputRawHistory.shift(); // remove the oldest element
@@ -384,7 +381,9 @@ export class TapDetector {
    * TFLite model loading function
    */
   private loadModelFile() {
-    const activity = androidApp.foregroundActivity || androidApp.startActivity;
+    const activity =
+      Application.android.foregroundActivity ||
+      Application.android.startActivity;
     const fileDescriptor = activity
       .getAssets()
       .openFd(this.tapDetectorModelFileName);

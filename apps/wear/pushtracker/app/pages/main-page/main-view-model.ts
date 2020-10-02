@@ -1,18 +1,19 @@
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 import {
+  AndroidActivityEventData,
+  AndroidApplication,
+  Application,
+  ApplicationEventData,
+  ApplicationSettings,
   EventData,
   Observable,
   Page,
+  Screen,
   ShowModalOptions,
+  Utils,
   View,
   ViewBase
 } from '@nativescript/core';
-import * as application from '@nativescript/core/application';
-import * as appSettings from '@nativescript/core/application-settings';
-import { screen } from '@nativescript/core/platform';
-import { setTimeout } from '@nativescript/core/timer';
-import { alert } from '@nativescript/core/ui/dialogs';
-import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
 import {
   cancelScheduledNotification,
@@ -232,7 +233,7 @@ export class MainViewModel extends Observable {
           android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(this.ANDROID_MARKET_SMARTDRIVE_URI));
-    application.android.foregroundActivity.startActivity(intent);
+    Application.android.foregroundActivity.startActivity(intent);
   }
 
   async onSettingsTap(args) {
@@ -407,7 +408,7 @@ export class MainViewModel extends Observable {
     let maxDist = 0;
     let currentDist = 0;
     try {
-      const cursor = androidUtils
+      const cursor = Utils.android
         .getApplicationContext()
         .getContentResolver()
         .query(
@@ -467,7 +468,7 @@ export class MainViewModel extends Observable {
 
   private _loadCurrentActivityData() {
     const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-    const sharedPreferences = androidUtils
+    const sharedPreferences = Utils.android
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0);
     this.currentPushCount = sharedPreferences.getInt(
@@ -499,7 +500,7 @@ export class MainViewModel extends Observable {
   private _registerForServiceDataUpdates() {
     sentryBreadCrumb('Registering for service data updates.');
     this.serviceDataReceiver.onReceiveFunction = this._onServiceData.bind(this);
-    const context = androidUtils.getApplicationContext();
+    const context = Utils.android.getApplicationContext();
     androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(
       context
     ).registerReceiver(
@@ -535,7 +536,7 @@ export class MainViewModel extends Observable {
     Log.D('Got auth', userId, token);
     // now save it to datastore for service to use
     const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-    const sharedPreferences = androidUtils
+    const sharedPreferences = Utils.android
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0);
     const editor = sharedPreferences.edit();
@@ -549,7 +550,7 @@ export class MainViewModel extends Observable {
     );
     editor.commit();
     try {
-      const contentResolver = androidUtils
+      const contentResolver = Utils.android
         .getApplicationContext()
         .getContentResolver();
       // write token to content provider for smartdrive wear
@@ -629,7 +630,7 @@ export class MainViewModel extends Observable {
     try {
       sentryBreadCrumb('Sending intent to Activity Service.');
       const intent = new android.content.Intent();
-      const context = application.android.context;
+      const context = Application.android.context;
       intent.setClassName(context, 'com.permobil.pushtracker.ActivityService');
       intent.setAction('ACTION_START_SERVICE');
       // The startService() method now throws an IllegalStateException if an app targeting Android 8.0 tries to use that method in a situation when it isn't permitted to create background services.
@@ -685,43 +686,40 @@ export class MainViewModel extends Observable {
    */
   private _registerAppEventHandlers() {
     // handle ambient mode callbacks
-    application.on('enterAmbient', () => {
+    Application.on('enterAmbient', () => {
       sentryBreadCrumb('*** enterAmbient ***');
       this._applyTheme('ambient');
     });
 
-    application.on('updateAmbient', () => {});
+    Application.on('updateAmbient', () => {});
 
-    application.on('exitAmbient', () => {
+    Application.on('exitAmbient', () => {
       sentryBreadCrumb('*** exitAmbient ***');
       this._applyTheme('default');
       this._androidResumeEventHandlers();
     });
 
     // Activity lifecycle event handlers
-    application.on(application.exitEvent, async () => {
+    Application.on(Application.exitEvent, async () => {
       sentryBreadCrumb('*** appExit ***');
       await WearOsComms.stopWatch();
     });
 
-    application.on(
-      application.lowMemoryEvent,
-      (args: application.ApplicationEventData) => {
-        sentryBreadCrumb('*** appLowMemory ***');
-      }
-    );
+    Application.on(Application.lowMemoryEvent, (args: ApplicationEventData) => {
+      sentryBreadCrumb('*** appLowMemory ***');
+    });
 
-    application.android.on(
-      application.AndroidApplication.activityResumedEvent,
-      (args: application.AndroidActivityEventData) => {
+    Application.android.on(
+      AndroidApplication.activityResumedEvent,
+      (args: AndroidActivityEventData) => {
         sentryBreadCrumb('*** android app resume ***');
         this._androidResumeEventHandlers();
       }
     );
 
-    application.android.on(
-      application.AndroidApplication.activityPausedEvent,
-      (args: application.AndroidActivityEventData) => {
+    Application.android.on(
+      AndroidApplication.activityPausedEvent,
+      (args: AndroidActivityEventData) => {
         sentryBreadCrumb('*** android app paused ***');
       }
     );
@@ -789,8 +787,8 @@ export class MainViewModel extends Observable {
       const userEmail = userData.username;
       const userId = userData._id;
       // set the info for display
-      appSettings.setString(DataKeys.USER_NAME, userName);
-      appSettings.setString(DataKeys.USER_EMAIL, userEmail);
+      ApplicationSettings.setString(DataKeys.USER_NAME, userName);
+      ApplicationSettings.setString(DataKeys.USER_EMAIL, userEmail);
       // set the info for sentry
       Sentry.setContextUser({
         id: userId,
@@ -866,7 +864,7 @@ export class MainViewModel extends Observable {
 
   private async _showConfirmation(animationType: number, message?: string) {
     const intent = new android.content.Intent(
-      androidUtils.getApplicationContext(),
+      Utils.android.getApplicationContext(),
       android.support.wearable.activity.ConfirmationActivity.class
     );
     intent.putExtra(
@@ -881,8 +879,8 @@ export class MainViewModel extends Observable {
       );
     }
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
-    application.android.foregroundActivity.startActivity(intent);
-    application.android.foregroundActivity.overridePendingTransition(0, 0);
+    Application.android.foregroundActivity.startActivity(intent);
+    Application.android.foregroundActivity.overridePendingTransition(0, 0);
   }
 
   private _registerForTimeUpdates() {
@@ -899,11 +897,11 @@ export class MainViewModel extends Observable {
         // Sentry.captureException(error);
       }
     };
-    application.android.registerBroadcastReceiver(
+    Application.android.registerBroadcastReceiver(
       android.content.Intent.ACTION_TIME_TICK,
       timeReceiverCallback
     );
-    application.android.registerBroadcastReceiver(
+    Application.android.registerBroadcastReceiver(
       android.content.Intent.ACTION_TIMEZONE_CHANGED,
       timeReceiverCallback
     );
@@ -998,7 +996,7 @@ export class MainViewModel extends Observable {
   private _checkPackageInstalled(packageName: string) {
     let found = true;
     try {
-      application.android.context
+      Application.android.context
         .getPackageManager()
         .getPackageInfo(packageName, 0);
     } catch (err) {
@@ -1095,7 +1093,7 @@ export class MainViewModel extends Observable {
     let authorization = null;
     let userId = null;
     const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-    const sharedPreferences = androidUtils
+    const sharedPreferences = Utils.android
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0);
     const savedToken = sharedPreferences.getString(
@@ -1116,7 +1114,7 @@ export class MainViewModel extends Observable {
       // Mobile app
       Log.D('No authorization found in app settings!');
       try {
-        const contentResolver = androidUtils
+        const contentResolver = Utils.android
           .getApplicationContext()
           .getContentResolver();
         const authCursor = contentResolver.query(
@@ -1176,15 +1174,15 @@ export class MainViewModel extends Observable {
 
   private _setupInsetChin() {
     // https://developer.android.com/reference/android/content/res/Configuration.htm
-    const androidConfig = androidUtils
+    const androidConfig = Utils.android
       .getApplicationContext()
       .getResources()
       .getConfiguration();
     const isCircleWatch = androidConfig.isScreenRound();
-    const widthPixels = screen.mainScreen.widthPixels;
-    const heightPixels = screen.mainScreen.heightPixels;
-    const widthDIPs = screen.mainScreen.widthDIPs;
-    const heightDIPs = screen.mainScreen.heightDIPs;
+    const widthPixels = Screen.mainScreen.widthPixels;
+    const heightPixels = Screen.mainScreen.heightPixels;
+    const widthDIPs = Screen.mainScreen.widthDIPs;
+    const heightDIPs = Screen.mainScreen.heightDIPs;
     this.screenWidth = widthDIPs;
     this.screenHeight = heightDIPs;
     if (isCircleWatch) {

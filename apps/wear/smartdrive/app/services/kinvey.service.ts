@@ -1,5 +1,5 @@
-import { device } from '@nativescript/core/platform';
-import { KinveyService } from '@permobil/nativescript';
+import { Device } from '@nativescript/core';
+import { KinveyService } from '@permobil/nativescript/src/services';
 import { Injectable } from 'injection-js';
 import * as LS from 'nativescript-localstorage';
 
@@ -26,7 +26,7 @@ export class SmartDriveKinveyService extends KinveyService {
     delete o.uuid;
     delete o.has_been_sent;
     // set watch_uuid for log
-    o.watch_uuid = device.uuid;
+    o.watch_uuid = Device.uuid;
     o.watch_serial_number = this.watch_serial_number || 'not_provided';
   }
 

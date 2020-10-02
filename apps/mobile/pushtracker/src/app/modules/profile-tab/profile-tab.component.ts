@@ -1,30 +1,31 @@
 import { Component, NgZone, ViewContainerRef } from '@angular/core';
-import { ModalDialogService, RouterExtensions } from '@nativescript/angular';
-import {
-  Color,
-  EventData,
-  ImageSource,
-  Label,
-  Page,
-  StackLayout
-} from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
-import { isAndroid, screen } from '@nativescript/core/platform';
-import { setTimeout } from '@nativescript/core/timer';
-import { action } from '@nativescript/core/ui/dialogs';
-import { TranslateService } from '@ngx-translate/core';
-import { subYears } from 'date-fns';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { BarcodeScanner } from 'nativescript-barcodescanner';
-import {
-  DateTimePicker,
-  DateTimePickerStyle
-} from 'nativescript-datetimepicker';
-import * as LS from 'nativescript-localstorage';
+import { User as KinveyUser } from '@bradmartin/kinvey-nativescript-sdk';
 import {
   BottomSheetOptions,
   BottomSheetService
-} from 'nativescript-material-bottomsheet/angular';
+} from '@nativescript-community/ui-material-bottomsheet/angular';
+import { ModalDialogService, RouterExtensions } from '@nativescript/angular';
+import {
+  ApplicationSettings as appSettings,
+  Color,
+  Dialogs,
+  EventData,
+  ImageSource,
+  isAndroid,
+  Label,
+  Page,
+  Screen,
+  StackLayout,
+  Utils
+} from '@nativescript/core';
+import {
+  DateTimePicker,
+  DateTimePickerStyle
+} from '@nativescript/datetimepicker';
+import { TranslateService } from '@ngx-translate/core';
+import { subYears } from 'date-fns';
+import { BarcodeScanner } from 'nativescript-barcodescanner';
+import * as LS from 'nativescript-localstorage';
 import { Sentry } from 'nativescript-sentry';
 import { Toasty } from 'nativescript-toasty';
 import {
@@ -72,8 +73,8 @@ import {
   templateUrl: './profile-tab.component.html'
 })
 export class ProfileTabComponent {
-  public APP_THEMES = APP_THEMES;
-  public CONFIGURATIONS = CONFIGURATIONS;
+  APP_THEMES = APP_THEMES;
+  CONFIGURATIONS = CONFIGURATIONS;
   user: PushTrackerUser; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
   displayActivityGoalCoastTime: string;
   displayActivityGoalDistance: string;
@@ -151,7 +152,7 @@ export class ProfileTabComponent {
   async onProfileTabLoaded() {
     this._logService.logBreadCrumb(ProfileTabComponent.name, 'Loaded');
     this._page.actionBarHidden = true;
-    this.screenHeight = screen.mainScreen.heightDIPs;
+    this.screenHeight = Screen.mainScreen.heightDIPs;
     this._barcodeScanner = new BarcodeScanner();
 
     this.user = KinveyUser.getActiveUser() as PushTrackerUser;
@@ -284,7 +285,7 @@ export class ProfileTabComponent {
 
   onAvatarTap() {
     const signOut = this._translateService.instant('general.sign-out');
-    action({
+    Dialogs.action({
       title: '',
       cancelButtonText: this._translateService.instant('general.cancel'),
       actions: [signOut]
@@ -1051,7 +1052,7 @@ export class ProfileTabComponent {
   }
 
   onPushTrackerE2SerialNumberTap(_) {
-    alert({
+    Dialogs.alert({
       title: this._translateService.instant(
         'profile-tab.pushtracker-e2-serial-number-dialog-title'
       ),
@@ -1086,8 +1087,8 @@ export class ProfileTabComponent {
         ProfileTabComponent.name,
         'Could not update the user - ' + err
       );
-      setTimeout(() => {
-        alert({
+      Utils.setTimeout(() => {
+        Dialogs.alert({
           title: this._translateService.instant(
             'profile-tab.network-error.title'
           ),
@@ -1117,14 +1118,16 @@ export class ProfileTabComponent {
   }
 
   private updateUserDisplay() {
-    this._initDisplayActivityGoalCoastTime();
-    this._initDisplayActivityGoalDistance();
-    this._initDisplayGender();
-    this._initDisplayWeight();
-    this._initDisplayHeight();
-    this._initDisplayChairType();
-    this._initDisplayChairMake();
-    this._initDisplayControlConfiguration();
+    this._zone.run(() => {
+      this._initDisplayActivityGoalCoastTime();
+      this._initDisplayActivityGoalDistance();
+      this._initDisplayGender();
+      this._initDisplayWeight();
+      this._initDisplayHeight();
+      this._initDisplayChairType();
+      this._initDisplayChairMake();
+      this._initDisplayControlConfiguration();
+    });
   }
 
   private _initDisplayActivityGoalCoastTime() {
@@ -1315,7 +1318,7 @@ export class ProfileTabComponent {
       ProfileTabComponent.name,
       `Wrong device entered/scanned --- text: ${text}, forDevices: ${forDevices}`
     );
-    setTimeout(() => {
+    Utils.setTimeout(() => {
       let message = '';
       let title = '';
       if (forDevices.includes('smartdrive')) {
@@ -1333,7 +1336,7 @@ export class ProfileTabComponent {
           'profile-tab.bad-pushtracker-serial-message'
         );
       }
-      alert({
+      Dialogs.alert({
         title: title,
         message: message,
         okButtonText: this._translateService.instant('profile-tab.ok')

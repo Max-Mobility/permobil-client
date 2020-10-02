@@ -4,7 +4,7 @@
 
   // PushTracker is paired, busy or disconnected - Show bluetooth symbol
   <LottieView row="0" col="1"
-    [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'bluetooth_black.json' : 'bluetooth_white.json'"
+    [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'res://bluetooth_black.json' : 'res://bluetooth_white.json'"
     *ngIf="state === PushTrackerState.paired || state === PushTrackerState.busy || state === PushTrackerState.disconnected"
     class="pt-lottie"
     loop="true"
@@ -15,7 +15,7 @@
   <LottieView
     row="0"
     col="1"
-    [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'success_black.json' : 'success_white.json'"
+    [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'res://success_black.json' : 'res://success_white.json'"
     *ngIf="state === PushTrackerState.connected || state === PushTrackerState.ready"
     class="pt-lottie"
     loop="false"
@@ -24,7 +24,7 @@
 
   // PushTracker state is unknown
   <LottieView row="0" col="1"
-    [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'failure_black.json' : 'failure_white.json'"
+    [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'res://failure_black.json' : 'res://failure_white.json'"
     *ngIf="state === PushTrackerState.unknown"
     class="cross-lottie pt-lottie"
     loop="false"

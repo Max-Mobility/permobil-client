@@ -1,20 +1,23 @@
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 import {
+  AndroidActivityEventData,
+  AndroidApplication,
+  Application,
+  ApplicationSettings,
   Color,
+  Dialogs,
+  Enums,
   EventData,
   Frame,
   GridLayout,
   Observable,
+  Screen,
+  ScrollView,
   ShowModalOptions,
-  StackLayout
+  StackLayout,
+  UnhandledErrorEventData,
+  Utils
 } from '@nativescript/core';
-import * as application from '@nativescript/core/application';
-import * as appSettings from '@nativescript/core/application-settings';
-import { screen } from '@nativescript/core/platform';
-import { action, alert } from '@nativescript/core/ui/dialogs';
-import { AnimationCurve } from '@nativescript/core/ui/enums';
-import { ScrollView } from '@nativescript/core/ui/scroll-view';
-import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log, wait } from '@permobil/core';
 import {
   cancelScheduledNotification,
@@ -247,7 +250,7 @@ export class MainViewModel extends Observable {
       return this.wakeLock;
     } else {
       // initialize the wake lock here
-      const powerManager = androidUtils
+      const powerManager = Utils.android
         .getApplicationContext()
         .getSystemService(android.content.Context.POWER_SERVICE);
       this.wakeLock = powerManager.newWakeLock(
@@ -290,7 +293,7 @@ export class MainViewModel extends Observable {
       // we might want to set specific notifications based on parameters for regions, users, etc.
       scheduleSmartDriveLocalNotifications();
       Log.D('scheduled local notifications for SmartDrive Wear');
-      setTimeout(async () => {
+      Utils.setTimeout(async () => {
         const cancelId = await cancelScheduledNotification(
           SmartDriveLocalNotifications.TIRE_PRESSURE_NOTIFICATION_ID
         );
@@ -336,6 +339,14 @@ export class MainViewModel extends Observable {
     this.displayTime = !this.displayTime;
   }
 
+  async onSetTimeTap() {
+    // open the date/time settings page
+    const intent = new android.content.Intent(
+      android.provider.Settings.ACTION_DATE_SETTINGS
+    );
+    Application.android.foregroundActivity.startActivity(intent);
+  }
+
   async onConnectPushTrackerTap() {
     if (!this._checkPackageInstalled('com.permobil.pushtracker')) {
       this._openInPlayStore('com.permobil.pushtracker');
@@ -360,7 +371,7 @@ export class MainViewModel extends Observable {
     try {
       const didSave = await this._saveNewSmartDrive();
       if (didSave) {
-        alert({
+        Dialogs.alert({
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
@@ -455,7 +466,7 @@ export class MainViewModel extends Observable {
     }
     this._enablingTraining = true;
     if (!this.watchBeingWorn && !this.disableWearCheck) {
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: L('failures.must-wear-watch'),
         okButtonText: L('buttons.ok')
@@ -465,7 +476,7 @@ export class MainViewModel extends Observable {
     }
     const didEnableTapSensor = this._enableTapSensor();
     if (!didEnableTapSensor) {
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: L('failures.could-not-enable-tap-sensor'),
         okButtonText: L('buttons.ok')
@@ -499,7 +510,7 @@ export class MainViewModel extends Observable {
       return;
     }
     if (!this.smartDrive) {
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: L('failures.no-smartdrive-paired'),
         okButtonText: L('buttons.ok')
@@ -507,7 +518,7 @@ export class MainViewModel extends Observable {
       return;
     }
     if (!isNetworkAvailable()) {
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: L('failures.no-network'),
         okButtonText: L('buttons.ok')
@@ -553,7 +564,7 @@ export class MainViewModel extends Observable {
   private _ensurePowerAssistTimeout(minutes: number) {
     if (this.powerAssistTimeoutId === null) {
       // set the timeout only if there is no timeout
-      this.powerAssistTimeoutId = setTimeout(
+      this.powerAssistTimeoutId = Utils.setTimeout(
         this.onPowerAssistTimeout.bind(this),
         minutes * 60 * 1000
       );
@@ -564,12 +575,28 @@ export class MainViewModel extends Observable {
     this._clearPowerAssistTimeout();
     // disable power assist
     this.disablePowerAssist();
-    // and alert the user that we timed out
-    alert({
-      title: L('failures.title'),
-      message: L('failures.power-assist-timeout'),
-      okButtonText: L('buttons.ok')
-    });
+    const showDialog = ApplicationSettings.getBoolean(
+      DataKeys.SHOULD_SHOW_POWER_ASSIST_TIMEOUT,
+      true
+    );
+    if (showDialog) {
+      // and alert the user that we timed out
+      Dialogs.confirm({
+        title: L('failures.title'),
+        message: L('failures.power-assist-timeout'),
+        okButtonText: L('buttons.dismiss'),
+        cancelButtonText: L('buttons.do-not-show-again'),
+        cancelable: false
+      }).then((res: boolean) => {
+        // res is TRUE if they pressed OK (dismiss) and FALSE if they
+        // pressed CANCEL (do not show again), s owe can simply store
+        // the result
+        ApplicationSettings.setBoolean(
+          DataKeys.SHOULD_SHOW_POWER_ASSIST_TIMEOUT,
+          res
+        );
+      });
+    }
   }
 
   private _enablingPowerAssist: boolean = false;
@@ -582,7 +609,7 @@ export class MainViewModel extends Observable {
     sentryBreadCrumb('Enabling power assist');
     // only enable power assist if we're on the user's wrist
     if (!this.watchBeingWorn && !this.disableWearCheck) {
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: L('failures.must-wear-watch'),
         okButtonText: L('buttons.ok')
@@ -620,7 +647,7 @@ export class MainViewModel extends Observable {
           const didEnableTapSensor = this._enableTapSensor();
           if (!didEnableTapSensor) {
             // TODO: translate this alert!
-            alert({
+            Dialogs.alert({
               title: L('failures.title'),
               message: L('failures.could-not-enable-tap-sensor'),
               okButtonText: L('buttons.ok')
@@ -652,7 +679,7 @@ export class MainViewModel extends Observable {
     } else {
       const didSave = await this._saveNewSmartDrive();
       if (didSave) {
-        setTimeout(this.enablePowerAssist.bind(this), 300);
+        Utils.setTimeout(this.enablePowerAssist.bind(this), 300);
       } else {
         sentryBreadCrumb('SmartDrive was not saved!');
       }
@@ -727,9 +754,9 @@ export class MainViewModel extends Observable {
     }
 
     // init sentry - DNS key for permobil-wear Sentry project
-    Sentry.init(
-      'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1376181'
-    );
+    // Sentry.init(
+    //   'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1376181'
+    // );
 
     // log the build version
     this._logVersions();
@@ -776,7 +803,9 @@ export class MainViewModel extends Observable {
       });
 
     // load serial number from settings / memory
-    const savedSerial = appSettings.getString(DataKeys.WATCH_SERIAL_NUMBER);
+    const savedSerial = ApplicationSettings.getString(
+      DataKeys.WATCH_SERIAL_NUMBER
+    );
     if (savedSerial && savedSerial.length) {
       this.watchSerialNumber = savedSerial;
       this._kinveyService.watch_serial_number = this.watchSerialNumber;
@@ -802,7 +831,9 @@ export class MainViewModel extends Observable {
     sentryBreadCrumb('Body sensor enabled.');
 
     // load savedSmartDriveAddress from settings / memory
-    const savedSDAddr = appSettings.getString(DataKeys.SD_SAVED_ADDRESS);
+    const savedSDAddr = ApplicationSettings.getString(
+      DataKeys.SD_SAVED_ADDRESS
+    );
     if (savedSDAddr && savedSDAddr.length) {
       this._updateSmartDrive(savedSDAddr);
     }
@@ -832,7 +863,7 @@ export class MainViewModel extends Observable {
       this.buildDisplay === latestBuildDisplay ||
       currentBuildDateCode >= latestBuildDateCode;
 
-    const packageManager = androidUtils
+    const packageManager = Utils.android
       .getApplicationContext()
       .getPackageManager();
     const packageInfo = packageManager.getPackageInfo(
@@ -906,7 +937,7 @@ export class MainViewModel extends Observable {
 
       if (neededPermissions && neededPermissions.length > 0) {
         sentryBreadCrumb('requesting permissions: ' + neededPermissions);
-        await alert({
+        await Dialogs.alert({
           title: L('permissions-request.title'),
           message: reasons.join('\n\n'),
           okButtonText: L('buttons.ok')
@@ -950,7 +981,10 @@ export class MainViewModel extends Observable {
     const serialNumberPermission = android.Manifest.permission.READ_PHONE_STATE;
     if (!hasPermission(serialNumberPermission)) return;
     this.watchSerialNumber = android.os.Build.getSerial();
-    appSettings.setString(DataKeys.WATCH_SERIAL_NUMBER, this.watchSerialNumber);
+    ApplicationSettings.setString(
+      DataKeys.WATCH_SERIAL_NUMBER,
+      this.watchSerialNumber
+    );
     this._kinveyService.watch_serial_number = this.watchSerialNumber;
   }
 
@@ -960,7 +994,7 @@ export class MainViewModel extends Observable {
         opacity: 0,
         scale: { x: 0.5, y: 0.5 },
         duration: 100,
-        curve: AnimationCurve.linear
+        curve: Enums.AnimationCurve.linear
       });
     }
     if (this._ambientTimeView) {
@@ -969,7 +1003,7 @@ export class MainViewModel extends Observable {
         opacity: 1,
         scale: { x: 1, y: 1 },
         duration: 250,
-        curve: AnimationCurve.easeIn
+        curve: Enums.AnimationCurve.easeIn
       });
     }
   }
@@ -977,11 +1011,11 @@ export class MainViewModel extends Observable {
   private _showMainDisplay() {
     if (this._ambientTimeView) {
       this._ambientTimeView.animate({
-        translate: { x: 0, y: screen.mainScreen.heightPixels },
+        translate: { x: 0, y: Screen.mainScreen.heightPixels },
         opacity: 0,
         scale: { x: 0.5, y: 0.5 },
         duration: 100,
-        curve: AnimationCurve.linear
+        curve: Enums.AnimationCurve.linear
       });
     }
     if (this._powerAssistView) {
@@ -989,7 +1023,7 @@ export class MainViewModel extends Observable {
         opacity: 1,
         scale: { x: 1, y: 1 },
         duration: 250,
-        curve: AnimationCurve.easeIn
+        curve: Enums.AnimationCurve.easeIn
       });
     }
   }
@@ -1102,7 +1136,7 @@ export class MainViewModel extends Observable {
       this.smartDrive.saveStateToLS();
     } else {
       // make sure we have 0 battery saved
-      appSettings.setNumber(DataKeys.SD_BATTERY, 0);
+      ApplicationSettings.setNumber(DataKeys.SD_BATTERY, 0);
     }
   }
 
@@ -1117,7 +1151,7 @@ export class MainViewModel extends Observable {
 
   private _registerAppEventHandlers() {
     // handle ambient mode callbacks
-    application.on('enterAmbient', () => {
+    Application.on('enterAmbient', () => {
       sentryBreadCrumb('*** enterAmbient ***');
       this.isAmbient = true;
 
@@ -1136,13 +1170,13 @@ export class MainViewModel extends Observable {
       }
     });
 
-    application.on('updateAmbient', () => {
+    Application.on('updateAmbient', () => {
       this.isAmbient = true;
       this._updateTimeDisplay();
       sentryBreadCrumb('updateAmbient');
     });
 
-    application.on('exitAmbient', () => {
+    Application.on('exitAmbient', () => {
       sentryBreadCrumb('*** exitAmbient ***');
       this.isAmbient = false;
       this._enableBodySensor();
@@ -1157,9 +1191,9 @@ export class MainViewModel extends Observable {
     });
 
     // Activity lifecycle event handlers
-    application.android.on(
-      application.AndroidApplication.activityPausedEvent,
-      (args: application.AndroidActivityEventData) => {
+    Application.android.on(
+      AndroidApplication.activityPausedEvent,
+      (args: AndroidActivityEventData) => {
         if (_isActivityThis(args.activity)) {
           sentryBreadCrumb('*** activityPaused ***');
           // paused happens any time a new activity is shown
@@ -1169,9 +1203,9 @@ export class MainViewModel extends Observable {
       }
     );
 
-    application.android.on(
-      application.AndroidApplication.activityResumedEvent,
-      (args: application.AndroidActivityEventData) => {
+    Application.android.on(
+      AndroidApplication.activityResumedEvent,
+      (args: AndroidActivityEventData) => {
         if (_isActivityThis(args.activity)) {
           sentryBreadCrumb('*** activityResumed ***');
           // resumed happens after an app is re-opened out of
@@ -1184,9 +1218,9 @@ export class MainViewModel extends Observable {
       }
     );
 
-    application.android.on(
-      application.AndroidApplication.activityStoppedEvent,
-      (args: application.AndroidActivityEventData) => {
+    Application.android.on(
+      AndroidApplication.activityStoppedEvent,
+      (args: AndroidActivityEventData) => {
         if (_isActivityThis(args.activity)) {
           sentryBreadCrumb('*** activityStopped ***');
           // similar to the app suspend / exit event.
@@ -1196,15 +1230,15 @@ export class MainViewModel extends Observable {
     );
 
     // application lifecycle event handlers
-    application.on(application.launchEvent, () => {
+    Application.on(Application.launchEvent, () => {
       Log.D('application launch event');
     });
 
-    application.on(application.resumeEvent, () => {
+    Application.on(Application.resumeEvent, () => {
       this._enableBodySensor();
     });
 
-    application.on(application.suspendEvent, async () => {
+    Application.on(Application.suspendEvent, async () => {
       sentryBreadCrumb('*** appSuspend ***');
 
       // ensure power assist is turned off if it is on
@@ -1219,21 +1253,21 @@ export class MainViewModel extends Observable {
       this._updateComplications();
     });
 
-    application.on(application.exitEvent, () => {
+    Application.on(Application.exitEvent, () => {
       sentryBreadCrumb('*** appExit ***');
       this._fullStop();
     });
 
-    application.on(application.lowMemoryEvent, () => {
+    Application.on(Application.lowMemoryEvent, () => {
       sentryBreadCrumb('*** appLowMemory ***');
       // TODO: determine if we need to stop for this - we see this
       // even even when the app is using very little memory
       // this.disablePowerAssist();
     });
 
-    application.on(
-      application.uncaughtErrorEvent,
-      (args: application.UnhandledErrorEventData) => {
+    Application.on(
+      Application.uncaughtErrorEvent,
+      (args: UnhandledErrorEventData) => {
         if (args) {
           Sentry.captureException(new Error(JSON.stringify(args)), {
             tags: {
@@ -1249,7 +1283,7 @@ export class MainViewModel extends Observable {
 
   private _updateComplications() {
     try {
-      const context = androidUtils.getApplicationContext();
+      const context = Utils.android.getApplicationContext();
       com.permobil.smartdrive.wearos.BatteryComplicationProviderService.forceUpdate(
         context
       );
@@ -1296,7 +1330,7 @@ export class MainViewModel extends Observable {
         plugged === android.os.BatteryManager.BATTERY_PLUGGED_WIRELESS;
     };
 
-    application.android.registerBroadcastReceiver(
+    Application.android.registerBroadcastReceiver(
       android.content.Intent.ACTION_BATTERY_CHANGED,
       batteryReceiverCallback
     );
@@ -1328,11 +1362,11 @@ export class MainViewModel extends Observable {
         Sentry.captureException(error);
       }
     };
-    application.android.registerBroadcastReceiver(
+    Application.android.registerBroadcastReceiver(
       android.content.Intent.ACTION_TIME_TICK,
       timeReceiverCallback
     );
-    application.android.registerBroadcastReceiver(
+    Application.android.registerBroadcastReceiver(
       android.content.Intent.ACTION_TIMEZONE_CHANGED,
       timeReceiverCallback
     );
@@ -1340,7 +1374,7 @@ export class MainViewModel extends Observable {
 
   private _updateTimeDisplay() {
     const now = new Date();
-    const context = androidUtils.getApplicationContext();
+    const context = Utils.android.getApplicationContext();
     const is24HourFormat = android.text.format.DateFormat.is24HourFormat(
       context
     );
@@ -1361,7 +1395,7 @@ export class MainViewModel extends Observable {
     let authorization = null;
     let userId = null;
     try {
-      const contentResolver = androidUtils
+      const contentResolver = Utils.android
         .getApplicationContext()
         .getContentResolver();
       const authCursor = contentResolver.query(
@@ -1430,7 +1464,7 @@ export class MainViewModel extends Observable {
 
   private _disableWifi() {
     try {
-      const wifiManager = androidUtils
+      const wifiManager = Utils.android
         .getApplicationContext()
         .getSystemService(android.content.Context.WIFI_SERVICE);
       this._wifiWasEnabled = wifiManager.isWifiEnabled();
@@ -1443,7 +1477,7 @@ export class MainViewModel extends Observable {
 
   private _enableWifi() {
     try {
-      const wifiManager = androidUtils
+      const wifiManager = Utils.android
         .getApplicationContext()
         .getSystemService(android.content.Context.WIFI_SERVICE);
       wifiManager.setWifiEnabled(this._wifiWasEnabled);
@@ -1662,7 +1696,7 @@ export class MainViewModel extends Observable {
     }
     // do we have any remaining taps to send?
     if (this.numTaps > 0) {
-      this.sendTapTimeoutId = setTimeout(this._sendTap.bind(this), 0);
+      this.sendTapTimeoutId = Utils.setTimeout(this._sendTap.bind(this), 0);
     } else {
       this.sendTapTimeoutId = null;
     }
@@ -1674,7 +1708,7 @@ export class MainViewModel extends Observable {
     if (this.tapTimeoutId) {
       clearTimeout(this.tapTimeoutId);
     }
-    this.tapTimeoutId = setTimeout(() => {
+    this.tapTimeoutId = Utils.setTimeout(() => {
       this.hasTapped = false;
     }, TapDetector.TapLockoutTimeMs);
     // vibrate for tap
@@ -1693,7 +1727,7 @@ export class MainViewModel extends Observable {
       this.numTaps++;
       // make sure the handler sends the taps
       if (this.sendTapTimeoutId === null) {
-        this.sendTapTimeoutId = setTimeout(this._sendTap.bind(this), 0);
+        this.sendTapTimeoutId = Utils.setTimeout(this._sendTap.bind(this), 0);
       }
     }
   }
@@ -1714,7 +1748,7 @@ export class MainViewModel extends Observable {
       this._bodySensorEnabled = false;
       Sentry.captureException(err);
       // Log.E('Error starting the body sensor', err);
-      // setTimeout(this._enableBodySensor.bind(this), 500);
+      // Utils.setTimeout(this._enableBodySensor.bind(this), 500);
     }
     return this._bodySensorEnabled;
   }
@@ -1801,7 +1835,7 @@ export class MainViewModel extends Observable {
         sdData[sdData.length - 1][SmartDriveData.Info.CoastDistanceName];
       if (todayCaseEnd > todayCaseStart) {
         // save today's current distance to storage for complication to use
-        appSettings.setNumber(
+        ApplicationSettings.setNumber(
           DataKeys.SD_DISTANCE_DAILY,
           SmartDrive.caseTicksToMiles(todayCaseEnd - todayCaseStart)
         );
@@ -1877,7 +1911,7 @@ export class MainViewModel extends Observable {
       this.estimatedDistance =
         this.smartDriveCurrentBatteryPercentage * rangeFactor;
       // save the updated estimated range for complication use
-      appSettings.setNumber(
+      ApplicationSettings.setNumber(
         DataKeys.SD_ESTIMATED_RANGE,
         this.estimatedDistance
       );
@@ -2034,7 +2068,7 @@ export class MainViewModel extends Observable {
   private _checkPackageInstalled(packageName: string) {
     let found = true;
     try {
-      androidUtils
+      Utils.android
         .getApplicationContext()
         .getPackageManager()
         .getPackageInfo(packageName, 0);
@@ -2055,7 +2089,7 @@ export class MainViewModel extends Observable {
           android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
-    application.android.foregroundActivity.startActivity(intent);
+    Application.android.foregroundActivity.startActivity(intent);
   }
 
   private async _openAppOnPhone() {
@@ -2101,7 +2135,7 @@ export class MainViewModel extends Observable {
 
   private async _showConfirmation(animationType: number, message?: string) {
     const intent = new android.content.Intent(
-      androidUtils.getApplicationContext(),
+      Utils.android.getApplicationContext(),
       android.support.wearable.activity.ConfirmationActivity.class
     );
     intent.putExtra(
@@ -2120,8 +2154,8 @@ export class MainViewModel extends Observable {
         android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
-    application.android.foregroundActivity.startActivity(intent);
-    application.android.foregroundActivity.overridePendingTransition(0, 0);
+    Application.android.foregroundActivity.startActivity(intent);
+    Application.android.foregroundActivity.overridePendingTransition(0, 0);
   }
 
   private async _ensureBluetoothCapabilities() {
@@ -2134,7 +2168,7 @@ export class MainViewModel extends Observable {
         sentryBreadCrumb(
           'ACCESS_COARSE_LOCATION not granted, unable to use bluetooth.'
         );
-        alert({
+        Dialogs.alert({
           title: L('failures.title'),
           message: L('failures.permissions'),
           okButtonText: L('buttons.ok')
@@ -2185,7 +2219,7 @@ export class MainViewModel extends Observable {
 
       // make sure we have smartdrives
       if (BluetoothService.SmartDrives.length <= 0) {
-        alert({
+        Dialogs.alert({
           title: L('failures.title'),
           message: L('failures.no-smartdrives-found'),
           okButtonText: L('buttons.ok')
@@ -2195,7 +2229,7 @@ export class MainViewModel extends Observable {
 
       // make sure we have only one smartdrive
       if (BluetoothService.SmartDrives.length > 1) {
-        alert({
+        Dialogs.alert({
           title: L('failures.title'),
           message: L('failures.too-many-smartdrives-found'),
           okButtonText: L('buttons.ok')
@@ -2209,7 +2243,7 @@ export class MainViewModel extends Observable {
       // map the smart drives to get all of the addresses
       const addresses = sds.map(sd => `${sd.address}`);
 
-      const result = await action({
+      const result = await Dialogs.action({
         title: L('settings.select-smartdrive'),
         message: L('settings.select-smartdrive'),
         actions: addresses,
@@ -2219,7 +2253,7 @@ export class MainViewModel extends Observable {
       if (addresses.indexOf(result) > -1) {
         // save the smartdrive here
         this._updateSmartDrive(result);
-        appSettings.setString(DataKeys.SD_SAVED_ADDRESS, result);
+        ApplicationSettings.setString(DataKeys.SD_SAVED_ADDRESS, result);
         return true;
       } else {
         return false;
@@ -2228,7 +2262,7 @@ export class MainViewModel extends Observable {
       Sentry.captureException(err);
       this._hideScanning();
       Log.E('could not scan', err);
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: `${L('failures.scan')}\n\n${err}`,
         okButtonText: L('buttons.ok')
@@ -2251,7 +2285,7 @@ export class MainViewModel extends Observable {
       return true;
     } catch (err) {
       Sentry.captureException(err);
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: L('failures.connect') + '\n\n' + address,
         okButtonText: L('buttons.ok')
@@ -2294,7 +2328,7 @@ export class MainViewModel extends Observable {
       this.smartDrive &&
       !this.smartDrive.connected
     ) {
-      setTimeout(this._connectToSavedSmartDrive.bind(this), 0);
+      Utils.setTimeout(this._connectToSavedSmartDrive.bind(this), 0);
     }
   }
 
@@ -2445,15 +2479,19 @@ export class MainViewModel extends Observable {
     // update battery percentage
     this.smartDriveCurrentBatteryPercentage = this.smartDrive.battery;
     // save the updated smartdrive battery
-    appSettings.setNumber(DataKeys.SD_BATTERY, this.smartDrive.battery);
+    ApplicationSettings.setNumber(DataKeys.SD_BATTERY, this.smartDrive.battery);
     // update speed display
     this.currentSpeed = motorInfo.speed;
     this._updateSpeedDisplay();
   }
 
   private async _onDistance(args: any) {
-    const currentCoast = appSettings.getNumber(DataKeys.SD_DISTANCE_CASE);
-    const currentDrive = appSettings.getNumber(DataKeys.SD_DISTANCE_DRIVE);
+    const currentCoast = ApplicationSettings.getNumber(
+      DataKeys.SD_DISTANCE_CASE
+    );
+    const currentDrive = ApplicationSettings.getNumber(
+      DataKeys.SD_DISTANCE_DRIVE
+    );
 
     // sentryBreadCrumb('_onDistance event');
     const coastDistance = args.data.coastDistance;
@@ -2468,16 +2506,16 @@ export class MainViewModel extends Observable {
       });
 
       // save the updated distance
-      appSettings.setNumber(
+      ApplicationSettings.setNumber(
         DataKeys.SD_DISTANCE_CASE,
         this.smartDrive.coastDistance
       );
-      appSettings.setNumber(
+      ApplicationSettings.setNumber(
         DataKeys.SD_DISTANCE_DRIVE,
         this.smartDrive.driveDistance
       );
       // make sure to save the units setting as well
-      appSettings.setString(
+      ApplicationSettings.setString(
         DataKeys.SD_UNITS,
         this._settingsService.settings.units.toLowerCase()
       );
@@ -2489,8 +2527,14 @@ export class MainViewModel extends Observable {
     // const mcuVersion = args.data.mcu;
 
     // save the updated SmartDrive version info
-    appSettings.setNumber(DataKeys.SD_VERSION_MCU, this.smartDrive.mcu_version);
-    appSettings.setNumber(DataKeys.SD_VERSION_BLE, this.smartDrive.ble_version);
+    ApplicationSettings.setNumber(
+      DataKeys.SD_VERSION_MCU,
+      this.smartDrive.mcu_version
+    );
+    ApplicationSettings.setNumber(
+      DataKeys.SD_VERSION_BLE,
+      this.smartDrive.ble_version
+    );
   }
 
   /*
@@ -2512,7 +2556,7 @@ export class MainViewModel extends Observable {
         .insertIntoTable(SmartDriveData.Errors.TableName, newError)
         .catch(err => {
           Sentry.captureException(err);
-          alert({
+          Dialogs.alert({
             title: L('failures.title'),
             message: `${L('failures.saving-error')}\n\n${err}`,
             okButtonText: L('buttons.ok')
@@ -2690,7 +2734,7 @@ export class MainViewModel extends Observable {
       // insert - the db will perform upsert for us.
       const values = new android.content.ContentValues();
       values.put('data', serialized);
-      const uri = androidUtils
+      const uri = Utils.android
         .getApplicationContext()
         .getContentResolver()
         .insert(
@@ -2783,7 +2827,7 @@ export class MainViewModel extends Observable {
         const id = r['_id'];
         if (id) {
           this._settingsService.hasSentSettings = true;
-          appSettings.setBoolean(
+          ApplicationSettings.setBoolean(
             DataKeys.SD_SETTINGS_DIRTY_FLAG,
             this._settingsService.hasSentSettings
           );
@@ -2898,7 +2942,7 @@ export class MainViewModel extends Observable {
     if (invalidCredentials || !this._kinveyService.hasAuth()) {
       // we had auth and now we don't - alert the user that it's
       // invalidated and we need new credentials
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: L('failures.app-connection.logout'),
         okButtonText: L('buttons.ok')
@@ -2908,15 +2952,15 @@ export class MainViewModel extends Observable {
 
   private _setupInsetChin() {
     // https://developer.android.com/reference/android/content/res/Configuration.htm
-    const androidConfig = androidUtils
+    const androidConfig = Utils.android
       .getApplicationContext()
       .getResources()
       .getConfiguration();
     const isCircleWatch = androidConfig.isScreenRound();
-    const widthPixels = screen.mainScreen.widthPixels;
-    const heightPixels = screen.mainScreen.heightPixels;
-    const widthDIPs = screen.mainScreen.widthDIPs;
-    const heightDIPs = screen.mainScreen.heightDIPs;
+    const widthPixels = Screen.mainScreen.widthPixels;
+    const heightPixels = Screen.mainScreen.heightPixels;
+    const widthDIPs = Screen.mainScreen.widthDIPs;
+    const heightDIPs = Screen.mainScreen.heightDIPs;
     this.screenWidth = widthDIPs;
     this.screenHeight = heightDIPs;
     if (isCircleWatch) {

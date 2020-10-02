@@ -1,6 +1,11 @@
 import {
+  AndroidActivityEventData,
+  AndroidApplication,
+  Application,
   ApplicationSettings,
+  Dialogs,
   Frame,
+  Http,
   knownFolders,
   Observable,
   Page,
@@ -8,19 +13,15 @@ import {
   ShowModalOptions,
   ViewBase
 } from '@nativescript/core';
-import * as application from '@nativescript/core/application';
-import { getFile } from '@nativescript/core/http';
-import { device } from '@nativescript/core/platform';
-import { alert, confirm } from '@nativescript/core/ui/dialogs';
 import { Device, Log, wait } from '@permobil/core';
 import {
   getDefaultLang,
   L,
   Prop,
-  restartAndroidApp
+  restartAndroidApp,
+  setDefaultLang
 } from '@permobil/nativescript';
 import { Sentry } from 'nativescript-sentry';
-import { DataKeys } from '../../../enums';
 import { WatchSettings } from '../../../models';
 import { SettingsService, SmartDriveKinveyService } from '../../../services';
 import {
@@ -69,9 +70,9 @@ export class SettingsViewModel extends Observable {
 
     // set event listener so we do not DOWNLOAD the files when the activity resumes
     // related https://github.com/Max-Mobility/permobil-client/issues/794
-    application.android.on(
-      application.AndroidApplication.activityResumedEvent,
-      (args: application.AndroidActivityEventData) => {
+    Application.android.on(
+      AndroidApplication.activityResumedEvent,
+      (args: AndroidActivityEventData) => {
         if (_isActivityThis(args.activity)) {
           // we dont want to download anything
           this._shouldDownloadFiles = false;
@@ -130,7 +131,7 @@ export class SettingsViewModel extends Observable {
           this._settingsService.saveSettings();
           // warning / indication to the user that they've updated their settings
           if (this.activeSettingToChange === 'language') {
-            confirm({
+            Dialogs.confirm({
               title: L('warnings.saved-settings.title'),
               message: L('warnings.saved-settings.language'),
               okButtonText: L('buttons.ok'),
@@ -138,10 +139,7 @@ export class SettingsViewModel extends Observable {
               cancelable: true
             }).then(res => {
               if (res === true) {
-                ApplicationSettings.setString(
-                  DataKeys.APP_LANGUAGE_FILE,
-                  this._settingsService.watchSettings.language
-                );
+                setDefaultLang(this._settingsService.watchSettings.language);
                 sentryBreadCrumb(
                   `User confirmed language file change ${this._settingsService.watchSettings.language}`
                 );
@@ -149,15 +147,12 @@ export class SettingsViewModel extends Observable {
                 restartAndroidApp();
               } else {
                 // revert back the watch settings language if the user cancels the change
-                this._settingsService.watchSettings.language = ApplicationSettings.getString(
-                  DataKeys.APP_LANGUAGE_FILE,
-                  device.language
-                );
+                this._settingsService.watchSettings.language = getDefaultLang();
                 this._settingsService.saveSettings();
               }
             });
           } else {
-            alert({
+            Dialogs.alert({
               title: L('warnings.saved-settings.title'),
               message: L('warnings.saved-settings.message'),
               okButtonText: L('buttons.ok')
@@ -267,7 +262,7 @@ export class SettingsViewModel extends Observable {
     for (f of filesToDownload) {
       // need to make sure the downloadUrl of the file uses `https` and not `http` to avoid IOExceptions
       const fileUrl = f._downloadURL.replace(/^http:\/\//i, 'https://');
-      await getFile(
+      await Http.getFile(
         {
           url: fileUrl,
           timeout: 30000,
@@ -298,7 +293,7 @@ export class SettingsViewModel extends Observable {
   private _handleDownloadError(err) {
     sentryBreadCrumb(`Error downloading files: ${JSON.stringify(err)}`);
     Sentry.captureException(err);
-    alert({
+    Dialogs.alert({
       title: L('failures.title'),
       message: L('failures.downloading-translations'),
       okButtonText: L('buttons.ok')

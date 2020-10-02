@@ -1,11 +1,18 @@
-import { ObservableArray, Page, ShownModallyData } from '@nativescript/core';
-import { fromObject } from '@nativescript/core/data/observable';
+import {
+  fromObject,
+  ObservableArray,
+  Page,
+  ShownModallyData
+} from '@nativescript/core';
 import { Log } from '@permobil/core';
 import { getDefaultLang, L } from '@permobil/nativescript';
 import { format } from 'date-fns';
 import differenceBy from 'lodash/differenceBy';
 import { Sentry } from 'nativescript-sentry';
-import { LoadOnDemandListViewEventData, RadListView } from 'nativescript-ui-listview';
+import {
+  LoadOnDemandListViewEventData,
+  RadListView
+} from 'nativescript-ui-listview';
 import { SmartDriveData } from '../../../namespaces';
 import { SqliteService } from '../../../services';
 import { configureLayout } from '../../../utils';

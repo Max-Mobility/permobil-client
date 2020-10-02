@@ -1,18 +1,22 @@
 import { Injectable } from '@angular/core';
 import {
-  DataStoreType as DataStoreType,
   DataStore as KinveyDataStore,
+  DataStoreType,
   Query as KinveyQuery,
   User as KinveyUser
-} from 'kinvey-nativescript-sdk';
+} from '@bradmartin/kinvey-nativescript-sdk';
 import { LoggingService } from './logging.service';
-import { BehaviorSubject } from 'rxjs';
-import { connectionType, getConnectionType } from '@nativescript/core/connectivity';
 
 @Injectable()
 export class SmartDriveUsageService {
-  private dailyDatastore = KinveyDataStore.collection('DailySmartDriveUsage', DataStoreType.Sync);
-  private weeklyDatastore = KinveyDataStore.collection('WeeklySmartDriveUsage', DataStoreType.Sync);
+  private dailyDatastore = KinveyDataStore.collection(
+    'DailySmartDriveUsage',
+    DataStoreType.Sync
+  );
+  private weeklyDatastore = KinveyDataStore.collection(
+    'WeeklySmartDriveUsage',
+    DataStoreType.Sync
+  );
 
   constructor(private _logService: LoggingService) {
     this.reset();
@@ -49,18 +53,21 @@ export class SmartDriveUsageService {
 
   async _query(db: any, query: KinveyQuery): Promise<any[]> {
     return new Promise((resolve, reject) => {
-      db.find(query)
-        .subscribe((data: any[]) => {
+      db.find(query).subscribe(
+        (data: any[]) => {
           resolve(data);
-        }, (err) => {
+        },
+        err => {
           console.error('\n', 'error finding weekly activity', err);
           reject(err);
-        }, () => {
+        },
+        () => {
           // this seems to be called right at the very end - after
           // we've gotten data, so this resolve will have been
           // superceded by the resolve(data) above
           resolve([]);
-        });
+        }
+      );
     });
   }
 
@@ -112,27 +119,32 @@ export class SmartDriveUsageService {
           if (data && data.length) {
             const id = data[0]._id;
             dailyUsage._id = id;
-            dailyUsage.distance_smartdrive_drive_start = data[0].distance_smartdrive_drive_start;
-            dailyUsage.distance_smartdrive_coast_start = data[0].distance_smartdrive_coast_start;
-          }
-          else {
+            dailyUsage.distance_smartdrive_drive_start =
+              data[0].distance_smartdrive_drive_start;
+            dailyUsage.distance_smartdrive_coast_start =
+              data[0].distance_smartdrive_coast_start;
+          } else {
             // First record for this day
             // Save distance_start
-            dailyUsage.distance_smartdrive_drive_start = dailyUsage.distance_smartdrive_drive;
-            dailyUsage.distance_smartdrive_coast_start = dailyUsage.distance_smartdrive_coast;
+            dailyUsage.distance_smartdrive_drive_start =
+              dailyUsage.distance_smartdrive_drive;
+            dailyUsage.distance_smartdrive_coast_start =
+              dailyUsage.distance_smartdrive_coast;
           }
           return this.dailyDatastore.save(dailyUsage);
         })
-        .then((_) => {
+        .then(_ => {
           return true;
         })
-        .catch((error) => {
+        .catch(error => {
           this._logService.logException(error);
           return false;
         });
-
     } catch (err) {
-      this._logService.logBreadCrumb(SmartDriveUsageService.name, 'Failed to save daily usage from pushtracker in Kinvey');
+      this._logService.logBreadCrumb(
+        SmartDriveUsageService.name,
+        'Failed to save daily usage from pushtracker in Kinvey'
+      );
       // this._logService.logException(err);
       return false;
     }

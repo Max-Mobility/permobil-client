@@ -1,5 +1,4 @@
-import { File, Http, knownFolders, path } from '@nativescript/core';
-import { device } from '@nativescript/core/platform';
+import { Device, File, Http, knownFolders, path } from '@nativescript/core';
 import { eachDay, format, subDays } from 'date-fns';
 
 export namespace SmartDriveData {
@@ -339,7 +338,7 @@ export namespace SmartDriveData {
           version: SmartDriveData.Firmwares.versionStringToByte(f['version']),
           name: f['_filename'],
           data: fileData,
-          changes: f['change_notes'][device.language] || f['change_notes']['en']
+          changes: f['change_notes'][Device.language] || f['change_notes']['en']
         };
       });
     }
