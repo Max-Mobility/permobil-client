@@ -124,7 +124,7 @@ class MyAmbientCallback extends androidx.wear.ambient.AmbientModeSupport
         doBurnInProtection: this.mDoBurnInProtection
       }
     };
-    application.notify(eventData);
+    Application.notify(eventData);
   }
 
   onEnterAmbient(ambientDetails: android.os.Bundle): void {

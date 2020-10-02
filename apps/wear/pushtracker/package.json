@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@nativescript/android": "7.0.0",
-    "@nativescript/types": "file:../../../node_modules/@nativescript/types",
+    "@nativescript/types": "~7.0.4",
     "@nativescript/webpack": "~3.0.4",
     "@types/lodash": "file:../../../node_modules/@types/lodash",
     "mkdirp": "file:../../../node_modules/mkdirp",

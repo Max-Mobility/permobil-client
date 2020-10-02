@@ -112,6 +112,20 @@ class MyAmbientCallback extends androidx.wear.ambient.AmbientModeSupport
    */
   mDoBurnInProtection: boolean;
 
+  onAmbientOffloadInvalidated(): void {
+    // Called to inform an activity that whatever decomposition it has sent to Sidekick
+    // is no longer valid and should be re-sent before enabling ambient offload.
+    const eventData = {
+      eventName: 'ambientOffloadInvalidated',
+      object: null,
+      data: {
+        isLowBitAmbient: this.mIsLowBitAmbient,
+        doBurnInProtection: this.mDoBurnInProtection
+      }
+    };
+    Application.notify(eventData);
+  }
+
   onEnterAmbient(ambientDetails: android.os.Bundle): void {
     this.mIsLowBitAmbient = ambientDetails.getBoolean(
       androidx.wear.ambient.AmbientModeSupport.EXTRA_LOWBIT_AMBIENT,

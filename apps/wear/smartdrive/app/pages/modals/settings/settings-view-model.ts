@@ -3,7 +3,6 @@ import {
   AndroidApplication,
   Application,
   ApplicationSettings,
-  Device as nsDevice,
   Dialogs,
   Frame,
   Http,
@@ -17,10 +16,10 @@ import {
 import { Device, Log, wait } from '@permobil/core';
 import {
   getDefaultLang,
-  setDefaultLang,
   L,
   Prop,
-  restartAndroidApp
+  restartAndroidApp,
+  setDefaultLang
 } from '@permobil/nativescript';
 import { Sentry } from 'nativescript-sentry';
 import { WatchSettings } from '../../../models';
@@ -140,9 +139,7 @@ export class SettingsViewModel extends Observable {
               cancelable: true
             }).then(res => {
               if (res === true) {
-                setDefaultLang(
-                  this._settingsService.watchSettings.language
-                );
+                setDefaultLang(this._settingsService.watchSettings.language);
                 sentryBreadCrumb(
                   `User confirmed language file change ${this._settingsService.watchSettings.language}`
                 );
@@ -155,7 +152,7 @@ export class SettingsViewModel extends Observable {
               }
             });
           } else {
-            alert({
+            Dialogs.alert({
               title: L('warnings.saved-settings.title'),
               message: L('warnings.saved-settings.message'),
               okButtonText: L('buttons.ok')
@@ -234,8 +231,8 @@ export class SettingsViewModel extends Observable {
       acc[_filename] = !current
         ? val
         : val._version > current._version
-          ? val
-          : current;
+        ? val
+        : current;
       return acc;
     }, {});
 
@@ -296,7 +293,7 @@ export class SettingsViewModel extends Observable {
   private _handleDownloadError(err) {
     sentryBreadCrumb(`Error downloading files: ${JSON.stringify(err)}`);
     Sentry.captureException(err);
-    alert({
+    Dialogs.alert({
       title: L('failures.title'),
       message: L('failures.downloading-translations'),
       okButtonText: L('buttons.ok')

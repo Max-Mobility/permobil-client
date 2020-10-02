@@ -289,7 +289,7 @@ export class MainViewModel extends Observable {
       // we might want to set specific notifications based on parameters for regions, users, etc.
       scheduleSmartDriveLocalNotifications();
       Log.D('scheduled local notifications for SmartDrive Wear');
-      setTimeout(async () => {
+      Utils.setTimeout(async () => {
         const cancelId = await cancelScheduledNotification(
           SmartDriveLocalNotifications.TIRE_PRESSURE_NOTIFICATION_ID
         );
@@ -337,7 +337,7 @@ export class MainViewModel extends Observable {
     const intent = new android.content.Intent(
       android.provider.Settings.ACTION_DATE_SETTINGS
     );
-    application.android.foregroundActivity.startActivity(intent);
+    Application.android.foregroundActivity.startActivity(intent);
   }
 
   async onConnectPushTrackerTap() {
@@ -364,11 +364,11 @@ export class MainViewModel extends Observable {
     try {
       const didSave = await this._saveNewSmartDrive();
       if (didSave) {
-        alert({
+        Dialogs.alert({
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-            }`,
+          }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -459,7 +459,7 @@ export class MainViewModel extends Observable {
     }
     this._enablingTraining = true;
     if (!this.watchBeingWorn && !this.disableWearCheck) {
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: L('failures.must-wear-watch'),
         okButtonText: L('buttons.ok')
@@ -469,7 +469,7 @@ export class MainViewModel extends Observable {
     }
     const didEnableTapSensor = this._enableTapSensor();
     if (!didEnableTapSensor) {
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: L('failures.could-not-enable-tap-sensor'),
         okButtonText: L('buttons.ok')
@@ -503,7 +503,7 @@ export class MainViewModel extends Observable {
       return;
     }
     if (!this.smartDrive) {
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: L('failures.no-smartdrive-paired'),
         okButtonText: L('buttons.ok')
@@ -511,7 +511,7 @@ export class MainViewModel extends Observable {
       return;
     }
     if (!isNetworkAvailable()) {
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: L('failures.no-network'),
         okButtonText: L('buttons.ok')
@@ -557,7 +557,7 @@ export class MainViewModel extends Observable {
   private _ensurePowerAssistTimeout(minutes: number) {
     if (this.powerAssistTimeoutId === null) {
       // set the timeout only if there is no timeout
-      this.powerAssistTimeoutId = setTimeout(
+      this.powerAssistTimeoutId = Utils.setTimeout(
         this.onPowerAssistTimeout.bind(this),
         minutes * 60 * 1000
       );
@@ -568,10 +568,13 @@ export class MainViewModel extends Observable {
     this._clearPowerAssistTimeout();
     // disable power assist
     this.disablePowerAssist();
-    const showDialog = appSettings.getBoolean(DataKeys.SHOULD_SHOW_POWER_ASSIST_TIMEOUT, true);
+    const showDialog = ApplicationSettings.getBoolean(
+      DataKeys.SHOULD_SHOW_POWER_ASSIST_TIMEOUT,
+      true
+    );
     if (showDialog) {
       // and alert the user that we timed out
-      confirm({
+      Dialogs.confirm({
         title: L('failures.title'),
         message: L('failures.power-assist-timeout'),
         okButtonText: L('buttons.dismiss'),
@@ -581,7 +584,10 @@ export class MainViewModel extends Observable {
         // res is TRUE if they pressed OK (dismiss) and FALSE if they
         // pressed CANCEL (do not show again), s owe can simply store
         // the result
-        appSettings.setBoolean(DataKeys.SHOULD_SHOW_POWER_ASSIST_TIMEOUT, res);
+        ApplicationSettings.setBoolean(
+          DataKeys.SHOULD_SHOW_POWER_ASSIST_TIMEOUT,
+          res
+        );
       });
     }
   }
@@ -596,7 +602,7 @@ export class MainViewModel extends Observable {
     sentryBreadCrumb('Enabling power assist');
     // only enable power assist if we're on the user's wrist
     if (!this.watchBeingWorn && !this.disableWearCheck) {
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: L('failures.must-wear-watch'),
         okButtonText: L('buttons.ok')
@@ -634,7 +640,7 @@ export class MainViewModel extends Observable {
           const didEnableTapSensor = this._enableTapSensor();
           if (!didEnableTapSensor) {
             // TODO: translate this alert!
-            alert({
+            Dialogs.alert({
               title: L('failures.title'),
               message: L('failures.could-not-enable-tap-sensor'),
               okButtonText: L('buttons.ok')
@@ -666,7 +672,7 @@ export class MainViewModel extends Observable {
     } else {
       const didSave = await this._saveNewSmartDrive();
       if (didSave) {
-        setTimeout(this.enablePowerAssist.bind(this), 300);
+        Utils.setTimeout(this.enablePowerAssist.bind(this), 300);
       } else {
         sentryBreadCrumb('SmartDrive was not saved!');
       }
@@ -924,7 +930,7 @@ export class MainViewModel extends Observable {
 
       if (neededPermissions && neededPermissions.length > 0) {
         sentryBreadCrumb('requesting permissions: ' + neededPermissions);
-        await alert({
+        await Dialogs.alert({
           title: L('permissions-request.title'),
           message: reasons.join('\n\n'),
           okButtonText: L('buttons.ok')
@@ -1683,7 +1689,7 @@ export class MainViewModel extends Observable {
     }
     // do we have any remaining taps to send?
     if (this.numTaps > 0) {
-      this.sendTapTimeoutId = setTimeout(this._sendTap.bind(this), 0);
+      this.sendTapTimeoutId = Utils.setTimeout(this._sendTap.bind(this), 0);
     } else {
       this.sendTapTimeoutId = null;
     }
@@ -1695,7 +1701,7 @@ export class MainViewModel extends Observable {
     if (this.tapTimeoutId) {
       clearTimeout(this.tapTimeoutId);
     }
-    this.tapTimeoutId = setTimeout(() => {
+    this.tapTimeoutId = Utils.setTimeout(() => {
       this.hasTapped = false;
     }, TapDetector.TapLockoutTimeMs);
     // vibrate for tap
@@ -1714,7 +1720,7 @@ export class MainViewModel extends Observable {
       this.numTaps++;
       // make sure the handler sends the taps
       if (this.sendTapTimeoutId === null) {
-        this.sendTapTimeoutId = setTimeout(this._sendTap.bind(this), 0);
+        this.sendTapTimeoutId = Utils.setTimeout(this._sendTap.bind(this), 0);
       }
     }
   }
@@ -1735,7 +1741,7 @@ export class MainViewModel extends Observable {
       this._bodySensorEnabled = false;
       Sentry.captureException(err);
       // Log.E('Error starting the body sensor', err);
-      // setTimeout(this._enableBodySensor.bind(this), 500);
+      // Utils.setTimeout(this._enableBodySensor.bind(this), 500);
     }
     return this._bodySensorEnabled;
   }
@@ -2073,7 +2079,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     Application.android.foregroundActivity.startActivity(intent);
@@ -2138,7 +2144,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     Application.android.foregroundActivity.startActivity(intent);
@@ -2155,7 +2161,7 @@ export class MainViewModel extends Observable {
         sentryBreadCrumb(
           'ACCESS_COARSE_LOCATION not granted, unable to use bluetooth.'
         );
-        alert({
+        Dialogs.alert({
           title: L('failures.title'),
           message: L('failures.permissions'),
           okButtonText: L('buttons.ok')
@@ -2206,7 +2212,7 @@ export class MainViewModel extends Observable {
 
       // make sure we have smartdrives
       if (BluetoothService.SmartDrives.length <= 0) {
-        alert({
+        Dialogs.alert({
           title: L('failures.title'),
           message: L('failures.no-smartdrives-found'),
           okButtonText: L('buttons.ok')
@@ -2216,7 +2222,7 @@ export class MainViewModel extends Observable {
 
       // make sure we have only one smartdrive
       if (BluetoothService.SmartDrives.length > 1) {
-        alert({
+        Dialogs.alert({
           title: L('failures.title'),
           message: L('failures.too-many-smartdrives-found'),
           okButtonText: L('buttons.ok')
@@ -2249,7 +2255,7 @@ export class MainViewModel extends Observable {
       Sentry.captureException(err);
       this._hideScanning();
       Log.E('could not scan', err);
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: `${L('failures.scan')}\n\n${err}`,
         okButtonText: L('buttons.ok')
@@ -2272,7 +2278,7 @@ export class MainViewModel extends Observable {
       return true;
     } catch (err) {
       Sentry.captureException(err);
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: L('failures.connect') + '\n\n' + address,
         okButtonText: L('buttons.ok')
@@ -2313,7 +2319,7 @@ export class MainViewModel extends Observable {
       this.smartDrive &&
       !this.smartDrive.connected
     ) {
-      setTimeout(this._connectToSavedSmartDrive.bind(this), 0);
+      Utils.setTimeout(this._connectToSavedSmartDrive.bind(this), 0);
     }
   }
 
@@ -2541,7 +2547,7 @@ export class MainViewModel extends Observable {
         .insertIntoTable(SmartDriveData.Errors.TableName, newError)
         .catch(err => {
           Sentry.captureException(err);
-          alert({
+          Dialogs.alert({
             title: L('failures.title'),
             message: `${L('failures.saving-error')}\n\n${err}`,
             okButtonText: L('buttons.ok')
@@ -2927,7 +2933,7 @@ export class MainViewModel extends Observable {
     if (invalidCredentials || !this._kinveyService.hasAuth()) {
       // we had auth and now we don't - alert the user that it's
       // invalidated and we need new credentials
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: L('failures.app-connection.logout'),
         okButtonText: L('buttons.ok')
