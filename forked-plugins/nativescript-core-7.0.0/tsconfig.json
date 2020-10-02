@@ -1,8 +1,0 @@
-{
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "baseUrl": "."
-  },
-  "include": ["**/*.ts", "./references.d.ts"],
-  "exclude": ["dist", "__tests__", "node_modules"]
-}

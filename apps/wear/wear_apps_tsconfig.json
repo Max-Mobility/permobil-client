@@ -19,18 +19,12 @@
       "*": ["./node_modules/tns-core-modules/*", "./node_modules/*"],
       "@permobil/*": ["../../@permobil/*"],
       "@permobil/core/*": ["../../@permobil/core/*"],
-      "@permobil/nativescript/*": ["../../@permobil/nativescript/*"],
-      "@nativescript/core": [
-        "../../../forked-plugins/nativescript-core-7.0.0/*"
-      ],
-      "nativescript-bluetooth": [
-        "../../forked-plugins/nativescript-bluetooth/*"
-      ]
+      "@permobil/nativescript/*": ["../../@permobil/nativescript/*"]
     }
   },
   "exclude": [
     "node_modules",
     "platforms",
-    "../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/demo/**/*.ts"
+    "../../@permobil/nativescript/src/plugins/**/*.ts"
   ]
 }

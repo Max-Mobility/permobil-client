@@ -1,6 +1,0 @@
-__tests__
-dist
-*.tgz
-**/*.ts
-!**/*.d.ts
-npm-debug.log

@@ -1,7 +1,6 @@
 import {
   Application,
   ApplicationSettings,
-  Device,
   Dialogs,
   EventData,
   Observable,
@@ -9,12 +8,14 @@ import {
   ShowModalOptions,
   Utils
 } from '@nativescript/core';
-import * as application from '@nativescript/core/application';
-import * as appSettings from '@nativescript/core/application-settings';
-import { alert, confirm } from '@nativescript/core/ui/dialogs';
-import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
-import { getDefaultLang, setDefaultLang, L, Prop, restartAndroidApp } from '@permobil/nativescript';
+import {
+  getDefaultLang,
+  L,
+  Prop,
+  restartAndroidApp,
+  setDefaultLang
+} from '@permobil/nativescript';
 import * as LS from 'nativescript-localstorage';
 import { DataKeys } from '../../../enums';
 import { Profile } from '../../../namespaces';
@@ -120,7 +121,7 @@ export class ChangeSettingsViewModel extends Observable {
   onSettingsInfoItemTap(args: EventData) {
     const messageKey = `settings.${this.activeSettingToChange}.description`;
     const message = `${this.changeSettingKeyString}:\n\n${L(messageKey)}`;
-    alert({
+    Dialogs.alert({
       title: L('settings.information'),
       message,
       okButtonText: L('buttons.ok')
@@ -274,7 +275,7 @@ export class ChangeSettingsViewModel extends Observable {
 
     // make sure kinvey service is initialized
     if (this._kinveyService === undefined) {
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: L('failures.not-fully-initialized'),
         okButtonText: L('buttons.ok')
@@ -285,7 +286,7 @@ export class ChangeSettingsViewModel extends Observable {
     if (!this._kinveyService.hasAuth()) {
       const validAuth = await this.updateAuthorization();
       if (!validAuth) {
-        alert({
+        Dialogs.alert({
           title: L('failures.title'),
           message: L('failures.no-auth-for-saving'),
           okButtonText: L('buttons.ok')
@@ -317,7 +318,7 @@ export class ChangeSettingsViewModel extends Observable {
     } catch (err) {
       this.hideSynchronizing();
       Log.E('could not save to database:', err);
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: L('failures.could-not-update-profile') + `:\n\n${err}`,
         okButtonText: L('buttons.ok')

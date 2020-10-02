@@ -46,7 +46,7 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/Max-Mobility/permobil-client/@permobil/nativescript/nativescript-wear-os-comms",
   "devDependencies": {
-    "nativescript-bluetooth": "file:../../../../../../forked-plugins/nativescript-bluetooth",
+    "nativescript-bluetooth": "file:../../../../../../forked-plugins/nativescript-bluetooth-2.0.0.tgz",
     "@nativescript/core": "file:../../../../../../node_modules/@nativescript/core",
     "@nativescript/types": "file:../../../../../../node_modules/@nativescript/types",
     "@nativescript/webpack": "file:../../../../../../node_modules/@nativescript/webpack",

@@ -77,7 +77,6 @@ export class UpdatesViewModel extends Observable {
   private initialized: boolean = false;
   private wakeLock: any = null;
   private hasAppliedTheme: boolean = false;
-
   private _bluetoothService: BluetoothService;
   private _kinveyService: SmartDriveKinveyService;
   private _sqliteService: SqliteService;
