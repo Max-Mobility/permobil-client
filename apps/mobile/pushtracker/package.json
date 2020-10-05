@@ -11,7 +11,7 @@
     "@angular/router": "~10.1.0",
     "@maxmobility/nativescript-wear-os-comms": "file:../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/wear-os-comms-2.0.0.tgz",
     "@maxmobility/private-keys": "autochair/maxmobility-private-keys#master",
-    "@nativescript/animated-circle": "~1.0.1",
+    "@nativescript/animated-circle": "~1.1.0",
     "@nativescript/core": "~7.0.8",
     "@nativescript/angular": "~10.1.5",
     "@nativescript/appversion": "~2.0.0",
