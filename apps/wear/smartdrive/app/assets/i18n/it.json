@@ -23,6 +23,7 @@
     "deny": "Negare",
     "disable": "Disattivare",
     "dismiss": "Respingere",
+    "do-not-show-again": "Non mostrare più",
     "enable": "Abilitare",
     "ok": "Ok"
   },
@@ -59,6 +60,7 @@
       "batteryvoltage": "[ERR: 001] Tensione batteria SD",
       "bledisconnect": "[ERR: 007] Disconnetti Bluetooth",
       "gyrorange": "[ERR: 005] Angolo SD",
+      "motordriverfault": "[ERR: 008] Chip motore SD",
       "motorphases": "[ERR: 002] Motore SD",
       "otaunavailable": "[ERR: 006] Aggiornamenti non disponibili",
       "overcurrent": "[ERR: 003] Picco corrente SD",
@@ -90,6 +92,24 @@
     "send-settings": "Impossibile inviare le impostazioni a SmartDrive.",
     "title": "Avviso",
     "too-many-smartdrives-found": "Sono stati trovati più SmartDrive. Accertarsi che sia presente un solo SmartDrive nelle vicinanze durante l'associazione."
+  },
+  "language-list": {
+    "cs": "",
+    "da": "",
+    "de": "",
+    "en": "",
+    "es": "",
+    "fi": "",
+    "fr": "",
+    "it": "",
+    "ja": "",
+    "ko": "",
+    "nb": "",
+    "nl": "",
+    "pl": "",
+    "pt": "",
+    "sv": "",
+    "zh": ""
   },
   "languages": {
     "cs": "Ceco",
@@ -212,6 +232,7 @@
     },
     "scanning": "Scansione per SmartDrive da abbinare a ...",
     "select-smartdrive": "Seleziona SmartDrive",
+    "set-time": "Appuntamento",
     "syncing-with-server": "Sincronizzazione con il server ...",
     "tap-sensitivity": "Tocca sensibilità",
     "title": "Impostazioni SmartDrive",
@@ -265,9 +286,9 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "Sei sicuro di voler cambiare la lingua? L'app SmartDrive MX2 + deve riavviarsi per applicare la modifica della lingua.",
       "message": "ATTENZIONE: È NECESSARIO consultare il Manuale dell'utente di SmartDrive su come la modifica delle impostazioni influisce sul funzionamento e sulle prestazioni.",
-      "title": "Impostazioni modificate",
-      "language": "The app language has been changed."
+      "title": "Impostazioni modificate"
     },
     "title": {
       "notice": "Avviso"

@@ -23,6 +23,7 @@
     "deny": "Refuser",
     "disable": "Désactiver",
     "dismiss": "Rejeter",
+    "do-not-show-again": "Ne pas montrer de nouveau",
     "enable": "Activer",
     "ok": "OK"
   },
@@ -59,6 +60,7 @@
       "batteryvoltage": "[ERR: 001] SD Niveau de tension de la batterie",
       "bledisconnect": "[ERR: 007] Déconnexion Bluetooth",
       "gyrorange": "[ERR: 005] SD Erreur d'angle de détection ",
+      "motordriverfault": "[ERR: 008] Puce de moteur SD",
       "motorphases": "[ERR: 002] SD Erreur moteur ",
       "otaunavailable": "[ERR: 006] Mises à jour non disponibles",
       "overcurrent": "[ERR: 003] SD Erreur de Surintensité",
@@ -90,6 +92,24 @@
     "send-settings": "Échec d'envoi des paramètres à la SmartDrive.",
     "title": "Remarque",
     "too-many-smartdrives-found": "Plusieurs SmartDrives trouvées. Assurez-vous qu’il n’y a qu’une seule SmartDrive à proximité lors du couplage."
+  },
+  "language-list": {
+    "cs": "",
+    "da": "",
+    "de": "",
+    "en": "",
+    "es": "",
+    "fi": "",
+    "fr": "",
+    "it": "",
+    "ja": "",
+    "ko": "",
+    "nb": "",
+    "nl": "",
+    "pl": "",
+    "pt": "",
+    "sv": "",
+    "zh": ""
   },
   "languages": {
     "cs": "Tchèque",
@@ -212,6 +232,7 @@
     },
     "scanning": "Recherche de SmartDrive ...",
     "select-smartdrive": "Sélectionner la SmartDrive",
+    "set-time": "Date et heure",
     "syncing-with-server": "Synchronisation avec le serveur ...",
     "tap-sensitivity": "Sensibilité de tape",
     "title": "Paramètres SmartDrive",
@@ -265,9 +286,9 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "Voulez-vous vraiment changer la langue? L'application SmartDrive MX2 + doit redémarrer pour appliquer le changement de langue.",
       "message": "ATTENTION: vous DEVEZ consulter le manuel d'utilisation de la SmartDrive pour savoir comment la modification des paramètres affecte son fonctionnement et ses performances.",
-      "title": "Paramètres modifiés",
-      "language": "The app language has been changed."
+      "title": "Paramètres modifiés"
     },
     "title": {
       "notice": "Remarque"

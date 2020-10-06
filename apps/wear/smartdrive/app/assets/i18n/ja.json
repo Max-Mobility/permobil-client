@@ -23,6 +23,7 @@
     "deny": "拒否",
     "disable": "無効にする",
     "dismiss": "やめる",
+    "do-not-show-again": "再び表示しない",
     "enable": "有効にする",
     "ok": "OK"
   },
@@ -59,6 +60,7 @@
       "batteryvoltage": "[ERR：001] SDバッテリー電圧",
       "bledisconnect": "[ERR：007] Bluetooth切断",
       "gyrorange": "[ERR：005] SD角度",
+      "motordriverfault": "[ERR：008] SDモーターチップ",
       "motorphases": "[ERR：002] SDモーター",
       "otaunavailable": "[ERR：006] アップデートは利用できません",
       "overcurrent": "[ERR：003] SD電流スパイク",
@@ -90,6 +92,24 @@
     "send-settings": "SmartDriveへの設定の送信に失敗しました。",
     "title": "通知",
     "too-many-smartdrives-found": "複数のSmartDriveが見つかりました。ペアリングするときは、近くにSmartDriveが1つだけあることを確認してください。"
+  },
+  "language-list": {
+    "cs": "",
+    "da": "",
+    "de": "",
+    "en": "",
+    "es": "",
+    "fi": "",
+    "fr": "",
+    "it": "",
+    "ja": "",
+    "ko": "",
+    "nb": "",
+    "nl": "",
+    "pl": "",
+    "pt": "",
+    "sv": "",
+    "zh": ""
   },
   "languages": {
     "cs": "チェコ語",
@@ -212,6 +232,7 @@
     },
     "scanning": "ペアリングするSmartDriveをスキャンしています...",
     "select-smartdrive": "SmartDriveを選択",
+    "set-time": "日付時刻",
     "syncing-with-server": "サーバーと同期しています...",
     "tap-sensitivity": "タップ感度",
     "title": "SmartDrive設定",
@@ -265,9 +286,9 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "言語を変更してもよろしいですか？言語の変更を適用するには、SmartDrive MX2 +アプリを再起動する必要があります。",
       "message": "注意：設定の変更がその操作と動作に与える影響については、SmartDriveユーザーマニュアルを参照する必要があります。",
-      "title": "変更された設定",
-      "language": "The app language has been changed."
+      "title": "変更された設定"
     },
     "title": {
       "notice": "通知"

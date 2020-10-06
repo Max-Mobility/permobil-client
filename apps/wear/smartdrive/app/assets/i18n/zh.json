@@ -23,6 +23,7 @@
     "deny": "拒絕",
     "disable": "禁用",
     "dismiss": "發送",
+    "do-not-show-again": "不再顯示",
     "enable": "開啟",
     "ok": "確認"
   },
@@ -59,6 +60,7 @@
       "batteryvoltage": "[錯誤：001] SD電池電壓",
       "bledisconnect": "[錯誤：007]藍牙斷開連接",
       "gyrorange": "[錯誤號：005] SD角度",
+      "motordriverfault": "[ERR：008] SD馬達芯片",
       "motorphases": "[錯誤號：002] SD馬達",
       "otaunavailable": "[錯誤：006]更新不可用",
       "overcurrent": "[ERR：003] SD電流尖脈衝",
@@ -90,6 +92,24 @@
     "send-settings": "無法將設定發送到SmartDrive。",
     "title": "注意",
     "too-many-smartdrives-found": "找到了多個SmartDrives。配對時，確保附近只有一個開啓的SmartDrive。"
+  },
+  "language-list": {
+    "cs": "",
+    "da": "",
+    "de": "",
+    "en": "",
+    "es": "",
+    "fi": "",
+    "fr": "",
+    "it": "",
+    "ja": "",
+    "ko": "",
+    "nb": "",
+    "nl": "",
+    "pl": "",
+    "pt": "",
+    "sv": "",
+    "zh": ""
   },
   "languages": {
     "cs": "捷克語",
@@ -212,6 +232,7 @@
     },
     "scanning": "掃描SmartDrive與...配對",
     "select-smartdrive": "選擇SmartDrive",
+    "set-time": "約會時間",
     "syncing-with-server": "與伺服器同步中",
     "tap-sensitivity": "敲擊靈敏度",
     "title": "SmartDrive設定",
@@ -265,9 +286,9 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "您確定要更改語言嗎？ SmartDrive MX2 +應用程序必須重新啟動才能應用語言更改。",
       "message": "注意：您必須參考SmartDrive用戶手冊，了解更改設定如何影響其操作和性能。",
-      "title": "更改了設定",
-      "language": "The app language has been changed."
+      "title": "更改了設定"
     },
     "title": {
       "notice": "注意"

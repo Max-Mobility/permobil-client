@@ -23,6 +23,7 @@
     "deny": "Ablehnen",
     "disable": "Deaktivieren",
     "dismiss": "Verwerfen",
+    "do-not-show-again": "Nicht mehr anzeigen",
     "enable": "Aktivieren",
     "ok": "OK"
   },
@@ -59,6 +60,7 @@
       "batteryvoltage": "[ERR: 001] SD-Batteriespannung",
       "bledisconnect": "[ERR: 007] Bluetooth-Verbindung getrennt",
       "gyrorange": "[ERR: 005] SD-Winkel",
+      "motordriverfault": "[ERR: 008] SD-Motorchip",
       "motorphases": "[ERR: 002] SD-Motor",
       "otaunavailable": "[ERR: 006] Keine Updates verfügbar",
       "overcurrent": "[ERR: 003] SD-Spannungsspitzen",
@@ -90,6 +92,24 @@
     "send-settings": "Fehler beim Übermitteln der Einstellungen an SmartDrive.",
     "title": "Hinweis beachten",
     "too-many-smartdrives-found": "Mehrere SmartDrives gefunden. Vergewissern Sie sich, dass sich beim Koppeln nur ein SmartDrive in der Nähe befindet."
+  },
+  "language-list": {
+    "cs": "",
+    "da": "",
+    "de": "",
+    "en": "",
+    "es": "",
+    "fi": "",
+    "fr": "",
+    "it": "",
+    "ja": "",
+    "ko": "",
+    "nb": "",
+    "nl": "",
+    "pl": "",
+    "pt": "",
+    "sv": "",
+    "zh": ""
   },
   "languages": {
     "cs": "Tschechisch",
@@ -212,6 +232,7 @@
     },
     "scanning": "SmartDrive Suche zum Koppeln mit...",
     "select-smartdrive": "Wählen Sie SmartDrive",
+    "set-time": "Terminzeit",
     "syncing-with-server": "Mit Server synchronisieren ...",
     "tap-sensitivity": "Tippen Sie auf Empfindlichkeit",
     "title": "SmartDrive-Einstellungen",
@@ -265,9 +286,9 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "Sind Sie sicher, dass Sie die Sprache ändern möchten? Die SmartDrive MX2 + App muss neu gestartet werden, um die Sprachänderung anzuwenden.",
       "message": "Warnung: Sie MÜSSEN im SmartDrive-Benutzerhandbuch nachlesen, wie sich das Ändern der Einstellungen auf den Betrieb und die Leistung auswirkt.",
-      "title": "Geänderte Einstellungen",
-      "language": "The app language has been changed."
+      "title": "Geänderte Einstellungen"
     },
     "title": {
       "notice": "Hinweis"

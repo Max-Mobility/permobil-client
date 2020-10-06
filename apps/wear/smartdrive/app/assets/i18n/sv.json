@@ -23,6 +23,7 @@
     "deny": "Neka",
     "disable": "Koppla från",
     "dismiss": "Avvisa",
+    "do-not-show-again": "Visa inte igen",
     "enable": "Aktivera",
     "ok": "OK"
   },
@@ -59,6 +60,7 @@
       "batteryvoltage": "[ERR: 001] SD Batterispänning",
       "bledisconnect": "[ERR: 007] Bluetooth koppling",
       "gyrorange": "[ERR: 005] SD Vinkel",
+      "motordriverfault": "[ERR: 008] SD-motorchip",
       "motorphases": "[ERR: 002] SD Motor",
       "otaunavailable": "[ERR: 006] Uppdateringar ej tillgängligt",
       "overcurrent": "[ERR: 003] SD Strömstegring",
@@ -90,6 +92,24 @@
     "send-settings": "Det gick inte att skicka inställningar till SmartDrive.",
     "title": "Meddelande",
     "too-many-smartdrives-found": "Flera SmartDrives hittade. Se till att det bara finns en SmartDrive på i närheten när du par-kopplar."
+  },
+  "language-list": {
+    "cs": "",
+    "da": "",
+    "de": "",
+    "en": "",
+    "es": "",
+    "fi": "",
+    "fr": "",
+    "it": "",
+    "ja": "",
+    "ko": "",
+    "nb": "",
+    "nl": "",
+    "pl": "",
+    "pt": "",
+    "sv": "",
+    "zh": ""
   },
   "languages": {
     "cs": "tjeck",
@@ -212,6 +232,7 @@
     },
     "scanning": "Skannar efter SmartDrive för att parakoppla med ...",
     "select-smartdrive": "Välj SmartDrive",
+    "set-time": "Datum Tid",
     "syncing-with-server": "Synkroniserar med servern ...",
     "tap-sensitivity": "Klappkänslighet",
     "title": "SmartDrive Inställningar",
@@ -265,9 +286,9 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "Är du säker på att du vill ändra språk? SmartDrive MX2 + -appen måste starta om för att tillämpa språkändringen.",
       "message": "FÖRSIKTIGHET: Du MÅSTE läsa SmartDrive bruksanvisningen för hur ändring av inställningar kan påverkar dess funktion och prestanda.",
-      "title": "Ändrade inställningar",
-      "language": "The app language has been changed."
+      "title": "Ändrade inställningar"
     },
     "title": {
       "notice": "Meddelande"

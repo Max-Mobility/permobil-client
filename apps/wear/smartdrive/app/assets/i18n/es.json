@@ -23,6 +23,7 @@
     "deny": "Denegar",
     "disable": "Apagado",
     "dismiss": "Omitir",
+    "do-not-show-again": "No mostrar de nuevo",
     "enable": "Encendido",
     "ok": "De acuerdo"
   },
@@ -59,6 +60,7 @@
       "batteryvoltage": "[ERR: 001] Voltaje de la batería SD",
       "bledisconnect": "[ERR: 007] Bluetooth desconectado",
       "gyrorange": "[ERR: 005] Ángulo del SD",
+      "motordriverfault": "[ERR: 008] Chip de motor SD",
       "motorphases": "[ERR: 002] Motor del SD",
       "otaunavailable": "[ERR: 006] Actualizaciones no disponibles",
       "overcurrent": "[ERR: 003] Pico de corriente SD",
@@ -90,6 +92,24 @@
     "send-settings": "No se pudo enviar la configuración al SmartDrive.",
     "title": "Atención",
     "too-many-smartdrives-found": "Se han encontrado cerca otros SmartDrives. Asegúrese de que solo haya uno en las proximidades cuando realice el emparejamiento."
+  },
+  "language-list": {
+    "cs": "",
+    "da": "",
+    "de": "",
+    "en": "",
+    "es": "",
+    "fi": "",
+    "fr": "",
+    "it": "",
+    "ja": "",
+    "ko": "",
+    "nb": "",
+    "nl": "",
+    "pl": "",
+    "pt": "",
+    "sv": "",
+    "zh": ""
   },
   "languages": {
     "cs": "checo",
@@ -212,6 +232,7 @@
     },
     "scanning": "Escaneando SmartDrive para emparejar con ...",
     "select-smartdrive": "Seleccione SmartDrive",
+    "set-time": "Fecha y hora",
     "syncing-with-server": "Sincronizando con el servidor ...",
     "tap-sensitivity": "La sensibilidad del palmeo",
     "title": "Configuraciones del SmartDrive",
@@ -265,9 +286,9 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "¿Estás seguro de que deseas cambiar el idioma? La aplicación SmartDrive MX2 + debe reiniciarse para aplicar el cambio de idioma.",
       "message": "PRECAUCIÓN: DEBE consultar el Manual del usuario del SmartDrive sobre cómo cambiar la configuración ya que afectara su funcionamiento y rendimiento.",
-      "title": "Configuraciones modificadas",
-      "language": "The app language has been changed."
+      "title": "Configuraciones modificadas"
     },
     "title": {
       "notice": "Atención"

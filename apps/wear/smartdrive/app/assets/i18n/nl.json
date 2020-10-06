@@ -23,6 +23,7 @@
     "deny": "Weigeren",
     "disable": "Blokkeren",
     "dismiss": "Afwijzen",
+    "do-not-show-again": "Niet meer tonen",
     "enable": "Vrijgeven",
     "ok": "OK"
   },
@@ -59,6 +60,7 @@
       "batteryvoltage": "[ERR: 001] SD Batterijspanning",
       "bledisconnect": "[ERR: 007] Bluetooth verbinding verbroken",
       "gyrorange": "[ERR: 005] SD Hoek",
+      "motordriverfault": "[ERR: 008] SD-motorchip",
       "motorphases": "[ERR: 002] SD Motor",
       "otaunavailable": "[ERR: 006] Updates niet beschikbaar",
       "overcurrent": "[ERR: 003] SD Stroom piek",
@@ -90,6 +92,24 @@
     "send-settings": "Verzenden van instellingen naar SmartDrive is mislukt.",
     "title": "Opmerking",
     "too-many-smartdrives-found": "Meerdere SmartDrives gevonden. Zorg ervoor dat er slechts één SmartDrive ingeschakeld is tijdens het koppelen."
+  },
+  "language-list": {
+    "cs": "",
+    "da": "",
+    "de": "",
+    "en": "",
+    "es": "",
+    "fi": "",
+    "fr": "",
+    "it": "",
+    "ja": "",
+    "ko": "",
+    "nb": "",
+    "nl": "",
+    "pl": "",
+    "pt": "",
+    "sv": "",
+    "zh": ""
   },
   "languages": {
     "cs": "Tsjechisch",
@@ -212,6 +232,7 @@
     },
     "scanning": "Scannen naar SmartDrive om te koppelen met ...",
     "select-smartdrive": "Selecteer SmartDrive",
+    "set-time": "Datum Tijd",
     "syncing-with-server": "Synchroniseren met server ...",
     "tap-sensitivity": "Tik gevoeligheid",
     "title": "SmartDrive instellingen",
@@ -265,9 +286,9 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "Weet u zeker dat u de taal wilt wijzigen? De SmartDrive MX2 + -app moet opnieuw worden opgestart om de taalwijziging toe te passen.",
       "message": "WAARSCHUWING: U MOET de gebruikershandleiding van de SmartDrive raadplegen hoe de wijzigingen van de instellingen, de werking en prestaties van de SmartDrive beïnvloeden.",
-      "title": "Gewijzigde instellingen",
-      "language": "The app language has been changed."
+      "title": "Gewijzigde instellingen"
     },
     "title": {
       "notice": "Opmerking"

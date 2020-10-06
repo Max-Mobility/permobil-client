@@ -23,6 +23,7 @@
     "deny": "Odmítnout",
     "disable": "Zakázat",
     "dismiss": "Propustit",
+    "do-not-show-again": "Znovu se neukazuj",
     "enable": "Umožnit",
     "ok": "OK"
   },
@@ -59,6 +60,7 @@
       "batteryvoltage": "[ERR: 001] Napětí baterie SD",
       "bledisconnect": "[ERR: 007] Odpojení Bluetooth",
       "gyrorange": "[ERR: 005] Úhel SD",
+      "motordriverfault": "[ERR: 008] SD motorový čip",
       "motorphases": "[ERR: 002] SD Motor",
       "otaunavailable": "[ERR: 006] Aktualizace nejsou k dispozici",
       "overcurrent": "[ERR: 003] Aktuální proud SD",
@@ -90,6 +92,24 @@
     "send-settings": "Nepodařilo se odeslat nastavení do SmartDrive.",
     "title": "Oznámení",
     "too-many-smartdrives-found": "Bylo nalezeno více SmartDrives. Při párování se ujistěte, že je v blízkosti pouze jeden SmartDrive."
+  },
+  "language-list": {
+    "cs": "",
+    "da": "",
+    "de": "",
+    "en": "",
+    "es": "",
+    "fi": "",
+    "fr": "",
+    "it": "",
+    "ja": "",
+    "ko": "",
+    "nb": "",
+    "nl": "",
+    "pl": "",
+    "pt": "",
+    "sv": "",
+    "zh": ""
   },
   "languages": {
     "cs": "čeština",
@@ -212,6 +232,7 @@
     },
     "scanning": "Hledání SmartDrive pro spárování s ...",
     "select-smartdrive": "Vyberte SmartDrive",
+    "set-time": "Čas schůzky",
     "syncing-with-server": "Synchronizace se serverem ...",
     "tap-sensitivity": "Klepněte na Citlivost",
     "title": "Nastavení SmartDrive",
@@ -265,9 +286,9 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "Opravdu chcete změnit jazyk? Chcete-li použít změnu jazyka, musí se aplikace SmartDrive MX2 + restartovat.",
       "message": "UPOZORNĚNÍ: MUSÍTE se podívat do uživatelské příručky SmartDrive o tom, jak změna nastavení ovlivňuje jeho provoz a výkon.",
-      "title": "Změněné nastavení",
-      "language": "The app language has been changed."
+      "title": "Změněné nastavení"
     },
     "title": {
       "notice": "Oznámení"

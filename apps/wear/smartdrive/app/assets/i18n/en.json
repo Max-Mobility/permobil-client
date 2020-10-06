@@ -60,8 +60,8 @@
       "batteryvoltage": "[ERR: 001] SD Battery Voltage",
       "bledisconnect": "[ERR: 007] Bluetooth Disconnect",
       "gyrorange": "[ERR: 005] SD Angle",
-      "motorphases": "[ERR: 002] SD Motor",
       "motordriverfault": "[ERR: 008] SD Motor Chip",
+      "motorphases": "[ERR: 002] SD Motor",
       "otaunavailable": "[ERR: 006] Updates Unavailable",
       "overcurrent": "[ERR: 003] SD Current Spike",
       "overtemperature": "[ERR: 004] SD Overheating"
@@ -92,6 +92,24 @@
     "send-settings": "Failed to send settings to SmartDrive.",
     "title": "Notice",
     "too-many-smartdrives-found": "Multiple SmartDrives found. Make sure there is only one SmartDrive on in the vicinity when pairing."
+  },
+  "language-list": {
+    "cs": "Čeština",
+    "da": "Dansk",
+    "de": "Deutsche",
+    "en": "English",
+    "es": "Español",
+    "fi": "Suomalainen",
+    "fr": "Français",
+    "it": "Italiano",
+    "ja": "日本人",
+    "ko": "한국어",
+    "nb": "Norsk Bokmål",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Português",
+    "sv": "Svenska",
+    "zh": "中國傳統的"
   },
   "languages": {
     "cs": "Czech",
@@ -268,30 +286,12 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "Are you sure you wish to change the language? The SmartDrive MX2+ app must restart to apply the language change.",
       "message": "CAUTION: You MUST consult the SmartDrive User's Manual on how changing the settings affects its operation and performance.",
-      "title": "Changed Settings",
-      "language": "The app language has been changed."
+      "title": "Changed Settings"
     },
     "title": {
       "notice": "Notice"
     }
-  },
-  "language-list": {
-    "cs": "Čeština",
-    "da": "Dansk",
-    "de": "Deutsche",
-    "en": "English",
-    "es": "Español",
-    "fi": "Suomalainen",
-    "fr": "Français",
-    "it": "Italiano",
-    "ja": "日本人",
-    "ko": "한국어",
-    "nb": "Norsk Bokmål",
-    "nl": "Nederlands",
-    "pl": "Polski",
-    "pt": "Português",
-    "sv": "Svenska",
-    "zh": "中國傳統的"
   }
 }

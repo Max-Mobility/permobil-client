@@ -23,6 +23,7 @@
     "deny": "Zaprzeczać",
     "disable": "Wyłączyć",
     "dismiss": "Odwołać",
+    "do-not-show-again": "Nie pokazuj ponownie",
     "enable": "Włączyć",
     "ok": "Dobrze"
   },
@@ -59,6 +60,7 @@
       "batteryvoltage": "[ERR: 001] Napięcie akumulatora SD",
       "bledisconnect": "[ERR: 007] Bluetooth Disconnect",
       "gyrorange": "[ERR: 005] Kąt SD",
+      "motordriverfault": "[ERR: 008] Układ silnika SD",
       "motorphases": "[ERR: 002] SD Motor",
       "otaunavailable": "[ERR: 006] Aktualizacje niedostępne",
       "overcurrent": "[ERR: 003] SD Current Spike",
@@ -90,6 +92,24 @@
     "send-settings": "Nie udało się wysłać ustawień do SmartDrive.",
     "title": "Ogłoszenie",
     "too-many-smartdrives-found": "Znaleziono wiele SmartDrives. Upewnij się, że podczas parowania jest włączony tylko jeden napęd SmartDrive."
+  },
+  "language-list": {
+    "cs": "",
+    "da": "",
+    "de": "",
+    "en": "",
+    "es": "",
+    "fi": "",
+    "fr": "",
+    "it": "",
+    "ja": "",
+    "ko": "",
+    "nb": "",
+    "nl": "",
+    "pl": "",
+    "pt": "",
+    "sv": "",
+    "zh": ""
   },
   "languages": {
     "cs": "Czech",
@@ -212,6 +232,7 @@
     },
     "scanning": "Skanowanie w poszukiwaniu SmartDrive w celu sparowania z ...",
     "select-smartdrive": "Wybierz SmartDrive",
+    "set-time": "Data i godzina",
     "syncing-with-server": "Synchronizacja z serwerem",
     "tap-sensitivity": "Dotknij opcji Czułość",
     "title": "Ustawienia SmartDrive",
@@ -265,9 +286,9 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "Czy na pewno chcesz zmienić język? Aplikacja SmartDrive MX2 + musi zostać ponownie uruchomiona, aby zastosować zmianę języka.",
       "message": "PRZESTROGA: MUSISZ zapoznać się z instrukcją obsługi SmartDrive, aby dowiedzieć się, w jaki sposób zmiana ustawień wpływa na jej działanie i wydajność.",
-      "title": "Zmienione ustawienia",
-      "language": "The app language has been changed."
+      "title": "Zmienione ustawienia"
     },
     "title": {
       "notice": "Ogłoszenie"
