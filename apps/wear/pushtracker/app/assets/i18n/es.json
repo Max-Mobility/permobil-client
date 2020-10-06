@@ -71,7 +71,22 @@
     "title": "menú"
   },
   "notifications": {
-    "foreground-service": "Permobil PushTracker está recopilando su actividad"
+    "foreground-service": "Permobil PushTracker está recopilando su actividad",
+    "wheelchair-maintenance": "Keeping your wheelchair maintained makes pushing easier. Caster wheels, caster forks, and tire wear are common issues that influence your ability to push your chair.",
+    "add-pt-element": "Want quicker access to your PushTracker stats? You can change the watch face to set a shortcut. Check out our YouTube channel or email us for details.",
+    "new-coast-record": "You did it! You achieved a new personal best for coast time. Doing more, while saving your shoulders! #ChooseToDoMore",
+    "daily-push-warning": "Friendly reminder! You’ve pushed 25% more today than your daily average. Consider taking a break or using your SmartDrive more.",
+    "titles": {
+      "daily-push-warning": "Daily Push Warning",
+      "new-coast-record": "New Coast Time Record!",
+      "add-pt-element": "Add PushTracker as Element",
+      "wheelchair-maintenance": "General WC Maintenance Reminder"
+    },
+    "channels": {
+      "smartdrive": "SmartDrive",
+      "personal-record": "Personal Record",
+      "maintenance": "Maintenance"
+    }
   },
   "permissions-reasons": {
     "coarse-location": "Para conectarse con la aplicación PushTracker Mobile en su iPhone usando Bluetooth, requerimos que permita el permiso de Ubicación [ACCESS_COARSE_LOCATION] en la siguiente pantalla. Con este permiso, Permobil no accederá a sus datos de ubicación.",
