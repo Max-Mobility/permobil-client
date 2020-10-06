@@ -293,9 +293,6 @@ export class MainViewModel extends Observable {
       //   );
       //   Log.D(`Canceled the Notification: ${cancelId}`);
       // }, 30000);
-
-      
-
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
