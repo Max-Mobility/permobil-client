@@ -25,10 +25,8 @@ import {
   getDeviceSerialNumber,
   L,
   performance,
-  Prop,
-  scheduleSmartDriveLocalNotifications
+  Prop
 } from '@permobil/nativescript';
-import { SmartDriveLocalNotifications } from '@permobil/nativescript/src/enums';
 import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
@@ -287,14 +285,14 @@ export class MainViewModel extends Observable {
       // need to think out the API for this to schedule and not always call reschedule
       // TBD based on the UX outlined by Ben, William, Curtis regarding the reminders/notifications
       // we might want to set specific notifications based on parameters for regions, users, etc.
-      scheduleSmartDriveLocalNotifications();
-      Log.D('scheduled local notifications for SmartDrive Wear');
-      Utils.setTimeout(async () => {
-        const cancelId = await cancelScheduledNotification(
-          SmartDriveLocalNotifications.TIRE_PRESSURE_NOTIFICATION_ID
-        );
-        Log.D(`Canceled the Notification: ${cancelId}`);
-      }, 30000);
+      // scheduleSmartDriveLocalNotifications();
+      // Log.D('scheduled local notifications for SmartDrive Wear');
+      // Utils.setTimeout(async () => {
+      //   const cancelId = await cancelScheduledNotification(
+      //     SmartDriveLocalNotifications.TIRE_PRESSURE_NOTIFICATION_ID
+      //   );
+      //   Log.D(`Canceled the Notification: ${cancelId}`);
+      // }, 30000);
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
