@@ -15,14 +15,7 @@ import {
   ViewBase
 } from '@nativescript/core';
 import { Log } from '@permobil/core';
-import {
-  cancelScheduledNotification,
-  getDefaultLang,
-  L,
-  Prop,
-  schedulePushTrackerLocalNotifications
-} from '@permobil/nativescript';
-import { PushTrackerLocalNotifications } from '@permobil/nativescript/src/enums';
+import { getDefaultLang, L, Prop } from '@permobil/nativescript';
 import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import * as LS from 'nativescript-localstorage';
@@ -37,6 +30,7 @@ import {
   getSerialNumber,
   loadSerialNumber,
   saveSerialNumber,
+  scheduleRecurringNotifications,
   sentryBreadCrumb
 } from '../../utils';
 
@@ -183,14 +177,35 @@ export class MainViewModel extends Observable {
       // need to think out the API for this to schedule and not always call reschedule
       // TBD based on the UX outlined by Ben, William, Curtis regarding the reminders/notifications
       // we might want to set specific notifications based on parameters for regions, users, etc.
-      schedulePushTrackerLocalNotifications();
-      Log.D('scheduled local notifications for PushTracker Wear');
-      setTimeout(async () => {
-        const cancelId = await cancelScheduledNotification(
-          PushTrackerLocalNotifications.PRESSURE_RELIEF_NOTIFICATION_ID
-        );
-        Log.D(`Canceled the Notification: ${cancelId}`);
-      }, 600000);
+
+      scheduleRecurringNotifications();
+
+      // LocalNotifications.schedule([
+      //   {
+      //     id: PushTrackerLocalNotifications.DAILY_PUSH_WARNING_NOTIFICATION_ID,
+      //     title: L('notifications.titles.daily-push-warning'),
+      //     body: L('notifications.daily-push-warning'),
+      //     color: new Color('#0067a6'),
+      //     icon: 'res://ic_omniwheel_white',
+      //     interval: 'minute', // fires every minute
+      //     channel:
+      //       PushTrackerWearNotificationChannels.PUSHTRACKER_WEAR_NOTIFICATION_CHANNEL,
+      //     at: new Date(new Date().getTime() + 10 * 1000) // 10 seconds from now
+      //   },
+      //   {
+      //     id:
+      //       PushTrackerLocalNotifications.NEW_COAST_TIME_RECORD_NOTIFICATION_ID,
+      //     title: L('notifications.titles.new-coast-record'),
+      //     body: L('notifications.new-coast-record'),
+      //     color: new Color('#0067a6'),
+      //     icon: 'res://ic_omniwheel_white',
+      //     interval: 'hour', // fires every minute
+      //     channel:
+      //       PushTrackerWearNotificationChannels.PUSHTRACKER_WEAR_NOTIFICATION_CHANNEL,
+      //     at: new Date(new Date().getTime() + 10 * 2000) // 20 seconds from now
+      //   },
+
+      // ]);
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);

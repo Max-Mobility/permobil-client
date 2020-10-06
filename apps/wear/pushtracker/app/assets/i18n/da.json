@@ -71,7 +71,17 @@
     "title": "Menu"
   },
   "notifications": {
-    "foreground-service": "Permobil PushTracker indsamler din aktivitet"
+    "foreground-service": "Permobil PushTracker indsamler din aktivitet",
+    "wheelchair-maintenance": "At holde din kørestol vedligeholdt gør det lettere at skubbe. Hjul, hjul og gafler og dækslitage er almindelige problemer, der påvirker din evne til at skubbe din stol.",
+    "add-pt-element": "Vil du have hurtigere adgang til dine PushTracker-statistikker? Du kan ændre urskiven for at indstille en genvej. Tjek vores YouTube-kanal eller mail os for detaljer.",
+    "new-coast-record": "Du gjorde det! Du opnåede et nyt personligt rekord for kysttiden. Gør mere, mens du sparer dine skuldre! #ChooseToDoMore",
+    "daily-push-warning": "Venlig påmindelse! Du har skubbet 25% mere i dag end dit daglige gennemsnit. Overvej at tage en pause eller bruge din SmartDrive mere.",
+    "titles": {
+      "daily-push-warning": "Daily Push Warning",
+      "new-coast-record": "New Coast Time Record!",
+      "add-pt-element": "Add PushTracker as Element",
+      "wheelchair-maintenance": "General WC Maintenance Reminder"
+    }
   },
   "permissions-reasons": {
     "coarse-location": "For at oprette forbindelse til PushTracker-appen på din iPhone ved hjælp af Bluetooth kræver vi, at du tillader placeringstilladelse [ACCESS_COARSE_LOCATION] på følgende skærm. Fra denne tilladelse får Permobil ikke adgang til dine placeringsdata.",
