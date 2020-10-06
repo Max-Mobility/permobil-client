@@ -52,6 +52,6 @@ export function scheduleRecurringNotifications() {
     ]);
   } catch (error) {
     Sentry.captureException(error);
-    Log.E('Error setting up recurring notifications for PT.W', error);
+    Log.E('Error setting up recurring notifications for SD.W', error);
   }
 }
