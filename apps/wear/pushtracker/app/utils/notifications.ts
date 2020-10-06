@@ -1,10 +1,6 @@
 import { Color } from '@nativescript/core';
 import { LocalNotifications } from '@nativescript/local-notifications';
-import { L } from '@permobil/nativescript';
-import {
-  PushTrackerLocalNotifications,
-  PushTrackerWearNotificationChannels
-} from '@permobil/nativescript/src/enums';
+import { L, PushTrackerLocalNotifications } from '@permobil/nativescript';
 import { Sentry } from 'nativescript-sentry';
 import { Log } from '@permobil/core/src';
 
