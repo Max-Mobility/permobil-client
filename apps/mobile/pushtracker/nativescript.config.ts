@@ -6,10 +6,12 @@ export default {
   android: {
     v8Flags: '--expose_gc',
     markingMode: 'none',
-    id: 'com.permobil.pushtracker'
+    id: 'com.permobil.pushtracker',
+    codeCache: true
   },
   ios: {
-    id: 'com.max-mobility.PushTracker'
+    id: 'com.max-mobility.PushTracker',
+    codeCache: true
   },
   appPath: 'src'
 } as NativeScriptConfig;
