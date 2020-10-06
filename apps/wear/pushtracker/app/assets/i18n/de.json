@@ -81,6 +81,11 @@
       "new-coast-record": "New Coast Time Record!",
       "add-pt-element": "Add PushTracker as Element",
       "wheelchair-maintenance": "General WC Maintenance Reminder"
+    },
+    "channels": {
+      "smartdrive": "SmartDrive",
+      "personal-record": "Personal Record",
+      "maintenance": "Maintenance"
     }
   },
   "permissions-reasons": {
