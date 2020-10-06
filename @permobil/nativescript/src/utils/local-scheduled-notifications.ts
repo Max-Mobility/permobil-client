@@ -36,35 +36,6 @@ export function scheduleSmartDriveLocalNotifications() {
   ]);
 }
 
-export function schedulePushTrackerLocalNotifications() {
-  LocalNotifications.schedule([
-    {
-      id: PushTrackerLocalNotifications.PRESSURE_RELIEF_NOTIFICATION_ID,
-      title: 'Pressure Relief',
-      body: 'Good pressure relief :).',
-      color: new Color('#0067a6'),
-      ongoing: false, // Ongoing notifications cannot be dismissed by the user, not swipeable to close
-      icon: 'res://ic_omniwheel_white',
-      interval: 'minute', // fires every minute
-      channel:
-        PushTrackerWearNotificationChannels.PUSHTRACKER_WEAR_NOTIFICATION_CHANNEL,
-      at: new Date(new Date().getTime() + 10 * 1000) // 10 seconds from now
-    },
-    {
-      id: PushTrackerLocalNotifications.REPOSITIONING_NOTIFICATION_ID,
-      title: 'Reposition Reminder',
-      body: 'Always reposition yourself ❤️.',
-      color: new Color('#0067a6'),
-      ongoing: false, // Ongoing notifications cannot be dismissed by the user, not swipeable to close
-      icon: 'res://ic_omniwheel_white',
-      interval: 'hour', // fires every minute
-      channel:
-        PushTrackerWearNotificationChannels.PUSHTRACKER_WEAR_NOTIFICATION_CHANNEL,
-      at: new Date(new Date().getTime() + 10 * 2000) // 20 seconds from now
-    }
-  ]);
-}
-
 export function cancelScheduledNotification(
   notificationID: SmartDriveLocalNotifications | PushTrackerLocalNotifications
 ) {
