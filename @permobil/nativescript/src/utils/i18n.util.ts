@@ -1,7 +1,8 @@
 require('globals');
 import {
   Application,
-  ApplicationSettings as AppSettings, Device,
+  ApplicationSettings as AppSettings,
+  Device,
   File,
   Folder,
   knownFolders,
