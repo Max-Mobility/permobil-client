@@ -1,20 +1,20 @@
-import { Color } from '@nativescript/core';
-import { LocalNotifications } from '@nativescript/local-notifications';
-import { L, PushTrackerNotificationIDs } from '@permobil/nativescript';
-import { Sentry } from 'nativescript-sentry';
 import { Log } from '@permobil/core/src';
+import { LocalNotifications } from '@nativescript/local-notifications';
+import { L, SmartDriveNotificationIDs } from '@permobil/nativescript';
+import { Color } from '@nativescript/core';
+import { Sentry } from 'nativescript-sentry';
 
 export function scheduleRecurringNotifications() {
   try {
-    const addPtNotificationTime = new Date();
-    addPtNotificationTime.setDate(2);
-    addPtNotificationTime.setHours(12);
-    addPtNotificationTime.setMinutes(0);
-    addPtNotificationTime.setMilliseconds(0);
+    const tpNotificationTime = new Date();
+    tpNotificationTime.setDate(2);
+    tpNotificationTime.setHours(12);
+    tpNotificationTime.setMinutes(0);
+    tpNotificationTime.setMilliseconds(0);
     Log.D(
-      'addPtNotificationTime',
-      addPtNotificationTime,
-      addPtNotificationTime.toLocaleDateString()
+      'tpNotificationTime',
+      tpNotificationTime,
+      tpNotificationTime.toLocaleDateString()
     );
 
     const wcMaintenanceTime = new Date();
@@ -30,23 +30,23 @@ export function scheduleRecurringNotifications() {
 
     LocalNotifications.schedule([
       {
-        id: PushTrackerNotificationIDs.ADD_PT_AS_ELEMENT,
-        title: L('notifications.titles.add-pt-element'),
+        id: SmartDriveNotificationIDs.TIRE_PRESSURE,
+        title: L('notifications.titles.tire-pressure'),
         body: L('notifications.add-pt-element'),
         color: new Color('#0067a6'),
         icon: 'res://ic_omniwheel_white',
         interval: 'week', // fires every week
-        channel: L('notifications.channels.smartdrive'),
-        at: addPtNotificationTime
+        channel: L('notifications.channels.maintenance'),
+        at: tpNotificationTime
       },
       {
-        id: PushTrackerNotificationIDs.GENERAL_WC_MAINTENANCE_REMINDER,
-        title: L('notifications.titles.wheelchair-maintenance'),
-        body: L('notifications.wheelchair-maintenance'),
+        id: SmartDriveNotificationIDs.SMARTDRIVE_ROLLER_CHECK,
+        title: L('notifications.titles.sd-roller-check'),
+        body: L('notifications.sd-roller-check'),
         color: new Color('#0067a6'),
         icon: 'res://ic_omniwheel_white',
         interval: 'month', // fires every month
-        channel: L('notifications.channels.maintenance'),
+        channel: L('notifications.channels.smartdrive'),
         at: wcMaintenanceTime
       }
     ]);

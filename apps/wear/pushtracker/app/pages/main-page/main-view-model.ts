@@ -178,7 +178,7 @@ export class MainViewModel extends Observable {
       // TBD based on the UX outlined by Ben, William, Curtis regarding the reminders/notifications
       // we might want to set specific notifications based on parameters for regions, users, etc.
 
-      scheduleRecurringNotifications();
+      // scheduleRecurringNotifications();
 
       // LocalNotifications.schedule([
       //   {

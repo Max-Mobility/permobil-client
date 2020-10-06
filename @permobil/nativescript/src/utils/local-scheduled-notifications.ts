@@ -1,11 +1,11 @@
 import { LocalNotifications } from '@nativescript/local-notifications';
 import {
-  PushTrackerLocalNotifications,
-  SmartDriveLocalNotifications
+  PushTrackerNotificationIDs,
+  SmartDriveNotificationIDs
 } from '../enums';
 
 export function cancelScheduledNotification(
-  notificationID: SmartDriveLocalNotifications | PushTrackerLocalNotifications
+  notificationID: SmartDriveNotificationIDs | PushTrackerNotificationIDs
 ) {
   return LocalNotifications.cancel(notificationID);
 }
@@ -14,5 +14,5 @@ export function cancelScheduledNotification(
  * Cancels all reminder notifications
  */
 export function cancelAllScheduledNotifications() {
-  LocalNotifications.cancelAll();
+  return LocalNotifications.cancelAll();
 }
