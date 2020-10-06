@@ -8,9 +8,9 @@ import {
   isAndroid,
   isIOS,
   Page,
-  SelectedIndexChangedEventData
+  SelectedIndexChangedEventData,
+  Utils
 } from '@nativescript/core';
-import { setTimeout } from '@nativescript/core/timer';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBar } from '@nstudio/nativescript-snackbar';
 import { Device, Log } from '@permobil/core';
@@ -168,7 +168,7 @@ export class TabsComponent {
 
     this.registerBluetoothEvents();
 
-    setTimeout(this.configureBluetooth.bind(this), 1000);
+    Utils.setTimeout(this.configureBluetooth.bind(this), 1000);
 
     // Set the Sentry Context Tags
     if (user?.data) {

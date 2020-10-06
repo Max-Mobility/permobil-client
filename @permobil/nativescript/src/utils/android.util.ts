@@ -1,12 +1,11 @@
-import { setTimeout } from '@nativescript/core/timer';
-import { ad as androidUtils } from '@nativescript/core/utils/utils';
+import { Utils } from '@nativescript/core';
 
 /**
  * Kills the current application activity and relaunches.
  */
 export function restartAndroidApp() {
-  setTimeout(() => {
-    const ctx = androidUtils.getApplicationContext() as android.content.Context;
+  Utils.setTimeout(() => {
+    const ctx = Utils.android.getApplicationContext() as android.content.Context;
     const intent = ctx
       .getPackageManager()
       .getLaunchIntentForPackage(ctx.getPackageName());
