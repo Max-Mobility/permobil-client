@@ -15,19 +15,3 @@ export enum PushTrackerLocalNotifications {
   ADD_PT_AS_ELEMENT_NOTIFICATION_ID = 111113,
   GENERAL_WC_MAINTENANCE_REMINDER_NOTIFICATION_ID = 111114
 }
-
-/**
- * Channels for SmartDrive Notifications
- * Useful on Android 26+ to set notification channels.
- */
-export enum SmartDriveWearNotificationChannels {
-  SMARTDRIVE_WEAR_NOTIFICATION_CHANNEL = 'SMARTDRIVE_WEAR_NOTIFICATION_CHANNEL'
-}
-
-/**
- * Channels for PushTracker Wear Notifications
- * Useful on Android 26+ to set notification channels.
- */
-export enum PushTrackerWearNotificationChannels {
-  PUSHTRACKER_WEAR_NOTIFICATION_CHANNEL = 'PUSHTRACKER_WEAR_NOTIFICATION_CHANNEL'
-}

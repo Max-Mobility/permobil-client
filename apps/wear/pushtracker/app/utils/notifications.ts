@@ -6,26 +6,27 @@ import {
   PushTrackerWearNotificationChannels
 } from '@permobil/nativescript/src/enums';
 import { Sentry } from 'nativescript-sentry';
+import { Log } from '@permobil/core/src';
 
 export function scheduleRecurringNotifications() {
   try {
     const addPtNotificationTime = new Date();
-    addPtNotificationTime.setDate(addPtNotificationTime.getDate());
-    addPtNotificationTime.setHours(10);
+    addPtNotificationTime.setDate(2);
+    addPtNotificationTime.setHours(12);
     addPtNotificationTime.setMinutes(0);
     addPtNotificationTime.setMilliseconds(0);
-    console.log(
+    Log.D(
       'addPtNotificationTime',
       addPtNotificationTime,
       addPtNotificationTime.toLocaleDateString()
     );
 
     const wcMaintenanceTime = new Date();
-    wcMaintenanceTime.setDate(wcMaintenanceTime.getDate());
-    wcMaintenanceTime.setHours(9);
+    wcMaintenanceTime.setDate(5);
+    wcMaintenanceTime.setHours(12);
     wcMaintenanceTime.setMinutes(0);
     wcMaintenanceTime.setMilliseconds(0);
-    console.log(
+    Log.D(
       'wcMaintenanceTime',
       wcMaintenanceTime,
       wcMaintenanceTime.toLocaleDateString()
@@ -39,8 +40,7 @@ export function scheduleRecurringNotifications() {
         color: new Color('#0067a6'),
         icon: 'res://ic_omniwheel_white',
         interval: 'week', // fires every week
-        channel:
-          PushTrackerWearNotificationChannels.PUSHTRACKER_WEAR_NOTIFICATION_CHANNEL,
+        channel: L('notifications.channels.smartdrive'),
         at: addPtNotificationTime
       },
       {
@@ -51,8 +51,7 @@ export function scheduleRecurringNotifications() {
         color: new Color('#0067a6'),
         icon: 'res://ic_omniwheel_white',
         interval: 'month', // fires every month
-        channel:
-          PushTrackerWearNotificationChannels.PUSHTRACKER_WEAR_NOTIFICATION_CHANNEL,
+        channel: L('notifications.channels.maintenance'),
         at: wcMaintenanceTime
       }
     ]);
