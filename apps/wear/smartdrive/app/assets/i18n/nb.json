@@ -23,6 +23,7 @@
     "deny": "Avslå",
     "disable": "Deaktiver",
     "dismiss": "Avvis",
+    "do-not-show-again": "Ikke vis igjen",
     "enable": "Aktiver",
     "ok": "OK"
   },
@@ -59,6 +60,7 @@
       "batteryvoltage": "[ERR: 001] SD-batterispenning",
       "bledisconnect": "[ERR: 007] Bluetooth frakblet",
       "gyrorange": "[ERR: 005] SD Vinkel",
+      "motordriverfault": "[ERR: 008] SD-motorbrikke",
       "motorphases": "[ERR: 002] SD Motor",
       "otaunavailable": "[ERR: 006] Oppdateringer ikke tilgjengelig",
       "overcurrent": "[ERR: 003] SD Strøm topp",
@@ -90,6 +92,24 @@
     "send-settings": "Kunne ikke sende innstillinger til SmartDrive.",
     "title": "Legge merke til",
     "too-many-smartdrives-found": "Flere SmartDrive enheter funnet. Forsikre deg om at det bare er en SmartDrive i nærheten når du kobler sammen."
+  },
+  "language-list": {
+    "cs": "",
+    "da": "",
+    "de": "",
+    "en": "",
+    "es": "",
+    "fi": "",
+    "fr": "",
+    "it": "",
+    "ja": "",
+    "ko": "",
+    "nb": "",
+    "nl": "",
+    "pl": "",
+    "pt": "",
+    "sv": "",
+    "zh": ""
   },
   "languages": {
     "cs": "Czech",
@@ -248,6 +268,7 @@
     },
     "scanning": "Skanner etter SmartDrive for å tilkople seg med ...",
     "select-smartdrive": "Velg SmartDrive",
+    "set-time": "Dato tid",
     "syncing-with-server": "Synkroniserer med server ...",
     "tap-sensitivity": "Trykk på følsomhet",
     "title": "SmartDrive innstillinger",
@@ -301,9 +322,9 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "Er du sikker på at du vil endre språk? SmartDrive MX2 + -appen må starte på nytt for å bruke språkendringen.",
       "message": "FORSIKTIG: Du MÅ lese i SmartDrive brukerhåndbok for hvordan endring av innstillingene påvirker bruk og ytelsen.",
-      "title": "Endrede innstillinger",
-      "language": "The app language has been changed."
+      "title": "Endrede innstillinger"
     },
     "title": {
       "notice": "Legge merke til"

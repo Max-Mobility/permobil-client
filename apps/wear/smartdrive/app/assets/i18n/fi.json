@@ -23,6 +23,7 @@
     "deny": "Kieltää",
     "disable": "Poista käytöstä",
     "dismiss": "Erottaa",
+    "do-not-show-again": "Älä näytä uudelleen",
     "enable": "Ota käyttöön",
     "ok": "Kunnossa"
   },
@@ -59,6 +60,7 @@
       "batteryvoltage": "[ERR: 001] SD-akun jännite",
       "bledisconnect": "[ERR: 007] Bluetooth-yhteyden katkaisu",
       "gyrorange": "[ERR: 005] SD-kulma",
+      "motordriverfault": "[ERR: 008] SD-moottorisiru",
       "motorphases": "[ERR: 002] SD-moottori",
       "otaunavailable": "[ERR: 006] Päivitykset eivät ole käytettävissä",
       "overcurrent": "[ERR: 003] SD-virtapiikki",
@@ -90,6 +92,24 @@
     "send-settings": "Asetusten lähettäminen SmartDriveen epäonnistui.",
     "title": "Ilmoitus",
     "too-many-smartdrives-found": "Löydetty useita SmartDrive-koneita. Varmista, että lähellä on vain yksi SmartDrive-laite pariliitoksen muodostamisen aikana."
+  },
+  "language-list": {
+    "cs": "",
+    "da": "",
+    "de": "",
+    "en": "",
+    "es": "",
+    "fi": "",
+    "fr": "",
+    "it": "",
+    "ja": "",
+    "ko": "",
+    "nb": "",
+    "nl": "",
+    "pl": "",
+    "pt": "",
+    "sv": "",
+    "zh": ""
   },
   "languages": {
     "cs": "Czech",
@@ -248,6 +268,7 @@
     },
     "scanning": "Skannataan SmartDrive-paria pariksi ...",
     "select-smartdrive": "Valitse SmartDrive",
+    "set-time": "Treffiaika",
     "syncing-with-server": "Synkronointi palvelimen kanssa ...",
     "tap-sensitivity": "Napauta Herkkyys",
     "title": "SmartDrive-asetukset",
@@ -301,9 +322,9 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "Haluatko varmasti vaihtaa kieltä? SmartDrive MX2 + -sovelluksen on käynnistyttävä uudelleen, jotta kielen muutos voidaan ottaa käyttöön.",
       "message": "VAROITUS: Sinun on Tutustu SmartDrive-käyttöoppaaseen kuinka asetusten muuttaminen vaikuttaa laitteen toimintaan ja suorituskykyyn.",
-      "title": "Muutetut asetukset",
-      "language": "The app language has been changed."
+      "title": "Muutetut asetukset"
     },
     "title": {
       "notice": "Ilmoitus"

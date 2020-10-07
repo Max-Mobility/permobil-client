@@ -23,6 +23,7 @@
     "deny": "Negar",
     "disable": "Desativar",
     "dismiss": "Dispensar",
+    "do-not-show-again": "Não mostrar de novo",
     "enable": "Ativar",
     "ok": "OK"
   },
@@ -59,6 +60,7 @@
       "batteryvoltage": "[ERR: 001] Tensão da bateria SD",
       "bledisconnect": "[ERR: 007] Bluetooth Desconectado",
       "gyrorange": "[ERR: 005] Ângulo do SD",
+      "motordriverfault": "[ERR: 008] Chip Motor SD",
       "motorphases": "[ERR: 002] Motor SD",
       "otaunavailable": "[ERR: 006] Atualizações indisponíveis",
       "overcurrent": "[ERR: 003] Pico de corrente SD",
@@ -90,6 +92,24 @@
     "send-settings": "Falha ao enviar as configurações para o SmartDrive.",
     "title": "Aviso",
     "too-many-smartdrives-found": "Encontrados vários SmartDrives. Garanta que há apenas um SmartDrive nas proximidades ao emparelhar."
+  },
+  "language-list": {
+    "cs": "",
+    "da": "",
+    "de": "",
+    "en": "",
+    "es": "",
+    "fi": "",
+    "fr": "",
+    "it": "",
+    "ja": "",
+    "ko": "",
+    "nb": "",
+    "nl": "",
+    "pl": "",
+    "pt": "",
+    "sv": "",
+    "zh": ""
   },
   "languages": {
     "cs": "Checo",
@@ -248,6 +268,7 @@
     },
     "scanning": "A procurar SmartDrive para emparelhar ...",
     "select-smartdrive": "Selecione SmartDrive",
+    "set-time": "Data hora",
     "syncing-with-server": "Sincronizando com o servidor ...",
     "tap-sensitivity": "Sensibilidade ao toque",
     "title": "Configurações do SmartDrive",
@@ -301,9 +322,9 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "Tem certeza de que deseja alterar o idioma? O aplicativo SmartDrive MX2 + deve reiniciar para aplicar a alteração de idioma.",
       "message": "CUIDADO: É necessário consultar o Manual do usuário do SmartDrive para saber como a alteração das configurações afeta sua utilização e desempenho.",
-      "title": "Configurações alteradas",
-      "language": "The app language has been changed."
+      "title": "Configurações alteradas"
     },
     "title": {
       "notice": "Aviso"
