@@ -18,6 +18,8 @@ import { SqliteService } from '../../../services';
 import { configureLayout } from '../../../utils';
 
 let closeCallback;
+let page: Page;
+let errorRadListView: RadListView;
 let sqliteService: SqliteService;
 const dateLocales = {
   da: require('date-fns/locale/da'),
@@ -34,28 +36,31 @@ const dateLocales = {
   zh: require('date-fns/locale/zh_cn')
 };
 
-// values for UI databinding via bindingContext
-const data = {
-  insetPadding: 0,
-  chinSize: 0,
-  errorHistoryData: new ObservableArray()
-};
+let errorHistoryData;
+
+export async function closeModal() {
+  closeCallback && closeCallback();
+}
 
 export async function onShownModally(args: ShownModallyData) {
   Log.D('error-history-page onShownModally');
-  const page = args.object as Page;
+  page = args.object as Page;
+  page.bindingContext = fromObject({});
+
   closeCallback = args.closeCallback; // the closeCallback handles closing the modal
+
+  // store the reference to the rad list view
+  errorRadListView = page.getViewById("errorRadListView");
 
   // Sqlite service
   sqliteService = args.context.sqliteService;
 
   // set the pages bindingContext
-  page.bindingContext = fromObject(data);
+  errorHistoryData = new ObservableArray();
+  page.bindingContext.set('errorHistoryData', errorHistoryData);
 
   const wearOsLayout: any = page.getViewById('wearOsLayout');
   const res = configureLayout(wearOsLayout);
-  page.bindingContext.set('chinSize', res.chinSize);
-  page.bindingContext.set('insetPadding', res.insetPadding);
   wearOsLayout.nativeView.setPadding(
     res.insetPadding,
     res.insetPadding,
@@ -63,19 +68,10 @@ export async function onShownModally(args: ShownModallyData) {
     0
   );
 
+  page.bindingContext.set('insetPadding', res.insetPadding);
+  page.bindingContext.set('chinSize', res.chinSize);
+
   showErrorHistory();
-
-  data.insetPadding = res.insetPadding;
-  data.chinSize = res.chinSize;
-}
-
-export function selectErrorTemplate(item, index, items) {
-  return item.key;
-  /*
-  if (item.isBack) return 'back';
-  else if (index === items.length - 1) return 'last';
-  else return 'error';
-  */
 }
 
 async function getRecentErrors(numErrors: number, offset: number = 0) {
@@ -96,10 +92,7 @@ async function getRecentErrors(numErrors: number, offset: number = 0) {
           time: formatDate(new Date(r && +r[1]), 'YYYY-MM-DD HH:mm'),
           code: L(translationKey),
           id: r && r[3],
-          uuid: r && r[4],
-          insetPadding: data.insetPadding,
-          onTap: () => {},
-          key: 'error'
+          uuid: r && r[4]
         };
       });
     }
@@ -110,46 +103,50 @@ async function getRecentErrors(numErrors: number, offset: number = 0) {
   return errors;
 }
 
-export async function onLoadMoreErrors(args: LoadOnDemandListViewEventData) {
+export async function onLoadMoreErrors(
+  args: LoadOnDemandListViewEventData | { object: any, returnValue: boolean }
+) {
   const listView: RadListView = args.object;
   // load more errors
-  let recents = await getRecentErrors(10, data.errorHistoryData.length - 1);
+  let recents = await getRecentErrors(10, errorHistoryData.length - 1);
   // determine the unique errors that we have
-  recents = differenceBy(recents, data.errorHistoryData.slice(), 'uuid');
+  recents = differenceBy(recents, errorHistoryData.slice(), 'uuid');
   if (recents && recents.length) {
-    data.errorHistoryData.push(...recents);
+    errorHistoryData.push(...recents);
     args.returnValue = true;
-    listView.notifyLoadOnDemandFinished();
+    listView.notifyLoadOnDemandFinished(false);
   } else {
-    if (data.errorHistoryData.length === 1) {
-      // we have no errors - add the 'no-errors' message
-      data.errorHistoryData.push({
-        code: L('error-history.no-errors'),
-        insetPadding: data.insetPadding,
-        key: 'no-errors'
-      });
-    } else {
-      // add the padding message if we have errors
-      data.errorHistoryData.push({
-        insetPadding: data.insetPadding,
-        key: 'last'
-      });
-    }
     args.returnValue = false;
     listView.notifyLoadOnDemandFinished(true);
   }
+  if (args.returnValue) {
+    page.bindingContext.set('footerText', L('error-history.load-more'));
+  } else {
+    // we're at the end of the list
+    if (errorHistoryData.length === 0) {
+      // we have no errors - add the 'no-errors' message
+      page.bindingContext.set('footerText', L('error-history.no-errors'));
+    } else {
+      // clear the footer text since we have errors
+      page.bindingContext.set('footerText', '');
+    }
+  }
+}
+
+export async function onLoadMoreTap() {
+  onLoadMoreErrors({
+    object: errorRadListView,
+    returnValue: true
+  });
 }
 
 function showErrorHistory() {
   // clear out any pre-loaded data
-  data.errorHistoryData.splice(0, data.errorHistoryData.length);
+  errorHistoryData.splice(0, errorHistoryData.length);
   // load the error data
-  // onLoadMoreErrors();
-
-  data.errorHistoryData.push({
-    code: L('buttons.back'),
-    onTap: closeCallback,
-    key: 'back'
+  onLoadMoreErrors({
+    object: errorRadListView,
+    returnValue: true
   });
 }
 

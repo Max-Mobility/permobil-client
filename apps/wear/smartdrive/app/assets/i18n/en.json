@@ -67,6 +67,7 @@
       "overtemperature": "[ERR: 004] SD Overheating"
     },
     "loading": "Loading...",
+    "load-more": "Load More",
     "no-errors": "No SmartDrive errors have been recorded or received.",
     "title": "SmartDrive Error History"
   },
