@@ -50,7 +50,7 @@ export async function onShownModally(args: ShownModallyData) {
   closeCallback = args.closeCallback; // the closeCallback handles closing the modal
 
   // store the reference to the rad list view
-  errorRadListView = page.getViewById("errorRadListView");
+  errorRadListView = page.getViewById('errorRadListView');
 
   // Sqlite service
   sqliteService = args.context.sqliteService;
