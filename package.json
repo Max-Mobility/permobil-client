@@ -57,7 +57,7 @@
     "pt.m.i.nohmr": "cd apps/mobile/pushtracker && ns debug ios --env.aot --no-hmr",
     "pt.m.start.ios": "cd apps/mobile/pushtracker && ns debug ios --env.aot",
     "pt.m.start.ios.report": "cd apps/mobile/pushtracker && ns run ios --env.aot --env.report",
-    "pt.m.ios.release": "cd apps/mobile/pushtracker && ns build ios --release --no-hmr --env.aot --env.uglify --env.hiddenSourceMap",
+    "pt.m.ios.release": "cd apps/mobile/pushtracker && ns build ios --release --no-hmr --env.aot --env.uglify",
     "pt.m.android.release": "cd apps/mobile/pushtracker/tools && node ./android-release.js",
     "pt.m.android.layouts": "adb shell dumpsys gfxinfo com.permobil.pushtracker > layout-profile.txt",
     "pt.m.android.framestats": "adb shell dumpsys gfxinfo com.permobil.pushtracker framestats > framestats.txt",
