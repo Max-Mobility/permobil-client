@@ -2675,7 +2675,7 @@ export class MainViewModel extends Observable {
           totalDiff = SmartDrive.caseTicksToMiles(totalDiff);
         }
         // compute the date for the data
-        const date = formatDateTime(new Date(e.date), 'YYYY/MM/dd').formatted;
+        const date = formatDateTime(new Date(e.date), 'yyyy/MM/dd').formatted;
         // now save the drive / total in this record
         data[date] = {
           drive: driveDiff,

@@ -33,9 +33,9 @@ export namespace SmartDriveData {
 
     export function getDateValue(date?: any) {
       if (date !== undefined) {
-        return formatDateTime(new Date(date), 'YYYY/MM/dd').formatted;
+        return formatDateTime(new Date(date), 'yyyy/MM/dd').formatted;
       } else {
-        return formatDateTime(new Date(), 'YYYY/MM/dd').formatted;
+        return formatDateTime(new Date(), 'yyyy/MM/dd').formatted;
       }
     }
 
