@@ -366,7 +366,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-          }`,
+            }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -406,14 +406,31 @@ export class MainViewModel extends Observable {
         settingsService: this._settingsService,
         sdKinveyService: this._kinveyService
       },
-      closeCallback: () => {
+      closeCallback: async (shouldConnectSmartDrive: boolean) => {
         this._showingModal = false;
         // we dont do anything with the about to return anything
         // now update any display that needs settings:
         this._updateSpeedDisplay();
         this._updateChartData();
+        // see if the user changed accel, SC mode, SC max speed
+        // (according to
+        // https://github.com/Max-Mobility/permobil-client/issues/337)
+        // and ask them if they'd like to send the settings now
+        if (shouldConnectSmartDrive) {
+          const turnPowerAssistOn = await Dialogs.confirm({
+            title: L('warnings.title.notice'),
+            message: L('settings.send-settings-prompt'),
+            okButtonText: L('power-assist.activate'),
+            cancelButtonText: L('buttons.dismiss'),
+            cancelable: false
+          });
+          if (turnPowerAssistOn) {
+            this.enablePowerAssist();
+          }
+        }
       },
       animated: false,
+      cancelable: false,
       fullscreen: true
     };
     this._showingModal = true;
@@ -2077,7 +2094,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     Application.android.foregroundActivity.startActivity(intent);
@@ -2142,7 +2159,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     Application.android.foregroundActivity.startActivity(intent);
