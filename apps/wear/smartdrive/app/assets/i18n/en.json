@@ -269,6 +269,7 @@
     },
     "scanning": "Scanning for SmartDrive to pair with...",
     "select-smartdrive": "Select SmartDrive",
+    "send-settings-prompt": "The new settings will not take effect until the next time you turn Power Assist On and connect to the SmartDrive. Would you like to turn power assist on now to connect to the SmartDrive and update its settings?",
     "set-time": "Date & Time",
     "syncing-with-server": "Synchronizing with server...",
     "tap-sensitivity": "Tap Sensitivity",

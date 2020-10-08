@@ -20,7 +20,6 @@ import {
 } from '@nativescript/core';
 import { Log, wait } from '@permobil/core';
 import {
-  cancelScheduledNotification,
   getDeviceSerialNumber,
   L,
   performance,
@@ -262,17 +261,7 @@ export class MainViewModel extends Observable {
     try {
       await this._init();
       Log.D('init finished in the main-view-model');
-      // need to think out the API for this to schedule and not always call reschedule
-      // TBD based on the UX outlined by Ben, William, Curtis regarding the reminders/notifications
-      // we might want to set specific notifications based on parameters for regions, users, etc.
-      // scheduleSmartDriveLocalNotifications();
-      // Log.D('scheduled local notifications for SmartDrive Wear');
-      // Utils.setTimeout(async () => {
-      //   const cancelId = await cancelScheduledNotification(
-      //     SmartDriveLocalNotifications.TIRE_PRESSURE_NOTIFICATION_ID
-      //   );
-      //   Log.D(`Canceled the Notification: ${cancelId}`);
-      // }, 30000);
+      // TODO: schedule notifications here
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
@@ -386,14 +375,31 @@ export class MainViewModel extends Observable {
         settingsService: this._settingsService,
         sdKinveyService: this._kinveyService
       },
-      closeCallback: () => {
+      closeCallback: async (shouldConnectSmartDrive: boolean) => {
         this._showingModal = false;
         // we dont do anything with the about to return anything
         // now update any display that needs settings:
         this._updateSpeedDisplay();
         this._updateChartData();
+        // see if the user changed accel, SC mode, SC max speed
+        // (according to
+        // https://github.com/Max-Mobility/permobil-client/issues/337)
+        // and ask them if they'd like to send the settings now
+        if (shouldConnectSmartDrive) {
+          const turnPowerAssistOn = await Dialogs.confirm({
+            title: L('warnings.title.notice'),
+            message: L('settings.send-settings-prompt'),
+            okButtonText: L('power-assist.activate'),
+            cancelButtonText: L('buttons.dismiss'),
+            cancelable: false
+          });
+          if (turnPowerAssistOn) {
+            this.enablePowerAssist();
+          }
+        }
       },
       animated: false,
+      cancelable: false,
       fullscreen: true
     };
     this._showingModal = true;

@@ -12,7 +12,7 @@
     "@nativescript/appavailability": "2.0.0",
     "@nativescript/auto-fit-text": "~1.0.1",
     "@nativescript/core": "file:../../../forked-plugins/nativescript-core-7.0.3.tgz",
-    "@nativescript/local-notifications": "~5.0.0",
+    "@nativescript/local-notifications": "~5.1.0",
     "@permobil/core": "file:../../../@permobil/core",
     "@permobil/nativescript": "file:../../../@permobil/nativescript",
     "buffer": "~5.6.0",
