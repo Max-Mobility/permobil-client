@@ -20,7 +20,6 @@ import {
 } from '@nativescript/core';
 import { Log, wait } from '@permobil/core';
 import {
-  cancelScheduledNotification,
   getDefaultLang,
   getDeviceSerialNumber,
   L,
