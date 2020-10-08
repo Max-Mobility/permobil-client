@@ -27,7 +27,7 @@ import {
   performance,
   Prop
 } from '@permobil/nativescript';
-import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
+import { closestIndexTo, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
 import last from 'lodash/last';
@@ -55,6 +55,7 @@ import {
   SqliteService
 } from '../../services';
 import {
+  formatDateTime,
   isNetworkAvailable,
   sentryBreadCrumb,
   _isActivityThis
@@ -366,7 +367,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-          }`,
+            }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -1364,20 +1365,11 @@ export class MainViewModel extends Observable {
   }
 
   private _updateTimeDisplay() {
-    const now = new Date();
-    const context = Utils.android.getApplicationContext();
-    const is24HourFormat = android.text.format.DateFormat.is24HourFormat(
-      context
-    );
-    if (is24HourFormat) {
-      this.currentTime = this._format(now, 'HH:mm');
-      this.currentTimeMeridiem = ''; // in 24 hour format we don't need AM/PM
-    } else {
-      this.currentTime = this._format(now, 'h:mm');
-      this.currentTimeMeridiem = this._format(now, 'A');
-    }
-    this.currentDay = this._format(now, 'ddd MMM D');
-    this.currentYear = this._format(now, 'YYYY');
+    const datetime = formatDateTime(new Date());
+    this.currentTime = datetime.time;
+    this.currentTimeMeridiem = datetime.timeMeridiem;
+    this.currentDay = datetime.day;
+    this.currentYear = datetime.year;
   }
 
   private async _updateAuthorization() {
@@ -1806,7 +1798,7 @@ export class MainViewModel extends Observable {
         // @ts-ignore
         if (value) value += '%';
         return {
-          day: this._format(new Date(e.date), 'dd'),
+          day: formatDateTime(new Date(e.date), 'EEEEE').formatted,
           value: value
         };
       });
@@ -1845,7 +1837,7 @@ export class MainViewModel extends Observable {
           }
         }
         return {
-          day: this._format(new Date(e.date), 'dd'),
+          day: formatDateTime(new Date(e.date), 'EEEEE').formatted,
           value: dist
         };
       });
@@ -2050,12 +2042,6 @@ export class MainViewModel extends Observable {
     this._scanningView = null;
   }
 
-  private _format(d: Date, fmt: string) {
-    return format(d, fmt, {
-      locale: dateLocales[getDefaultLang()] || dateLocales['en']
-    });
-  }
-
   private _checkPackageInstalled(packageName: string) {
     let found = true;
     try {
@@ -2077,7 +2063,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     Application.android.foregroundActivity.startActivity(intent);
@@ -2142,7 +2128,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     Application.android.foregroundActivity.startActivity(intent);
@@ -2710,7 +2696,7 @@ export class MainViewModel extends Observable {
           totalDiff = SmartDrive.caseTicksToMiles(totalDiff);
         }
         // compute the date for the data
-        const date = this._format(new Date(e.date), 'YYYY/MM/DD');
+        const date = formatDateTime(new Date(e.date), 'YYYY/MM/dd').formatted;
         // now save the drive / total in this record
         data[date] = {
           drive: driveDiff,

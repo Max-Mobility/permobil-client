@@ -9,7 +9,6 @@ import {
 } from '@nativescript/core';
 import { Log } from '@permobil/core';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';
-import { format } from 'date-fns';
 import debounce from 'lodash/debounce';
 import flatten from 'lodash/flatten';
 import last from 'lodash/last';
@@ -25,7 +24,7 @@ import {
   SmartDriveKinveyService,
   SqliteService
 } from '../../../services';
-import { sentryBreadCrumb } from '../../../utils';
+import { formatDateTime, sentryBreadCrumb } from '../../../utils';
 
 const ambientTheme = require('../../../scss/theme-ambient.css').toString();
 const defaultTheme = require('../../../scss/theme-default.css').toString();
@@ -265,7 +264,7 @@ export class UpdatesViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => {});
+        await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
         this.updateSerialNumber();
       } catch (permissionsObj) {
@@ -287,10 +286,10 @@ export class UpdatesViewModel extends Observable {
         // version info then we can just resolve
         sentryBreadCrumb(
           'Already have smartdrive version:' +
-            '\n\tmcu: ' +
-            this.smartDrive.mcu_version_string +
-            '\n\tble: ' +
-            this.smartDrive.ble_version_string
+          '\n\tmcu: ' +
+          this.smartDrive.mcu_version_string +
+          '\n\tble: ' +
+          this.smartDrive.ble_version_string
         );
         resolve(true);
         return;
@@ -314,10 +313,10 @@ export class UpdatesViewModel extends Observable {
           clearTimeout(connectTimeoutId);
           sentryBreadCrumb(
             'Got smartdrive version:' +
-              '\n\tmcu: ' +
-              this.smartDrive.mcu_version_string +
-              '\n\tble: ' +
-              this.smartDrive.ble_version_string
+            '\n\tmcu: ' +
+            this.smartDrive.mcu_version_string +
+            '\n\tble: ' +
+            this.smartDrive.ble_version_string
           );
           resolve();
         };
@@ -946,24 +945,9 @@ export class UpdatesViewModel extends Observable {
     );
   }
 
-  _format(d: Date, fmt: string) {
-    return format(d, fmt, {
-      locale: dateLocales[getDefaultLang()] || dateLocales['en']
-    });
-  }
-
   updateTimeDisplay() {
-    const now = new Date();
-    const context = Utils.android.getApplicationContext();
-    const is24HourFormat = android.text.format.DateFormat.is24HourFormat(
-      context
-    );
-    if (is24HourFormat) {
-      this.currentTime = this._format(now, 'HH:mm');
-      this.currentTimeMeridiem = ''; // in 24 hour format we don't need AM/PM
-    } else {
-      this.currentTime = this._format(now, 'h:mm');
-      this.currentTimeMeridiem = this._format(now, 'A');
-    }
+    const datetime = formatDateTime(new Date());
+    this.currentTime = datetime.time;
+    this.currentTimeMeridiem = datetime.timeMeridiem;
   }
 }

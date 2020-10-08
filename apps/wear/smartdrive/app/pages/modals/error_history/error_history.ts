@@ -6,7 +6,6 @@ import {
 } from '@nativescript/core';
 import { Log } from '@permobil/core';
 import { getDefaultLang, L } from '@permobil/nativescript';
-import { format } from 'date-fns';
 import differenceBy from 'lodash/differenceBy';
 import { Sentry } from 'nativescript-sentry';
 import {
@@ -15,7 +14,7 @@ import {
 } from 'nativescript-ui-listview';
 import { SmartDriveData } from '../../../namespaces';
 import { SqliteService } from '../../../services';
-import { configureLayout } from '../../../utils';
+import { formatDateTime, configureLayout } from '../../../utils';
 
 let closeCallback;
 let page: Page;
@@ -89,7 +88,7 @@ async function getRecentErrors(numErrors: number, offset: number = 0) {
         const translationKey =
           'error-history.errors.' + (r && r[2]).toLowerCase();
         return {
-          time: formatDate(new Date(r && +r[1]), 'YYYY-MM-DD HH:mm'),
+          time: formatDateTime(new Date(r && +r[1]), 'YYYY-MM-dd HH:mm').formatted,
           code: L(translationKey),
           id: r && r[3],
           uuid: r && r[4]
@@ -147,11 +146,5 @@ function showErrorHistory() {
   onLoadMoreErrors({
     object: errorRadListView,
     returnValue: true
-  });
-}
-
-function formatDate(d: Date, fmt: string) {
-  return format(d, fmt, {
-    locale: dateLocales[getDefaultLang()] || dateLocales['en']
   });
 }
