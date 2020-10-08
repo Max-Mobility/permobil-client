@@ -5,7 +5,7 @@ import {
   ShownModallyData
 } from '@nativescript/core';
 import { Log } from '@permobil/core';
-import { getDefaultLang, L } from '@permobil/nativescript';
+import { L } from '@permobil/nativescript';
 import differenceBy from 'lodash/differenceBy';
 import { Sentry } from 'nativescript-sentry';
 import {

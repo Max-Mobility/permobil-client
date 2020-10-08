@@ -4,11 +4,10 @@ import {
   ApplicationSettings,
   EventData,
   Observable,
-  ObservableArray,
-  Utils
+  ObservableArray
 } from '@nativescript/core';
 import { Log } from '@permobil/core';
-import { getDefaultLang, L, Prop } from '@permobil/nativescript';
+import { L, Prop } from '@permobil/nativescript';
 import debounce from 'lodash/debounce';
 import flatten from 'lodash/flatten';
 import last from 'lodash/last';
