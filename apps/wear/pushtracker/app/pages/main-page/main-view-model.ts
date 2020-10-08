@@ -30,8 +30,8 @@ import {
   getSerialNumber,
   loadSerialNumber,
   saveSerialNumber,
-  scheduleRecurringNotifications,
-  sentryBreadCrumb
+  sentryBreadCrumb,
+  setupAllLocalNotifications
 } from '../../utils';
 
 const dateLocales = {
@@ -173,39 +173,7 @@ export class MainViewModel extends Observable {
     try {
       await this._init();
       Log.D('init finished in the main-view-model');
-      // start of the local notification reminders
-      // need to think out the API for this to schedule and not always call reschedule
-      // TBD based on the UX outlined by Ben, William, Curtis regarding the reminders/notifications
-      // we might want to set specific notifications based on parameters for regions, users, etc.
-
-      // scheduleRecurringNotifications();
-
-      // LocalNotifications.schedule([
-      //   {
-      //     id: PushTrackerLocalNotifications.DAILY_PUSH_WARNING_NOTIFICATION_ID,
-      //     title: L('notifications.titles.daily-push-warning'),
-      //     body: L('notifications.daily-push-warning'),
-      //     color: new Color('#0067a6'),
-      //     icon: 'res://ic_omniwheel_white',
-      //     interval: 'minute', // fires every minute
-      //     channel:
-      //       PushTrackerWearNotificationChannels.PUSHTRACKER_WEAR_NOTIFICATION_CHANNEL,
-      //     at: new Date(new Date().getTime() + 10 * 1000) // 10 seconds from now
-      //   },
-      //   {
-      //     id:
-      //       PushTrackerLocalNotifications.NEW_COAST_TIME_RECORD_NOTIFICATION_ID,
-      //     title: L('notifications.titles.new-coast-record'),
-      //     body: L('notifications.new-coast-record'),
-      //     color: new Color('#0067a6'),
-      //     icon: 'res://ic_omniwheel_white',
-      //     interval: 'hour', // fires every minute
-      //     channel:
-      //       PushTrackerWearNotificationChannels.PUSHTRACKER_WEAR_NOTIFICATION_CHANNEL,
-      //     at: new Date(new Date().getTime() + 10 * 2000) // 20 seconds from now
-      //   },
-
-      // ]);
+      setupAllLocalNotifications();
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
