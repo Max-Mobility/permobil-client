@@ -48,7 +48,7 @@ async function scheduleWheelchairMaintenance() {
     ApplicationSettings.setBoolean(NotificationKeys.WC_MAINTENANCE, true);
   } catch (error) {
     Sentry.captureException(error);
-    Log.E('Error setting up recurring notifications for SD.W', error);
+    Log.E('Error setting up recurring notifications for PT.W', error);
   }
 }
 
@@ -105,7 +105,7 @@ async function setupAddPtElement() {
     ApplicationSettings.setBoolean(NotificationKeys.ADD_PT_ELEMENT, true);
   } catch (error) {
     Sentry.captureException(error);
-    Log.E('Error setting up recurring notifications for SD.W', error);
+    Log.E('Error setting up recurring notifications for PT.W', error);
   }
 }
 
