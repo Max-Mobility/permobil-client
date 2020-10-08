@@ -47,7 +47,7 @@ export class SettingsViewModel extends Observable {
   private _isDownloadingFiles: boolean = false;
   private _shouldDownloadFiles: boolean = true;
 
-  private _closeCallback: (boolean) => {};
+  private _closeCallback: (shouldConnect: boolean) => {};
   // if the user changes accel, SC mode, SC max speed then we should
   // connect to the smartdrive to update its settings.
   private _shouldConnectSmartDrive: boolean = false;
