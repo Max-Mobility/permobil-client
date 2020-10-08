@@ -5,8 +5,7 @@ import {
   ShownModallyData
 } from '@nativescript/core';
 import { Log } from '@permobil/core';
-import { getDefaultLang, L } from '@permobil/nativescript';
-import { format } from 'date-fns';
+import { L } from '@permobil/nativescript';
 import differenceBy from 'lodash/differenceBy';
 import { Sentry } from 'nativescript-sentry';
 import {
@@ -15,26 +14,12 @@ import {
 } from 'nativescript-ui-listview';
 import { SmartDriveData } from '../../../namespaces';
 import { SqliteService } from '../../../services';
-import { configureLayout } from '../../../utils';
+import { formatDateTime, configureLayout } from '../../../utils';
 
 let closeCallback;
 let page: Page;
 let errorRadListView: RadListView;
 let sqliteService: SqliteService;
-const dateLocales = {
-  da: require('date-fns/locale/da'),
-  de: require('date-fns/locale/de'),
-  en: require('date-fns/locale/en'),
-  es: require('date-fns/locale/es'),
-  fr: require('date-fns/locale/fr'),
-  it: require('date-fns/locale/it'),
-  ja: require('date-fns/locale/ja'),
-  ko: require('date-fns/locale/ko'),
-  nb: require('date-fns/locale/nb'),
-  nl: require('date-fns/locale/nl'),
-  nn: require('date-fns/locale/nb'),
-  zh: require('date-fns/locale/zh_cn')
-};
 
 let errorHistoryData;
 
@@ -89,7 +74,7 @@ async function getRecentErrors(numErrors: number, offset: number = 0) {
         const translationKey =
           'error-history.errors.' + (r && r[2]).toLowerCase();
         return {
-          time: formatDate(new Date(r && +r[1]), 'YYYY-MM-DD HH:mm'),
+          time: formatDateTime(new Date(r && +r[1]), 'YYYY-MM-dd HH:mm').formatted,
           code: L(translationKey),
           id: r && r[3],
           uuid: r && r[4]
@@ -147,11 +132,5 @@ function showErrorHistory() {
   onLoadMoreErrors({
     object: errorRadListView,
     returnValue: true
-  });
-}
-
-function formatDate(d: Date, fmt: string) {
-  return format(d, fmt, {
-    locale: dateLocales[getDefaultLang()] || dateLocales['en']
   });
 }

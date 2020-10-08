@@ -20,13 +20,12 @@ import {
 } from '@nativescript/core';
 import { Log, wait } from '@permobil/core';
 import {
-  getDefaultLang,
   getDeviceSerialNumber,
   L,
   performance,
   Prop
 } from '@permobil/nativescript';
-import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
+import { closestIndexTo, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
 import last from 'lodash/last';
@@ -54,6 +53,7 @@ import {
   SqliteService
 } from '../../services';
 import {
+  formatDateTime,
   isNetworkAvailable,
   sentryBreadCrumb,
   _isActivityThis
@@ -62,26 +62,6 @@ import { updatesViewModel } from '../modals/updates/updates-page';
 
 const ambientTheme = require('../../scss/theme-ambient.scss');
 const defaultTheme = require('../../scss/theme-default.scss');
-
-const dateLocales = {
-  cs: require('date-fns/locale/cs'),
-  da: require('date-fns/locale/da'),
-  de: require('date-fns/locale/de'),
-  en: require('date-fns/locale/en'),
-  es: require('date-fns/locale/es'),
-  fi: require('date-fns/locale/fi'),
-  fr: require('date-fns/locale/fr'),
-  it: require('date-fns/locale/it'),
-  ja: require('date-fns/locale/ja'),
-  ko: require('date-fns/locale/ko'),
-  nb: require('date-fns/locale/nb'),
-  nl: require('date-fns/locale/nl'),
-  nn: require('date-fns/locale/nb'),
-  pl: require('date-fns/locale/pl'),
-  pt: require('date-fns/locale/pt'),
-  sv: require('date-fns/locale/sv'),
-  zh: require('date-fns/locale/zh_cn')
-};
 
 declare const com: any;
 
@@ -281,17 +261,7 @@ export class MainViewModel extends Observable {
     try {
       await this._init();
       Log.D('init finished in the main-view-model');
-      // need to think out the API for this to schedule and not always call reschedule
-      // TBD based on the UX outlined by Ben, William, Curtis regarding the reminders/notifications
-      // we might want to set specific notifications based on parameters for regions, users, etc.
-      // scheduleSmartDriveLocalNotifications();
-      // Log.D('scheduled local notifications for SmartDrive Wear');
-      // Utils.setTimeout(async () => {
-      //   const cancelId = await cancelScheduledNotification(
-      //     SmartDriveLocalNotifications.TIRE_PRESSURE_NOTIFICATION_ID
-      //   );
-      //   Log.D(`Canceled the Notification: ${cancelId}`);
-      // }, 30000);
+      // TODO: schedule notifications here
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
@@ -1380,20 +1350,11 @@ export class MainViewModel extends Observable {
   }
 
   private _updateTimeDisplay() {
-    const now = new Date();
-    const context = Utils.android.getApplicationContext();
-    const is24HourFormat = android.text.format.DateFormat.is24HourFormat(
-      context
-    );
-    if (is24HourFormat) {
-      this.currentTime = this._format(now, 'HH:mm');
-      this.currentTimeMeridiem = ''; // in 24 hour format we don't need AM/PM
-    } else {
-      this.currentTime = this._format(now, 'h:mm');
-      this.currentTimeMeridiem = this._format(now, 'A');
-    }
-    this.currentDay = this._format(now, 'ddd MMM D');
-    this.currentYear = this._format(now, 'YYYY');
+    const datetime = formatDateTime(new Date());
+    this.currentTime = datetime.time;
+    this.currentTimeMeridiem = datetime.timeMeridiem;
+    this.currentDay = datetime.day;
+    this.currentYear = datetime.year;
   }
 
   private async _updateAuthorization() {
@@ -1822,7 +1783,7 @@ export class MainViewModel extends Observable {
         // @ts-ignore
         if (value) value += '%';
         return {
-          day: this._format(new Date(e.date), 'dd'),
+          day: formatDateTime(new Date(e.date), 'EEE').formatted.slice(0, 2),
           value: value
         };
       });
@@ -1861,7 +1822,7 @@ export class MainViewModel extends Observable {
           }
         }
         return {
-          day: this._format(new Date(e.date), 'dd'),
+          day: formatDateTime(new Date(e.date), 'EEE').formatted.slice(0, 2),
           value: dist
         };
       });
@@ -2064,12 +2025,6 @@ export class MainViewModel extends Observable {
     }
     this._showingModal = false;
     this._scanningView = null;
-  }
-
-  private _format(d: Date, fmt: string) {
-    return format(d, fmt, {
-      locale: dateLocales[getDefaultLang()] || dateLocales['en']
-    });
   }
 
   private _checkPackageInstalled(packageName: string) {
@@ -2726,7 +2681,7 @@ export class MainViewModel extends Observable {
           totalDiff = SmartDrive.caseTicksToMiles(totalDiff);
         }
         // compute the date for the data
-        const date = this._format(new Date(e.date), 'YYYY/MM/DD');
+        const date = formatDateTime(new Date(e.date), 'yyyy/MM/dd').formatted;
         // now save the drive / total in this record
         data[date] = {
           drive: driveDiff,
