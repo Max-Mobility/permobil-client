@@ -65,26 +65,6 @@ import { updatesViewModel } from '../modals/updates/updates-page';
 const ambientTheme = require('../../scss/theme-ambient.scss');
 const defaultTheme = require('../../scss/theme-default.scss');
 
-const dateLocales = {
-  cs: require('date-fns/locale/cs'),
-  da: require('date-fns/locale/da'),
-  de: require('date-fns/locale/de'),
-  en: require('date-fns/locale/en'),
-  es: require('date-fns/locale/es'),
-  fi: require('date-fns/locale/fi'),
-  fr: require('date-fns/locale/fr'),
-  it: require('date-fns/locale/it'),
-  ja: require('date-fns/locale/ja'),
-  ko: require('date-fns/locale/ko'),
-  nb: require('date-fns/locale/nb'),
-  nl: require('date-fns/locale/nl'),
-  nn: require('date-fns/locale/nb'),
-  pl: require('date-fns/locale/pl'),
-  pt: require('date-fns/locale/pt'),
-  sv: require('date-fns/locale/sv'),
-  zh: require('date-fns/locale/zh_cn')
-};
-
 declare const com: any;
 
 export class MainViewModel extends Observable {

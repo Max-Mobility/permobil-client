@@ -20,20 +20,6 @@ let closeCallback;
 let page: Page;
 let errorRadListView: RadListView;
 let sqliteService: SqliteService;
-const dateLocales = {
-  da: require('date-fns/locale/da'),
-  de: require('date-fns/locale/de'),
-  en: require('date-fns/locale/en'),
-  es: require('date-fns/locale/es'),
-  fr: require('date-fns/locale/fr'),
-  it: require('date-fns/locale/it'),
-  ja: require('date-fns/locale/ja'),
-  ko: require('date-fns/locale/ko'),
-  nb: require('date-fns/locale/nb'),
-  nl: require('date-fns/locale/nl'),
-  nn: require('date-fns/locale/nb'),
-  zh: require('date-fns/locale/zh_cn')
-};
 
 let errorHistoryData;
 
