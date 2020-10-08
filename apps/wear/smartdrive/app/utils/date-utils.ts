@@ -7,7 +7,7 @@ export const is24HourFormat = () => {
     context
   );
   return _is24HourFormat;
-}
+};
 
 export const formatDateTime = (date: Date, format?: string, locale?: string) => {
   const _date = new java.util.Date(date.getTime());
@@ -45,4 +45,4 @@ export const formatDateTime = (date: Date, format?: string, locale?: string) => 
       new java.text.SimpleDateFormat(format, _locale).format(_date);
   }
   return datetime;
-}
+};
