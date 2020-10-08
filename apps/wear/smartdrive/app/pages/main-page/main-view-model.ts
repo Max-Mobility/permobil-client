@@ -1778,7 +1778,7 @@ export class MainViewModel extends Observable {
         // @ts-ignore
         if (value) value += '%';
         return {
-          day: formatDateTime(new Date(e.date), 'EEEEE').formatted,
+          day: formatDateTime(new Date(e.date), 'EEE').formatted.slice(0, 2),
           value: value
         };
       });
@@ -1817,7 +1817,7 @@ export class MainViewModel extends Observable {
           }
         }
         return {
-          day: formatDateTime(new Date(e.date), 'EEEEE').formatted,
+          day: formatDateTime(new Date(e.date), 'EEE').formatted.slice(0, 2),
           value: dist
         };
       });
