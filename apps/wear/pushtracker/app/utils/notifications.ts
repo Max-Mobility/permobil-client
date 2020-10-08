@@ -1,57 +1,124 @@
-import { Color } from '@nativescript/core';
+import { ApplicationSettings, Color } from '@nativescript/core';
 import { LocalNotifications } from '@nativescript/local-notifications';
-import { L, PushTrackerNotificationIDs } from '@permobil/nativescript';
+import { Log } from '@permobil/core';
+import { L } from '@permobil/nativescript';
+import { addDays } from 'date-fns';
 import { Sentry } from 'nativescript-sentry';
-import { Log } from '@permobil/core/src';
+import { NotificationKeys, PushTrackerNotificationIDs } from '../enums';
 
-export function scheduleRecurringNotifications() {
+export async function setupAllLocalNotifications() {
+  scheduleWheelchairMaintenance();
+  setupAddPtElement();
+}
+
+/**
+ * Sets up the wheelchair maintenance notification to fire ever 30 days
+ */
+async function scheduleWheelchairMaintenance() {
   try {
-    const addPtNotificationTime = new Date();
-    addPtNotificationTime.setDate(2);
-    addPtNotificationTime.setHours(12);
-    addPtNotificationTime.setMinutes(0);
-    addPtNotificationTime.setMilliseconds(0);
-    Log.D(
-      'addPtNotificationTime',
-      addPtNotificationTime,
-      addPtNotificationTime.toLocaleDateString()
-    );
+    // if we have already set these notifications then we're not going to do it again
+    if (
+      ApplicationSettings.getBoolean(NotificationKeys.WC_MAINTENANCE) === true
+    ) {
+      return;
+    }
 
-    const wcMaintenanceTime = new Date();
-    wcMaintenanceTime.setDate(5);
-    wcMaintenanceTime.setHours(12);
-    wcMaintenanceTime.setMinutes(0);
-    wcMaintenanceTime.setMilliseconds(0);
-    Log.D(
-      'wcMaintenanceTime',
-      wcMaintenanceTime,
-      wcMaintenanceTime.toLocaleDateString()
-    );
+    const color = new Color('#0067a6');
+    const at = new Date();
+    at.setHours(12);
+    at.setMinutes(0);
+    at.setMilliseconds(0);
+    Log.D('notificationTime', at);
 
-    LocalNotifications.schedule([
-      {
-        id: PushTrackerNotificationIDs.ADD_PT_AS_ELEMENT,
-        title: L('notifications.titles.add-pt-element'),
-        body: L('notifications.add-pt-element'),
-        color: new Color('#0067a6'),
-        icon: 'res://ic_omniwheel_white',
-        interval: 'week', // fires every week
-        channel: L('notifications.channels.smartdrive'),
-        at: addPtNotificationTime
-      },
+    const notifications = await LocalNotifications.schedule([
       {
         id: PushTrackerNotificationIDs.GENERAL_WC_MAINTENANCE_REMINDER,
         title: L('notifications.titles.wheelchair-maintenance'),
         body: L('notifications.wheelchair-maintenance'),
-        color: new Color('#0067a6'),
-        icon: 'res://ic_omniwheel_white',
-        interval: 'month', // fires every month
         channel: L('notifications.channels.maintenance'),
-        at: wcMaintenanceTime
+        icon: 'res://ic_omniwheel_white',
+        interval: 30, // fires every 30 days
+        color,
+        at
       }
     ]);
+
+    Log.D('Recurruing Notifications Scheduled', notifications);
+    // Save the boolean that we have setup these notifications so we do not continue to register them
+    ApplicationSettings.setBoolean(NotificationKeys.WC_MAINTENANCE, true);
   } catch (error) {
     Sentry.captureException(error);
-    Log.E('Error setting up recurring notifications for PT.W', error);
+    Log.E('Error setting up recurring notifications for SD.W', error);
   }
+}
+
+/**
+ * Sets up the add pushtracker element notifications to fire 7, 14, 21 days from now.
+ */
+async function setupAddPtElement() {
+  try {
+    // if we have already set these notifications then we're not going to do it again
+    if (
+      ApplicationSettings.getBoolean(NotificationKeys.ADD_PT_ELEMENT) === true
+    ) {
+      return;
+    }
+
+    const title = L('notifications.titles.add-pt-element');
+    const body = L('notifications.add-pt-element');
+    const channel = L('notifications.channels.smartdrive');
+    const color = new Color('#0067a6');
+    const icon = 'res://ic_omniwheel_white';
+
+    const notifications = await LocalNotifications.schedule([
+      {
+        id: PushTrackerNotificationIDs.ADD_PT_AS_ELEMENT + 3001,
+        title,
+        body,
+        channel,
+        icon,
+        color,
+        at: addDays(new Date().setTime(12), 7)
+      },
+      {
+        id: PushTrackerNotificationIDs.ADD_PT_AS_ELEMENT + 4001,
+        title,
+        body,
+        channel,
+        icon,
+        color,
+        at: addDays(new Date().setTime(12), 14)
+      },
+      {
+        id: PushTrackerNotificationIDs.ADD_PT_AS_ELEMENT + 5001,
+        title,
+        body,
+        channel,
+        icon,
+        color,
+        at: addDays(new Date().setTime(12), 21)
+      }
+    ]);
+
+    Log.D('Add PT Element Notifications Scheduled', notifications);
+    // Save the boolean that we have setup these notifications so we do not continue to register them
+    ApplicationSettings.setBoolean(NotificationKeys.ADD_PT_ELEMENT, true);
+  } catch (error) {
+    Sentry.captureException(error);
+    Log.E('Error setting up recurring notifications for SD.W', error);
+  }
+}
+
+export function checkRecordBased() {
+  // need to somehow observe the data and trigger the notification when event happens
+  LocalNotifications.schedule([
+    {
+      id: PushTrackerNotificationIDs.NEW_COAST_TIME_RECORD,
+      title: L('notifications.titles.new-coast-record'),
+      body: L('notifications.new-coast-record'),
+      channel: L('notifications.channels.personal-record'),
+      icon: 'res://ic_omniwheel_white',
+      color: new Color('#0067a6')
+    }
+  ]);
 }
