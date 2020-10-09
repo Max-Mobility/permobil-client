@@ -2663,32 +2663,34 @@ export class MainViewModel extends Observable {
       SmartDriveData.Info.IdName
     );
     const hasEnoughData = (numDays >= 5);
-    // get the top two records ordered DESCENDING by CoastDistance
-    const records = await this._sqliteService.getAllColumnDifferences({
-      tableName: SmartDriveData.Info.TableName,
-      columnA: SmartDriveData.Info.CoastDistanceName,
-      columnB: SmartDriveData.Info.CoastDistanceStartName,
-      limit: 2,
-      minimum: SmartDrive.milesToCaseTicks(0.5),
-      ascending: false
-    });
-    // if we have records which have gone at least 0.5 miles
-    if (records && records.length) {
-      const recordDay = records[0][SmartDriveData.Info.DateName];
-      const lastRecordDay = ApplicationSettings.getString(
-        DataKeys.DAILY_DISTANCE_RECORD_DAY
-      );
-      const haveNotifiedThem = lastRecordDay && !isToday(new Date(lastRecordDay));
-      if (isToday(new Date(recordDay)) && !haveNotifiedThem) {
-        // TODO: notify them - their record is today and they've gone
-        // at least 0.5 miles!
-
-        // store the date that we've notified them today so that we
-        // don't notify them multiple times in the same day
-        ApplicationSettings.setString(
-          DataKeys.DAILY_DISTANCE_RECORD_DAY,
-          recordDay
+    if (hasEnoughData) {
+      // get the top two records ordered DESCENDING by CoastDistance
+      const records = await this._sqliteService.getAllColumnDifferences({
+        tableName: SmartDriveData.Info.TableName,
+        columnA: SmartDriveData.Info.CoastDistanceName,
+        columnB: SmartDriveData.Info.CoastDistanceStartName,
+        limit: 2,
+        minimum: SmartDrive.milesToCaseTicks(0.5),
+        ascending: false
+      });
+      // if we have records which have gone at least 0.5 miles
+      if (records && records.length) {
+        const recordDay = records[0][SmartDriveData.Info.DateName];
+        const lastRecordDay = ApplicationSettings.getString(
+          DataKeys.DAILY_DISTANCE_RECORD_DAY
         );
+        const haveNotifiedThem = lastRecordDay && !isToday(new Date(lastRecordDay));
+        if (isToday(new Date(recordDay)) && !haveNotifiedThem) {
+          // TODO: notify them - their record is today and they've gone
+          // at least 0.5 miles!
+
+          // store the date that we've notified them today so that we
+          // don't notify them multiple times in the same day
+          ApplicationSettings.setString(
+            DataKeys.DAILY_DISTANCE_RECORD_DAY,
+            recordDay
+          );
+        }
       }
     }
   }
