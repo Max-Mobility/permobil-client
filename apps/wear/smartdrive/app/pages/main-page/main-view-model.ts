@@ -717,6 +717,10 @@ export class MainViewModel extends Observable {
     // update with the latest data from the smartdrive
     this._updateChartData();
 
+    // now that we've updated the chart data and such - check the
+    // activity for notifications
+    this._updateNotifications();
+
     return Promise.resolve();
   }
 
@@ -2634,6 +2638,75 @@ export class MainViewModel extends Observable {
       }
     }
     return this._todaysUsage;
+  }
+
+  private _getSmartDriveTotalMiles() {
+    let totalMiles = 0;
+    if (this.smartDrive) {
+      totalMiles = SmartDrive.caseTicksToMiles(this.smartDrive.coastDistance);
+    }
+    return totalMiles;
+  }
+
+  private async _updateNotifications() {
+    await this._checkDailyDistanceRecord();
+    await this._checkTotalDistanceRecord();
+  }
+
+  private async _checkDailyDistanceRecord() {
+    // if the user has at least a week of records and they have gone
+    // at least 0.5 mi or 0.5 km (depending on their units) today,
+    // then they get a notification
+    // determine if they have enough records
+    const numDays = await this._sqliteService.getNumRows(
+      SmartDriveData.Info.TableName,
+      SmartDriveData.Info.IdName
+    );
+    const hasEnoughData = (numDays >= 5);
+    // get the top two records ordered DESCENDING by CoastDistance
+    const records = await this._sqliteService.getAllColumnDifferences({
+      tableName: SmartDriveData.Info.TableName,
+      columnA: SmartDriveData.Info.CoastDistanceName,
+      columnB: SmartDriveData.Info.CoastDistanceStartName,
+      limit: 2,
+      minimum: SmartDrive.milesToCaseTicks(0.5),
+      ascending: false
+    });
+    // if we have records which have gone at least 0.5 miles
+    if (records && records.length) {
+      const recordDay = records[0][SmartDriveData.Info.DateName];
+      const lastRecordDay = ApplicationSettings.getString(
+        DataKeys.DAILY_DISTANCE_RECORD_DAY
+      );
+      const haveNotifiedThem = lastRecordDay && !isToday(new Date(lastRecordDay));
+      if (isToday(new Date(recordDay)) && !haveNotifiedThem) {
+        // TODO: notify them - their record is today and they've gone
+        // at least 0.5 miles!
+
+        // store the date that we've notified them today so that we
+        // don't notify them multiple times in the same day
+        ApplicationSettings.setString(
+          DataKeys.DAILY_DISTANCE_RECORD_DAY,
+          recordDay
+        );
+      }
+    }
+  }
+
+  private async _checkTotalDistanceRecord() {
+    // each time the user goes over 50 mi/km increments (e.g. @ 50,
+    // 100, 150, etc.) they get a notification
+    const todaysTotalMiles = this._getSmartDriveTotalMiles();
+    // get the current record value (default 0) and add 50 units to it
+    const currentRecord = ApplicationSettings.getNumber(DataKeys.TOTAL_DISTANCE_RECORD, 0) + 50.0;
+    // if they're over that record, then we notify them and store the
+    // record we're at
+    const hasBeatenRecord = (todaysTotalMiles > currentRecord);
+    if (hasBeatenRecord) {
+      // store the new record they will have to beat
+      ApplicationSettings.setNumber(DataKeys.TOTAL_DISTANCE_RECORD, currentRecord);
+      // TODO: send the notification
+    }
   }
 
   private async _updateTodaysUsageInfo(updates: any) {
