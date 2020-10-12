@@ -337,7 +337,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-          }`,
+            }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -2054,7 +2054,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     Application.android.foregroundActivity.startActivity(intent);
@@ -2119,7 +2119,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     Application.android.foregroundActivity.startActivity(intent);
@@ -2710,23 +2710,62 @@ export class MainViewModel extends Observable {
 
   private async _checkTotalDistanceRecord() {
     // each time the user goes over 50 mi/km increments (e.g. @ 50,
-    // 100, 150, etc.) they get a notification
+    // 100, 150, etc.) they get a notification. we store the data as
+    // miles, so we'll want to represent the jumps as 50 km ->
+    // converted to miles
+    const incrementMiles = 50.0;
+    const incrementKilometers = incrementMiles / 1.609;
+    let increment = incrementMiles;
+    if (this._settingsService.settings.units === 'Metric') {
+      increment = incrementKilometers;
+    }
     const todaysTotalMiles = this._getSmartDriveTotalMiles();
-    // get the current record value (default 0) and add 50 units to it
-    const currentRecord =
-      ApplicationSettings.getNumber(DataKeys.TOTAL_DISTANCE_RECORD, 0) + 50.0;
+    const todaysTotalKilometers = todaysTotalMiles * 1.609;
+    // get the current record value (default -1, always in miles) and
+    // add 50 units to it (50 miles, 50/1.609 km)
+    let currentRecord =
+      ApplicationSettings.getNumber(DataKeys.TOTAL_DISTANCE_RECORD, -1);
+    if (currentRecord === -1) {
+      // there was no record saved, so we have a few options:
+      if (todaysTotalMiles > increment) {
+        // 1. They have been using the SD for a while so we should
+        // give the first notification of their most recent record -
+        // which will store a record so that we don't come down this
+        // branch again. We compute the record prior to the closest,
+        // since after this conditional block, it will be incremented
+        // again.
+        currentRecord = todaysTotalMiles - (todaysTotalMiles % increment) - increment;
+      } else {
+        // 2. they have not used the SD enough to have passed their
+        // first record so they are starting out at 0 miles
+        // effectively - this means they will not get a notification,
+        // so we need to save 0 here so that we don't come down this
+        // branch again
+        currentRecord = 0;
+        ApplicationSettings.setNumber(
+          DataKeys.TOTAL_DISTANCE_RECORD,
+          0
+        );
+      }
+    }
+    const recordToBeatMiles = currentRecord + increment;
+    const recordToBeatKilometers = recordToBeatMiles * 1.609;
     // if they're over that record, then we notify them and store the
     // record we're at
-    const hasBeatenRecord = todaysTotalMiles > currentRecord;
+    const hasBeatenRecord = todaysTotalMiles > recordToBeatMiles;
     if (hasBeatenRecord) {
-      // store the new record they will have to beat
+      // store the new record they will have to beat (always in miles)
       ApplicationSettings.setNumber(
         DataKeys.TOTAL_DISTANCE_RECORD,
-        currentRecord
+        recordToBeatMiles
       );
       Log.D('NEW ODOMETRY RECORD: ', todaysTotalMiles);
-      // TODO: send the notification
-      odometerRecordNotification(todaysTotalMiles);
+      // send the notification
+      let distanceText = `${recordToBeatMiles.toFixed(0)} ${this.distanceUnits}`;
+      if (this._settingsService.settings.units === 'Metric') {
+        distanceText = `${recordToBeatKilometers.toFixed(0)} ${this.distanceUnits}`;
+      }
+      odometerRecordNotification(distanceText);
     }
   }
 

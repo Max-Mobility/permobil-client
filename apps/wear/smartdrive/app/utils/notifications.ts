@@ -443,13 +443,13 @@ export async function dailyDistanceNotification() {
   }
 }
 
-export async function odometerRecordNotification(record: number) {
+export async function odometerRecordNotification(recordText: string) {
   try {
     const notifications = await LocalNotifications.schedule([
       {
         id: SmartDriveNotificationIDs.ODOMETER_RECORDS,
         title: L('notifications.titles.odometer-records'),
-        body: `${L('notifications.odometer-records-part-one')} ${record} ${L(
+        body: `${L('notifications.odometer-records-part-one')} ${recordText} ${L(
           'notifications.odometer-records-part-two'
         )}`,
         channel: L('notifications.channels.personal-record'),
