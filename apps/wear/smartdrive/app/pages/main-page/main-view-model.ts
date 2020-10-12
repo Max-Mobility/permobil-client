@@ -2666,13 +2666,17 @@ export class MainViewModel extends Observable {
     );
     const hasEnoughData = numDays >= 5;
     if (hasEnoughData) {
+      let numCaseTicksRequired = SmartDrive.milesToCaseTicks(0.5);
+      if (this._settingsService.settings.units === 'Metric') {
+        numCaseTicksRequired = SmartDrive.milesToCaseTicks(0.5 / 1.609);
+      }
       // get the top two records ordered DESCENDING by CoastDistance
       let records = await this._sqliteService.getAllColumnDifferences({
         tableName: SmartDriveData.Info.TableName,
         columnA: SmartDriveData.Info.CoastDistanceName,
         columnB: SmartDriveData.Info.CoastDistanceStartName,
         limit: 2,
-        minimum: SmartDrive.milesToCaseTicks(0.5),
+        minimum: numCaseTicksRequired,
         ascending: false
       });
       // if we have records which have gone at least 0.5 miles
