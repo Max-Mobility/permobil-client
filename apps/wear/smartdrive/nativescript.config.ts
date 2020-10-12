@@ -2,7 +2,7 @@ import { NativeScriptConfig } from '@nativescript/core';
 
 export default {
   id: 'com.permobil.smartdrive.wearos',
-  appResourcesPath: 'app/App_Resources',
+  appResourcesPath: 'App_Resources',
   android: {
     v8Flags: '--nolazy --expose_gc',
     markingMode: 'none',

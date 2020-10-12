@@ -22,10 +22,6 @@ module.exports = env => {
   const appComponents = env.appComponents || [];
   appComponents.push(
     ...['@nativescript/core/ui/frame', '@nativescript/core/ui/frame/activity'],
-    // resolve(
-    //   __dirname,
-    //   'node_modules/@maxmobility/nativescript-wear-os-comms/android/ResultReceiver'
-    // ),
     resolve(
       __dirname,
       'node_modules/nativescript-bluetooth/android/TNS_AdvertiseCallback'
@@ -173,7 +169,7 @@ module.exports = env => {
 
   nsWebpack.processAppComponents(appComponents, platform);
   const config = {
-    mode: production ? 'production' : 'development',
+    mode: 'development',
     context: appFullPath,
     externals,
     watchOptions: {
@@ -354,6 +350,11 @@ module.exports = env => {
         patterns: [
           {
             from: 'assets/**',
+            noErrorOnMissing: true,
+            globOptions: { dot: false, ...copyIgnore }
+          },
+          {
+            from: 'assets/firmwares/**',
             noErrorOnMissing: true,
             globOptions: { dot: false, ...copyIgnore }
           },
