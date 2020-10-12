@@ -52,12 +52,12 @@ export function getDevice(dev: android.bluetooth.BluetoothDevice): Device {
   try {
     address = dev.getAddress();
   } catch (err) {
-    console.error('bluetooth::getdevice getAddress error', err);
+    console.log('bluetooth::getdevice getAddress error', err);
   }
   try {
     name = dev.getName();
   } catch (err) {
-    console.error('bluetooth::getdevice getName error', err);
+    console.log('bluetooth::getdevice getName error', err);
   }
   try {
     const us = dev.getUuids();
@@ -67,7 +67,7 @@ export function getDevice(dev: android.bluetooth.BluetoothDevice): Device {
       }
     }
   } catch (err) {
-    console.error('bluetooth::getdevice getUuids error', err);
+    console.log('bluetooth::getdevice getUuids error', err);
   }
   return {
     device: dev,
@@ -229,11 +229,6 @@ export class Bluetooth extends BluetoothCommon {
         const onBluetoothEnableResult = (
           args: AndroidActivityResultEventData
         ) => {
-          console.info(
-            'Bluetooth.onBluetoothEnableResult ---',
-            `requestCode: ${args.requestCode}, result: ${args.resultCode}`
-          );
-
           if (
             args.requestCode === ACTION_REQUEST_ENABLE_BLUETOOTH_REQUEST_CODE
           ) {
@@ -252,7 +247,6 @@ export class Bluetooth extends BluetoothCommon {
                 resolve(false);
               }
             } catch (ex) {
-              console.error(ex);
               Application.android.off(
                 AndroidApplication.activityResultEvent,
                 onBluetoothEnableResult
@@ -443,9 +437,6 @@ export class Bluetooth extends BluetoothCommon {
           arg.skipPermissionCheck !== true &&
           !this.coarseLocationPermissionGranted()
         ) {
-          console.warn(
-            'Bluetooth.startScanning ---- Coarse Location Permission not granted on Android device, will request permission.'
-          );
           // request the permission and on resolve we'll recall this method with the same args provided
           this.requestCoarseLocationPermission().then(() => {
             this.startScanning(arg);
@@ -496,10 +487,6 @@ export class Bluetooth extends BluetoothCommon {
         if (bluetoothDevice === null) {
           reject('Could not find peripheral with UUID ' + arg.UUID);
         } else {
-          console.info(
-            `Bluetooth.connect ---- Connecting to peripheral with UUID: ${arg.UUID}`
-          );
-
           let gatt;
 
           // if less than Android23(Marshmallow)
@@ -542,7 +529,6 @@ export class Bluetooth extends BluetoothCommon {
           return;
         }
         const connection = this.connections[arg.UUID];
-        console.info(`Bluetooth.disconnect ---- connection: ${connection}`);
         if (!connection) {
           reject(`Peripheral was not connected`);
           return;
@@ -565,8 +551,6 @@ export class Bluetooth extends BluetoothCommon {
           return;
         }
         const gatt = stateObject.device;
-
-        console.info(`Bluetooth.readRSSI ---- gatt: ${gatt}`);
 
         stateObject.onRssiReadPromise = resolve;
         if (!gatt.readRemoteRssi()) {
@@ -595,9 +579,6 @@ export class Bluetooth extends BluetoothCommon {
         return false;
       }
       const gatt = stateObject.device;
-
-      console.info(`Bluetooth.requestConnectionPriority ---- gatt: ${gatt}`);
-
       return gatt.requestConnectionPriority(priority);
     } catch (ex) {
       return false;
@@ -614,23 +595,13 @@ export class Bluetooth extends BluetoothCommon {
         }
 
         const gatt = wrapper.gatt;
-        console.info(`Bluetooth.read ---- gatt: ${gatt}`);
         const bluetoothGattService = wrapper.bluetoothGattService;
-        console.info(
-          `Bluetooth.read ---- bluetoothGattService: ${bluetoothGattService}`
-        );
         const characteristicUUID = this.stringToUuid(arg.characteristicUUID);
-        console.info(
-          `Bluetooth.read ---- characteristicUUID: ${characteristicUUID}`
-        );
 
         const bluetoothGattCharacteristic = this._findCharacteristicOfType(
           bluetoothGattService,
           characteristicUUID,
           android.bluetooth.BluetoothGattCharacteristic.PROPERTY_READ
-        );
-        console.info(
-          `Bluetooth.read ---- bluetoothGattCharacteristic: ${bluetoothGattCharacteristic}`
         );
 
         if (!bluetoothGattCharacteristic) {
@@ -659,7 +630,6 @@ export class Bluetooth extends BluetoothCommon {
         this.connections[arg.peripheralUUID] &&
         this.connections[arg.peripheralUUID].isWriting
       ) {
-        console.error('Bluetooth.write ---- called while already writing');
         reject('calling write while already isWriting!');
         return;
       }
@@ -681,7 +651,6 @@ export class Bluetooth extends BluetoothCommon {
           this.stringToUuid(arg.characteristicUUID),
           android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE
         );
-        console.info(`Bluetooth.write ---- characteristic: ${characteristic}`);
 
         if (!characteristic) {
           reject(
@@ -734,9 +703,7 @@ export class Bluetooth extends BluetoothCommon {
           this.stringToUuid(arg.characteristicUUID),
           android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE
         );
-        console.info(
-          `Bluetooth.writeWithoutResponse ---- characteristic: ${characteristic}`
-        );
+
         if (!characteristic) {
           reject(
             `Could not find characteristic with UUID ${arg.characteristicUUID} on service with UUID ${arg.serviceUUID} on peripheral with UUID ${arg.peripheralUUID}`
@@ -745,9 +712,7 @@ export class Bluetooth extends BluetoothCommon {
         }
 
         const val = this.encodeValue(arg.value);
-        console.info(
-          `Bluetooth.writeWithoutResponse ---- encodedValue: ${val}`
-        );
+
         if (!val) {
           reject(`Invalid value: ${arg.value}`);
           return;
@@ -786,9 +751,7 @@ export class Bluetooth extends BluetoothCommon {
           bluetoothGattService,
           characteristicUUID
         );
-        console.info(
-          `Bluetooth.startNotifying ---- characteristic: ${characteristic}`
-        );
+
         if (!characteristic) {
           reject(
             `Could not find characteristic with UUID ${arg.characteristicUUID} on service with UUID ${arg.serviceUUID} on peripheral with UUID ${arg.peripheralUUID}`
@@ -813,9 +776,7 @@ export class Bluetooth extends BluetoothCommon {
             android.bluetooth.BluetoothGattDescriptor.PERMISSION_WRITE
           );
           characteristic.addDescriptor(bluetoothGattDescriptor);
-          console.info(
-            `Bluetooth.startNotifying ---- descriptor: ${bluetoothGattDescriptor}`
-          );
+
           // Any creation error will trigger the global catch. Ok.
         }
 
@@ -846,13 +807,7 @@ export class Bluetooth extends BluetoothCommon {
         const stateObject = this.connections[arg.peripheralUUID];
         stateObject.onDescriptorWritePromise = resolve;
         if (gatt.writeDescriptor(bluetoothGattDescriptor)) {
-          const cb =
-            arg.onNotify ||
-            function (result) {
-              console.warn(
-                `No 'onNotify' callback function specified for 'startNotifying'`
-              );
-            };
+          const cb = arg.onNotify || function (result) {};
           stateObject.onNotifyCallback = cb;
         } else {
           reject(
@@ -882,9 +837,6 @@ export class Bluetooth extends BluetoothCommon {
         const characteristic = this._findNotifyCharacteristic(
           gattService,
           characteristicUUID
-        );
-        console.info(
-          `Bluetooth.stopNotifying ---- service characteristic: ${characteristic}`
         );
 
         if (!characteristic) {
@@ -922,10 +874,9 @@ export class Bluetooth extends BluetoothCommon {
       const tmp = Array.create('java.lang.Class', 0);
       m = m.getMethod('removeBond', tmp);
       const removed = m.invoke(device, null);
-      console.info('Removed bond');
       return removed;
     } catch (ex) {
-      console.error(`Bluetooth.removeBond ---- error: ${ex}`);
+      console.log(`Bluetooth.removeBond ---- error: ${ex}`);
     }
   }
 
@@ -940,7 +891,7 @@ export class Bluetooth extends BluetoothCommon {
       const worked = m.invoke(device, null);
       return worked;
     } catch (ex) {
-      console.error(`Bluetooth.fetchUuidsWithSdp ---- error: ${ex}`);
+      console.log(`Bluetooth.fetchUuidsWithSdp ---- error: ${ex}`);
     }
   }
 
@@ -1121,15 +1072,10 @@ export class Bluetooth extends BluetoothCommon {
       const pUuid = this.stringToUuid(uuidString);
       const service = this.gattServer.getService(pUuid);
       if (service) {
-        console.info(
-          `Bluetooth.getServerService ---- getService: ${service} - ${service.getUuid()}`
-        );
+        return service;
       } else {
-        console.warn(
-          `Bluetooth.getServerService ---- getService: ${uuidString} - not found!`
-        );
+        return null;
       }
-      return service;
     }
     return null;
   }
@@ -1246,7 +1192,6 @@ export class Bluetooth extends BluetoothCommon {
         }
 
         const adv = this.getAdvertiser();
-        console.info(`Bluetooth.startAdvertising ---- advertiser: ${adv}`);
 
         if (adv === null || !this.adapter.isMultipleAdvertisementSupported()) {
           reject(
@@ -1302,7 +1247,6 @@ export class Bluetooth extends BluetoothCommon {
       }
 
       const adv = this.getAdvertiser();
-      console.info(`Bluetooth.stopAdvertising ---- advertiser: ${adv}`);
 
       if (adv === null || !this.adapter.isMultipleAdvertisementSupported()) {
         reject(
@@ -1310,9 +1254,6 @@ export class Bluetooth extends BluetoothCommon {
         );
         return;
       } else {
-        console.info(
-          'Bluetooth.stopAdvertising ---- bluetooth stopping advertising!'
-        );
         adv.stopAdvertising(this.advertiseCallback);
         resolve();
       }
@@ -1333,21 +1274,15 @@ export class Bluetooth extends BluetoothCommon {
   gattDisconnect(gatt: android.bluetooth.BluetoothGatt) {
     if (gatt !== null) {
       const device = gatt.getDevice();
-      console.info(`Bluetooth.gattDisconnect ---- device: ${device}`);
       const stateObject = this.connections[device.getAddress()];
       if (stateObject && stateObject.onDisconnected) {
         stateObject.onDisconnected({
           UUID: device.getAddress(),
           name: device.getName()
         });
-      } else {
-        console.info(
-          'Bluetooth.gattDisconnect ---- no disconnect callback found'
-        );
       }
       this.connections[device.getAddress()] = null;
       // Close this Bluetooth GATT client.
-      console.info('Bluetooth.gattDisconnect ---- Closing GATT client');
       gatt.disconnect();
       gatt.close();
     }

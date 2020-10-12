@@ -34,7 +34,7 @@
     "@bradmartin/nativescript-urlhandler": "~2.0.1",
     "lodash": "~4.17.20",
     "nativescript-barcodescanner": "~4.0.1",
-    "nativescript-bluetooth": "file:../../../forked-plugins/nativescript-bluetooth-2.0.0.tgz",
+    "nativescript-bluetooth": "file:../../../forked-plugins/nativescript-bluetooth-2.0.1.tgz",
     "nativescript-download-progress": "~1.4.0",
     "nativescript-insomnia": "~2.0.0",
     "nativescript-localstorage": "file:../../../forked-plugins/nativescript-localstorage-2.0.1.tgz",

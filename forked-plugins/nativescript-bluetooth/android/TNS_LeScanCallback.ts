@@ -25,10 +25,6 @@ function setupScanCallback() {
           rssi: number,
           scanRecord
         ) {
-          console.info(
-            `---- TNS_LeScanCallback.onLeScan ---- device: ${device}, rssi: ${rssi}, scanRecord: ${scanRecord}`
-          );
-
           const stateObject = this._owner.get().connections[
             device.getAddress()
           ];
@@ -42,26 +38,16 @@ function setupScanCallback() {
             const manufacturerDataRaw = this._owner
               .get()
               .extractManufacturerRawData(scanRecord);
-            console.info(
-              `---- TNS_LeScanCallback.onLeScan ---- manufacturerDataRaw: ${manufacturerDataRaw}`
-            );
+
             if (manufacturerDataRaw) {
               manufacturerId = new DataView(manufacturerDataRaw, 0).getUint16(
                 0,
                 true
               );
-              console.info(
-                `---- TNS_LeScanCallback.onLeScan ---- manufacturerId: ${manufacturerId}`
-              );
+
               manufacturerData = manufacturerDataRaw.slice(2);
-              console.info(
-                `---- TNS_LeScanCallback.onLeScan ---- manufacturerData: ${manufacturerData}`
-              );
             }
 
-            console.info(
-              `---- TNS_LeScanCallback.scanCallback ---- payload: ${device.getAddress()}::${device.getName()}`
-            );
             const payload = {
               type: 'scanResult', // TODO or use different callback functions?
               device: device,
