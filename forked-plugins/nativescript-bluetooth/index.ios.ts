@@ -2,16 +2,16 @@
 
 import { Device as nsDevice, Dialogs } from '@nativescript/core';
 import {
-    BluetoothCommon,
-    ConnectionState,
-    ConnectOptions,
-    Device,
-    MakeCharacteristicOptions,
-    MakeServiceOptions,
-    StartAdvertisingOptions,
-    StartNotifyingOptions,
-    StartScanningOptions,
-    StopNotifyingOptions
+  BluetoothCommon,
+  ConnectionState,
+  ConnectOptions,
+  Device,
+  MakeCharacteristicOptions,
+  MakeServiceOptions,
+  StartAdvertisingOptions,
+  StartNotifyingOptions,
+  StartScanningOptions,
+  StopNotifyingOptions
 } from './common';
 
 declare var NSMakeRange; // not recognized by platform-declarations
@@ -169,9 +169,6 @@ export class Bluetooth extends BluetoothCommon {
     } else if (state === CBPeripheralState.Disconnected) {
       return 'disconnected';
     } else {
-      console.warn(
-        `Bluetooth._getState ---- Unexpected state, returning 'disconnected' for state of ${state}`
-      );
       return 'disconnected';
     }
   }
@@ -191,9 +188,6 @@ export class Bluetooth extends BluetoothCommon {
     return new Promise((resolve, reject) => {
       try {
         if (!this._isEnabled()) {
-          console.warn(
-            `Bluetooth.startScanning ---- Bluetooth is not enabled.`
-          );
           reject('Bluetooth is not enabled.');
           return;
         }
@@ -479,7 +473,6 @@ export class Bluetooth extends BluetoothCommon {
         // due to the peripheralManager.state being unknown outside of this timeout
         setTimeout(() => {
           this._peripheralManager.startAdvertising(advertisement);
-          console.info('Bluetooth.startAdvertising ---- started advertising');
           resolve();
         }, 750);
       } catch (error) {
@@ -513,9 +506,6 @@ export class Bluetooth extends BluetoothCommon {
         const newPM = CBPeripheralManager.new().initWithDelegateQueue(
           null,
           null
-        );
-        console.info(
-          `Bluetooth.isPeripheralModeSupported ---- new CBPeripheralManager ${newPM}`
         );
         if (!newPM) {
           reject(false);
@@ -574,16 +564,11 @@ export class Bluetooth extends BluetoothCommon {
           reject('No UUID was passed');
           return;
         }
-        console.info(`Bluetooth.connect ---- ${args.UUID}`);
         const peripheral = this.findPeripheral(args.UUID);
-        console.info(`Bluetooth.connect ---- peripheral found: ${peripheral}`);
 
         if (!peripheral) {
           reject(`Could not find peripheral with UUID: ${args.UUID}`);
         } else {
-          console.warn(
-            `Bluetooth.connect ---- Connecting to peripheral with UUID: ${args.UUID}`
-          );
           this._connectCallbacks[args.UUID] = args.onConnected;
           this._disconnectCallbacks[args.UUID] = args.onDisconnected;
           this._centralManager.connectPeripheralOptions(peripheral, null);
@@ -610,9 +595,6 @@ export class Bluetooth extends BluetoothCommon {
         if (!peripheral) {
           reject('Could not find peripheral with UUID ' + arg.UUID);
         } else {
-          console.info(
-            `Bluetooth.disconnect ---- Disconnecting peripheral with UUID ${arg.UUID}`
-          );
           // no need to send an error when already disconnected, but it's wise to check it
           if (peripheral.state !== CBPeripheralState.Disconnected) {
             this._centralManager.cancelPeripheralConnection(peripheral);
@@ -642,9 +624,6 @@ export class Bluetooth extends BluetoothCommon {
         if (peripheral === null) {
           reject('Could not find peripheral with UUID ' + arg.UUID);
         } else {
-          console.info(
-            `Bluetooth.isConnected ---- checking connection with peripheral UUID: ${arg.UUID}`
-          );
           resolve(peripheral.state === CBPeripheralState.Connected);
         }
       } catch (ex) {
@@ -791,12 +770,6 @@ export class Bluetooth extends BluetoothCommon {
         }
 
         const valueEncoded = this._encodeValue(arg.value);
-
-        console.info(
-          'Bluetooth.writeWithoutResponse ---- Attempting to write (encoded): ' +
-            valueEncoded
-        );
-
         wrapper.peripheral.writeValueForCharacteristicType(
           valueEncoded,
           wrapper.characteristic,
@@ -824,13 +797,7 @@ export class Bluetooth extends BluetoothCommon {
           return;
         }
 
-        const cb =
-          args.onNotify ||
-          function (result) {
-            console.info(
-              `Bluetooth.startNotifying ---- No 'onNotify' callback function specified for 'startNotifying()'`
-            );
-          };
+        const cb = args.onNotify || function (result) {};
 
         // TODO we could (should?) make this characteristic-specific
         (wrapper.peripheral
@@ -908,9 +875,6 @@ export class Bluetooth extends BluetoothCommon {
       const service = peripheral.services.objectAtIndex(i);
       // TODO this may need a different compare, see Cordova plugin's findServiceFromUUID function
       if (UUID.UUIDString === service.UUID.UUIDString) {
-        console.info(
-          `Bluetooth._findService ---- found service with UUID:  ${service.UUID}`
-        );
         return service;
       }
     }
@@ -919,17 +883,11 @@ export class Bluetooth extends BluetoothCommon {
   }
 
   private _findCharacteristic(UUID, service, property) {
-    console.info(
-      `Bluetooth._findCharacteristic ---- UUID: ${UUID}, service: ${service}, characteristics: ${service.characteristics}`
-    );
     for (let i = 0; i < service.characteristics.count; i++) {
       const characteristic = service.characteristics.objectAtIndex(i);
       if (UUID.UUIDString === characteristic.UUID.UUIDString) {
         if (property && characteristic.properties) {
           if (property === property) {
-            console.info(
-              `Bluetooth._findCharacteristic ---- characteristic.found: ${characteristic.UUID}`
-            );
             return characteristic;
           }
         } else {
@@ -938,7 +896,6 @@ export class Bluetooth extends BluetoothCommon {
       }
     }
     // characteristic not found on this service
-    console.warn('Bluetooth._findCharacteristic ---- characteristic NOT found');
     return null;
   }
 
@@ -1124,11 +1081,7 @@ class TNS_CBPeripheralDelegate
     peripheral: CBPeripheral,
     RSSI: number,
     error: NSError
-  ) {
-    console.error(
-      `CBPeripheralDelegateImpl.peripheralDidReadRSSIError ---- peripheral: ${peripheral}, rssi: ${RSSI}, error: ${error}`
-    );
-  }
+  ) {}
 
   /**
    * Invoked when you discover the peripheral’s available services.
@@ -1169,11 +1122,7 @@ class TNS_CBPeripheralDelegate
     peripheral: CBPeripheral,
     service: CBService,
     error?: NSError
-  ) {
-    console.error(
-      `CBPeripheralDelegateImpl.peripheralDidDiscoverIncludedServicesForServiceError ---- peripheral: ${peripheral}, service: ${service}, error: ${error}`
-    );
-  }
+  ) {}
 
   /**
    * Invoked when you discover the characteristics of a specified service.
@@ -1276,17 +1225,11 @@ class TNS_CBPeripheralDelegate
     error?: NSError
   ) {
     if (!characteristic) {
-      console.warn(
-        `CBPeripheralDelegateImpl.peripheralDidUpdateValueForCharacteristicError ---- No CBCharacteristic.`
-      );
       return;
     }
 
     if (error !== null) {
       // TODO handle.. pass in sep callback?
-      console.error(
-        `CBPeripheralDelegateImpl.peripheralDidUpdateValueForCharacteristicError ---- ${error}`
-      );
       return;
     }
 
@@ -1300,14 +1243,10 @@ class TNS_CBPeripheralDelegate
     if (result.type === 'read') {
       if (this._onReadPromise) {
         this._onReadPromise(result);
-      } else {
-        console.warn('No _onReadPromise found!');
       }
     } else {
       if (this._onNotifyCallback) {
         this._onNotifyCallback(result);
-      } else {
-        console.warn('----- CALLBACK IS GONE -----');
       }
     }
   }
@@ -1319,11 +1258,7 @@ class TNS_CBPeripheralDelegate
     peripheral: CBPeripheral,
     descriptor: CBDescriptor,
     error?: NSError
-  ) {
-    console.error(
-      `CBPeripheralDelegateImpl.peripheralDidUpdateValueForDescriptorError ---- peripheral: ${peripheral}, descriptor: ${descriptor}, error: ${error}`
-    );
-  }
+  ) {}
 
   /**
    * Invoked when you write data to a characteristic’s value.
@@ -1333,9 +1268,6 @@ class TNS_CBPeripheralDelegate
     characteristic: CBCharacteristic,
     error?: NSError
   ) {
-    console.error(
-      `CBPeripheralDelegateImpl.peripheralDidWriteValueForCharacteristicError ---- peripheral: ${peripheral}, characteristic: ${characteristic}, error: ${error}`
-    );
     if (this._onWriteTimeout) {
       clearTimeout(this._onWriteTimeout);
       this._onWriteTimeout = null;
@@ -1346,10 +1278,6 @@ class TNS_CBPeripheralDelegate
       this._onWritePromise({
         characteristicUUID: characteristic.UUID.UUIDString
       });
-    } else {
-      console.warn(
-        'CBPeripheralDelegateImpl.peripheralDidWriteValueForCharacteristicError ---- No _onWritePromise found!'
-      );
     }
   }
 
@@ -1362,21 +1290,14 @@ class TNS_CBPeripheralDelegate
     characteristic: CBCharacteristic,
     error?: NSError
   ) {
-    console.info(
-      `CBPeripheralDelegateImpl.peripheralDidUpdateNotificationStateForCharacteristicError ---- peripheral: ${peripheral}, characteristic: ${characteristic}, error: ${error}`
-    );
     if (error) {
-      console.error(
+      console.log(
         `CBPeripheralDelegateImpl.peripheralDidUpdateNotificationStateForCharacteristicError ---- ${error}`
       );
     } else {
       if (characteristic.isNotifying) {
-        console.info(
+        console.log(
           `CBPeripheralDelegateImpl.peripheralDidUpdateNotificationStateForCharacteristicError ---- Notification began on ${characteristic}`
-        );
-      } else {
-        console.info(
-          `CBPeripheralDelegateImpl.peripheralDidUpdateNotificationStateForCharacteristicError ---- Notification stopped on  ${characteristic}, consider disconnecting`
         );
         // Bluetooth._manager.cancelPeripheralConnection(peripheral);
       }
@@ -1391,7 +1312,7 @@ class TNS_CBPeripheralDelegate
     descriptor: CBDescriptor,
     error?: NSError
   ) {
-    console.error(
+    console.log(
       `CBPeripheralDelegateImpl.peripheralDidWriteValueForDescriptorError ---- peripheral: ${peripheral}, descriptor: ${descriptor}, error: ${error}`
     );
   }
@@ -1447,9 +1368,6 @@ class TNS_CBPeripheralDelegate
     const descsJs = [];
     for (let i = 0; i < descs.count; i++) {
       const desc = descs.objectAtIndex(i);
-      console.info(
-        `CBPeripheralDelegateImpl._getDescriptors ---- descriptor value: ${desc.value}`
-      );
       descsJs.push({
         UUID: desc.UUID.UUIDString,
         value: desc.value
@@ -1496,13 +1414,9 @@ class CBCentralManagerDelegateImpl
     central: CBCentralManager,
     peripheral: CBPeripheral
   ) {
-    console.info(
-      `----- CBCentralManagerDelegateImpl centralManager:didConnectPeripheral: ${peripheral}`
-    );
-
     const owner = this._owner.get();
     if (!owner) {
-      console.error(
+      console.log(
         '----- CBCentralManagerDelegateImpl didConnectPeripheral: error - no owner!'
       );
       return;
@@ -1510,9 +1424,6 @@ class CBCentralManagerDelegateImpl
 
     // find the peri in the array and attach the delegate to that
     const peri = owner.findPeripheral(peripheral.identifier.UUIDString);
-    console.info(
-      `----- CBCentralManagerDelegateImpl centralManager:didConnectPeripheral: cached perio: ${peri}`
-    );
 
     const cb = owner._connectCallbacks[peripheral.identifier.UUIDString];
     const delegate = TNS_CBPeripheralDelegate.new().initWithCallback(
@@ -1560,10 +1471,6 @@ class CBCentralManagerDelegateImpl
         UUID: peripheral.identifier.UUIDString,
         name: peripheral.name
       });
-    } else {
-      console.warn(
-        `***** centralManagerDidDisconnectPeripheralError() no disconnect callback found *****`
-      );
     }
     owner.removePeripheral(peripheral);
     const eventData = {
@@ -1592,13 +1499,6 @@ class CBCentralManagerDelegateImpl
     peripheral: CBPeripheral,
     error?: NSError
   ) {
-    console.error(
-      `CBCentralManagerDelegate.centralManagerDidFailToConnectPeripheralError ----`,
-      central,
-      peripheral,
-      error
-    );
-
     const owner = this._owner.get();
     if (!owner) {
       return;
@@ -1632,10 +1532,6 @@ class CBCentralManagerDelegateImpl
     advData: NSDictionary<string, any>,
     RSSI: number
   ) {
-    console.info(
-      `CBCentralManagerDelegateImpl.centralManagerDidDiscoverPeripheralAdvertisementDataRSSI ---- ${peripheral.name} @ ${RSSI}`
-    );
-
     const owner = this._owner.get();
     if (!owner) {
       return;
@@ -1686,10 +1582,6 @@ class CBCentralManagerDelegateImpl
       owner.sendEvent(Bluetooth.device_discovered_event, eventData);
       if (owner._onDiscovered) {
         owner._onDiscovered(eventData);
-      } else {
-        console.warn(
-          'CBCentralManagerDelegateImpl.centralManagerDidDiscoverPeripheralAdvertisementDataRSSI ---- No onDiscovered callback specified'
-        );
       }
     }
   }
@@ -1705,7 +1597,7 @@ class CBCentralManagerDelegateImpl
    */
   centralManagerDidUpdateState(central: CBCentralManager) {
     if (central.state === CBManagerState.Unsupported) {
-      console.warn(
+      console.log(
         `CBCentralManagerDelegateImpl.centralManagerDidUpdateState ---- This hardware does not support Bluetooth Low Energy.`
       );
     }
@@ -1746,10 +1638,6 @@ class CBCentralManagerDelegateImpl
     central: CBCentralManager,
     dict: NSDictionary<string, any>
   ) {
-    console.info(
-      `CBCentralManagerDelegateImpl.centralManagerWillRestoreState ---- central: ${central}, dict: ${dict}`
-    );
-
     const owner = this._owner.get();
     if (!owner) {
       return;
@@ -1759,7 +1647,6 @@ class CBCentralManagerDelegateImpl
     const peripheralArray = dict.objectForKey(
       CBCentralManagerRestoredStatePeripheralsKey
     );
-    console.info('Restoring ', peripheralArray.count);
     for (let i = 0; i < peripheralArray.count; i++) {
       const peripheral = peripheralArray.objectAtIndex(i);
       owner.addPeripheral(peripheral);
@@ -1924,11 +1811,6 @@ class CBPeripheralManagerDelegateImpl
     service: CBService,
     error?: NSError
   ) {
-    console.error(
-      'CBPeripheralManagerDelegateImpl.peripheralManagerDidAddError ---- ',
-      error
-    );
-
     Dialogs.alert('Peripheral Manager Did Add Error');
 
     const owner = this._owner.get();
@@ -1951,19 +1833,12 @@ class CBPeripheralManagerDelegateImpl
     peripheralMgr: CBPeripheralManager,
     error?: NSError
   ) {
-    console.error(
-      'CBPeripheralManagerDelegateImpl.peripheralManagerDidStartAdvertisingError ----',
-      error
-    );
     const owner = this._owner.get();
     if (!owner) {
       return;
     }
 
     if (error) {
-      console.error(
-        'TODO: we may need to parse out the error value here for parity with Android.'
-      );
       this._owner.get().sendEvent(Bluetooth.bluetooth_advertise_failure_event, {
         error: error
       });
@@ -1987,11 +1862,6 @@ class CBPeripheralManagerDelegateImpl
     central: CBCentral,
     characteristic: CBCharacteristic
   ) {
-    console.info(
-      'CBPeripheralManagerDelegateImpl.peripheralManagerCentralDidSubscribeToCharacteristic ----',
-      characteristic
-    );
-
     let isNewCentral = false;
 
     const oldCentral = this._central;
@@ -2055,12 +1925,6 @@ class CBPeripheralManagerDelegateImpl
     central: CBCentral,
     characteristic: CBCharacteristic
   ) {
-    console.info(
-      'CBPeripheralManagerDelegateImpl.peripheralManagerCentralDidUnsubscribeFromCharacteristic ----',
-      central,
-      characteristic
-    );
-
     this._subscribedCharacteristics.delete(characteristic.UUID);
 
     if (this._subscribedCharacteristics.size <= 0) {
@@ -2106,7 +1970,7 @@ class CBPeripheralManagerDelegateImpl
     service: CBService,
     error: NSError
   ) {
-    console.info(
+    console.log(
       'CBPeripheralManagerDelegateImpl.peripheralManagerDidAddServiceError ----',
       peripheral,
       service,
@@ -2121,11 +1985,6 @@ class CBPeripheralManagerDelegateImpl
    * @param peripheral [CBPeripheralManager] - The peripheral manager providing this information.
    */
   peripheralManagerIsReadyToUpdateSubscribers(peripheral: CBPeripheralManager) {
-    console.info(
-      'CBPeripheralManagerDelegateImpl.peripheralManagerIsReadyToUpdateSubscribers ----',
-      peripheral
-    );
-
     const owner = this._owner.get();
     if (!owner) {
       return;
@@ -2148,12 +2007,6 @@ class CBPeripheralManagerDelegateImpl
     peripheral: CBPeripheralManager,
     request: CBATTRequest
   ) {
-    console.info(
-      'CBPeripheralManagerDelegateImpl.peripheralManagerDidReceiveReadRequest ----',
-      peripheral,
-      request
-    );
-
     // set low connection latency
     peripheral.setDesiredConnectionLatencyForCentral(
       CBPeripheralManagerConnectionLatency.Low,
@@ -2188,12 +2041,6 @@ class CBPeripheralManagerDelegateImpl
     peripheral: CBPeripheralManager,
     requests
   ) {
-    console.info(
-      'CBPeripheralManagerDelegateImpl.peripheralManagerDidReceiveWriteRequests ----',
-      peripheral,
-      requests
-    );
-
     const owner = this._owner.get();
     if (!owner) {
       return;

@@ -34,19 +34,13 @@ function setupReceiver() {
           android.bluetooth.BluetoothDevice.EXTRA_DEVICE
         )
       );
-      console.info(
-        `TNS_BroadcastReceiver.onReceive() action: ${action}, device: ${device}, context: ${context}, intent: ${intent}`
-      );
+
       if (!device) {
-        console.warn(`No device found in the intent: ${intent}`);
         return;
       }
 
       const owner = this._owner.get();
       if (owner === null || owner === undefined) {
-        console.error(
-          'TNS_BroadcastReceiver::onReceive error: could not get owner!'
-        );
         return;
       }
 
@@ -96,9 +90,6 @@ function setupReceiver() {
             uuids.push(uuidExtra[i].toString());
           }
         }
-        console.info(
-          `${uuidExtra || 0} UUIDs found in the ACTION_UUID action.`
-        );
 
         owner.sendEvent(Bluetooth.device_uuid_change_event, {
           device: getDevice(device),
@@ -125,9 +116,7 @@ function setupReceiver() {
       ) {
         // discovery has finished, give a call to fetchUuidsWithSdp
         const result = device.fetchUuidsWithSdp();
-        console.info('fetchUuidsWithSdp result', result);
       } else if (action === android.bluetooth.BluetoothDevice.ACTION_FOUND) {
-        console.info(`Bluetooth Device Found: ${device}`);
         owner.sendEvent(Bluetooth.device_found_event, {
           device: getDevice(device)
         });
