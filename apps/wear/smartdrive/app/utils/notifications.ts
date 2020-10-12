@@ -30,26 +30,11 @@ async function scheduleRecurring() {
     const smartDriveChannel = L('notifications.channels.smartdrive');
     const maintenanceChannel = L('notifications.channels.maintenance');
 
-    const tpNotificationTime = new Date();
-    tpNotificationTime.setDate(2);
-    tpNotificationTime.setHours(12);
-    tpNotificationTime.setMinutes(0);
-    tpNotificationTime.setMilliseconds(0);
-    Log.D('tpNotificationTime', tpNotificationTime);
-
-    const wcMaintenanceTime = new Date();
-    wcMaintenanceTime.setDate(5);
-    wcMaintenanceTime.setHours(12);
-    wcMaintenanceTime.setMinutes(0);
-    wcMaintenanceTime.setMilliseconds(0);
-    Log.D('wcMaintenanceTime', wcMaintenanceTime);
-
-    const sdClampTime = new Date();
-    sdClampTime.setDate(30);
-    sdClampTime.setHours(12);
-    sdClampTime.setMinutes(0);
-    sdClampTime.setMilliseconds(0);
-    Log.D('sdClampTime', sdClampTime);
+    const at = new Date();
+    at.setHours(12);
+    at.setMinutes(0);
+    at.setMilliseconds(0);
+    Log.D('notification time', at);
 
     const notifications = await LocalNotifications.schedule([
       {
@@ -60,7 +45,7 @@ async function scheduleRecurring() {
         icon: 'res://ic_omniwheel_white',
         interval: 15, // fires every 15 days
         color,
-        at: tpNotificationTime
+        at
       },
       {
         id: SmartDriveNotificationIDs.SMARTDRIVE_ROLLER_CHECK,
@@ -70,7 +55,7 @@ async function scheduleRecurring() {
         icon: 'res://ic_omniwheel_white',
         interval: 180, // fires every 180 days
         color,
-        at: wcMaintenanceTime
+        at
       },
       {
         id: SmartDriveNotificationIDs.SMARTDRIVE_CLAMP_CHECK,
@@ -80,7 +65,7 @@ async function scheduleRecurring() {
         icon: 'res://ic_omniwheel_white',
         interval: 30, // fires every 30 days
         color,
-        at: sdClampTime
+        at
       },
       {
         id: SmartDriveNotificationIDs.ROUTINE_MAINTENANCE,
@@ -90,7 +75,7 @@ async function scheduleRecurring() {
         icon: 'res://ic_omniwheel_white',
         interval: 30, // fires every 30 days
         color,
-        at: wcMaintenanceTime
+        at
       }
     ]);
 
