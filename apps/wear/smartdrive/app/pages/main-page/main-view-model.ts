@@ -2679,6 +2679,7 @@ export class MainViewModel extends Observable {
         // from the first record (largest difference)
         const recordDistance = last(records[0]);
         // now turn the records into actual SmartDrive Info objects
+        // @ts-ignore
         records = records.map(r => SmartDriveData.Info.loadInfo(r));
         // get the date of the record distance
         const recordDay = records[0][SmartDriveData.Info.DateName];
@@ -2716,7 +2717,7 @@ export class MainViewModel extends Observable {
       // store the new record they will have to beat
       ApplicationSettings.setNumber(DataKeys.TOTAL_DISTANCE_RECORD, currentRecord);
       // TODO: send the notification
-      console.log('NEW ODOMETRY RECORD: ', todaysToalMiles);
+      console.log('NEW ODOMETRY RECORD: ', todaysTotalMiles);
     }
   }
 
