@@ -278,6 +278,39 @@ public class ActivityService
         Sentry.addBreadcrumb(bc);
     }
 
+  private boolean hasPushWarningData() {
+    return false;
+  }
+
+  private boolean hasCoastRecordData() {
+    return false;
+  }
+
+  private void initializePushWarning() {
+  }
+
+  private void initializeCoastRecord() {
+  }
+
+  private void checkPushWarningNotification() {
+    boolean isInitialized = hasPushWarningData();
+    if (!isInitialized) {
+      initializePushWarning();
+    }
+  }
+
+  private void checkCoastRecordNotification() {
+    boolean isInitialized = hasCoastRecordData();
+    if (!isInitialized) {
+      initializeCoastRecord();
+    }
+  }
+
+  private void checkNotifications() {
+    checkPushWarningNotification();
+    checkCoastRecordNotification();
+  }
+
     private void loadFromDatabase() {
         // TODO: load from sqlite here
         long tableRowCount = db.getTableRowCount();

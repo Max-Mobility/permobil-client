@@ -21,6 +21,11 @@ public class Datastore {
   public static final String AUTHORIZATION_KEY = "authorization_token";
   public static final String USER_ID_KEY = "user_id";
 
+  public static final String AVERAGE_NUMBER_OF_PUSHES_VALUE_KEY = "average_number_of_pushes_value";
+  public static final String AVERAGE_NUMBER_OF_PUSHES_DATE_KEY = "average_number_of_pushes_date";
+  public static final String COAST_TIME_RECORD_VALUE_KEY = "coast_time_record_value";
+  public static final String COAST_TIME_RECORD_DATE_KEY = "coast_time_record_date";
+
   private SharedPreferences preferences;
 
   public Datastore(Context context) {
