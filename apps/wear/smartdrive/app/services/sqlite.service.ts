@@ -288,19 +288,19 @@ export class SqliteService {
       const minimum = args.minimum;
       const columnA = args.columnA;
       const columnB = args.columnB;
-      const diffColumn = `(${columnA} - ${columnB})`;
-      let dbGetString = `SELECT *, ${diffColumn} from ${tableName}`;
+      const diffColumn = `${columnA} - ${columnB}`;
+      let dbGetString = `SELECT *, ${diffColumn} as Difference from ${tableName}`;
       if (minimum !== undefined) {
-        dbGetString += ` WHERE ${diffColumn} > ${minimum}`;
+        dbGetString += ` WHERE Difference > ${minimum}`;
       }
-      if (limit > 0) {
-        dbGetString += ` LIMIT ${limit}`;
-      }
-      dbGetString += ` ORDER BY ${diffColumn}`;
+      dbGetString += ` ORDER BY Difference`;
       if (ascending) {
         dbGetString += ' ASC';
       } else {
         dbGetString += ' DESC';
+      }
+      if (limit > 0) {
+        dbGetString += ` LIMIT ${limit}`;
       }
       return db.all(dbGetString).catch(err => {
         return [];

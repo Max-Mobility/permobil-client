@@ -2611,7 +2611,7 @@ export class MainViewModel extends Observable {
     if (this._todaysUsage) {
       // check to see it is actually today and create a new one if
       // needed
-      if (isToday(this._todaysUsage[SmartDriveData.Info.DateName])) {
+      if (isToday(new Date(this._todaysUsage[SmartDriveData.Info.DateName]))) {
         return this._todaysUsage;
       } else {
         this._todaysUsage = await this._makeTodaysUsage();
@@ -2665,7 +2665,7 @@ export class MainViewModel extends Observable {
     const hasEnoughData = (numDays >= 5);
     if (hasEnoughData) {
       // get the top two records ordered DESCENDING by CoastDistance
-      const records = await this._sqliteService.getAllColumnDifferences({
+      let records = await this._sqliteService.getAllColumnDifferences({
         tableName: SmartDriveData.Info.TableName,
         columnA: SmartDriveData.Info.CoastDistanceName,
         columnB: SmartDriveData.Info.CoastDistanceStartName,
@@ -2675,21 +2675,29 @@ export class MainViewModel extends Observable {
       });
       // if we have records which have gone at least 0.5 miles
       if (records && records.length) {
+        // pull the distance (last column returned as the difference)
+        // from the first record (largest difference)
+        const recordDistance = last(records[0]);
+        // now turn the records into actual SmartDrive Info objects
+        records = records.map(r => SmartDriveData.Info.loadInfo(r));
+        // get the date of the record distance
         const recordDay = records[0][SmartDriveData.Info.DateName];
+        // and compare it to the date of the last time we notified
+        // them
         const lastRecordDay = ApplicationSettings.getString(
           DataKeys.DAILY_DISTANCE_RECORD_DAY
         );
-        const haveNotifiedThem = lastRecordDay && !isToday(new Date(lastRecordDay));
+        const haveNotifiedThem = lastRecordDay && isToday(new Date(lastRecordDay));
         if (isToday(new Date(recordDay)) && !haveNotifiedThem) {
-          // TODO: notify them - their record is today and they've gone
-          // at least 0.5 miles!
-
           // store the date that we've notified them today so that we
           // don't notify them multiple times in the same day
           ApplicationSettings.setString(
             DataKeys.DAILY_DISTANCE_RECORD_DAY,
             recordDay
           );
+          // TODO: notify them - their record is today and they've gone
+          // at least 0.5 miles!
+          console.log('NEW DAILY DISTANCE RECORD: ', recordDay, recordDistance);
         }
       }
     }
@@ -2708,6 +2716,7 @@ export class MainViewModel extends Observable {
       // store the new record they will have to beat
       ApplicationSettings.setNumber(DataKeys.TOTAL_DISTANCE_RECORD, currentRecord);
       // TODO: send the notification
+      console.log('NEW ODOMETRY RECORD: ', todaysToalMiles);
     }
   }
 
