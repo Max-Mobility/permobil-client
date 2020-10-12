@@ -56,7 +56,9 @@ import {
   formatDateTime,
   isNetworkAvailable,
   sentryBreadCrumb,
-  _isActivityThis
+  _isActivityThis,
+  dailyDistanceNotification,
+  odometerRecordNotification
 } from '../../utils';
 import { updatesViewModel } from '../modals/updates/updates-page';
 
@@ -335,7 +337,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-            }`,
+          }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -2052,7 +2054,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     Application.android.foregroundActivity.startActivity(intent);
@@ -2117,7 +2119,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     Application.android.foregroundActivity.startActivity(intent);
@@ -2662,7 +2664,7 @@ export class MainViewModel extends Observable {
       SmartDriveData.Info.TableName,
       SmartDriveData.Info.IdName
     );
-    const hasEnoughData = (numDays >= 5);
+    const hasEnoughData = numDays >= 5;
     if (hasEnoughData) {
       // get the top two records ordered DESCENDING by CoastDistance
       let records = await this._sqliteService.getAllColumnDifferences({
@@ -2688,7 +2690,8 @@ export class MainViewModel extends Observable {
         const lastRecordDay = ApplicationSettings.getString(
           DataKeys.DAILY_DISTANCE_RECORD_DAY
         );
-        const haveNotifiedThem = lastRecordDay && isToday(new Date(lastRecordDay));
+        const haveNotifiedThem =
+          lastRecordDay && isToday(new Date(lastRecordDay));
         if (isToday(new Date(recordDay)) && !haveNotifiedThem) {
           // store the date that we've notified them today so that we
           // don't notify them multiple times in the same day
@@ -2696,9 +2699,10 @@ export class MainViewModel extends Observable {
             DataKeys.DAILY_DISTANCE_RECORD_DAY,
             recordDay
           );
-          // TODO: notify them - their record is today and they've gone
+          Log.D('NEW DAILY DISTANCE RECORD: ', recordDay, recordDistance);
+          // notify them - their record is today and they've gone
           // at least 0.5 miles!
-          console.log('NEW DAILY DISTANCE RECORD: ', recordDay, recordDistance);
+          dailyDistanceNotification();
         }
       }
     }
@@ -2709,15 +2713,20 @@ export class MainViewModel extends Observable {
     // 100, 150, etc.) they get a notification
     const todaysTotalMiles = this._getSmartDriveTotalMiles();
     // get the current record value (default 0) and add 50 units to it
-    const currentRecord = ApplicationSettings.getNumber(DataKeys.TOTAL_DISTANCE_RECORD, 0) + 50.0;
+    const currentRecord =
+      ApplicationSettings.getNumber(DataKeys.TOTAL_DISTANCE_RECORD, 0) + 50.0;
     // if they're over that record, then we notify them and store the
     // record we're at
-    const hasBeatenRecord = (todaysTotalMiles > currentRecord);
+    const hasBeatenRecord = todaysTotalMiles > currentRecord;
     if (hasBeatenRecord) {
       // store the new record they will have to beat
-      ApplicationSettings.setNumber(DataKeys.TOTAL_DISTANCE_RECORD, currentRecord);
+      ApplicationSettings.setNumber(
+        DataKeys.TOTAL_DISTANCE_RECORD,
+        currentRecord
+      );
+      Log.D('NEW ODOMETRY RECORD: ', todaysTotalMiles);
       // TODO: send the notification
-      console.log('NEW ODOMETRY RECORD: ', todaysTotalMiles);
+      odometerRecordNotification(todaysTotalMiles);
     }
   }
 
