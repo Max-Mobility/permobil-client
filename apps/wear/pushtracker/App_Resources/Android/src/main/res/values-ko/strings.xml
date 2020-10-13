@@ -7,4 +7,8 @@
     <string name="complications_provider_service_label_coast_time">해안 시간 매일</string>
     <string name="complications_provider_service_label_distance">매일 거리</string>
     <string name="personal_record">개인 기록</string>
+    <string name="push_warning">푸시 경고</string>
+    <string name="push_warning_notification_text">친절한 알림! 오늘 하루 평균보다 25 % 더 많이 밀었습니다. 휴식을 취하거나 스마트 드라이브를 더 많이 사용하십시오.</string>
+    <string name="new_coast_time_record">새로운 해안 시간 기록!</string>
+    <string name="coast_time_record_notification_text">훌륭해! 해안 시간 동안 새로운 개인 최고 기록을 달성했습니다. 어깨를 아끼면서 더 많은 일을하십시오! #choosetodomore</string>
 </resources>
