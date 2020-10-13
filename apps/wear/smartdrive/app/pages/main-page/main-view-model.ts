@@ -2696,7 +2696,8 @@ export class MainViewModel extends Observable {
         );
         const haveNotifiedThem =
           lastRecordDay && isToday(new Date(lastRecordDay));
-        if (isToday(new Date(recordDay)) && !haveNotifiedThem) {
+        // highest distance record is today
+        if (isToday(new Date(recordDay))) {
           // store the date that we've notified them today so that we
           // don't notify them multiple times in the same day
           ApplicationSettings.setString(
@@ -2704,9 +2705,11 @@ export class MainViewModel extends Observable {
             recordDay
           );
           Log.D('NEW DAILY DISTANCE RECORD: ', recordDay, recordDistance);
-          // notify them - their record is today and they've gone
-          // at least 0.5 miles!
-          dailyDistanceNotification();
+          if (!haveNotifiedThem) {
+            // notify them - their record is today and they've gone
+            // at least 0.5 miles!
+            dailyDistanceNotification();
+          }
         }
       }
     }
