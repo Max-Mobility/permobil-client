@@ -281,8 +281,9 @@ public class ActivityService
   private boolean hasPushWarningData() {
     // if we have a value and a date, we have data
     float v = Datastore.getPushAverageValue();
+    int n = Datastore.getPushAverageNumberOfDays();
     Date d = Datastore.getPushAverageDate();
-    return v > 0.0f && d != null;
+    return v > 0.0f && n > 0;
   }
 
   private boolean hasCoastRecordData() {
@@ -293,10 +294,26 @@ public class ActivityService
   }
 
   private void initializePushWarning() {
-    // get all records from the db
+    // get all records from the db (no limit and NOT onlyUnsent)
+    List<DailyActivity> activityList db.getRecords(0, false);
     // determine the average number of pushes the user has done
-    // save that average into the datastore
-    // save the current day into the datastore
+    long totalPushCount = 0;
+    int numDays = 0;
+    int minPushesRequired = 100;
+    for (DailyActivity activity : activityList) {
+      int pushes = activity.push_count;
+      if (pushes > minPushesRequired) {
+        numDays += 1;
+        totalPushCount += pushes;
+      }
+    }
+    if (totalPushCount > 0 && numDays > 0) {
+      // compute the average
+      float averagePushCount = (float) totalPushCount / (float) numDays;
+      // save that average and day number into the datastore
+      Datastore.setPushAverageValue(averagePushCount);
+      Datastore.setPushAverageNumberOfDays(numDays);
+    }
   }
 
   private void initializeCoastRecord() {
@@ -337,8 +354,16 @@ public class ActivityService
     // make sure we have enough activity data
     long numDaysActivity = db.getTableRowCount();
     boolean hasEnoughActivity = numDaysActivity > 5;
+    // make sure we haven't notified them already today
+    Date lastNotifiedDate = Datastore.getPushAverageDate();
+    boolean hasBeenNotified = false;
+    if (lastNotifiedDate != null) {
+      Date now = Calendar.getInstance().getTime();
+      hasBeenNotified = isSameDay(now, lastNotifiedDate);
+    }
     if (pushesToday > 1000.0f &&
         pushesToday > warningValue &&
+        !hasBeenNotified &&
         hasEnoughActivity) {
       // TODO: notify them
     }
@@ -381,8 +406,11 @@ public class ActivityService
     boolean hasEnoughPushes = pushesToday > minPushesRequired;
     // have we already notified them?
     Date coastRecordDay = Datastore.getCoastTimeRecordDate();
-    Date now = Calendar.getInstance().getTime();
-    boolean hasBeenNotified = isSameDay(now, coastRecordDay);
+    boolean hasBeenNotified = false;
+    if (coastRecordDay != null) {
+      Date now = Calendar.getInstance().getTime();
+      hasBeenNotified = isSameDay(now, coastRecordDay);
+    }
     if (hasEnoughPushes &&
         !hasBeenNotified &&
         coastToday > coastRecordValue) {
