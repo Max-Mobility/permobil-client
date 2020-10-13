@@ -304,9 +304,24 @@ public class ActivityService
     long totalPushCount = 0;
     int numDays = 0;
     int minPushesRequired = 100;
+    SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd");
+    Date now = Calendar.getInstance().getTime();
     for (DailyActivity activity : activityList) {
       int pushes = activity.push_count;
-      if (pushes > minPushesRequired) {
+      // get the date from the activity
+      Date date = null;
+      try {
+        date = fmt.parse(activity.date);
+      } catch (Exception e) {
+      }
+      // check it against today
+      boolean isToday = false;
+      if (date != null) {
+        isToday = isSameDay(now, date);
+      }
+      // don't include the pushes from today since they could affect
+      // the average needed for the warning
+      if (pushes > minPushesRequired && !isToday) {
         numDays += 1;
         totalPushCount += pushes;
       }
