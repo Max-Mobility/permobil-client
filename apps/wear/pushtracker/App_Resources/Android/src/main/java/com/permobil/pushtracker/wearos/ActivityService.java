@@ -378,12 +378,13 @@ public class ActivityService
     */
     if (pushesToday > 1000.0f &&
         pushesToday > warningValue &&
-        !hasBeenNotified &&
         hasEnoughActivity) {
       // make sure we log that we notified them
       datastore.setPushAverageDate(now);
-      // notify them
-      showPushWarningNotification();
+      if (!hasBeenNotified) {
+        // notify them
+        showPushWarningNotification();
+      }
     }
   }
 
@@ -437,13 +438,14 @@ public class ActivityService
     Log.d(TAG, "hasBeenNotified: " + hasBeenNotified);
     */
     if (hasEnoughPushes &&
-        !hasBeenNotified &&
         coastToday > coastRecordValue) {
       // update the value in the datastore
       datastore.setCoastTimeRecordValue(coastToday);
       datastore.setCoastTimeRecordDate(now);
-      // notify them
-      showCoastTimeRecordNotification();
+      if (!hasBeenNotified) {
+        // notify them
+        showCoastTimeRecordNotification();
+      }
     }
   }
 
