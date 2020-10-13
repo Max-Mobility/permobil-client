@@ -300,11 +300,29 @@ public class ActivityService
   }
 
   private void initializeCoastRecord() {
-    // get all records from the db
+    // get all records from the db (no limit and NOT onlyUnsent)
+    List<DailyActivity> activityList db.getRecords(0, false);
     // determine the max coast time the user has had (for a day with >
     // 200 pushes)
-    // save that max coast time into the datastore
-    // save the max's date into the datastore
+    float maxCoastTime = 0.0f;
+    Date maxCoastDate = null;
+    SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd");
+    int minPushesRequired = 200;
+    for (DailyActivity activity : activityList) {
+      float coastTime = activity.coast_time_avg;
+      int pushes = activity.push_count;
+      Date date = fmt.parse(activity.date);
+      if (coastTime > maxCoastTime && pushes > minPushesRequired) {
+        // this is the new maximum
+        maxCoastTime = coastTime;
+        maxCoastDate = date;
+      }
+    }
+    if (maxCoastTime > 0.0f && maxCoastDate != null) {
+      // save that max coast time and date into the datastore
+      Datastore.setCoastTimeRecordValue(maxCoastTime);
+      Datastore.setCoastTimeRecordDate(maxCoastDate);
+    }
   }
 
   private void checkPushWarningNotification() {
@@ -316,8 +334,12 @@ public class ActivityService
     float avgPushes = Datastore.getPushAverageValue();
     float pushesToday = currentActivity.push_count;
     float warningValue = avgPushes * 1.25f;
-    // TODO: make sure we have enough activity data
-    if (pushesToday > 1000.0f && pushesToday > warningValue) {
+    // make sure we have enough activity data
+    long numDaysActivity = db.getTableRowCount();
+    boolean hasEnoughActivity = numDaysActivity > 5;
+    if (pushesToday > 1000.0f &&
+        pushesToday > warningValue &&
+        hasEnoughActivity) {
       // TODO: notify them
     }
   }
@@ -353,9 +375,17 @@ public class ActivityService
     // check the max coast time (average)
     float coastToday = currentActivity.coast_time_avg;
     float coastRecordValue = Datastore.getCoastTimeRecordValue();
+    // have they pushed enough today?
+    int pushesToday = currentActivity.push_count;
+    int minPushesRequired = 200;
+    boolean hasEnoughPushes = pushesToday > minPushesRequired;
+    // have we already notified them?
     Date coastRecordDay = Datastore.getCoastTimeRecordDate();
     Date now = Calendar.getInstance().getTime();
-    if (!isSameDay(now, coastRecordDay) && coastToday > coastRecordValue) {
+    boolean hasBeenNotified = isSameDay(now, coastRecordDay);
+    if (hasEnoughPushes &&
+        !hasBeenNotified &&
+        coastToday > coastRecordValue) {
       // update the value in the datastore
       Datastore.setCoastTimeRecordValue(coastToday);
       Datastore.setCoastTimeRecordDate(now);
