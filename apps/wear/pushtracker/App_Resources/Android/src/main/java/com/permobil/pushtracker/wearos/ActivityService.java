@@ -316,6 +316,7 @@ public class ActivityService
     float avgPushes = Datastore.getPushAverageValue();
     float pushesToday = currentActivity.push_count;
     float warningValue = avgPushes * 1.25f;
+    // TODO: make sure we have enough activity data
     if (pushesToday > 1000.0f && pushesToday > warningValue) {
       // TODO: notify them
     }
@@ -327,8 +328,21 @@ public class ActivityService
     // get the number of days that was used to calculate the push
     // average last time
     int numDays = Datastore.getPushAverageNumberOfDays();
-    // increment by 1
-    numDays += 1;
+    float pushesToday = currentActivity.push_count;
+    float minimumPushesRequired = 100.0;
+    if (pushesToday > minimumPushesRequired) {
+      // we have enough pushes so we will update the average
+      float pushAverage = Datastore.getPushAverageValue();
+      float pushTotal = pushAverage * numDays;
+      // increment days and push total
+      numDays += 1;
+      pushTotal += pushesToday;
+      // compute the new average
+      pushAverage = pushTotal / numDays;
+      // now save it back
+      Datastore.setPushAverageValue(pushAverage);
+      Datastore.setPushAverageNumberOfDays(numDays);
+    }
   }
 
   private void checkCoastRecordNotification() {
