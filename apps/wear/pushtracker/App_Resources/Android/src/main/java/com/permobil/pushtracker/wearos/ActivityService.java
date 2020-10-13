@@ -26,6 +26,7 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.text.SimpleDateFormat;
@@ -993,56 +994,32 @@ public class ActivityService
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void showPushWarningNotification() {
-        String channelId = "com.permobil.pushtracker.record_notification_channel";
-        Builder notificationBuilder = new Builder(this, Constants.NOTIFICATION_CHANNEL)
-                .setContentTitle("Push Warning")
-                .setContentText("You pushed too much, don't push so much dude!")
+        Builder notificationBuilder = null;
+        notificationBuilder = new Builder(this, Constants.NOTIFICATION_CHANNEL)
+                .setContentTitle(getString(R.string.push_warning))
+                .setContentText(getString(R.string.push_warning_notification_text))
                 .setColor(0x006ea5)
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_notification_icon))
-                .setChannelId(channelId);
+                .setChannelId(R.string.smartdrive);
 
-    /*
-    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
-      .setColor(0x006ea5)
-      .setSmallIcon(R.drawable.ic_notification_icon)
-      .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_notification_icon))
-      .setContentTitle("Push Warning")
-      .setContentText("You pushed too much, don't push so much dude!")
-      .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-    // notificationId is a unique int for each notification that you must define
-    notificationManager.notify(10001, builder.build());
-    */
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(20001, notificationBuilder.build());
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void showCoastTimeRecordNotification() {
-        String channelId = "Personal Record";
         Builder notificationBuilder = new Builder(this, Constants.NOTIFICATION_CHANNEL)
-                .setContentTitle("Coast Time Record")
-                .setContentText("Great job, you've beaten your coast time record! Way to go dude!")
+                .setContentTitle(getString(R.string.new_coast_time_record))
+                .setContentText(getString(R.string.coast_time_record_notification_text))
                 .setColor(0x006ea5)
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_notification_icon))
-                .setChannelId(channelId);
-
-    /*
-    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
-      .setColor(0x006ea5)
-      .setSmallIcon(R.drawable.ic_notification_icon)
-      .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_notification_icon))
-      .setContentTitle("Coast Time Record")
-      .setContentText("Great job, you've beaten your coast time record! Way to go dude!")
-      .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-    // notificationId is a unique int for each notification that you must define
-    notificationManager.notify(20001, builder.build());
-    */
+                .setChannelId(R.string.personal_record);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
