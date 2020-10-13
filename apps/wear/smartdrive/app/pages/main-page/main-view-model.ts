@@ -56,7 +56,9 @@ import {
   formatDateTime,
   isNetworkAvailable,
   sentryBreadCrumb,
-  _isActivityThis
+  _isActivityThis,
+  dailyDistanceNotification,
+  odometerRecordNotification
 } from '../../utils';
 import { updatesViewModel } from '../modals/updates/updates-page';
 
@@ -716,6 +718,10 @@ export class MainViewModel extends Observable {
     // now that we've disabled power assist - make sure the charts
     // update with the latest data from the smartdrive
     this._updateChartData();
+
+    // now that we've updated the chart data and such - check the
+    // activity for notifications
+    this._updateNotifications();
 
     return Promise.resolve();
   }
@@ -2607,7 +2613,7 @@ export class MainViewModel extends Observable {
     if (this._todaysUsage) {
       // check to see it is actually today and create a new one if
       // needed
-      if (isToday(this._todaysUsage[SmartDriveData.Info.DateName])) {
+      if (isToday(new Date(this._todaysUsage[SmartDriveData.Info.DateName]))) {
         return this._todaysUsage;
       } else {
         this._todaysUsage = await this._makeTodaysUsage();
@@ -2634,6 +2640,137 @@ export class MainViewModel extends Observable {
       }
     }
     return this._todaysUsage;
+  }
+
+  private _getSmartDriveTotalMiles() {
+    let totalMiles = 0;
+    if (this.smartDrive) {
+      totalMiles = SmartDrive.caseTicksToMiles(this.smartDrive.coastDistance);
+    }
+    return totalMiles;
+  }
+
+  private async _updateNotifications() {
+    await this._checkDailyDistanceRecord();
+    await this._checkTotalDistanceRecord();
+  }
+
+  private async _checkDailyDistanceRecord() {
+    // if the user has at least a week of records and they have gone
+    // at least 0.5 mi or 0.5 km (depending on their units) today,
+    // then they get a notification
+    // determine if they have enough records
+    const numDays = await this._sqliteService.getNumRows(
+      SmartDriveData.Info.TableName,
+      SmartDriveData.Info.IdName
+    );
+    const hasEnoughData = numDays >= 5;
+    if (hasEnoughData) {
+      let numCaseTicksRequired = SmartDrive.milesToCaseTicks(0.5);
+      if (this._settingsService.settings.units === 'Metric') {
+        numCaseTicksRequired = SmartDrive.milesToCaseTicks(0.5 / 1.609);
+      }
+      // get the top two records ordered DESCENDING by CoastDistance
+      let records = await this._sqliteService.getAllColumnDifferences({
+        tableName: SmartDriveData.Info.TableName,
+        columnA: SmartDriveData.Info.CoastDistanceName,
+        columnB: SmartDriveData.Info.CoastDistanceStartName,
+        limit: 2,
+        minimum: numCaseTicksRequired,
+        ascending: false
+      });
+      // if we have records which have gone at least 0.5 miles
+      if (records && records.length) {
+        // pull the distance (last column returned as the difference)
+        // from the first record (largest difference)
+        const recordDistance = last(records[0]);
+        // now turn the records into actual SmartDrive Info objects
+        // @ts-ignore
+        records = records.map(r => SmartDriveData.Info.loadInfo(r));
+        // get the date of the record distance
+        const recordDay = records[0][SmartDriveData.Info.DateName];
+        // and compare it to the date of the last time we notified
+        // them
+        const lastRecordDay = ApplicationSettings.getString(
+          DataKeys.DAILY_DISTANCE_RECORD_DAY
+        );
+        const haveNotifiedThem =
+          lastRecordDay && isToday(new Date(lastRecordDay));
+        if (isToday(new Date(recordDay)) && !haveNotifiedThem) {
+          // store the date that we've notified them today so that we
+          // don't notify them multiple times in the same day
+          ApplicationSettings.setString(
+            DataKeys.DAILY_DISTANCE_RECORD_DAY,
+            recordDay
+          );
+          Log.D('NEW DAILY DISTANCE RECORD: ', recordDay, recordDistance);
+          // notify them - their record is today and they've gone
+          // at least 0.5 miles!
+          dailyDistanceNotification();
+        }
+      }
+    }
+  }
+
+  private async _checkTotalDistanceRecord() {
+    // each time the user goes over 50 mi/km increments (e.g. @ 50,
+    // 100, 150, etc.) they get a notification. we store the data as
+    // miles, so we'll want to represent the jumps as 50 km ->
+    // converted to miles
+    const incrementMiles = 50.0;
+    const incrementKilometers = incrementMiles / 1.609;
+    let increment = incrementMiles;
+    if (this._settingsService.settings.units === 'Metric') {
+      increment = incrementKilometers;
+    }
+    const todaysTotalMiles = this._getSmartDriveTotalMiles();
+    const todaysTotalKilometers = todaysTotalMiles * 1.609;
+    // get the current record value (default -1, always in miles) and
+    // add 50 units to it (50 miles, 50/1.609 km)
+    let currentRecord =
+      ApplicationSettings.getNumber(DataKeys.TOTAL_DISTANCE_RECORD, -1);
+    if (currentRecord === -1) {
+      // there was no record saved, so we have a few options:
+      if (todaysTotalMiles > increment) {
+        // 1. They have been using the SD for a while so we should
+        // give the first notification of their most recent record -
+        // which will store a record so that we don't come down this
+        // branch again. We compute the record prior to the closest,
+        // since after this conditional block, it will be incremented
+        // again.
+        currentRecord = todaysTotalMiles - (todaysTotalMiles % increment) - increment;
+      } else {
+        // 2. they have not used the SD enough to have passed their
+        // first record so they are starting out at 0 miles
+        // effectively - this means they will not get a notification,
+        // so we need to save 0 here so that we don't come down this
+        // branch again
+        currentRecord = 0;
+        ApplicationSettings.setNumber(
+          DataKeys.TOTAL_DISTANCE_RECORD,
+          0
+        );
+      }
+    }
+    const recordToBeatMiles = currentRecord + increment;
+    const recordToBeatKilometers = recordToBeatMiles * 1.609;
+    // if they're over that record, then we notify them and store the
+    // record we're at
+    const hasBeatenRecord = todaysTotalMiles > recordToBeatMiles;
+    if (hasBeatenRecord) {
+      // store the new record they will have to beat (always in miles)
+      ApplicationSettings.setNumber(
+        DataKeys.TOTAL_DISTANCE_RECORD,
+        recordToBeatMiles
+      );
+      Log.D('NEW ODOMETRY RECORD: ', todaysTotalMiles);
+      // send the notification
+      let distanceText = `${recordToBeatMiles.toFixed(0)} ${this.distanceUnits}`;
+      if (this._settingsService.settings.units === 'Metric') {
+        distanceText = `${recordToBeatKilometers.toFixed(0)} ${this.distanceUnits}`;
+      }
+      odometerRecordNotification(distanceText);
+    }
   }
 
   private async _updateTodaysUsageInfo(updates: any) {
