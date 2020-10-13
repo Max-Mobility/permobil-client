@@ -394,7 +394,7 @@ public class ActivityService
     // average last time
     int numDays = datastore.getPushAverageNumberOfDays();
     float pushesToday = currentActivity.push_count;
-    float minimumPushesRequired = 100.0f;
+    float minimumPushesRequired = 1000.0f;
     if (pushesToday > minimumPushesRequired) {
       // we have enough pushes so we will update the average
       float pushAverage = datastore.getPushAverageValue();
