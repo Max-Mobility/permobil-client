@@ -348,9 +348,9 @@ async function setupSwitchControlReminder() {
       return;
     }
 
-    const title = L('notifications.titles.switch-control-reminder');
-    const body = L('notifications.switch-control-reminder');
-    const channel = L('notifications.channels.smartdrive');
+    const title = L('notifications.titles.switch-control-reminder') as string;
+    const body = L('notifications.switch-control-reminder') as string;
+    const channel = L('notifications.channels.smartdrive') as string;
     const icon = 'res://ic_omniwheel_white';
     const color = new Color('#0067a6');
 
@@ -400,6 +400,18 @@ async function setupSwitchControlReminder() {
       }
     ]);
 
+    LocalNotifications.addOnMessageReceivedCallback(notification => {
+      if (notification.title.toLowerCase() === title.toLowerCase()) {
+        // need to cancel these notifications from occurring in the future
+        LocalNotifications.cancel(
+          SmartDriveNotificationIDs.SWITCHCONTROL_REMINDER + 1002
+        );
+        LocalNotifications.cancel(
+          SmartDriveNotificationIDs.SWITCHCONTROL_REMINDER + 1003
+        );
+      }
+    });
+
     Log.D('Switch Control Reminder Scheduled', notifications);
     // Save the boolean that we have setup these notifications so we do not continue to register them
     ApplicationSettings.setBoolean(NOTIFICATION_KEYS.SWITCH_CONTROL, true);
@@ -434,9 +446,9 @@ export async function odometerRecordNotification(recordText: string) {
       {
         id: SmartDriveNotificationIDs.ODOMETER_RECORDS,
         title: L('notifications.titles.odometer-records'),
-        body: `${L('notifications.odometer-records-part-one')} ${recordText} ${L(
-          'notifications.odometer-records-part-two'
-        )}`,
+        body: `${L(
+          'notifications.odometer-records-part-one'
+        )} ${recordText} ${L('notifications.odometer-records-part-two')}`,
         channel: L('notifications.channels.personal-record'),
         icon: 'res://ic_omniwheel_white',
         color: new Color('#0067a6')
