@@ -3,6 +3,9 @@ package com.permobil.pushtracker;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
 public class Datastore {
   public static final String PREF_NAME = "prefs.db";
 
@@ -53,10 +56,12 @@ public class Datastore {
     String ds = preferences.getString(PREFIX + AVERAGE_NUMBER_OF_PUSHES_DATE_KEY, null);
     if (ds != null) {
       SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
-      return fmt.parse(ds);
-    } else {
-      return null;
+      try {
+        return fmt.parse(ds);
+      } catch (Exception e) {
+      }
     }
+    return null;
   }
 
   public void setPushAverageNumberOfDays(int d) {
@@ -86,10 +91,12 @@ public class Datastore {
     String ds = preferences.getString(PREFIX + COAST_TIME_RECORD_DATE_KEY, null);
     if (ds != null) {
       SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
-      return fmt.parse(ds);
-    } else {
-      return null;
+      try {
+        return fmt.parse(ds);
+      } catch (Exception e) {
+      }
     }
+    return null;
   }
 
   public void setCoastTimeRecordValue(float f) {

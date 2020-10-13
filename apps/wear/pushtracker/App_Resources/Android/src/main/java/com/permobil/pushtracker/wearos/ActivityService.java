@@ -280,22 +280,22 @@ public class ActivityService
 
   private boolean hasPushWarningData() {
     // if we have a value and a date, we have data
-    float v = Datastore.getPushAverageValue();
-    int n = Datastore.getPushAverageNumberOfDays();
-    Date d = Datastore.getPushAverageDate();
+    float v = datastore.getPushAverageValue();
+    int n = datastore.getPushAverageNumberOfDays();
+    Date d = datastore.getPushAverageDate();
     return v > 0.0f && n > 0;
   }
 
   private boolean hasCoastRecordData() {
     // if we have a value and a date, we have data
-    float v = Datastore.getCoastTimeRecordValue();
-    Date d = Datastore.getCoastTimeRecordDate();
+    float v = datastore.getCoastTimeRecordValue();
+    Date d = datastore.getCoastTimeRecordDate();
     return v > 0.0f && d != null;
   }
 
   private void initializePushWarning() {
     // get all records from the db (no limit and NOT onlyUnsent)
-    List<DailyActivity> activityList db.getRecords(0, false);
+    List<DailyActivity> activityList = db.getRecords(0, false);
     // determine the average number of pushes the user has done
     long totalPushCount = 0;
     int numDays = 0;
@@ -311,14 +311,14 @@ public class ActivityService
       // compute the average
       float averagePushCount = (float) totalPushCount / (float) numDays;
       // save that average and day number into the datastore
-      Datastore.setPushAverageValue(averagePushCount);
-      Datastore.setPushAverageNumberOfDays(numDays);
+      datastore.setPushAverageValue(averagePushCount);
+      datastore.setPushAverageNumberOfDays(numDays);
     }
   }
 
   private void initializeCoastRecord() {
     // get all records from the db (no limit and NOT onlyUnsent)
-    List<DailyActivity> activityList db.getRecords(0, false);
+    List<DailyActivity> activityList = db.getRecords(0, false);
     // determine the max coast time the user has had (for a day with >
     // 200 pushes)
     float maxCoastTime = 0.0f;
@@ -328,7 +328,11 @@ public class ActivityService
     for (DailyActivity activity : activityList) {
       float coastTime = activity.coast_time_avg;
       int pushes = activity.push_count;
-      Date date = fmt.parse(activity.date);
+      Date date = null;
+      try {
+        date = fmt.parse(activity.date);
+      } catch (Exception e) {
+      }
       if (coastTime > maxCoastTime && pushes > minPushesRequired) {
         // this is the new maximum
         maxCoastTime = coastTime;
@@ -337,8 +341,8 @@ public class ActivityService
     }
     if (maxCoastTime > 0.0f && maxCoastDate != null) {
       // save that max coast time and date into the datastore
-      Datastore.setCoastTimeRecordValue(maxCoastTime);
-      Datastore.setCoastTimeRecordDate(maxCoastDate);
+      datastore.setCoastTimeRecordValue(maxCoastTime);
+      datastore.setCoastTimeRecordDate(maxCoastDate);
     }
   }
 
@@ -348,23 +352,25 @@ public class ActivityService
       initializePushWarning();
     }
     // get the average number of pushes the user has done
-    float avgPushes = Datastore.getPushAverageValue();
+    float avgPushes = datastore.getPushAverageValue();
     float pushesToday = currentActivity.push_count;
     float warningValue = avgPushes * 1.25f;
     // make sure we have enough activity data
     long numDaysActivity = db.getTableRowCount();
     boolean hasEnoughActivity = numDaysActivity > 5;
     // make sure we haven't notified them already today
-    Date lastNotifiedDate = Datastore.getPushAverageDate();
+    Date lastNotifiedDate = datastore.getPushAverageDate();
     boolean hasBeenNotified = false;
+    Date now = Calendar.getInstance().getTime();
     if (lastNotifiedDate != null) {
-      Date now = Calendar.getInstance().getTime();
       hasBeenNotified = isSameDay(now, lastNotifiedDate);
     }
     if (pushesToday > 1000.0f &&
         pushesToday > warningValue &&
         !hasBeenNotified &&
         hasEnoughActivity) {
+      // make sure we log that we notified them
+      datastore.setPushAverageDate(now);
       // TODO: notify them
     }
   }
@@ -374,12 +380,12 @@ public class ActivityService
   private void updatePushWarningData() {
     // get the number of days that was used to calculate the push
     // average last time
-    int numDays = Datastore.getPushAverageNumberOfDays();
+    int numDays = datastore.getPushAverageNumberOfDays();
     float pushesToday = currentActivity.push_count;
-    float minimumPushesRequired = 100.0;
+    float minimumPushesRequired = 100.0f;
     if (pushesToday > minimumPushesRequired) {
       // we have enough pushes so we will update the average
-      float pushAverage = Datastore.getPushAverageValue();
+      float pushAverage = datastore.getPushAverageValue();
       float pushTotal = pushAverage * numDays;
       // increment days and push total
       numDays += 1;
@@ -387,8 +393,8 @@ public class ActivityService
       // compute the new average
       pushAverage = pushTotal / numDays;
       // now save it back
-      Datastore.setPushAverageValue(pushAverage);
-      Datastore.setPushAverageNumberOfDays(numDays);
+      datastore.setPushAverageValue(pushAverage);
+      datastore.setPushAverageNumberOfDays(numDays);
     }
   }
 
@@ -399,24 +405,24 @@ public class ActivityService
     }
     // check the max coast time (average)
     float coastToday = currentActivity.coast_time_avg;
-    float coastRecordValue = Datastore.getCoastTimeRecordValue();
+    float coastRecordValue = datastore.getCoastTimeRecordValue();
     // have they pushed enough today?
     int pushesToday = currentActivity.push_count;
     int minPushesRequired = 200;
     boolean hasEnoughPushes = pushesToday > minPushesRequired;
     // have we already notified them?
-    Date coastRecordDay = Datastore.getCoastTimeRecordDate();
+    Date coastRecordDay = datastore.getCoastTimeRecordDate();
     boolean hasBeenNotified = false;
+    Date now = Calendar.getInstance().getTime();
     if (coastRecordDay != null) {
-      Date now = Calendar.getInstance().getTime();
       hasBeenNotified = isSameDay(now, coastRecordDay);
     }
     if (hasEnoughPushes &&
         !hasBeenNotified &&
         coastToday > coastRecordValue) {
       // update the value in the datastore
-      Datastore.setCoastTimeRecordValue(coastToday);
-      Datastore.setCoastTimeRecordDate(now);
+      datastore.setCoastTimeRecordValue(coastToday);
+      datastore.setCoastTimeRecordDate(now);
       // TODO: notify them
     }
   }
