@@ -16,7 +16,7 @@ import {
 } from '@nativescript/core';
 import { Log } from '@permobil/core';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';
-import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
+import { closestIndexTo, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import * as LS from 'nativescript-localstorage';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
@@ -27,27 +27,13 @@ import { DataKeys } from '../../enums';
 import { DailyActivity, Profile } from '../../namespaces';
 import { PushTrackerKinveyService, SqliteService } from '../../services';
 import {
+  formatDateTime,
   getSerialNumber,
   loadSerialNumber,
   saveSerialNumber,
   sentryBreadCrumb,
   setupAllLocalNotifications
 } from '../../utils';
-
-const dateLocales = {
-  da: require('date-fns/locale/da'),
-  de: require('date-fns/locale/de'),
-  en: require('date-fns/locale/en'),
-  es: require('date-fns/locale/es'),
-  fr: require('date-fns/locale/fr'),
-  it: require('date-fns/locale/it'),
-  ja: require('date-fns/locale/ja'),
-  ko: require('date-fns/locale/ko'),
-  nb: require('date-fns/locale/nb'),
-  nl: require('date-fns/locale/nl'),
-  nn: require('date-fns/locale/nb'),
-  zh: require('date-fns/locale/zh_cn')
-};
 
 const ambientTheme = require('../../scss/theme-ambient.scss');
 const defaultTheme = require('../../scss/theme-default.scss');
@@ -213,7 +199,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(this.ANDROID_MARKET_SMARTDRIVE_URI));
     Application.android.foregroundActivity.startActivity(intent);
@@ -383,11 +369,11 @@ export class MainViewModel extends Observable {
     const plottedDates = DailyActivity.Info.getPastDates(6);
     let distanceData = plottedDates.map(d => {
       return {
-        day: this.format(new Date(d), 'dd'),
+        day: formatDateTime(new Date(d), 'EEE').formatted.slice(0, 2),
         value: 0
       };
     });
-    const today = this.format(new Date(), 'YYYY/MM/DD');
+    const today = formatDateTime(new Date(), 'yyyy/MM/dd').formatted;
     let maxDist = 0;
     let currentDist = 0;
     try {
@@ -419,7 +405,7 @@ export class MainViewModel extends Observable {
         distanceData = plottedDates.map(d => {
           const date = new Date(d);
           let value = 0;
-          const dateKey = this.format(date, 'YYYY/MM/DD');
+          const dateKey = formatDateTime(date, 'yyyy/MM/dd').formatted;
           if (data[dateKey] !== undefined && data[dateKey].total > 0) {
             // for now we're using total
             value = Math.round((100.0 * data[dateKey].total) / maxDist);
@@ -427,7 +413,7 @@ export class MainViewModel extends Observable {
             if (value) value += '%';
           }
           return {
-            day: this.format(date, 'dd'),
+            day: formatDateTime(date, 'EEE').formatted.slice(0, 2),
             value: value
           };
         });
@@ -644,7 +630,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => {});
+        await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
         // and return true letting the caller know we got the permissions
@@ -674,7 +660,7 @@ export class MainViewModel extends Observable {
       this._applyTheme('ambient');
     });
 
-    Application.on('updateAmbient', () => {});
+    Application.on('updateAmbient', () => { });
 
     Application.on('exitAmbient', () => {
       sentryBreadCrumb('*** exitAmbient ***');
@@ -712,12 +698,6 @@ export class MainViewModel extends Observable {
     this._loadCurrentActivityData();
     this._updateGoalDisplay();
     this._registerForServiceDataUpdates();
-  }
-
-  private format(d: Date, fmt: string) {
-    return format(d, fmt, {
-      locale: dateLocales[getDefaultLang()] || dateLocales['en']
-    });
   }
 
   private showSynchronizing() {
@@ -911,7 +891,7 @@ export class MainViewModel extends Observable {
         // @ts-ignore
         if (value) value += '%';
         return {
-          day: this.format(new Date(e.date), 'dd'),
+          day: formatDateTime(new Date(e.date), 'EEE').formatted.slice(0, 2),
           value: value
         };
       });
@@ -971,7 +951,7 @@ export class MainViewModel extends Observable {
     this.currentPushCountDisplay = this.currentPushCount.toFixed(0);
   }
 
-  private _updateSpeedDisplay() {}
+  private _updateSpeedDisplay() { }
 
   /**
    * SmartDrive Associated App Functions

@@ -409,21 +409,42 @@ async function setupSwitchControlReminder() {
   }
 }
 
-export function checkRecordBased() {
-  // need to know the distance value for the record
-  const distanceValue = 22.5;
-  LocalNotifications.schedule([
-    {
-      id: SmartDriveNotificationIDs.ODOMETER_RECORDS,
-      title: L('notifications.titles.odometer-records'),
-      body: `${L(
-        'notifications.odometer-records-part-one'
-      )} ${distanceValue.toString()} ${L(
-        'notifications.odometer-records-part-one'
-      )}`,
-      channel: L('notifications.channels.personal-record'),
-      icon: 'res://ic_omniwheel_white',
-      color: new Color('#0067a6')
-    }
-  ]);
+export async function dailyDistanceNotification() {
+  try {
+    const notifications = await LocalNotifications.schedule([
+      {
+        id: SmartDriveNotificationIDs.DAILY_DISTANCE,
+        title: L('notifications.titles.daily-distance-record'),
+        body: L('notifications.daily-distance-record'),
+        channel: L('notifications.channels.personal-record'),
+        icon: 'res://ic_omniwheel_white',
+        color: new Color('#0067a6')
+      }
+    ]);
+    Log.D('Daily Distance Notification', notifications);
+  } catch (error) {
+    Log.E('Error dailyDistanceNotification', error);
+    Sentry.captureException(error);
+  }
+}
+
+export async function odometerRecordNotification(recordText: string) {
+  try {
+    const notifications = await LocalNotifications.schedule([
+      {
+        id: SmartDriveNotificationIDs.ODOMETER_RECORDS,
+        title: L('notifications.titles.odometer-records'),
+        body: `${L('notifications.odometer-records-part-one')} ${recordText} ${L(
+          'notifications.odometer-records-part-two'
+        )}`,
+        channel: L('notifications.channels.personal-record'),
+        icon: 'res://ic_omniwheel_white',
+        color: new Color('#0067a6')
+      }
+    ]);
+    Log.D('Odometer Record Notification', notifications);
+  } catch (error) {
+    Log.E('Error odometerRecordNotification', error);
+    Sentry.captureException(error);
+  }
 }
