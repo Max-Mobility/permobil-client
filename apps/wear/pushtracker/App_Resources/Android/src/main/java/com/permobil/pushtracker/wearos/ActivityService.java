@@ -279,17 +279,32 @@ public class ActivityService
     }
 
   private boolean hasPushWarningData() {
-    return false;
+    // if we have a value and a date, we have data
+    float v = Datastore.getPushAverageValue();
+    Date d = Datastore.getPushAverageDate();
+    return v > 0.0f && d != null;
   }
 
   private boolean hasCoastRecordData() {
-    return false;
+    // if we have a value and a date, we have data
+    float v = Datastore.getCoastTimeRecordValue();
+    Date d = Datastore.getCoastTimeRecordDate();
+    return v > 0.0f && d != null;
   }
 
   private void initializePushWarning() {
+    // get all records from the db
+    // determine the average number of pushes the user has done
+    // save that average into the datastore
+    // save the current day into the datastore
   }
 
   private void initializeCoastRecord() {
+    // get all records from the db
+    // determine the max coast time the user has had (for a day with >
+    // 200 pushes)
+    // save that max coast time into the datastore
+    // save the max's date into the datastore
   }
 
   private void checkPushWarningNotification() {
@@ -297,6 +312,14 @@ public class ActivityService
     if (!isInitialized) {
       initializePushWarning();
     }
+    // get the average number of pushes the user has done
+    float avgPushes = Datastore.getPushAverageValue();
+    float pushesToday = currentActivity.push_count;
+    float warningValue = avgPushes * 1.25f;
+    if (pushesToday > 1000.0f && pushesToday > warningValue) {
+      // TODO: notify them
+    }
+    // TODO: update the datastore
   }
 
   private void checkCoastRecordNotification() {
@@ -304,11 +327,27 @@ public class ActivityService
     if (!isInitialized) {
       initializeCoastRecord();
     }
+    // check the max coast time (average)
+    float coastToday = currentActivity.coast_time_avg;
+    float coastRecordValue = Datastore.getCoastTimeRecordValue();
+    Date coastRecordDay = Datastore.getCoastTimeRecordDate();
+    Date now = Calendar.getInstance().getTime();
+    if (!isSameDay(now, coastRecordDay) && coastToday > coastRecordValue) {
+      // update the value in the datastore
+      Datastore.setCoastTimeRecordValue(coastToday);
+      Datastore.setCoastTimeRecordDate(now);
+      // TODO: notify them
+    }
   }
 
   private void checkNotifications() {
     checkPushWarningNotification();
     checkCoastRecordNotification();
+  }
+
+  private boolean isSameDay(Date date1, Date date2) {
+    SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+    return fmt.format(date1).equals(fmt.format(date2));
   }
 
     private void loadFromDatabase() {

@@ -40,6 +40,30 @@ public class Datastore {
     editor.commit();
   }
 
+  public float getPushAverageValue() {
+  }
+
+  public Date getPushAverageDate() {
+  }
+
+  public void setPushAverageValue(float f) {
+  }
+
+  public void setPushAverageDate(Date d) {
+  }
+
+  public float getCoastTimeRecordValue() {
+  }
+
+  public Date getCoastTimeRecordDate() {
+  }
+
+  public void setCoastTimeRecordValue(float f) {
+  }
+
+  public void setCoastTimeRecordDate(Date d) {
+  }
+
   public String getUnits() {
     return preferences.getString(PREFIX + UNITS_KEY, "english");
   }
