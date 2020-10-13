@@ -84,7 +84,7 @@ public class Datastore {
   }
 
   public float getCoastTimeRecordValue() {
-    return preferences.getFloat(PREFIX + COAST_TIME_RECORD_DATE_KEY, 0.0f);
+    return preferences.getFloat(PREFIX + COAST_TIME_RECORD_VALUE_KEY, 0.0f);
   }
 
   public Date getCoastTimeRecordDate() {

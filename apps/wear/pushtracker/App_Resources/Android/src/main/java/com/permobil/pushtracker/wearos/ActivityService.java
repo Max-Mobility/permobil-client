@@ -31,6 +31,7 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -235,6 +236,9 @@ public class ActivityService
         this.initSensors();
         this.registerAllSensors();
 
+        // create the notification channels for the records
+        this.createNotificationChannels();
+
     /*
     // Get the LocationManager so we can send last known location
     // with the record when saving to Kinvey
@@ -365,13 +369,21 @@ public class ActivityService
     if (lastNotifiedDate != null) {
       hasBeenNotified = isSameDay(now, lastNotifiedDate);
     }
+    /*
+    Log.d(TAG, "pushesToday: " + pushesToday);
+    Log.d(TAG, "avgPushes: " + avgPushes);
+    Log.d(TAG, "warningValue: " + warningValue);
+    Log.d(TAG, "lastNotifiedDate: " + lastNotifiedDate);
+    Log.d(TAG, "hasBeenNotified: " + hasBeenNotified);
+    */
     if (pushesToday > 1000.0f &&
         pushesToday > warningValue &&
         !hasBeenNotified &&
         hasEnoughActivity) {
       // make sure we log that we notified them
       datastore.setPushAverageDate(now);
-      // TODO: notify them
+      // notify them
+      showPushWarningNotification();
     }
   }
 
@@ -411,19 +423,27 @@ public class ActivityService
     int minPushesRequired = 200;
     boolean hasEnoughPushes = pushesToday > minPushesRequired;
     // have we already notified them?
-    Date coastRecordDay = datastore.getCoastTimeRecordDate();
+    Date lastNotifiedDate = datastore.getCoastTimeRecordDate();
     boolean hasBeenNotified = false;
     Date now = Calendar.getInstance().getTime();
-    if (coastRecordDay != null) {
-      hasBeenNotified = isSameDay(now, coastRecordDay);
+    if (lastNotifiedDate != null) {
+      hasBeenNotified = isSameDay(now, lastNotifiedDate);
     }
+    /*
+    Log.d(TAG, "coastToday: " + coastToday);
+    Log.d(TAG, "coastRecordValue: " + coastRecordValue);
+    Log.d(TAG, "pushesToday: " + pushesToday);
+    Log.d(TAG, "lastNotifiedDate: " + lastNotifiedDate);
+    Log.d(TAG, "hasBeenNotified: " + hasBeenNotified);
+    */
     if (hasEnoughPushes &&
         !hasBeenNotified &&
         coastToday > coastRecordValue) {
       // update the value in the datastore
       datastore.setCoastTimeRecordValue(coastToday);
       datastore.setCoastTimeRecordDate(now);
-      // TODO: notify them
+      // notify them
+      showCoastTimeRecordNotification();
     }
   }
 
@@ -758,6 +778,8 @@ public class ActivityService
                 mHandler.postDelayed(mSendTask, SEND_DATA_PERIOD_MS);
                 // post to the push runnable
                 mHandler.postDelayed(mPushTask, PUSH_DATA_PERIOD_MS);
+                // notify the user if they've achieved records / warnings
+                checkNotifications();
             }
         }
     }
@@ -959,6 +981,83 @@ public class ActivityService
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 
+  private void createNotificationChannels() {
+    // Create the NotificationChannel, but only on API 26+ because
+    // the NotificationChannel class is new and not in the support library
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      /*
+      CharSequence name = getString(R.string.channel_name);
+      String description = getString(R.string.channel_description);
+      */
+      String name = "com.permobil.pushtracker.record_notification_channel";
+      String description = "Record Notifications";
+      int importance = NotificationManager.IMPORTANCE_DEFAULT;
+      String channelId = name;
+      NotificationChannel channel = new NotificationChannel(channelId, name, importance);
+      channel.setDescription(description);
+      // Register the channel with the system; you can't change the importance
+      // or other notification behaviors after this
+      NotificationManager notificationManager = getSystemService(NotificationManager.class);
+      notificationManager.createNotificationChannel(channel);
+    }
+  }
+
+  private void showPushWarningNotification() {
+    String channelId = "com.permobil.pushtracker.record_notification_channel";
+    Builder notificationBuilder = new Builder(this, Constants.NOTIFICATION_CHANNEL)
+      .setContentTitle("Push Warning")
+      .setContentText("You pushed too much, don't push so much dude!")
+      .setColor(0x006ea5)
+      .setSmallIcon(R.drawable.ic_notification_icon)
+      .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_notification_icon))
+      .setChannelId(channelId);
+
+    /*
+    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+      .setColor(0x006ea5)
+      .setSmallIcon(R.drawable.ic_notification_icon)
+      .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_notification_icon))
+      .setContentTitle("Push Warning")
+      .setContentText("You pushed too much, don't push so much dude!")
+      .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+    // notificationId is a unique int for each notification that you must define
+    notificationManager.notify(10001, builder.build());
+    */
+
+    NotificationManager notificationManager =
+      (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    notificationManager.notify(20001, notificationBuilder.build());
+  }
+
+  private void showCoastTimeRecordNotification() {
+    String channelId = "com.permobil.pushtracker.record_notification_channel";
+    Builder notificationBuilder = new Builder(this, Constants.NOTIFICATION_CHANNEL)
+      .setContentTitle("Coast Time Record")
+      .setContentText("Great job, you've beaten your coast time record! Way to go dude!")
+      .setColor(0x006ea5)
+      .setSmallIcon(R.drawable.ic_notification_icon)
+      .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_notification_icon))
+      .setChannelId(channelId);
+
+    /*
+    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+      .setColor(0x006ea5)
+      .setSmallIcon(R.drawable.ic_notification_icon)
+      .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_notification_icon))
+      .setContentTitle("Coast Time Record")
+      .setContentText("Great job, you've beaten your coast time record! Way to go dude!")
+      .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+    // notificationId is a unique int for each notification that you must define
+    notificationManager.notify(20001, builder.build());
+    */
+
+    NotificationManager notificationManager =
+      (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    notificationManager.notify(20001, notificationBuilder.build());
+  }
+
     private void startServiceWithNotification() {
         if (isServiceRunning) return;
         breadcrumb("startServiceWithNotification()");
@@ -993,7 +1092,7 @@ public class ActivityService
         } else {
           String err = "NotificationManager was null. Unable to create the NotificationChannel to start the service with the notification.";
           Exception ex = new Exception(err);
-          Sentry.captureException(ex); 
+          Sentry.captureException(ex);
         }
 
         String contentText = getString(R.string.foreground_service_notification);
