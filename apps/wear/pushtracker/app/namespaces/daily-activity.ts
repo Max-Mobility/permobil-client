@@ -1,9 +1,10 @@
-import { eachDay, format, subDays } from 'date-fns';
+import { eachDay, subDays } from 'date-fns';
+import { formatDateTime } from '../utils';
 
 declare const com: any;
 
 export namespace DailyActivity {
-  export class Record extends com.permobil.pushtracker.DailyActivity {}
+  export class Record extends com.permobil.pushtracker.DailyActivity { }
 
   export namespace Info {
     export const TableName =
@@ -27,7 +28,7 @@ export namespace DailyActivity {
     ];
 
     export function getDateValue(date: any) {
-      return format(date, 'YYYY/MM/DD');
+      return formatDateTime(date, 'yyyy/MM/dd').formatted;
     }
 
     export function getPastDates(numDates: number) {
