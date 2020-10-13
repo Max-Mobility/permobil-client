@@ -6,4 +6,5 @@
     <string name="complications_provider_service_label_pushes">Pushes</string>
     <string name="complications_provider_service_label_coast_time">Coast Time</string>
     <string name="complications_provider_service_label_distance">Distance</string>
+    <string name="personal_record">Personal Record</string>
 </resources>

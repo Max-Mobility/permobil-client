@@ -6,4 +6,5 @@
     <string name="complications_provider_service_label_pushes">Skubber dagligt</string>
     <string name="complications_provider_service_label_coast_time">Afstand dagligt</string>
     <string name="complications_provider_service_label_distance">Kysttid dagligt</string>
+    <string name="personal_record">Personlig registrering</string>
 </resources>

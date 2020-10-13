@@ -6,4 +6,5 @@
     <string name="complications_provider_service_label_pushes">毎日プッシュ</string>
     <string name="complications_provider_service_label_coast_time">コーストタイムデイリー</string>
     <string name="complications_provider_service_label_distance">毎日の距離</string>
+    <string name="personal_record">個人記録</string>
 </resources>

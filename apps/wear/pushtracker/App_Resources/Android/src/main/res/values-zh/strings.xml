@@ -6,4 +6,5 @@
     <string name="complications_provider_service_label_pushes">每日推送</string>
     <string name="complications_provider_service_label_coast_time">每日海岸時間</string>
     <string name="complications_provider_service_label_distance">每日距離</string>
+    <string name="personal_record">個人記錄</string>
 </resources>

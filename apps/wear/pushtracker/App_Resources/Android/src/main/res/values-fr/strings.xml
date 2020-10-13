@@ -6,4 +6,5 @@
     <string name="complications_provider_service_label_pushes">Pousse tous les jours</string>
     <string name="complications_provider_service_label_coast_time">Temps libre chaque jour</string>
     <string name="complications_provider_service_label_distance">Distance quotidienne</string>
+    <string name="personal_record">Fiche personnelle</string>
 </resources>

@@ -6,4 +6,5 @@
     <string name="complications_provider_service_label_pushes">Spinge ogni giorno</string>
     <string name="complications_provider_service_label_coast_time">Tempo di costa giornaliero</string>
     <string name="complications_provider_service_label_distance">Distanza giornaliera</string>
+    <string name="personal_record">Record personale</string>
 </resources>

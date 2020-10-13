@@ -6,4 +6,5 @@
     <string name="complications_provider_service_label_pushes">Drückt Täglich</string>
     <string name="complications_provider_service_label_coast_time">Küstenzeit Täglich</string>
     <string name="complications_provider_service_label_distance">Entfernung Täglich</string>
+    <string name="personal_record">Persönliche Aufzeichnung</string>
 </resources>

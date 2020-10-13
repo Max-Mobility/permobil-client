@@ -6,4 +6,5 @@
     <string name="complications_provider_service_label_pushes">Skyver daglig</string>
     <string name="complications_provider_service_label_coast_time">Kysttid daglig</string>
     <string name="complications_provider_service_label_distance">Avstand daglig</string>
+    <string name="personal_record">Personlig post</string>
 </resources>

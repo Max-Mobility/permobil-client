@@ -6,4 +6,5 @@
     <string name="complications_provider_service_label_pushes">Dagelijks duwen</string>
     <string name="complications_provider_service_label_coast_time">Kusttijd Dagelijks</string>
     <string name="complications_provider_service_label_distance">Dagelijkse afstand</string>
+    <string name="personal_record">Persoonlijk record</string>
 </resources>

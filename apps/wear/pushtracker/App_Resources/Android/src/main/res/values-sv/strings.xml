@@ -6,4 +6,5 @@
     <string name="complications_provider_service_label_pushes">Skjuter dagligen</string>
     <string name="complications_provider_service_label_coast_time">Kusttid dagligen</string>
     <string name="complications_provider_service_label_distance">Avstånd dagligen</string>
+    <string name="personal_record">Personlig post</string>
 </resources>
