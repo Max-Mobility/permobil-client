@@ -319,7 +319,16 @@ public class ActivityService
     if (pushesToday > 1000.0f && pushesToday > warningValue) {
       // TODO: notify them
     }
-    // TODO: update the datastore
+  }
+
+  // this gets called when it's a new day, so we will update the
+  // average number of pushes by the currentActivity.push_count
+  private void updatePushWarningData() {
+    // get the number of days that was used to calculate the push
+    // average last time
+    int numDays = Datastore.getPushAverageNumberOfDays();
+    // increment by 1
+    numDays += 1;
   }
 
   private void checkCoastRecordNotification() {
@@ -476,6 +485,8 @@ public class ActivityService
                     // determine if it's a new day
                     if (!sameDate) {
                         breadcrumb("timeReceiver::onReceive() - new day!");
+                        // update the data we keep for the records
+                        updatePushWarningData();
                         // reset values to zero
                         currentActivity = new DailyActivity();
                         // make sure to set the serial number
