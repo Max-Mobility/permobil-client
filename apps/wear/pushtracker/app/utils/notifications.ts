@@ -36,7 +36,7 @@ async function scheduleWheelchairMaintenance() {
         title: L('notifications.titles.wheelchair-maintenance'),
         body: L('notifications.wheelchair-maintenance'),
         channel: L('notifications.channels.maintenance'),
-        icon: 'res://ic_omniwheel_white',
+        icon: 'res://ic_notification_icon',
         interval: 30, // fires every 30 days
         color,
         at
@@ -68,7 +68,7 @@ async function setupAddPtElement() {
     const body = L('notifications.add-pt-element');
     const channel = L('notifications.channels.smartdrive');
     const color = new Color('#0067a6');
-    const icon = 'res://ic_omniwheel_white';
+    const icon = 'res://ic_notification_icon';
 
     const notifications = await LocalNotifications.schedule([
       {
@@ -107,18 +107,4 @@ async function setupAddPtElement() {
     Sentry.captureException(error);
     Log.E('Error setting up recurring notifications for PT.W', error);
   }
-}
-
-export function checkRecordBased() {
-  // need to somehow observe the data and trigger the notification when event happens
-  LocalNotifications.schedule([
-    {
-      id: PushTrackerNotificationIDs.NEW_COAST_TIME_RECORD,
-      title: L('notifications.titles.new-coast-record'),
-      body: L('notifications.new-coast-record'),
-      channel: L('notifications.channels.personal-record'),
-      icon: 'res://ic_omniwheel_white',
-      color: new Color('#0067a6')
-    }
-  ]);
 }
