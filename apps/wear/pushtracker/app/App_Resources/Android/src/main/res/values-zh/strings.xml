@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">PushTracker</string>
-    <string name="title_activity_kimera">PushTracker</string>
-    <string name="foreground_service_notification">Permobil PushTracker正在收集您的活動</string>
-    <string name="complications_provider_service_label_pushes">每日推送</string>
-    <string name="complications_provider_service_label_coast_time">每日海岸時間</string>
-    <string name="complications_provider_service_label_distance">每日距離</string>
-</resources>

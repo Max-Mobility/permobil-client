@@ -1,4 +1,6 @@
 export enum DataKeys {
+  'TOTAL_DISTANCE_RECORD' = 'total_distance_record',
+  'DAILY_DISTANCE_RECORD_DAY' = 'daily_distance_record_day',
   'USER_IDENTIFIER' = 'user_identifier',
   'SHOULD_SHOW_PERMISSIONS_REQUEST' = 'should_show_permissions_request',
   'SHOULD_SHOW_POWER_ASSIST_TIMEOUT' = 'should_show_power_assist_timeout',

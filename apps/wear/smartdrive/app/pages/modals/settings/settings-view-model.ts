@@ -47,6 +47,11 @@ export class SettingsViewModel extends Observable {
   private _isDownloadingFiles: boolean = false;
   private _shouldDownloadFiles: boolean = true;
 
+  private _closeCallback: (shouldConnect: boolean) => {};
+  // if the user changes accel, SC mode, SC max speed then we should
+  // connect to the smartdrive to update its settings.
+  private _shouldConnectSmartDrive: boolean = false;
+
   constructor(
     page: Page,
     settingsService: SettingsService,
@@ -61,6 +66,7 @@ export class SettingsViewModel extends Observable {
     const res = configureLayout(wearOsLayout);
     this.chinSize = res.chinSize;
     this.insetPadding = res.insetPadding;
+    this._closeCallback = data.closeCallback;
     wearOsLayout.nativeView.setPadding(
       this.insetPadding,
       this.insetPadding,
@@ -87,6 +93,16 @@ export class SettingsViewModel extends Observable {
         this._downloadTranslationFiles();
       }
     });
+  }
+
+  close() {
+    this._closeCallback(this._shouldConnectSmartDrive);
+  }
+
+  settingRequiresSmartDriveConnection(setting: string) {
+    return setting === 'acceleration' ||
+      setting === 'switchcontrolmode' ||
+      setting === 'switchcontrolspeed';
   }
 
   onChangeSettingsItemTap(args) {
@@ -122,6 +138,7 @@ export class SettingsViewModel extends Observable {
       ) => {
         this._showingModal = false;
         if (confirmedByUser) {
+          // actually update the settings to make sure they're saved
           this._settingsService.settings.copy(_tempSettings);
           this._settingsService.switchControlSettings.copy(
             _tempSwitchControlSettings
@@ -129,6 +146,10 @@ export class SettingsViewModel extends Observable {
           this._settingsService.watchSettings.copy(_tempWatchSettings);
           this._settingsService.hasSentSettings = false;
           this._settingsService.saveSettings();
+          // keep track of whether the user has changed a setting
+          // which they should send to the smartdrive
+          this._shouldConnectSmartDrive = this._shouldConnectSmartDrive ||
+            this.settingRequiresSmartDriveConnection(this.activeSettingToChange);
           // warning / indication to the user that they've updated their settings
           if (this.activeSettingToChange === 'language') {
             Dialogs.confirm({
@@ -231,8 +252,8 @@ export class SettingsViewModel extends Observable {
       acc[_filename] = !current
         ? val
         : val._version > current._version
-        ? val
-        : current;
+          ? val
+          : current;
       return acc;
     }, {});
 

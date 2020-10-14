@@ -60,13 +60,14 @@
       "batteryvoltage": "[ERR: 001] SD Battery Voltage",
       "bledisconnect": "[ERR: 007] Bluetooth Disconnect",
       "gyrorange": "[ERR: 005] SD Angle",
-      "motorphases": "[ERR: 002] SD Motor",
       "motordriverfault": "[ERR: 008] SD Motor Chip",
+      "motorphases": "[ERR: 002] SD Motor",
       "otaunavailable": "[ERR: 006] Updates Unavailable",
       "overcurrent": "[ERR: 003] SD Current Spike",
       "overtemperature": "[ERR: 004] SD Overheating"
     },
     "loading": "Loading...",
+    "load-more": "Load More",
     "no-errors": "No SmartDrive errors have been recorded or received.",
     "title": "SmartDrive Error History"
   },
@@ -93,6 +94,24 @@
     "title": "Notice",
     "too-many-smartdrives-found": "Multiple SmartDrives found. Make sure there is only one SmartDrive on in the vicinity when pairing."
   },
+  "language-list": {
+    "cs": "Čeština",
+    "da": "Dansk",
+    "de": "Deutsche",
+    "en": "English",
+    "es": "Español",
+    "fi": "Suomalainen",
+    "fr": "Français",
+    "it": "Italiano",
+    "ja": "日本人",
+    "ko": "한국어",
+    "nb": "Norsk Bokmål",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Português",
+    "sv": "Svenska",
+    "zh": "中國傳統的"
+  },
   "languages": {
     "cs": "Czech",
     "da": "Danish",
@@ -117,6 +136,42 @@
     "title": "SmartDrive MX2+ Menu ",
     "training": "Tap Training",
     "updates": "Wireless Updates"
+  },
+  "notifications": {
+    "tire-pressure": "Tire pressure greatly impacts your ability to push. Have you checked it lately?",
+    "sd-roller-check": "Check your rollers.  See flat spots? Are they hard to spin? Contact SmartDrive today to discuss.",
+    "sd-clamp-check": "Time to check your alignment! Make sure your clamp or folding frame adapter are set correct. Refer to your user’s manual or contact us.",
+    "open-pt-wear": "Want to know more about your daily mobility? Open the PushTracker app to know your push count, coast time, and distance traveled each day.",
+    "access-more-features": "Want more features about your daily/weekly/monthly propulsion activities? Contact us to learn how to make your PushTracker E2 give your more features!",
+    "unlock-more-features": "Unlock more E2! Text messages, heart rate, and calendar alerts are just few other features you can get from your PushTracker E2. Refer to the instructions on your E2 box or contact us to learn how to make your PushTracker E2 give your more features!",
+    "daily-distance-record": "You did it! You achieved a new personal record for distance traveled in a day. Keep it up! And don’t forget to coast. #ChooseToDoMore",
+    "switch-control-reminder": "SwitchControl buttons give you another way to control your SmartDrive. Plug them directly in to SmartDrive charging port (no Bluetooth required). Press the button to go, stop, or set your speed. Contact you provider or SmartDrive support to learn more.",
+    "accelerate-while-moving": "Pick up your speed while you’re already moving! Push the wheel to go faster, then single tap with your PushTracker E2. Press and hold SwitchControl to increase speed again.",
+    "sc-light-indications": "Curious about the flashing lights are on your SwitchControl? Refer to your user manual or our YouTube page to find out what each one means.",
+    "sd-e2-charging": "For optimal performance charge your SmartDrive every night. Make sure you keep it charged above 25%, especially if you’re not going to use SmartDrive for a long time period. Check your user’s manual or contact us for details.",
+    "odometer-records-part-one": "Doing more while keeping your shoulders healthy is what it’s all about. You’ve put",
+    "odometer-records-part-two": "on your SmartDrive. #ChooseToDoMore",
+    "routine-maintenance": "Keeping your equipment clean helps it last longer! Use a damp sponge, mild detergent and dry thoroughly to keep your SmartDrive like new! (do not soak or immerse).",
+    "titles": {
+      "tire-pressure": "Tire Pressure Check",
+      "sd-roller-check": "SmartDrive Roller",
+      "sd-clamp-check": "SmartDrive Clamp Check/Folding Frame Adapter",
+      "open-pt-wear": "Open the PushTracker Wear App",
+      "access-more-features": "Access More Features",
+      "unlock-more-features": "Unlock more features",
+      "daily-distance-record": "Daily Distance Record!",
+      "switch-control-reminder": "SwitchControl Reminder",
+      "accelerate-while-moving": "Accelerate While Moving",
+      "sc-light-indications": "SC Light Indications",
+      "sd-e2-charging": "SmartDrive & E2 Charging",
+      "odometer-records": "Odometer Records",
+      "routine-maintenance": "Routine Maintenance"
+    },
+    "channels": {
+      "maintenance": "Maintenance",
+      "smartdrive": "SmartDrive",
+      "personal-record": "Personal Record"
+    }
   },
   "ota": {
     "action": {
@@ -214,6 +269,7 @@
     },
     "scanning": "Scanning for SmartDrive to pair with...",
     "select-smartdrive": "Select SmartDrive",
+    "send-settings-prompt": "The new settings will not take effect until the next time you turn Power Assist On and connect to the SmartDrive. Would you like to turn power assist on now to connect to the SmartDrive and update its settings?",
     "set-time": "Date & Time",
     "syncing-with-server": "Synchronizing with server...",
     "tap-sensitivity": "Tap Sensitivity",
@@ -268,30 +324,12 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "Are you sure you wish to change the language? The SmartDrive MX2+ app must restart to apply the language change.",
       "message": "CAUTION: You MUST consult the SmartDrive User's Manual on how changing the settings affects its operation and performance.",
-      "title": "Changed Settings",
-      "language": "The app language has been changed."
+      "title": "Changed Settings"
     },
     "title": {
       "notice": "Notice"
     }
-  },
-  "language-list": {
-    "cs": "Čeština",
-    "da": "Dansk",
-    "de": "Deutsche",
-    "en": "English",
-    "es": "Español",
-    "fi": "Suomalainen",
-    "fr": "Français",
-    "it": "Italiano",
-    "ja": "日本人",
-    "ko": "한국어",
-    "nb": "Norsk Bokmål",
-    "nl": "Nederlands",
-    "pl": "Polski",
-    "pt": "Português",
-    "sv": "Svenska",
-    "zh": "中國傳統的"
   }
 }

@@ -71,7 +71,22 @@
     "title": "메뉴"
   },
   "notifications": {
-    "foreground-service": "Permobil PushTracker가 활동을 수집하고 있습니다"
+    "foreground-service": "Permobil PushTracker가 활동을 수집하고 있습니다",
+    "wheelchair-maintenance": "Keeping your wheelchair maintained makes pushing easier. Caster wheels, caster forks, and tire wear are common issues that influence your ability to push your chair.",
+    "add-pt-element": "Want quicker access to your PushTracker stats? You can change the watch face to set a shortcut. Check out our YouTube channel or email us for details.",
+    "new-coast-record": "You did it! You achieved a new personal best for coast time. Doing more, while saving your shoulders! #ChooseToDoMore",
+    "daily-push-warning": "Friendly reminder! You’ve pushed 25% more today than your daily average. Consider taking a break or using your SmartDrive more.",
+    "titles": {
+      "daily-push-warning": "Daily Push Warning",
+      "new-coast-record": "New Coast Time Record!",
+      "add-pt-element": "Add PushTracker as Element",
+      "wheelchair-maintenance": "General WC Maintenance Reminder"
+    },
+    "channels": {
+      "smartdrive": "SmartDrive",
+      "personal-record": "Personal Record",
+      "maintenance": "Maintenance"
+    }
   },
   "permissions-reasons": {
     "coarse-location": "Bluetooth를 사용하여 iPhone에서 PushTracker Mobile 앱에 연결하려면 다음 화면에서 위치 권한 [ACCESS_COARSE_LOCATION]을 허용해야합니다. 이 권한으로 Permobil은 위치 데이터에 액세스하지 않습니다.",

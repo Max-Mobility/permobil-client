@@ -101,6 +101,7 @@ class MainActivity
   }
 }
 
+@NativeClass()
 class MyAmbientCallback extends androidx.wear.ambient.AmbientModeSupport
   .AmbientCallback {
   /** If the display is low-bit in ambient mode. i.e. it requires anti-aliased fonts. */

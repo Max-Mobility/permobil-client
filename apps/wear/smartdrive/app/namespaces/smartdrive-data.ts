@@ -1,5 +1,6 @@
 import { Device, File, Http, knownFolders, path } from '@nativescript/core';
-import { eachDay, format, subDays } from 'date-fns';
+import { eachDayOfInterval, subDays } from 'date-fns';
+import { formatDateTime } from '../utils';
 
 export namespace SmartDriveData {
   export namespace Info {
@@ -32,9 +33,9 @@ export namespace SmartDriveData {
 
     export function getDateValue(date?: any) {
       if (date !== undefined) {
-        return format(new Date(date), 'YYYY/MM/DD');
+        return formatDateTime(new Date(date), 'yyyy/MM/dd').formatted;
       } else {
-        return format(new Date(), 'YYYY/MM/DD');
+        return formatDateTime(new Date(), 'yyyy/MM/dd').formatted;
       }
     }
 
@@ -61,7 +62,10 @@ export namespace SmartDriveData {
 
     export function getPastDates(numDates: number) {
       const now = new Date();
-      return eachDay(subDays(now, numDates), now);
+      return eachDayOfInterval({
+        start: subDays(now, numDates),
+        end: now
+      });
     }
 
     export function makeRecord(

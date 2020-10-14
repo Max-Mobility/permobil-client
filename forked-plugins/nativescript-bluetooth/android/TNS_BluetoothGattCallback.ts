@@ -26,9 +26,6 @@ function setupGattCallback() {
       status: number,
       newState: number
     ) {
-      console.info(
-        `---- TNS_BluetoothGattCallback.onConnectionStateChange ---- status: ${status}, newState: ${newState}`
-      );
       if (
         newState === android.bluetooth.BluetoothProfile.STATE_CONNECTED &&
         status === android.bluetooth.BluetoothGatt.GATT_SUCCESS
@@ -36,7 +33,6 @@ function setupGattCallback() {
         // Discovers services offered by a remote device as well as their characteristics and descriptors.
         gatt.discoverServices();
       } else {
-        console.info(`---- disconnecting the gatt: ${gatt} ----`);
         // perhaps the device was manually disconnected, or in use by another device
         this._owner.get().gattDisconnect(gatt);
       }
@@ -51,10 +47,6 @@ function setupGattCallback() {
       gatt: android.bluetooth.BluetoothGatt,
       status: number
     ) {
-      console.info(
-        `---- TNS_BluetoothGattCallback.onServicesDiscovered ---- status (0=success): ${status}`
-      );
-
       if (status === android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
         // TODO grab from cached object and extend with services data?
         const services = gatt.getServices();
@@ -178,9 +170,7 @@ function setupGattCallback() {
       status: number
     ) {
       const device = gatt.getDevice();
-      console.info(
-        `----- TNS_BluetoothGattCallback.onCharacteristicRead ---- characteristic: ${characteristic}, status: ${status}, device: ${device}`
-      );
+
       const stateObject = this._owner.get().connections[device.getAddress()];
       if (!stateObject) {
         this._owner.get().gattDisconnect(gatt);
@@ -188,9 +178,6 @@ function setupGattCallback() {
       }
 
       if (status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
-        console.warn(
-          `BluetoothGatt::onCharacteristicRead - bad status: ${status}`
-        );
       }
       if (stateObject.onCharacteristicReadPromise) {
         const value = characteristic.getValue();
@@ -213,9 +200,6 @@ function setupGattCallback() {
       characteristic: android.bluetooth.BluetoothGattCharacteristic
     ) {
       const device = gatt.getDevice();
-      console.info(
-        `---- TNS_BluetoothGattCallback.onCharacteristicChanged ---- gatt: ${gatt}, characteristic: ${characteristic}, device: ${device}`
-      );
 
       const stateObject = this._owner.get().connections[device.getAddress()];
       if (!stateObject) {
@@ -248,9 +232,6 @@ function setupGattCallback() {
       status: number
     ) {
       const device = gatt.getDevice();
-      console.info(
-        `---- TNS_BluetoothGattCallback.onCharacteristicWrite ---- characteristic: ${characteristic}, status: ${status}, device: ${device}`
-      );
 
       const stateObject = this._owner.get().connections[device.getAddress()];
       if (!stateObject) {
@@ -261,9 +242,6 @@ function setupGattCallback() {
       stateObject.isWriting = false;
 
       if (status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
-        console.warn(
-          `BluetoothGattCallback::onCharacteristicWrite - BAD STATUS: ${status}`
-        );
       }
       if (stateObject.onCharacteristicWritePromise) {
         stateObject.onCharacteristicWritePromise({
@@ -284,10 +262,6 @@ function setupGattCallback() {
       descriptor: android.bluetooth.BluetoothGattDescriptor,
       status: number
     ) {
-      console.info(
-        `---- TNS_BluetoothGattCallback.onDescriptorRead ---- gatt: ${gatt}, descriptor: ${descriptor}, status: ${status}`
-      );
-
       const device = gatt.getDevice();
       const stateObject = this._owner.get().connections[device.getAddress()];
       if (!stateObject) {
@@ -318,9 +292,6 @@ function setupGattCallback() {
       status: number
     ) {
       const device = gatt.getDevice();
-      console.info(
-        `---- TNS_BluetoothGattCallback.onDescriptorWrite ---- descriptor: ${descriptor}, status: ${status}, device: ${device}`
-      );
 
       const stateObject = this._owner.get().connections[device.getAddress()];
       if (!stateObject) {
@@ -331,9 +302,6 @@ function setupGattCallback() {
       stateObject.isWriting = false;
 
       if (status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
-        console.warn(
-          `BluetoothGattCallback::onDescriptorWrite - BAD STATUS: ${status}`
-        );
       }
       if (stateObject.onDescriptorWritePromise) {
         stateObject.onDescriptorWritePromise({
@@ -354,10 +322,6 @@ function setupGattCallback() {
       rssi: number,
       status: number
     ) {
-      console.info(
-        `---- TNS_BluetoothGattCallback.onReadRemoteRssi ---- gatt: ${gatt} rssi: ${rssi}, status: ${status}`
-      );
-
       const device = gatt.getDevice();
       const stateObject = this._owner.get().connections[device.getAddress()];
       if (stateObject) {
@@ -387,11 +351,7 @@ function setupGattCallback() {
       gatt: android.bluetooth.BluetoothGatt,
       mtu: number,
       status: number
-    ) {
-      console.info(
-        `---- TNS_BluetoothGattCallback.onMtuChanged ---- gatt: ${gatt} mtu: ${mtu}, status: ${status}`
-      );
-    }
+    ) {}
   }
   return TNS_BluetoothGattCallback;
 }

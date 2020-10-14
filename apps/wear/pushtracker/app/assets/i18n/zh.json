@@ -71,7 +71,22 @@
     "title": "菜單"
   },
   "notifications": {
-    "foreground-service": "Permobil PushTracker正在收集您的活動"
+    "foreground-service": "Permobil PushTracker正在收集您的活動",
+    "wheelchair-maintenance": "Keeping your wheelchair maintained makes pushing easier. Caster wheels, caster forks, and tire wear are common issues that influence your ability to push your chair.",
+    "add-pt-element": "Want quicker access to your PushTracker stats? You can change the watch face to set a shortcut. Check out our YouTube channel or email us for details.",
+    "new-coast-record": "You did it! You achieved a new personal best for coast time. Doing more, while saving your shoulders! #ChooseToDoMore",
+    "daily-push-warning": "Friendly reminder! You’ve pushed 25% more today than your daily average. Consider taking a break or using your SmartDrive more.",
+    "titles": {
+      "daily-push-warning": "Daily Push Warning",
+      "new-coast-record": "New Coast Time Record!",
+      "add-pt-element": "Add PushTracker as Element",
+      "wheelchair-maintenance": "General WC Maintenance Reminder"
+    },
+    "channels": {
+      "smartdrive": "SmartDrive",
+      "personal-record": "Personal Record",
+      "maintenance": "Maintenance"
+    }
   },
   "permissions-reasons": {
     "coarse-location": "要使用藍牙與iPhone上的PushTracker Mobile應用程序連接，我們需要您在以下屏幕上允許“位置”權限[ACCESS_COARSE_LOCATION]。有了此許可，Permobil將不會訪問您的位置數據。",

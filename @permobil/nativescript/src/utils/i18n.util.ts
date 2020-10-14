@@ -1,7 +1,8 @@
 require('globals');
 import {
   Application,
-  ApplicationSettings as AppSettings, Device,
+  ApplicationSettings as AppSettings,
+  Device,
   File,
   Folder,
   knownFolders,
@@ -106,8 +107,12 @@ const get = (k, obj) => {
 };
 
 const L = (...args: any[]) => {
-  let translated = get(args[0], translations['en']) || args[0];
+  // secondary fallback is the key itself
+  let translated = args[0];
   try {
+    // main fallback is the english translation
+    translated = get(args[0], translations['en']) || translated;
+    // now actually load the real translation
     translated = get(args[0], translations[lang]) || translated;
   } catch {
     // do nothing - we have our defaults

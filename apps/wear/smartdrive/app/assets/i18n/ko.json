@@ -23,6 +23,7 @@
     "deny": "거부",
     "disable": "사용 안함",
     "dismiss": "해제",
+    "do-not-show-again": "다시 표시하지 않습니다",
     "enable": "사용함",
     "ok": "확인"
   },
@@ -59,6 +60,7 @@
       "batteryvoltage": "[ERR : 001] 배터리 전압",
       "bledisconnect": "[ERR : 007] 블루투스 연결 끊김",
       "gyrorange": "[ERR : 005] 각도",
+      "motordriverfault": "[ERR : 008] SD 모터 칩",
       "motorphases": "[ERR : 002] 모터",
       "otaunavailable": "[ERR : 006] 업데이트를 사용할 수 없습니다",
       "overcurrent": "[ERR : 003] 전류 이상",
@@ -91,6 +93,24 @@
     "title": "주의",
     "too-many-smartdrives-found": "여러 개의 스마트드라이브가 발견되었습니다. 페어링시 주변에 스마트드라이브가 하나만 있도록 확인하십시오."
   },
+  "language-list": {
+    "cs": "",
+    "da": "",
+    "de": "",
+    "en": "",
+    "es": "",
+    "fi": "",
+    "fr": "",
+    "it": "",
+    "ja": "",
+    "ko": "",
+    "nb": "",
+    "nl": "",
+    "pl": "",
+    "pt": "",
+    "sv": "",
+    "zh": ""
+  },
   "languages": {
     "cs": "체코어",
     "da": "덴마크어",
@@ -115,6 +135,42 @@
     "title": "스마트드라이브 MX2+ 메뉴",
     "training": "탭 조작법",
     "updates": "무선 업데이트"
+  },
+  "notifications": {
+    "tire-pressure": "Tire pressure greatly impacts your ability to push. Have you checked it lately?",
+    "sd-roller-check": "Check your rollers.  See flat spots? Are they hard to spin? Contact SmartDrive today to discuss.",
+    "sd-clamp-check": "Time to check your alignment! Make sure your clamp or folding frame adapter are set correct. Refer to your user’s manual or contact us.",
+    "open-pt-wear": "Want to know more about your daily mobility? Open the PushTracker app to know your push count, coast time, and distance traveled each day.",
+    "access-more-features": "Want more features about your daily/weekly/monthly propulsion activities? Contact us to learn how to make your PushTracker E2 give your more features!",
+    "unlock-more-features": "Unlock more E2! Text messages, heart rate, and calendar alerts are just few other features you can get from your PushTracker E2. Refer to the instructions on your E2 box or contact us to learn how to make your PushTracker E2 give your more features!",
+    "daily-distance-record": "You did it! You achieved a new personal record for distance traveled in a day. Keep it up! And don’t forget to coast. #ChooseToDoMore",
+    "switch-control-reminder": "SwitchControl buttons give you another way to control your SmartDrive. Plug them directly in to SmartDrive charging port (no Bluetooth required). Press the button to go, stop, or set your speed. Contact you provider or SmartDrive support to learn more.",
+    "accelerate-while-moving": "Pick up your speed while you’re already moving! Push the wheel to go faster, then single tap with your PushTracker E2. Press and hold SwitchControl to increase speed again.",
+    "sc-light-indications": "Curious about the flashing lights are on your SwitchControl? Refer to your user manual or our YouTube page to find out what each one means.",
+    "sd-e2-charging": "For optimal performance charge your SmartDrive every night. Make sure you keep it charged above 25%, especially if you’re not going to use SmartDrive for a long time period. Check your user’s manual or contact us for details.",
+    "odometer-records-part-one": "Doing more while keeping your shoulders healthy is what it’s all about. You’ve put",
+    "odometer-records-part-two": "on your SmartDrive. #ChooseToDoMore",
+    "routine-maintenance": "Keeping your equipment clean helps it last longer! Use a damp sponge, mild detergent and dry thoroughly to keep your SmartDrive like new! (do not soak or immerse).",
+    "titles": {
+      "tire-pressure": "Tire Pressure Check",
+      "sd-roller-check": "SmartDrive Roller",
+      "sd-clamp-check": "SmartDrive Clamp Check/Folding Frame Adapter",
+      "open-pt-wear": "Open the PushTracker Wear App",
+      "access-more-features": "Access More Features",
+      "unlock-more-features": "Unlock more features",
+      "daily-distance-record": "Daily Distance Record!",
+      "switch-control-reminder": "SwitchControl Reminder",
+      "accelerate-while-moving": "Accelerate While Moving",
+      "sc-light-indications": "SC Light Indications",
+      "sd-e2-charging": "SmartDrive & E2 Charging",
+      "odometer-records": "Odometer Records",
+      "routine-maintenance": "Routine Maintenance"
+    },
+    "channels": {
+      "maintenance": "Maintenance",
+      "smartdrive": "SmartDrive",
+      "personal-record": "Personal Record"
+    }
   },
   "ota": {
     "action": {
@@ -212,6 +268,7 @@
     },
     "scanning": "페어링 할 스마트드라이브 스캔 중 ...",
     "select-smartdrive": "스마트드라이브 선택",
+    "set-time": "날짜 시간",
     "syncing-with-server": "서버와 동기화 중 ...",
     "tap-sensitivity": "탭 감도",
     "title": "스마트드라이브 설정",
@@ -265,9 +322,9 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "언어를 변경 하시겠습니까? 언어 변경을 적용하려면 SmartDrive MX2 + 앱을 다시 시작해야합니다.",
       "message": "주의 : 설정 변경에 따른 작동 및 성능에 미치는 영향에 대해서는 반드시 스마트드라이브 사용 설명서를 참조하십시오.",
-      "title": "변경된 설정",
-      "language": "The app language has been changed."
+      "title": "변경된 설정"
     },
     "title": {
       "notice": "주의사항"

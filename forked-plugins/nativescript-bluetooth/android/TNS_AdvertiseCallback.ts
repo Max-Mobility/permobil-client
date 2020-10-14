@@ -28,10 +28,6 @@ function setupAdvertiseCallback() {
      * @param errorCode
      */
     onStartFailure(errorCode: number) {
-      console.warn(
-        `---- TNS_AdvertiseCallback.onStartFailure ---- errorCode: ${errorCode}`
-      );
-
       // Get the error code value
       let errorObj;
       switch (errorCode) {

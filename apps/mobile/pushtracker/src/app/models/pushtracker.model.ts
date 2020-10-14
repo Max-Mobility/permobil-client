@@ -1,5 +1,4 @@
-import { File, isIOS, knownFolders, path } from '@nativescript/core';
-import * as timer from '@nativescript/core/timer';
+import { File, isIOS, knownFolders, path, Utils } from '@nativescript/core';
 import { bindingTypeToString, Device, Packet } from '@permobil/core';
 import { differenceInCalendarDays } from 'date-fns';
 import throttle from 'lodash/throttle';
@@ -278,10 +277,10 @@ export class PushTracker extends DeviceBase {
           }
           // stop the timer
           if (otaIntervalID) {
-            timer.clearInterval(otaIntervalID);
+            Utils.clearInterval(otaIntervalID);
           }
           // now actually start the ota
-          otaIntervalID = timer.setInterval(runOTA, 250);
+          otaIntervalID = Utils.setInterval(runOTA, 250);
         };
 
         // Handlers
@@ -303,9 +302,9 @@ export class PushTracker extends DeviceBase {
           this.otaStartTime = new Date();
           // start the timeout timer
           if (otaTimeoutID) {
-            timer.clearTimeout(otaTimeoutID);
+            Utils.clearTimeout(otaTimeoutID);
           }
-          otaTimeoutID = timer.setTimeout(() => {
+          otaTimeoutID = Utils.setTimeout(() => {
             this.sendEvent(PushTracker.ota_timeout_event);
           }, otaTimeout);
         };
@@ -379,7 +378,7 @@ export class PushTracker extends DeviceBase {
           if (cancelOTA) {
             return;
           } else if (paused) {
-            timer.setTimeout(() => {
+            Utils.setTimeout(() => {
               writeFirmwareSector(fwSector, characteristic, nextState);
             }, 100);
           } else if (index < fileSize) {
@@ -393,7 +392,7 @@ export class PushTracker extends DeviceBase {
                 .then(_ => {
                   index += payloadSize;
                   if (isIOS) {
-                    timer.setTimeout(() => {
+                    Utils.setTimeout(() => {
                       writeFirmwareSector(fwSector, characteristic, nextState);
                     }, 30);
                   } else {
@@ -401,19 +400,19 @@ export class PushTracker extends DeviceBase {
                   }
                 })
                 .catch(_ => {
-                  timer.setTimeout(() => {
+                  Utils.setTimeout(() => {
                     writeFirmwareSector(fwSector, characteristic, nextState);
                   }, 100);
                 });
             } else {
-              timer.setTimeout(() => {
+              Utils.setTimeout(() => {
                 writeFirmwareSector(fwSector, characteristic, nextState);
               }, 500);
             }
           } else {
             // we are done with the sending change
             // state to the next state
-            timer.setTimeout(() => {
+            Utils.setTimeout(() => {
               // wait for a little bit
               this.otaState = nextState;
             }, 1500);
@@ -429,10 +428,10 @@ export class PushTracker extends DeviceBase {
           this.setOtaActions();
           // stop timers
           if (otaIntervalID) {
-            timer.clearInterval(otaIntervalID);
+            Utils.clearInterval(otaIntervalID);
           }
           if (otaTimeoutID) {
-            timer.clearInterval(otaTimeoutID);
+            Utils.clearInterval(otaTimeoutID);
           }
 
           unregister();
@@ -444,7 +443,7 @@ export class PushTracker extends DeviceBase {
             this.on(PushTracker.ota_cancel_event, otaCancelHandler);
             this.on(PushTracker.ota_retry_event, otaRetryHandler);
             this.setOtaActions(['ota.action.retry']);
-            otaIntervalID = timer.setInterval(runOTA, 250);
+            otaIntervalID = Utils.setInterval(runOTA, 250);
           } else {
             resolve(reason);
           }
@@ -506,7 +505,7 @@ export class PushTracker extends DeviceBase {
                 this.otaCurrentTime = new Date();
               }
               if (otaTimeoutID) {
-                timer.clearTimeout(otaTimeoutID);
+                Utils.clearTimeout(otaTimeoutID);
               }
               if (index === -1) {
                 writeFirmwareSector(

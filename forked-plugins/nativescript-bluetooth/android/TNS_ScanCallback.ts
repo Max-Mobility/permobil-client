@@ -24,20 +24,13 @@ function setupScanCallback() {
      * Callback when batch results are delivered.
      * @param results [List<android.bluetooth.le.ScanResult>] - List of scan results that are previously scanned.
      */
-    onBatchScanResults(results) {
-      console.info(
-        `----- TNS_ScanCallback.onBatchScanResults ----- results: ${results}`
-      );
-    }
+    onBatchScanResults(results) {}
 
     /**
      * Callback when scan could not be started.
      * @param errorCode [number] - Error code (one of SCAN_FAILED_*) for scan failure.
      */
     onScanFailed(errorCode: number) {
-      console.error(
-        `----- TNS_ScanCallback.onScanFailed ----- errorCode: ${errorCode}`
-      );
       let errorMessage;
       if (
         errorCode ===
@@ -63,9 +56,6 @@ function setupScanCallback() {
       } else {
         errorMessage = 'Scan failed to start';
       }
-      console.error(
-        '----- TNS_ScanCallback.onScanFailed errorMessage: ' + errorMessage
-      );
     }
 
     /**
@@ -77,9 +67,6 @@ function setupScanCallback() {
       callbackType: number,
       result: android.bluetooth.le.ScanResult
     ) {
-      console.info(
-        `----- TNS_ScanCallback.onScanResult ----- callbackType: ${callbackType}, result: ${result}`
-      );
       const stateObject = this._owner.get().connections[
         result.getDevice().getAddress()
       ];
@@ -94,24 +81,14 @@ function setupScanCallback() {
             .getScanRecord()
             .getManufacturerSpecificData()
             .keyAt(0);
-          console.info(
-            `---- TNS_ScanCallback.onScanResult ---- manufacturerId: ${manufacturerId}`
-          );
+
           manufacturerData = this._owner
             .get()
             .decodeValue(
               result.getScanRecord().getManufacturerSpecificData().valueAt(0)
             );
-          console.info(
-            `---- TNS_ScanCallback.onScanResult ---- manufacturerData: ${manufacturerData}`
-          );
         }
 
-        console.info(
-          `---- Lollipop+ scanCallback result: ${result
-            .getDevice()
-            .getName()}::${result.getDevice().getAddress()}`
-        );
         const payload = {
           type: 'scanResult', // TODO or use different callback functions?
           UUID: result.getDevice().getAddress(),

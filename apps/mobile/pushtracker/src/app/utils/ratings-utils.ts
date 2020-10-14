@@ -4,7 +4,6 @@ import {
   Dialogs,
   Utils
 } from '@nativescript/core';
-import { setTimeout } from '@nativescript/core/timer';
 
 declare var android: any;
 
@@ -77,7 +76,7 @@ export class Ratings {
     }
 
     if (this.showCount >= this.configuration.showOnCount) {
-      setTimeout(() => {
+      Utils.setTimeout(() => {
         Dialogs.confirm({
           title: this.configuration.title,
           message: this.configuration.text,

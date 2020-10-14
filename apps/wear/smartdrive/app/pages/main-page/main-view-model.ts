@@ -20,16 +20,12 @@ import {
 } from '@nativescript/core';
 import { Log, wait } from '@permobil/core';
 import {
-  cancelScheduledNotification,
-  getDefaultLang,
   getDeviceSerialNumber,
   L,
   performance,
-  Prop,
-  scheduleSmartDriveLocalNotifications
+  Prop
 } from '@permobil/nativescript';
-import { SmartDriveLocalNotifications } from '@permobil/nativescript/src/enums';
-import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
+import { closestIndexTo, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
 import last from 'lodash/last';
@@ -58,37 +54,20 @@ import {
 } from '../../services';
 import {
   checkFirmwareMetaData,
+  formatDateTime,
   getCurrentFirmwareData,
   isNetworkAvailable,
   saveFirmwareFiles,
   sentryBreadCrumb,
   updateFirmwareData,
-  _isActivityThis
+  _isActivityThis,
+  dailyDistanceNotification,
+  odometerRecordNotification
 } from '../../utils';
 import { updatesViewModel } from '../modals/updates/updates-page';
 
 const ambientTheme = require('../../scss/theme-ambient.scss');
 const defaultTheme = require('../../scss/theme-default.scss');
-
-const dateLocales = {
-  cs: require('date-fns/locale/cs'),
-  da: require('date-fns/locale/da'),
-  de: require('date-fns/locale/de'),
-  en: require('date-fns/locale/en'),
-  es: require('date-fns/locale/es'),
-  fi: require('date-fns/locale/fi'),
-  fr: require('date-fns/locale/fr'),
-  it: require('date-fns/locale/it'),
-  ja: require('date-fns/locale/ja'),
-  ko: require('date-fns/locale/ko'),
-  nb: require('date-fns/locale/nb'),
-  nl: require('date-fns/locale/nl'),
-  nn: require('date-fns/locale/nb'),
-  pl: require('date-fns/locale/pl'),
-  pt: require('date-fns/locale/pt'),
-  sv: require('date-fns/locale/sv'),
-  zh: require('date-fns/locale/zh_cn')
-};
 
 declare const com: any;
 
@@ -288,20 +267,9 @@ export class MainViewModel extends Observable {
     try {
       await this._init();
       Log.D('init finished in the main-view-model');
-      // need to think out the API for this to schedule and not always call reschedule
-      // TBD based on the UX outlined by Ben, William, Curtis regarding the reminders/notifications
-      // we might want to set specific notifications based on parameters for regions, users, etc.
-      scheduleSmartDriveLocalNotifications();
-      Log.D('scheduled local notifications for SmartDrive Wear');
-      Utils.setTimeout(async () => {
-        const cancelId = await cancelScheduledNotification(
-          SmartDriveLocalNotifications.TIRE_PRESSURE_NOTIFICATION_ID
-        );
-        Log.D(`Canceled the Notification: ${cancelId}`);
-      }, 600000);
-
       // need to see how we're going to handle the UX for this per Ben/William/Curtis
       this._checkForUpdates();
+      // TODO: schedule notifications here
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
@@ -375,7 +343,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-          }`,
+            }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -415,14 +383,31 @@ export class MainViewModel extends Observable {
         settingsService: this._settingsService,
         sdKinveyService: this._kinveyService
       },
-      closeCallback: () => {
+      closeCallback: async (shouldConnectSmartDrive: boolean) => {
         this._showingModal = false;
         // we dont do anything with the about to return anything
         // now update any display that needs settings:
         this._updateSpeedDisplay();
         this._updateChartData();
+        // see if the user changed accel, SC mode, SC max speed
+        // (according to
+        // https://github.com/Max-Mobility/permobil-client/issues/337)
+        // and ask them if they'd like to send the settings now
+        if (shouldConnectSmartDrive) {
+          const turnPowerAssistOn = await Dialogs.confirm({
+            title: L('warnings.title.notice'),
+            message: L('settings.send-settings-prompt'),
+            okButtonText: L('power-assist.activate'),
+            cancelButtonText: L('buttons.dismiss'),
+            cancelable: false
+          });
+          if (turnPowerAssistOn) {
+            this.enablePowerAssist();
+          }
+        }
       },
       animated: false,
+      cancelable: false,
       fullscreen: true
     };
     this._showingModal = true;
@@ -739,6 +724,10 @@ export class MainViewModel extends Observable {
     // now that we've disabled power assist - make sure the charts
     // update with the latest data from the smartdrive
     this._updateChartData();
+
+    // now that we've updated the chart data and such - check the
+    // activity for notifications
+    this._updateNotifications();
 
     return Promise.resolve();
   }
@@ -1373,20 +1362,11 @@ export class MainViewModel extends Observable {
   }
 
   private _updateTimeDisplay() {
-    const now = new Date();
-    const context = Utils.android.getApplicationContext();
-    const is24HourFormat = android.text.format.DateFormat.is24HourFormat(
-      context
-    );
-    if (is24HourFormat) {
-      this.currentTime = this._format(now, 'HH:mm');
-      this.currentTimeMeridiem = ''; // in 24 hour format we don't need AM/PM
-    } else {
-      this.currentTime = this._format(now, 'h:mm');
-      this.currentTimeMeridiem = this._format(now, 'A');
-    }
-    this.currentDay = this._format(now, 'ddd MMM D');
-    this.currentYear = this._format(now, 'YYYY');
+    const datetime = formatDateTime(new Date());
+    this.currentTime = datetime.time;
+    this.currentTimeMeridiem = datetime.timeMeridiem;
+    this.currentDay = datetime.day;
+    this.currentYear = datetime.year;
   }
 
   private async _updateAuthorization() {
@@ -1815,7 +1795,7 @@ export class MainViewModel extends Observable {
         // @ts-ignore
         if (value) value += '%';
         return {
-          day: this._format(new Date(e.date), 'dd'),
+          day: formatDateTime(new Date(e.date), 'EEE').formatted.slice(0, 2),
           value: value
         };
       });
@@ -1854,7 +1834,7 @@ export class MainViewModel extends Observable {
           }
         }
         return {
-          day: this._format(new Date(e.date), 'dd'),
+          day: formatDateTime(new Date(e.date), 'EEE').formatted.slice(0, 2),
           value: dist
         };
       });
@@ -2059,12 +2039,6 @@ export class MainViewModel extends Observable {
     this._scanningView = null;
   }
 
-  private _format(d: Date, fmt: string) {
-    return format(d, fmt, {
-      locale: dateLocales[getDefaultLang()] || dateLocales['en']
-    });
-  }
-
   private _checkPackageInstalled(packageName: string) {
     let found = true;
     try {
@@ -2086,7 +2060,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     Application.android.foregroundActivity.startActivity(intent);
@@ -2151,7 +2125,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     Application.android.foregroundActivity.startActivity(intent);
@@ -2647,7 +2621,7 @@ export class MainViewModel extends Observable {
     if (this._todaysUsage) {
       // check to see it is actually today and create a new one if
       // needed
-      if (isToday(this._todaysUsage[SmartDriveData.Info.DateName])) {
+      if (isToday(new Date(this._todaysUsage[SmartDriveData.Info.DateName]))) {
         return this._todaysUsage;
       } else {
         this._todaysUsage = await this._makeTodaysUsage();
@@ -2674,6 +2648,137 @@ export class MainViewModel extends Observable {
       }
     }
     return this._todaysUsage;
+  }
+
+  private _getSmartDriveTotalMiles() {
+    let totalMiles = 0;
+    if (this.smartDrive) {
+      totalMiles = SmartDrive.caseTicksToMiles(this.smartDrive.coastDistance);
+    }
+    return totalMiles;
+  }
+
+  private async _updateNotifications() {
+    await this._checkDailyDistanceRecord();
+    await this._checkTotalDistanceRecord();
+  }
+
+  private async _checkDailyDistanceRecord() {
+    // if the user has at least a week of records and they have gone
+    // at least 0.5 mi or 0.5 km (depending on their units) today,
+    // then they get a notification
+    // determine if they have enough records
+    const numDays = await this._sqliteService.getNumRows(
+      SmartDriveData.Info.TableName,
+      SmartDriveData.Info.IdName
+    );
+    const hasEnoughData = numDays >= 5;
+    if (hasEnoughData) {
+      let numCaseTicksRequired = SmartDrive.milesToCaseTicks(0.5);
+      if (this._settingsService.settings.units === 'Metric') {
+        numCaseTicksRequired = SmartDrive.milesToCaseTicks(0.5 / 1.609);
+      }
+      // get the top two records ordered DESCENDING by CoastDistance
+      let records = await this._sqliteService.getAllColumnDifferences({
+        tableName: SmartDriveData.Info.TableName,
+        columnA: SmartDriveData.Info.CoastDistanceName,
+        columnB: SmartDriveData.Info.CoastDistanceStartName,
+        limit: 2,
+        minimum: numCaseTicksRequired,
+        ascending: false
+      });
+      // if we have records which have gone at least 0.5 miles
+      if (records && records.length) {
+        // pull the distance (last column returned as the difference)
+        // from the first record (largest difference)
+        const recordDistance = last(records[0]);
+        // now turn the records into actual SmartDrive Info objects
+        // @ts-ignore
+        records = records.map(r => SmartDriveData.Info.loadInfo(r));
+        // get the date of the record distance
+        const recordDay = records[0][SmartDriveData.Info.DateName];
+        // and compare it to the date of the last time we notified
+        // them
+        const lastRecordDay = ApplicationSettings.getString(
+          DataKeys.DAILY_DISTANCE_RECORD_DAY
+        );
+        const haveNotifiedThem =
+          lastRecordDay && isToday(new Date(lastRecordDay));
+        if (isToday(new Date(recordDay)) && !haveNotifiedThem) {
+          // store the date that we've notified them today so that we
+          // don't notify them multiple times in the same day
+          ApplicationSettings.setString(
+            DataKeys.DAILY_DISTANCE_RECORD_DAY,
+            recordDay
+          );
+          Log.D('NEW DAILY DISTANCE RECORD: ', recordDay, recordDistance);
+          // notify them - their record is today and they've gone
+          // at least 0.5 miles!
+          dailyDistanceNotification();
+        }
+      }
+    }
+  }
+
+  private async _checkTotalDistanceRecord() {
+    // each time the user goes over 50 mi/km increments (e.g. @ 50,
+    // 100, 150, etc.) they get a notification. we store the data as
+    // miles, so we'll want to represent the jumps as 50 km ->
+    // converted to miles
+    const incrementMiles = 50.0;
+    const incrementKilometers = incrementMiles / 1.609;
+    let increment = incrementMiles;
+    if (this._settingsService.settings.units === 'Metric') {
+      increment = incrementKilometers;
+    }
+    const todaysTotalMiles = this._getSmartDriveTotalMiles();
+    const todaysTotalKilometers = todaysTotalMiles * 1.609;
+    // get the current record value (default -1, always in miles) and
+    // add 50 units to it (50 miles, 50/1.609 km)
+    let currentRecord =
+      ApplicationSettings.getNumber(DataKeys.TOTAL_DISTANCE_RECORD, -1);
+    if (currentRecord === -1) {
+      // there was no record saved, so we have a few options:
+      if (todaysTotalMiles > increment) {
+        // 1. They have been using the SD for a while so we should
+        // give the first notification of their most recent record -
+        // which will store a record so that we don't come down this
+        // branch again. We compute the record prior to the closest,
+        // since after this conditional block, it will be incremented
+        // again.
+        currentRecord = todaysTotalMiles - (todaysTotalMiles % increment) - increment;
+      } else {
+        // 2. they have not used the SD enough to have passed their
+        // first record so they are starting out at 0 miles
+        // effectively - this means they will not get a notification,
+        // so we need to save 0 here so that we don't come down this
+        // branch again
+        currentRecord = 0;
+        ApplicationSettings.setNumber(
+          DataKeys.TOTAL_DISTANCE_RECORD,
+          0
+        );
+      }
+    }
+    const recordToBeatMiles = currentRecord + increment;
+    const recordToBeatKilometers = recordToBeatMiles * 1.609;
+    // if they're over that record, then we notify them and store the
+    // record we're at
+    const hasBeatenRecord = todaysTotalMiles > recordToBeatMiles;
+    if (hasBeatenRecord) {
+      // store the new record they will have to beat (always in miles)
+      ApplicationSettings.setNumber(
+        DataKeys.TOTAL_DISTANCE_RECORD,
+        recordToBeatMiles
+      );
+      Log.D('NEW ODOMETRY RECORD: ', todaysTotalMiles);
+      // send the notification
+      let distanceText = `${recordToBeatMiles.toFixed(0)} ${this.distanceUnits}`;
+      if (this._settingsService.settings.units === 'Metric') {
+        distanceText = `${recordToBeatKilometers.toFixed(0)} ${this.distanceUnits}`;
+      }
+      odometerRecordNotification(distanceText);
+    }
   }
 
   private async _updateTodaysUsageInfo(updates: any) {
@@ -2721,7 +2826,7 @@ export class MainViewModel extends Observable {
           totalDiff = SmartDrive.caseTicksToMiles(totalDiff);
         }
         // compute the date for the data
-        const date = this._format(new Date(e.date), 'YYYY/MM/DD');
+        const date = formatDateTime(new Date(e.date), 'yyyy/MM/dd').formatted;
         // now save the drive / total in this record
         data[date] = {
           drive: driveDiff,

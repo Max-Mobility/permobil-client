@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PushTracker</string>
+    <string name="title_activity_kimera">PushTracker</string>
+    <string name="foreground_service_notification">Permobil PushTracker verzamelt uw activiteit</string>
+    <string name="complications_provider_service_label_pushes">Dagelijks duwen</string>
+    <string name="complications_provider_service_label_coast_time">Kusttijd Dagelijks</string>
+    <string name="complications_provider_service_label_distance">Dagelijkse afstand</string>
+    <string name="personal_record">Persoonlijk record</string>
+    <string name="push_warning">Push-waarschuwing</string>
+    <string name="push_warning_notification_text">Vriendelijke herinnering! Je hebt vandaag 25% meer gepusht dan je dagelijkse gemiddelde. Overweeg een pauze te nemen of uw Smart Drive vaker te gebruiken.</string>
+    <string name="new_coast_time_record">Nieuw kusttijdrecord!</string>
+    <string name="coast_time_record_notification_text">Je hebt het gedaan! Je hebt een nieuw persoonlijk record behaald voor kusttijd. Meer doen en tegelijkertijd uw schouders sparen! #choosetodomore</string>
+    <string name="activity_collection">Verzameling van activiteiten</string>
+</resources>
