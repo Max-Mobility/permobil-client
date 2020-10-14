@@ -1003,7 +1003,7 @@ public class ActivityService
                 .setColor(0x006ea5)
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_notification_icon))
-                .setChannelId(R.string.smartdrive);
+                .setChannelId(getString(R.string.smartdrive));
 
 
         NotificationManager notificationManager =
@@ -1019,7 +1019,7 @@ public class ActivityService
                 .setColor(0x006ea5)
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_notification_icon))
-                .setChannelId(R.string.personal_record);
+                .setChannelId(getString(R.string.personal_record));
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
