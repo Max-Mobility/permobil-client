@@ -11,6 +11,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -209,6 +211,9 @@ public class ActivityService
 
         // create the notification channels for the records
         this.createNotificationChannels();
+        // For debugging purposes:
+        // this.showPushWarningNotification();
+        // this.showCoastTimeRecordNotification();
 
     /*
     // Get the LocationManager so we can send last known location
@@ -1018,12 +1023,18 @@ public class ActivityService
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void showCoastTimeRecordNotification() {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_trophy_blue);
+        Notification.BigPictureStyle style =
+          new Notification.BigPictureStyle()
+          .bigPicture(bitmap);
+
         Builder notificationBuilder = new Builder(this, getString(R.string.personal_record))
                 .setContentTitle(getString(R.string.new_coast_time_record))
                 .setContentText(getString(R.string.coast_time_record_notification_text))
                 .setColor(0x006ea5)
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_trophy_blue))
+                .setStyle(style)
                 .setChannelId(getString(R.string.personal_record));
 
         NotificationManager notificationManager =
