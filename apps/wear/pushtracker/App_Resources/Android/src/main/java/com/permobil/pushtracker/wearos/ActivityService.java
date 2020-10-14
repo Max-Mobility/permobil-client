@@ -1018,7 +1018,7 @@ public class ActivityService
                 .setContentText(getString(R.string.coast_time_record_notification_text))
                 .setColor(0x006ea5)
                 .setSmallIcon(R.drawable.ic_notification_icon)
-                .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_notification_icon))
+                .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_trophy_blue))
                 .setChannelId(getString(R.string.personal_record));
 
         NotificationManager notificationManager =
