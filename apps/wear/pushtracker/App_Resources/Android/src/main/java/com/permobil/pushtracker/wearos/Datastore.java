@@ -3,6 +3,9 @@ package com.permobil.pushtracker;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
 public class Datastore {
   public static final String PREF_NAME = "prefs.db";
 
@@ -21,6 +24,12 @@ public class Datastore {
   public static final String AUTHORIZATION_KEY = "authorization_token";
   public static final String USER_ID_KEY = "user_id";
 
+  public static final String AVERAGE_NUMBER_OF_PUSHES_VALUE_KEY = "average_number_of_pushes_value";
+  public static final String AVERAGE_NUMBER_OF_PUSHES_NUMBER_OF_DAYS_KEY = "average_number_of_pushes_number_of_days";
+  public static final String AVERAGE_NUMBER_OF_PUSHES_DATE_KEY = "average_number_of_pushes_date";
+  public static final String COAST_TIME_RECORD_VALUE_KEY = "coast_time_record_value";
+  public static final String COAST_TIME_RECORD_DATE_KEY = "coast_time_record_date";
+
   private SharedPreferences preferences;
 
   public Datastore(Context context) {
@@ -32,6 +41,74 @@ public class Datastore {
     editor.putInt(PREFIX + CURRENT_PUSH_COUNT_KEY, pushes);
     editor.putFloat(PREFIX + CURRENT_COAST_KEY, coastTime);
     editor.putFloat(PREFIX + CURRENT_DISTANCE_KEY, distance);
+    editor.commit();
+  }
+
+  public int getPushAverageNumberOfDays() {
+    return preferences.getInt(PREFIX + AVERAGE_NUMBER_OF_PUSHES_NUMBER_OF_DAYS_KEY, 0);
+  }
+
+  public float getPushAverageValue() {
+    return preferences.getFloat(PREFIX + AVERAGE_NUMBER_OF_PUSHES_VALUE_KEY, 0.0f);
+  }
+
+  public Date getPushAverageDate() {
+    String ds = preferences.getString(PREFIX + AVERAGE_NUMBER_OF_PUSHES_DATE_KEY, null);
+    if (ds != null) {
+      SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+      try {
+        return fmt.parse(ds);
+      } catch (Exception e) {
+      }
+    }
+    return null;
+  }
+
+  public void setPushAverageNumberOfDays(int d) {
+    SharedPreferences.Editor editor = preferences.edit();
+    editor.putInt(PREFIX + AVERAGE_NUMBER_OF_PUSHES_NUMBER_OF_DAYS_KEY, d);
+    editor.commit();
+  }
+
+  public void setPushAverageValue(float f) {
+    SharedPreferences.Editor editor = preferences.edit();
+    editor.putFloat(PREFIX + AVERAGE_NUMBER_OF_PUSHES_VALUE_KEY, f);
+    editor.commit();
+  }
+
+  public void setPushAverageDate(Date d) {
+    SharedPreferences.Editor editor = preferences.edit();
+    SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+    editor.putString(PREFIX + AVERAGE_NUMBER_OF_PUSHES_DATE_KEY, fmt.format(d));
+    editor.commit();
+  }
+
+  public float getCoastTimeRecordValue() {
+    return preferences.getFloat(PREFIX + COAST_TIME_RECORD_VALUE_KEY, 0.0f);
+  }
+
+  public Date getCoastTimeRecordDate() {
+    String ds = preferences.getString(PREFIX + COAST_TIME_RECORD_DATE_KEY, null);
+    if (ds != null) {
+      SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+      try {
+        return fmt.parse(ds);
+      } catch (Exception e) {
+      }
+    }
+    return null;
+  }
+
+  public void setCoastTimeRecordValue(float f) {
+    SharedPreferences.Editor editor = preferences.edit();
+    editor.putFloat(PREFIX + COAST_TIME_RECORD_VALUE_KEY, f);
+    editor.commit();
+  }
+
+  public void setCoastTimeRecordDate(Date d) {
+    SharedPreferences.Editor editor = preferences.edit();
+    SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+    editor.putString(PREFIX + COAST_TIME_RECORD_DATE_KEY, fmt.format(d));
     editor.commit();
   }
 

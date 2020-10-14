@@ -6,4 +6,10 @@
     <string name="complications_provider_service_label_pushes">每日推送</string>
     <string name="complications_provider_service_label_coast_time">每日海岸時間</string>
     <string name="complications_provider_service_label_distance">每日距離</string>
+    <string name="personal_record">個人記錄</string>
+    <string name="push_warning">推送警告</string>
+    <string name="push_warning_notification_text">溫馨的提示！今天，您已將每日平均投放量提高了25％。考慮休息一下或多使用Smart Drive。</string>
+    <string name="new_coast_time_record">新海岸時間紀錄！</string>
+    <string name="coast_time_record_notification_text">你做到了！您在海岸比賽中取得了個人新成績。做更多的事情，同時節省您的肩膀！#choosetodomore</string>
+    <string name="activity_collection">活動收集</string>
 </resources>

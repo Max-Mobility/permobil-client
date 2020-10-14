@@ -1,7 +1,5 @@
 package com.permobil.pushtracker;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.Notification.Builder;
@@ -11,68 +9,42 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
-import android.net.NetworkRequest;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
-import android.util.Base64;
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-
-import android.app.Notification.Builder;
+import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import java.net.SocketTimeoutException;
-
-import java.nio.MappedByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Map;
-
-import java.text.SimpleDateFormat;
-
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.RequestBody;
-import retrofit2.Retrofit;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import io.sentry.core.Breadcrumb;
 import io.sentry.core.Sentry;
-import com.permobil.pushtracker.DailyActivity;
-import com.permobil.pushtracker.BootReceiver;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 // TODO: communicate with the main app regarding when to start / stop tracking:
 //        * heart rate
@@ -235,6 +207,9 @@ public class ActivityService
         this.initSensors();
         this.registerAllSensors();
 
+        // create the notification channels for the records
+        this.createNotificationChannels();
+
     /*
     // Get the LocationManager so we can send last known location
     // with the record when saving to Kinvey
@@ -276,6 +251,202 @@ public class ActivityService
         Breadcrumb bc = new Breadcrumb();
         bc.setMessage(message);
         Sentry.addBreadcrumb(bc);
+    }
+
+    private boolean hasPushWarningData() {
+        // if we have a value and a date, we have data
+        float v = datastore.getPushAverageValue();
+        int n = datastore.getPushAverageNumberOfDays();
+        Date d = datastore.getPushAverageDate();
+        return v > 0.0f && n > 0;
+    }
+
+    private boolean hasCoastRecordData() {
+        // if we have a value and a date, we have data
+        float v = datastore.getCoastTimeRecordValue();
+        Date d = datastore.getCoastTimeRecordDate();
+        return v > 0.0f && d != null;
+    }
+
+    private void initializePushWarning() {
+        // get all records from the db (no limit and NOT onlyUnsent)
+        List<DailyActivity> activityList = db.getRecords(0, false);
+        // determine the average number of pushes the user has done
+        long totalPushCount = 0;
+        int numDays = 0;
+        int minPushesRequired = 100;
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd");
+        Date now = Calendar.getInstance().getTime();
+        for (DailyActivity activity : activityList) {
+            int pushes = activity.push_count;
+            // get the date from the activity
+            Date date = null;
+            try {
+                date = fmt.parse(activity.date);
+            } catch (Exception e) {
+            }
+            // check it against today
+            boolean isToday = false;
+            if (date != null) {
+                isToday = isSameDay(now, date);
+            }
+            // don't include the pushes from today since they could affect
+            // the average needed for the warning
+            if (pushes > minPushesRequired && !isToday) {
+                numDays += 1;
+                totalPushCount += pushes;
+            }
+        }
+        if (totalPushCount > 0 && numDays > 0) {
+            // compute the average
+            float averagePushCount = (float) totalPushCount / (float) numDays;
+            // save that average and day number into the datastore
+            datastore.setPushAverageValue(averagePushCount);
+            datastore.setPushAverageNumberOfDays(numDays);
+            breadcrumb("Initialized push warning and got " + averagePushCount +
+                       " avg pushes and " + numDays + " number of days");
+        }
+    }
+
+    private void initializeCoastRecord() {
+        // get all records from the db (no limit and NOT onlyUnsent)
+        List<DailyActivity> activityList = db.getRecords(0, false);
+        // determine the max coast time the user has had (for a day with >
+        // 200 pushes)
+        float maxCoastTime = 0.0f;
+        Date maxCoastDate = null;
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd");
+        int minPushesRequired = 200;
+        for (DailyActivity activity : activityList) {
+            float coastTime = activity.coast_time_avg;
+            int pushes = activity.push_count;
+            Date date = null;
+            try {
+                date = fmt.parse(activity.date);
+            } catch (Exception e) {
+            }
+            if (coastTime > maxCoastTime && pushes > minPushesRequired) {
+                // this is the new maximum
+                maxCoastTime = coastTime;
+                maxCoastDate = date;
+            }
+        }
+        if (maxCoastTime > 0.0f && maxCoastDate != null) {
+            // save that max coast time and date into the datastore
+            datastore.setCoastTimeRecordValue(maxCoastTime);
+            datastore.setCoastTimeRecordDate(maxCoastDate);
+            breadcrumb("Initialized coast record and got " + maxCoastTime +
+                       " max coast time and " + maxCoastDate);
+        }
+    }
+
+    private void checkPushWarningNotification() {
+        boolean isInitialized = hasPushWarningData();
+        if (!isInitialized) {
+            initializePushWarning();
+        }
+        // get the average number of pushes the user has done
+        float avgPushes = datastore.getPushAverageValue();
+        float pushesToday = currentActivity.push_count;
+        float warningValue = avgPushes * 1.25f;
+        // make sure we have enough activity data
+        long numDaysActivity = db.getTableRowCount();
+        boolean hasEnoughActivity = numDaysActivity > 5;
+        // make sure we haven't notified them already today
+        Date lastNotifiedDate = datastore.getPushAverageDate();
+        boolean hasBeenNotified = false;
+        Date now = Calendar.getInstance().getTime();
+        if (lastNotifiedDate != null) {
+            hasBeenNotified = isSameDay(now, lastNotifiedDate);
+        }
+        /*
+          Log.d(TAG, "pushesToday: " + pushesToday);
+          Log.d(TAG, "avgPushes: " + avgPushes);
+          Log.d(TAG, "warningValue: " + warningValue);
+          Log.d(TAG, "lastNotifiedDate: " + lastNotifiedDate);
+          Log.d(TAG, "hasBeenNotified: " + hasBeenNotified);
+        */
+        if (pushesToday > 1000.0f &&
+                pushesToday > warningValue &&
+                hasEnoughActivity) {
+            // make sure we log that we notified them
+            datastore.setPushAverageDate(now);
+            if (!hasBeenNotified) {
+                // notify them
+                showPushWarningNotification();
+            }
+        }
+    }
+
+    // this gets called when it's a new day, so we will update the
+    // average number of pushes by the currentActivity.push_count
+    private void updatePushWarningData() {
+        // get the number of days that was used to calculate the push
+        // average last time
+        int numDays = datastore.getPushAverageNumberOfDays();
+        float pushesToday = currentActivity.push_count;
+        float minimumPushesRequired = 1000.0f;
+        if (pushesToday > minimumPushesRequired) {
+            // we have enough pushes so we will update the average
+            float pushAverage = datastore.getPushAverageValue();
+            float pushTotal = pushAverage * numDays;
+            // increment days and push total
+            numDays += 1;
+            pushTotal += pushesToday;
+            // compute the new average
+            pushAverage = pushTotal / numDays;
+            // now save it back
+            datastore.setPushAverageValue(pushAverage);
+            datastore.setPushAverageNumberOfDays(numDays);
+        }
+    }
+
+    private void checkCoastRecordNotification() {
+        boolean isInitialized = hasCoastRecordData();
+        if (!isInitialized) {
+            initializeCoastRecord();
+        }
+        // check the max coast time (average)
+        float coastToday = currentActivity.coast_time_avg;
+        float coastRecordValue = datastore.getCoastTimeRecordValue();
+        // have they pushed enough today?
+        int pushesToday = currentActivity.push_count;
+        int minPushesRequired = 200;
+        boolean hasEnoughPushes = pushesToday > minPushesRequired;
+        // have we already notified them?
+        Date lastNotifiedDate = datastore.getCoastTimeRecordDate();
+        boolean hasBeenNotified = false;
+        Date now = Calendar.getInstance().getTime();
+        if (lastNotifiedDate != null) {
+            hasBeenNotified = isSameDay(now, lastNotifiedDate);
+        }
+        /*
+          Log.d(TAG, "coastToday: " + coastToday);
+          Log.d(TAG, "coastRecordValue: " + coastRecordValue);
+          Log.d(TAG, "pushesToday: " + pushesToday);
+          Log.d(TAG, "lastNotifiedDate: " + lastNotifiedDate);
+          Log.d(TAG, "hasBeenNotified: " + hasBeenNotified);
+        */
+        if (hasEnoughPushes &&
+                coastToday > coastRecordValue) {
+            // update the value in the datastore
+            datastore.setCoastTimeRecordValue(coastToday);
+            datastore.setCoastTimeRecordDate(now);
+            if (!hasBeenNotified) {
+                // notify them
+                showCoastTimeRecordNotification();
+            }
+        }
+    }
+
+    private void checkNotifications() {
+        checkPushWarningNotification();
+        checkCoastRecordNotification();
+    }
+
+    private boolean isSameDay(Date date1, Date date2) {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+        return fmt.format(date1).equals(fmt.format(date2));
     }
 
     private void loadFromDatabase() {
@@ -404,6 +575,8 @@ public class ActivityService
                     // determine if it's a new day
                     if (!sameDate) {
                         breadcrumb("timeReceiver::onReceive() - new day!");
+                        // update the data we keep for the records
+                        updatePushWarningData();
                         // reset values to zero
                         currentActivity = new DailyActivity();
                         // make sure to set the serial number
@@ -597,6 +770,8 @@ public class ActivityService
                 mHandler.postDelayed(mSendTask, SEND_DATA_PERIOD_MS);
                 // post to the push runnable
                 mHandler.postDelayed(mPushTask, PUSH_DATA_PERIOD_MS);
+                // notify the user if they've achieved records / warnings
+                checkNotifications();
             }
         }
     }
@@ -798,6 +973,65 @@ public class ActivityService
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 
+    private void createNotificationChannels() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      /*
+      CharSequence name = getString(R.string.channel_name);
+      String description = getString(R.string.channel_description);
+      */
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+
+            // Create the Personal Record Channel
+            String recordChannelName = getString(R.string.personal_record);
+            NotificationChannel recordChannel = new NotificationChannel(recordChannelName, recordChannelName, NotificationManager.IMPORTANCE_DEFAULT);
+            recordChannel.setDescription(recordChannelName);
+            notificationManager.createNotificationChannel(recordChannel);
+
+            // Create the SmartDrive related channel
+            String sdChannelName = getString(R.string.smartdrive);
+            NotificationChannel sdChannel = new NotificationChannel(sdChannelName, sdChannelName, NotificationManager.IMPORTANCE_DEFAULT);
+            sdChannel.setDescription(sdChannelName);
+            notificationManager.createNotificationChannel(sdChannel);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void showPushWarningNotification() {
+        Builder notificationBuilder = null;
+        notificationBuilder = new Builder(this, getString(R.string.smartdrive))
+                .setContentTitle(getString(R.string.push_warning))
+                .setContentText(getString(R.string.push_warning_notification_text))
+                .setColor(0x006ea5)
+                .setSmallIcon(R.drawable.ic_notification_icon)
+                .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_notification_icon))
+                .setChannelId(getString(R.string.smartdrive));
+
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(20001, notificationBuilder.build());
+        breadcrumb("Showing push warning notification!");
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void showCoastTimeRecordNotification() {
+        Builder notificationBuilder = new Builder(this, getString(R.string.personal_record))
+                .setContentTitle(getString(R.string.new_coast_time_record))
+                .setContentText(getString(R.string.coast_time_record_notification_text))
+                .setColor(0x006ea5)
+                .setSmallIcon(R.drawable.ic_notification_icon)
+                .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_trophy_blue))
+                .setChannelId(getString(R.string.personal_record));
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(20002, notificationBuilder.build());
+        breadcrumb("Showing coast time record notification!");
+    }
+
     private void startServiceWithNotification() {
         if (isServiceRunning) return;
         breadcrumb("startServiceWithNotification()");
@@ -819,26 +1053,24 @@ public class ActivityService
         // Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round);
 
         // create the notification channel
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        String channelId = Constants.NOTIFICATION_CHANNEL;
-        int importance = NotificationManager.IMPORTANCE_HIGH;
-        NotificationChannel notificationChannel =
-                new NotificationChannel(channelId, Constants.NOTIFICATION_CHANNEL, importance);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String channelId = getString(R.string.activity_collection);
+        NotificationChannel notificationChannel = new NotificationChannel(channelId, channelId, NotificationManager.IMPORTANCE_HIGH);
         notificationChannel.enableLights(false);
         notificationChannel.enableVibration(false);
+
         if (notificationManager != null) {
             notificationManager.createNotificationChannel(notificationChannel);
         } else {
-          String err = "NotificationManager was null. Unable to create the NotificationChannel to start the service with the notification.";
-          Exception ex = new Exception(err);
-          Sentry.captureException(ex); 
+            String err = "NotificationManager was null. Unable to create the NotificationChannel to start the service with the notification.";
+            Exception ex = new Exception(err);
+            Sentry.captureException(ex);
         }
 
         String contentText = getString(R.string.foreground_service_notification);
 
         // create the notification builder
-        Builder notificationBuilder = new Builder(this, Constants.NOTIFICATION_CHANNEL)
+        Builder notificationBuilder = new Builder(this, channelId)
                 .setTicker("Permobil")
                 .setContentText(contentText)
                 .setColor(0x006ea5)
@@ -857,7 +1089,7 @@ public class ActivityService
                         // "delete all" command
                         Notification.FLAG_NO_CLEAR;
         startForeground(NOTIFICATION_ID, notification);
-        breadcrumb("started forground notification");
+        breadcrumb("started foreground notification");
     }
 
     private void stopMyService() {
