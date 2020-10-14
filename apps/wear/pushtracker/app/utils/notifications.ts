@@ -33,7 +33,7 @@ async function scheduleWheelchairMaintenance() {
     const notifications = await LocalNotifications.schedule([
       {
         id: PushTrackerNotificationIDs.GENERAL_WC_MAINTENANCE_REMINDER,
-        title: L('notifications.titles.wheelchair-maintenance'),
+        title: `🔧 ${L('notifications.titles.wheelchair-maintenance')}`,
         body: L('notifications.wheelchair-maintenance'),
         channel: L('notifications.channels.maintenance'),
         icon: 'res://ic_notification_icon',

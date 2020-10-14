@@ -39,7 +39,7 @@ async function scheduleRecurring() {
     const notifications = await LocalNotifications.schedule([
       {
         id: SmartDriveNotificationIDs.TIRE_PRESSURE,
-        title: L('notifications.titles.tire-pressure'),
+        title: `🔧 ${L('notifications.titles.tire-pressure')}`,
         body: L('notifications.add-pt-element'),
         channel: maintenanceChannel,
         icon: 'res://ic_omniwheel_white',
@@ -49,7 +49,7 @@ async function scheduleRecurring() {
       },
       {
         id: SmartDriveNotificationIDs.SMARTDRIVE_ROLLER_CHECK,
-        title: L('notifications.titles.sd-roller-check'),
+        title: `🔧 ${L('notifications.titles.sd-roller-check')}`,
         body: L('notifications.sd-roller-check'),
         channel: maintenanceChannel,
         icon: 'res://ic_omniwheel_white',
@@ -59,7 +59,7 @@ async function scheduleRecurring() {
       },
       {
         id: SmartDriveNotificationIDs.SMARTDRIVE_CLAMP_CHECK,
-        title: L('notifications.titles.sd-clamp-check'),
+        title: `🔧 ${L('notifications.titles.sd-clamp-check')}`,
         body: L('notifications.sd-clamp-check'),
         channel: maintenanceChannel,
         icon: 'res://ic_omniwheel_white',
@@ -69,7 +69,7 @@ async function scheduleRecurring() {
       },
       {
         id: SmartDriveNotificationIDs.ROUTINE_MAINTENANCE,
-        title: L('notifications.titles.routine-maintenance'),
+        title: `💡 ${L('notifications.titles.routine-maintenance')}`,
         body: L('notifications.routine-maintenance'),
         channel: smartDriveChannel,
         icon: 'res://ic_omniwheel_white',
@@ -145,8 +145,8 @@ async function setupAccessMoreFeatures() {
       return;
     }
 
-    const title = L('notifications.titles.open-pt-wear');
-    const body = L('notifications.open-pt-wear');
+    const title = `💡 ${L('notifications.titles.access-more-features')}`;
+    const body = L('notifications.access-more-features');
     const channel = L('notifications.channels.smartdrive');
     const icon = 'res://ic_omniwheel_white';
     const color = new Color('#0067a6');
@@ -200,7 +200,7 @@ async function setupCharging() {
       return;
     }
 
-    const title = L('notifications.titles.sd-e2-charging');
+    const title = `💡 ${L('notifications.titles.sd-e2-charging')}`;
     const body = L('notifications.sd-e2-charging');
     const channel = L('notifications.channels.smartdrive');
     const icon = 'res://ic_omniwheel_white';
@@ -254,7 +254,7 @@ async function setupScLight() {
       return;
     }
 
-    const title = L('notifications.titles.sc-light-indications');
+    const title = `💡 ${L('notifications.titles.sc-light-indications')}`;
     const body = L('notifications.sc-light-indications');
     const channel = L('notifications.channels.smartdrive');
     const icon = 'res://ic_omniwheel_white';
@@ -300,7 +300,7 @@ async function setupAccelerateMoving() {
       return;
     }
 
-    const title = L('notifications.titles.accelerate-while-moving');
+    const title = `💡 ${L('notifications.titles.accelerate-while-moving')}`;
     const body = L('notifications.accelerate-while-moving');
     const channel = L('notifications.channels.smartdrive');
     const icon = 'res://ic_omniwheel_white';
@@ -348,7 +348,9 @@ async function setupSwitchControlReminder() {
       return;
     }
 
-    const title = L('notifications.titles.switch-control-reminder') as string;
+    const title = `💡${L(
+      'notifications.titles.switch-control-reminder'
+    )}` as string;
     const body = L('notifications.switch-control-reminder') as string;
     const channel = L('notifications.channels.smartdrive') as string;
     const icon = 'res://ic_omniwheel_white';
@@ -426,7 +428,7 @@ export async function dailyDistanceNotification() {
     const notifications = await LocalNotifications.schedule([
       {
         id: SmartDriveNotificationIDs.DAILY_DISTANCE,
-        title: L('notifications.titles.daily-distance-record'),
+        title: `🏆 ${L('notifications.titles.daily-distance-record')}`,
         body: L('notifications.daily-distance-record'),
         channel: L('notifications.channels.personal-record'),
         icon: 'res://ic_omniwheel_white',
@@ -445,7 +447,7 @@ export async function odometerRecordNotification(recordText: string) {
     const notifications = await LocalNotifications.schedule([
       {
         id: SmartDriveNotificationIDs.ODOMETER_RECORDS,
-        title: L('notifications.titles.odometer-records'),
+        title: `🏆 ${L('notifications.titles.odometer-records')}`,
         body: `${L(
           'notifications.odometer-records-part-one'
         )} ${recordText} ${L('notifications.odometer-records-part-two')}`,

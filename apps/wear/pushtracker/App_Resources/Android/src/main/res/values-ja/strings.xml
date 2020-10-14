@@ -9,7 +9,7 @@
     <string name="personal_record">個人記録</string>
     <string name="push_warning">プッシュ警告</string>
     <string name="push_warning_notification_text">フレンドリーなリマインダー！あなたは今日、あなたの毎日の平均よりも25％多くプッシュしました。休憩を取るか、スマートドライブをもっと使用することを検討してください。</string>
-    <string name="new_coast_time_record">ニューコーストタイムレコード！</string>
+    <string name="new_coast_time_record">🏆 ニューコーストタイムレコード！</string>
     <string name="coast_time_record_notification_text">できたね！あなたはコーストタイムで新しいパーソナルベストを達成しました。あなたの肩を節約しながら、より多くのことを！ #choosetodomore</string>
     <string name="activity_collection">アクティビティコレクション</string>
 </resources>
