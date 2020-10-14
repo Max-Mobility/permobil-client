@@ -997,7 +997,7 @@ public class ActivityService
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void showPushWarningNotification() {
         Builder notificationBuilder = null;
-        notificationBuilder = new Builder(this, Constants.NOTIFICATION_CHANNEL)
+        notificationBuilder = new Builder(this, getString(R.string.smartdrive))
                 .setContentTitle(getString(R.string.push_warning))
                 .setContentText(getString(R.string.push_warning_notification_text))
                 .setColor(0x006ea5)
@@ -1013,7 +1013,7 @@ public class ActivityService
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void showCoastTimeRecordNotification() {
-        Builder notificationBuilder = new Builder(this, Constants.NOTIFICATION_CHANNEL)
+        Builder notificationBuilder = new Builder(this, getString(R.string.personal_record))
                 .setContentTitle(getString(R.string.new_coast_time_record))
                 .setContentText(getString(R.string.coast_time_record_notification_text))
                 .setColor(0x006ea5)
@@ -1047,14 +1047,12 @@ public class ActivityService
         // Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round);
 
         // create the notification channel
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        String channelId = Constants.NOTIFICATION_CHANNEL;
-        int importance = NotificationManager.IMPORTANCE_HIGH;
-        NotificationChannel notificationChannel =
-                new NotificationChannel(channelId, Constants.NOTIFICATION_CHANNEL, importance);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String channelId = getString(R.string.activity_collection);
+        NotificationChannel notificationChannel = new NotificationChannel(channelId, channelId, NotificationManager.IMPORTANCE_HIGH);
         notificationChannel.enableLights(false);
         notificationChannel.enableVibration(false);
+
         if (notificationManager != null) {
             notificationManager.createNotificationChannel(notificationChannel);
         } else {
@@ -1066,7 +1064,7 @@ public class ActivityService
         String contentText = getString(R.string.foreground_service_notification);
 
         // create the notification builder
-        Builder notificationBuilder = new Builder(this, Constants.NOTIFICATION_CHANNEL)
+        Builder notificationBuilder = new Builder(this, channelId)
                 .setTicker("Permobil")
                 .setContentText(contentText)
                 .setColor(0x006ea5)
@@ -1085,7 +1083,7 @@ public class ActivityService
                         // "delete all" command
                         Notification.FLAG_NO_CLEAR;
         startForeground(NOTIFICATION_ID, notification);
-        breadcrumb("started forground notification");
+        breadcrumb("started foreground notification");
     }
 
     private void stopMyService() {
