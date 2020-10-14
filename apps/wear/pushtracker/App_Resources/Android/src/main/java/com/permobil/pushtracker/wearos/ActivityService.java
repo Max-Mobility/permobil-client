@@ -303,6 +303,8 @@ public class ActivityService
             // save that average and day number into the datastore
             datastore.setPushAverageValue(averagePushCount);
             datastore.setPushAverageNumberOfDays(numDays);
+            breadcrumb("Initialized push warning and got " + averagePushCount +
+                       " avg pushes and " + numDays + " number of days");
         }
     }
 
@@ -333,6 +335,8 @@ public class ActivityService
             // save that max coast time and date into the datastore
             datastore.setCoastTimeRecordValue(maxCoastTime);
             datastore.setCoastTimeRecordDate(maxCoastDate);
+            breadcrumb("Initialized coast record and got " + maxCoastTime +
+                       " max coast time and " + maxCoastDate);
         }
     }
 
@@ -1009,6 +1013,7 @@ public class ActivityService
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(20001, notificationBuilder.build());
+        breadcrumb("Showing push warning notification!");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -1023,7 +1028,8 @@ public class ActivityService
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(20001, notificationBuilder.build());
+        notificationManager.notify(20002, notificationBuilder.build());
+        breadcrumb("Showing coast time record notification!");
     }
 
     private void startServiceWithNotification() {
