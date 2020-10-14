@@ -1014,7 +1014,6 @@ public class ActivityService
                 .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_notification_icon))
                 .setChannelId(getString(R.string.smartdrive));
 
-
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(20001, notificationBuilder.build());
@@ -1023,18 +1022,12 @@ public class ActivityService
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void showCoastTimeRecordNotification() {
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_trophy_blue);
-        Notification.BigPictureStyle style =
-          new Notification.BigPictureStyle()
-          .bigPicture(bitmap);
-
         Builder notificationBuilder = new Builder(this, getString(R.string.personal_record))
                 .setContentTitle(getString(R.string.new_coast_time_record))
                 .setContentText(getString(R.string.coast_time_record_notification_text))
                 .setColor(0x006ea5)
                 .setSmallIcon(R.drawable.ic_notification_icon)
-                .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_trophy_blue))
-                .setStyle(style)
+                .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_notification_icon))
                 .setChannelId(getString(R.string.personal_record));
 
         NotificationManager notificationManager =
