@@ -355,13 +355,13 @@ public class ActivityService
         if (lastNotifiedDate != null) {
             hasBeenNotified = isSameDay(now, lastNotifiedDate);
         }
-    /*
-    Log.d(TAG, "pushesToday: " + pushesToday);
-    Log.d(TAG, "avgPushes: " + avgPushes);
-    Log.d(TAG, "warningValue: " + warningValue);
-    Log.d(TAG, "lastNotifiedDate: " + lastNotifiedDate);
-    Log.d(TAG, "hasBeenNotified: " + hasBeenNotified);
-    */
+        /*
+          Log.d(TAG, "pushesToday: " + pushesToday);
+          Log.d(TAG, "avgPushes: " + avgPushes);
+          Log.d(TAG, "warningValue: " + warningValue);
+          Log.d(TAG, "lastNotifiedDate: " + lastNotifiedDate);
+          Log.d(TAG, "hasBeenNotified: " + hasBeenNotified);
+        */
         if (pushesToday > 1000.0f &&
                 pushesToday > warningValue &&
                 hasEnoughActivity) {
@@ -416,13 +416,13 @@ public class ActivityService
         if (lastNotifiedDate != null) {
             hasBeenNotified = isSameDay(now, lastNotifiedDate);
         }
-    /*
-    Log.d(TAG, "coastToday: " + coastToday);
-    Log.d(TAG, "coastRecordValue: " + coastRecordValue);
-    Log.d(TAG, "pushesToday: " + pushesToday);
-    Log.d(TAG, "lastNotifiedDate: " + lastNotifiedDate);
-    Log.d(TAG, "hasBeenNotified: " + hasBeenNotified);
-    */
+        /*
+          Log.d(TAG, "coastToday: " + coastToday);
+          Log.d(TAG, "coastRecordValue: " + coastRecordValue);
+          Log.d(TAG, "pushesToday: " + pushesToday);
+          Log.d(TAG, "lastNotifiedDate: " + lastNotifiedDate);
+          Log.d(TAG, "hasBeenNotified: " + hasBeenNotified);
+        */
         if (hasEnoughPushes &&
                 coastToday > coastRecordValue) {
             // update the value in the datastore
