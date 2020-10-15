@@ -128,7 +128,6 @@ nativescript-bluetooth/**/*.js
 apps/**/report/
 
 ################################ DO NOT IGNORE ################################
-
 !forked-plugins/nativescript-bluetooth/base64.js
 !@permobil/core/src/packet/packet_bindings.js
 !**/references.d.ts

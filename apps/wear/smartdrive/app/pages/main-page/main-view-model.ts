@@ -54,6 +54,7 @@ import {
 } from '../../services';
 import {
   formatDateTime,
+  getUpdateInformation,
   isNetworkAvailable,
   sentryBreadCrumb,
   _isActivityThis,
@@ -263,6 +264,8 @@ export class MainViewModel extends Observable {
     try {
       await this._init();
       Log.D('init finished in the main-view-model');
+      // According to Ben: only check for firmware updates on app startup:
+      this._checkForUpdates();
       // TODO: schedule notifications here
     } catch (err) {
       Sentry.captureException(err);
@@ -3068,6 +3071,58 @@ export class MainViewModel extends Observable {
       }
     }
     // Log.D('chinsize:', this.chinSize);
+  }
+
+  private async _checkForUpdates() {
+    // only check for updates if we have a smartdrive
+    if (!this.smartDrive || !this.smartDrive.hasVersionInfo()) {
+      sentryBreadCrumb('Not checking for updates - no smartdrive saved with version info.');
+      return;
+    }
+    // only check for updates if we actually have network connectivity
+    if (!isNetworkAvailable()) {
+      sentryBreadCrumb('Not checking for updates - network not available.');
+      return;
+    }
+    // we have a smartdrive and we have network, let's check!
+    const updateInfo = await getUpdateInformation();
+    const updateAvailable = updateInfo.updateAvailable; // there is a new download available
+    // we may have already downloaded the updated info, but the user
+    // hasn't updated their smartdrive yet
+    const localInfo = updateInfo.currentVersions;
+    const bleVersion = localInfo['SmartDriveBLE.ota']?.version;
+    const mcuVersion = localInfo['SmartDriveMCU.ota']?.version;
+    const isUpToDate =
+      this.smartDrive.isMcuUpToDate(mcuVersion) &&
+      this.smartDrive.isBleUpToDate(bleVersion);
+    sentryBreadCrumb('downloadable update available: ' + updateAvailable);
+    sentryBreadCrumb('local info - mcu: ' + mcuVersion + '; ble: ' + bleVersion);
+    sentryBreadCrumb('isUpToDate: ' + isUpToDate);
+    if (updateAvailable || !isUpToDate) {
+      // show action dialog with option to go to updates page
+      const performUpdate = await Dialogs.confirm({
+        title: L('warnings.title.notice'),
+        message: L('updates.available'),
+        okButtonText: L('updates.perform'),
+        cancelButtonText: L('buttons.dismiss'),
+        cancelable: false
+      });
+      if (performUpdate) {
+        sentryBreadCrumb('User asked to update their smartdrive.');
+        const page = Frame.topmost()?.currentPage;
+        if (!page) {
+          const ex = new Error(
+            'The currentPage for the frame was not found, so the updates page cannot be opened.'
+          );
+          Sentry.captureException(ex);
+          return;
+        }
+        // we have the page, now open the updates modal
+        this.onUpdatesTap({
+          object: page
+        });
+      }
+    }
   }
 
   // #endregion "Private Functions"
