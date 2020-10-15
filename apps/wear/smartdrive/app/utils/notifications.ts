@@ -34,7 +34,6 @@ async function scheduleRecurring() {
     at.setHours(12);
     at.setMinutes(0);
     at.setMilliseconds(0);
-    Log.D('notification time', at);
 
     const notifications = await LocalNotifications.schedule([
       {
@@ -42,7 +41,7 @@ async function scheduleRecurring() {
         title: `🔧 ${L('notifications.titles.tire-pressure')}`,
         body: L('notifications.add-pt-element'),
         channel: maintenanceChannel,
-        icon: 'res://ic_omniwheel_white',
+        icon: 'res://smartdrive_material_white_45',
         interval: 15, // fires every 15 days
         color,
         at
@@ -62,7 +61,7 @@ async function scheduleRecurring() {
         title: `🔧 ${L('notifications.titles.sd-clamp-check')}`,
         body: L('notifications.sd-clamp-check'),
         channel: maintenanceChannel,
-        icon: 'res://ic_omniwheel_white',
+        icon: 'res://smartdrive_material_white_45',
         interval: 30, // fires every 30 days
         color,
         at
@@ -72,7 +71,7 @@ async function scheduleRecurring() {
         title: `💡 ${L('notifications.titles.routine-maintenance')}`,
         body: L('notifications.routine-maintenance'),
         channel: smartDriveChannel,
-        icon: 'res://ic_omniwheel_white',
+        icon: 'res://smartdrive_material_white_45',
         interval: 30, // fires every 30 days
         color,
         at
@@ -103,7 +102,7 @@ async function setupOpenPtWear() {
     const title = L('notifications.titles.open-pt-wear');
     const body = L('notifications.open-pt-wear');
     const channel = L('notifications.channels.smartdrive');
-    const icon = 'res://ic_omniwheel_white';
+    const icon = 'res://ic_pushtracker';
     const color = new Color('#0067a6');
 
     const notifications = await LocalNotifications.schedule([
@@ -148,7 +147,7 @@ async function setupAccessMoreFeatures() {
     const title = `💡 ${L('notifications.titles.access-more-features')}`;
     const body = L('notifications.access-more-features');
     const channel = L('notifications.channels.smartdrive');
-    const icon = 'res://ic_omniwheel_white';
+    const icon = 'res://smartdrive_material_white_45';
     const color = new Color('#0067a6');
 
     const notifications = await LocalNotifications.schedule([
@@ -203,7 +202,7 @@ async function setupCharging() {
     const title = `💡 ${L('notifications.titles.sd-e2-charging')}`;
     const body = L('notifications.sd-e2-charging');
     const channel = L('notifications.channels.smartdrive');
-    const icon = 'res://ic_omniwheel_white';
+    const icon = 'res://smartdrive_material_white_45';
     const color = new Color('#0067a6');
 
     const notifications = await LocalNotifications.schedule([
@@ -257,7 +256,7 @@ async function setupScLight() {
     const title = `💡 ${L('notifications.titles.sc-light-indications')}`;
     const body = L('notifications.sc-light-indications');
     const channel = L('notifications.channels.smartdrive');
-    const icon = 'res://ic_omniwheel_white';
+    const icon = 'res://switchcontrol_white';
     const color = new Color('#0067a6');
 
     const notifications = await LocalNotifications.schedule([
@@ -303,7 +302,7 @@ async function setupAccelerateMoving() {
     const title = `💡 ${L('notifications.titles.accelerate-while-moving')}`;
     const body = L('notifications.accelerate-while-moving');
     const channel = L('notifications.channels.smartdrive');
-    const icon = 'res://ic_omniwheel_white';
+    const icon = 'res://smartdrive_material_white_45';
     const color = new Color('#0067a6');
 
     const notifications = await LocalNotifications.schedule([
@@ -353,7 +352,7 @@ async function setupSwitchControlReminder() {
     )}` as string;
     const body = L('notifications.switch-control-reminder') as string;
     const channel = L('notifications.channels.smartdrive') as string;
-    const icon = 'res://ic_omniwheel_white';
+    const icon = 'res://switchcontrol_white';
     const color = new Color('#0067a6');
 
     const notifications = await LocalNotifications.schedule([
@@ -431,7 +430,7 @@ export async function dailyDistanceNotification() {
         title: `🏆 ${L('notifications.titles.daily-distance-record')}`,
         body: L('notifications.daily-distance-record'),
         channel: L('notifications.channels.personal-record'),
-        icon: 'res://ic_omniwheel_white',
+        icon: 'res://smartdrive_material_white_45',
         color: new Color('#0067a6')
       }
     ]);
@@ -452,7 +451,7 @@ export async function odometerRecordNotification(recordText: string) {
           'notifications.odometer-records-part-one'
         )} ${recordText} ${L('notifications.odometer-records-part-two')}`,
         channel: L('notifications.channels.personal-record'),
-        icon: 'res://ic_omniwheel_white',
+        icon: 'res://ic_odometer_white',
         color: new Color('#0067a6')
       }
     ]);
