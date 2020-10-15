@@ -2275,8 +2275,6 @@ export class MainViewModel extends Observable {
   private async _connectToSavedSmartDrive() {
     if (!this._hasSavedSmartDrive()) {
       const didSave = await this._saveNewSmartDrive();
-      // check firmware when user connects to smartdrive against firmware on server
-
       if (!didSave) {
         return false;
       }
