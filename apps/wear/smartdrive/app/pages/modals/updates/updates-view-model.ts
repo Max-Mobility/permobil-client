@@ -524,7 +524,7 @@ export class UpdatesViewModel extends Observable {
     );
 
     // do we need to download any firmware files?
-    let files: any = [];
+    const files: any = [];
     if (fileMetaDatas && fileMetaDatas.length) {
       sentryBreadCrumb('downloading firmwares');
       // update progress text
