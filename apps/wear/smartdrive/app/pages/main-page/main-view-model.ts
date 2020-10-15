@@ -53,13 +53,10 @@ import {
   SqliteService
 } from '../../services';
 import {
-  checkFirmwareMetaData,
   formatDateTime,
-  getCurrentFirmwareData,
+  getUpdateInformation,
   isNetworkAvailable,
-  saveFirmwareFiles,
   sentryBreadCrumb,
-  updateFirmwareData,
   _isActivityThis,
   dailyDistanceNotification,
   odometerRecordNotification
@@ -3078,66 +3075,56 @@ export class MainViewModel extends Observable {
     // Log.D('chinsize:', this.chinSize);
   }
 
-  private _currentVersions = {};
-
   private async _checkForUpdates() {
-    sentryBreadCrumb('Checking for updates');
-
-    this._currentVersions = await getCurrentFirmwareData().catch(err => {
-      Sentry.captureException(err);
-    });
-    sentryBreadCrumb(
-      `Current FW Versions: ${JSON.stringify(this._currentVersions, null, 2)}`
-    );
-
-    const response = await this._kinveyService
-      .downloadFirmwareFiles()
-      .catch(err => {
-        Sentry.captureException(err);
+    // only check for updates if we have a smartdrive
+    if (!this.smartDrive || !this.smartDrive.hasVersionInfo()) {
+      sentryBreadCrumb('Not checking for updates - no smartdrive saved with version info.');
+      return;
+    }
+    // only check for updates if we actually have network connectivity
+    if (!isNetworkAvailable()) {
+      sentryBreadCrumb('Not checking for updates - network not available.');
+      return;
+    }
+    // we have a smartdrive and we have network, let's check!
+    const updateInfo = await getUpdateInformation();
+    const updateAvailable = updateInfo.updateAvailable; // there is a new download available
+    // we may have already downloaded the updated info, but the user
+    // hasn't updated their smartdrive yet
+    const localInfo = updateInfo.currentVersions;
+    const bleVersion = localInfo['SmartDriveBLE.ota']?.version;
+    const mcuVersion = localInfo['SmartDriveMCU.ota']?.version;
+    const isUpToDate =
+      this.smartDrive.isMcuUpToDate(mcuVersion) &&
+      this.smartDrive.isBleUpToDate(bleVersion);
+    sentryBreadCrumb('downloadable update available: ' + updateAvailable);
+    sentryBreadCrumb('local info - mcu: ' + mcuVersion + '; ble: ' + bleVersion);
+    sentryBreadCrumb('isUpToDate: ' + isUpToDate);
+    if (updateAvailable || !isUpToDate) {
+      // show action dialog with option to go to updates page
+      const performUpdate = await Dialogs.confirm({
+        title: L('warnings.title.notice'),
+        message: L('updates.available'),
+        okButtonText: L('updates.perform'),
+        cancelButtonText: L('buttons.dismiss'),
+        cancelable: false
       });
-
-    // Now that we have the metadata, check to see if we already have
-    // the most up to date firmware files and download them if we don't
-    const mds = response;
-    const fileMetaDatas = await checkFirmwareMetaData(mds);
-    sentryBreadCrumb(
-      'Got file metadatas, length: ' + (fileMetaDatas && fileMetaDatas.length)
-    );
-
-    // do we need to download any firmware files?
-    let files: any = [];
-    if (fileMetaDatas && fileMetaDatas.length) {
-      sentryBreadCrumb('downloading firmwares');
-      // now download the files
-      files = await saveFirmwareFiles(fileMetaDatas).catch(err => {
-        Sentry.captureException(err);
-      });
+      if (performUpdate) {
+        sentryBreadCrumb('User asked to update their smartdrive.');
+        const page = Frame.topmost()?.currentPage;
+        if (!page) {
+          const ex = new Error(
+            'The currentPage for the frame was not found, so the updates page cannot be opened.'
+          );
+          Sentry.captureException(ex);
+          return;
+        }
+        // we have the page, now open the updates modal
+        this.onUpdatesTap({
+          object: page
+        });
+      }
     }
-
-    // Now that we have the files, write them to disk and update our local metadata
-    let promises = [];
-    if (files && files.length) {
-      sentryBreadCrumb('updating firmware data');
-      promises = files
-        .filter(f => f)
-        .map(updateFirmwareData.bind(this, this._currentVersions));
-    }
-
-    try {
-      await Promise.all(promises);
-    } catch (err) {
-      Sentry.captureException(err);
-    }
-
-    if (this.smartDrive) {
-      // check the current smart drive version info here and do something... maybe
-    }
-
-    // Now perform the SmartDrive updates if we need to
-    sentryBreadCrumb('Finished checking for updates... NOW WHAT ???');
-    Log.W(
-      'Determine UX from here... do we prompt the user that an update it available and then open the updates component?'
-    );
   }
 
   // #endregion "Private Functions"

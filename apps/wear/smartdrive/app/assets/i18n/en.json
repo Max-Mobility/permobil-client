@@ -300,6 +300,7 @@
     }
   },
   "updates": {
+    "available": "Updates are available for your SmartDrive, would you like to go to the Wireless Updates page to download and perform the updates?",
     "canceled": "SmartDrive updates canceled.",
     "changes": "Summary of Changes",
     "checking-for-updates": "Checking for updates...",
@@ -316,6 +317,7 @@
     },
     "failed": "SmartDrive updates failed.",
     "initializing": "Initializing updates...",
+    "perform": "Update My SmartDrive",
     "status": "Updates Status",
     "success": "SmartDrive updates completed successfully!",
     "timeout": "SmartDrive updates has timed out.",

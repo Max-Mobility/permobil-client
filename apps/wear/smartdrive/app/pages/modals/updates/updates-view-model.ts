@@ -27,9 +27,7 @@ import {
   checkFirmwareMetaData,
   formatDateTime,
   getCurrentFirmwareData,
-  saveFirmwareFiles,
-  sentryBreadCrumb,
-  updateFirmwareData
+  sentryBreadCrumb
 } from '../../../utils';
 
 const ambientTheme = require('../../../scss/theme-ambient.css').toString();
@@ -517,7 +515,7 @@ export class UpdatesViewModel extends Observable {
     // Now that we have the metadata, check to see if we already have
     // the most up to date firmware files and download them if we don't
     const mds = response;
-    const fileMetaDatas = await checkFirmwareMetaData(mds);
+    const fileMetaDatas = await checkFirmwareMetaData(mds, this.currentVersions);
 
     // @ts-ignore
     this.updateProgressCircle.stopSpinning();
@@ -534,7 +532,12 @@ export class UpdatesViewModel extends Observable {
       // reset ota progress to 0 to show downloading progress
       this.smartDriveOtaProgress = 0;
       // now download the files
-      files = await saveFirmwareFiles(fileMetaDatas).catch(err => {
+      try {
+        for (const fmd of fileMetaDatas) {
+          const f = await SmartDriveData.Firmwares.download(fmd);
+          files.push(f);
+        }
+      } catch (err) {
         const errorMessage = `
         ${L('updates.errors.connection-failure')}\n\n${err}
         `;
@@ -543,7 +546,7 @@ export class UpdatesViewModel extends Observable {
           L('updates.errors.downloading'),
           errorMessage
         );
-      });
+      }
     }
 
     // Now that we have the files, write them to disk and update our local metadata
@@ -552,7 +555,7 @@ export class UpdatesViewModel extends Observable {
       sentryBreadCrumb('updating firmware data');
       promises = files
         .filter(f => f)
-        .map(updateFirmwareData.bind(this, this.currentVersions));
+        .map(this.updateFirmwareData.bind(this));
     }
 
     try {
@@ -663,6 +666,53 @@ export class UpdatesViewModel extends Observable {
       }
       const updateMsg = L(otaStatus);
       await this.stopUpdates(updateMsg, false);
+    }
+  }
+
+  async updateFirmwareData(f: any) {
+    const id = this.currentVersions[f.name] && this.currentVersions[f.name].id;
+    // update the data in the db
+    const newFirmware = SmartDriveData.Firmwares.newFirmware(
+      f.version,
+      f.name,
+      undefined,
+      f.changes
+    );
+    // update current versions
+    this.currentVersions[f.name] = {
+      version: f.version,
+      changes: f.changes,
+      filename: newFirmware[SmartDriveData.Firmwares.FileName],
+      data: f.data
+    };
+    // save binary file to fs
+    sentryBreadCrumb(`saving file ${this.currentVersions[f.name].filename}`);
+    SmartDriveData.Firmwares.saveToFileSystem({
+      filename: this.currentVersions[f.name].filename,
+      data: f.data
+    });
+    if (id !== undefined) {
+      this.currentVersions[f.name].id = id;
+      newFirmware[SmartDriveData.Firmwares.IdName] = id;
+      await this._sqliteService.updateInTable(
+        SmartDriveData.Firmwares.TableName,
+        {
+          [SmartDriveData.Firmwares.VersionName]:
+            newFirmware[SmartDriveData.Firmwares.VersionName],
+          [SmartDriveData.Firmwares.ChangesName]:
+            newFirmware[SmartDriveData.Firmwares.ChangesName],
+          [SmartDriveData.Firmwares.FileName]:
+            newFirmware[SmartDriveData.Firmwares.FileName]
+        },
+        {
+          [SmartDriveData.Firmwares.IdName]: id
+        }
+      );
+    } else {
+      await this._sqliteService.insertIntoTable(
+        SmartDriveData.Firmwares.TableName,
+        newFirmware
+      );
     }
   }
 

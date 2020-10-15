@@ -2,10 +2,45 @@ import { Log } from '@permobil/core';
 import { ReflectiveInjector } from 'injection-js';
 import { Sentry } from 'nativescript-sentry';
 import { SmartDriveData } from '../namespaces';
-import { SqliteService } from '../services';
+import { SmartDriveKinveyService, SqliteService } from '../services';
 import { sentryBreadCrumb } from './sentry-utils';
 
-const injector = ReflectiveInjector.resolveAndCreate([SqliteService]);
+const injector = ReflectiveInjector.resolveAndCreate([SmartDriveKinveyService, SqliteService]);
+
+export async function getUpdateInformation() {
+  sentryBreadCrumb('Checking for updates');
+  const _kinveyService: SmartDriveKinveyService = injector.get(SmartDriveKinveyService);
+
+  const currentVersions = await getCurrentFirmwareData().catch(err => {
+    Sentry.captureException(err);
+  });
+  sentryBreadCrumb(
+    `Current FW Versions: ${JSON.stringify(currentVersions, null, 2)}`
+  );
+
+  const response = await _kinveyService
+    .downloadFirmwareFiles()
+    .catch(err => {
+      Sentry.captureException(err);
+    });
+
+  // Now that we have the metadata, check to see if we already have
+  // the most up to date firmware files and download them if we don't
+  const mds = response;
+  const fileMetaDatas = await checkFirmwareMetaData(mds, currentVersions);
+  sentryBreadCrumb(
+    'Got file metadatas, length: ' + (fileMetaDatas && fileMetaDatas.length)
+  );
+
+  // do we need to download any firmware files?
+  const updateAvailable = fileMetaDatas && fileMetaDatas.length > 0;
+  sentryBreadCrumb('Update available: ' + updateAvailable);
+  const info = {
+    updateAvailable,
+    currentVersions
+  };
+  return info;
+}
 
 export async function getCurrentFirmwareData() {
   sentryBreadCrumb('Getting firmware data');
@@ -42,7 +77,7 @@ export async function getCurrentFirmwareData() {
   }
 }
 
-export async function checkFirmwareMetaData(mds) {
+export async function checkFirmwareMetaData(mds, currentVersions: any) {
   sentryBreadCrumb('Firmware MetaData: ' + mds);
   // get the max firmware version for each firmware
   const reducedMaxes = mds.reduce((maxes, md) => {
@@ -58,77 +93,11 @@ export async function checkFirmwareMetaData(mds) {
   const fileMetaDatas = mds.filter(f => {
     const v = SmartDriveData.Firmwares.versionStringToByte(f['version']);
     const fwName = f['_filename'];
-    const current = this.currentVersions[fwName];
+    const current = currentVersions[fwName];
     const currentVersion = current && current.version;
     const isMax = v === reducedMaxes[fwName];
     return isMax && (!current || v > currentVersion);
   });
 
   return fileMetaDatas;
-}
-
-export async function saveFirmwareFiles(metadata) {
-  // now download the files
-  const files = [];
-  try {
-    for (const fmd of metadata) {
-      const f = await SmartDriveData.Firmwares.download(fmd);
-      files.push(f);
-    }
-    return files;
-  } catch (err) {
-    return err;
-  }
-}
-
-export async function updateFirmwareData(f: any, currentVersions) {
-  const _sqliteService: SqliteService = injector.get(SqliteService);
-
-  const id = currentVersions[f.name] && currentVersions[f.name].id;
-  // update the data in the db
-  const newFirmware = SmartDriveData.Firmwares.newFirmware(
-    f.version,
-    f.name,
-    undefined,
-    f.changes
-  );
-
-  // update current versions
-  currentVersions[f.name] = {
-    version: f.version,
-    changes: f.changes,
-    filename: newFirmware[SmartDriveData.Firmwares.FileName],
-    data: f.data
-  };
-
-  // save binary file to fs
-  sentryBreadCrumb(`saving file ${currentVersions[f.name].filename}`);
-  SmartDriveData.Firmwares.saveToFileSystem({
-    filename: currentVersions[f.name].filename,
-    data: f.data
-  });
-
-  if (id !== undefined) {
-    currentVersions[f.name].id = id;
-    newFirmware[SmartDriveData.Firmwares.IdName] = id;
-    await _sqliteService.updateInTable(
-      SmartDriveData.Firmwares.TableName,
-      {
-        [SmartDriveData.Firmwares.VersionName]:
-          newFirmware[SmartDriveData.Firmwares.VersionName],
-        [SmartDriveData.Firmwares.ChangesName]:
-          newFirmware[SmartDriveData.Firmwares.ChangesName],
-        [SmartDriveData.Firmwares.FileName]:
-          newFirmware[SmartDriveData.Firmwares.FileName]
-      },
-      {
-        [SmartDriveData.Firmwares.IdName]: id
-      }
-    );
-  } else {
-    await _sqliteService.insertIntoTable(
-      SmartDriveData.Firmwares.TableName,
-      newFirmware
-    );
-  }
 }
