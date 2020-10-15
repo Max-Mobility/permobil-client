@@ -264,7 +264,7 @@ export class MainViewModel extends Observable {
     try {
       await this._init();
       Log.D('init finished in the main-view-model');
-      // need to see how we're going to handle the UX for this per Ben/William/Curtis
+      // According to Ben: only check for firmware updates on app startup:
       this._checkForUpdates();
       // TODO: schedule notifications here
     } catch (err) {
