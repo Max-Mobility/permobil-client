@@ -1,0 +1,171 @@
+{
+	"about": {
+		"database": "Tietokannan tunnus",
+		"title": "Tietoja",
+		"user-email": "Sähköpostisi",
+		"user-name": "Sinun nimesi",
+		"version": "PushTracker Wear OS -sovelluksen versio",
+		"watch-serial-number": "Älykello-sarjanumero"
+	},
+	"busy": {
+		"synchronizing": "Synkronoidaan ..."
+	},
+	"buttons": {
+		"back": "Takaisin",
+		"cancel": "Peruuttaa",
+		"dismiss": "erottaa",
+		"ok": "kunnossa"
+	},
+	"charts": {
+		"coast": {
+			"title": "Rannikon aika päivittäin"
+		},
+		"distance": {
+			"title": "Matka-matka päivittäin"
+		}
+	},
+	"enhancements": {
+		"coast-time": "Rannikkoaika päivittäin",
+		"distance": "Etäisyys päivittäin",
+		"pushes": "Työnnä päivittäin"
+	},
+	"failures": {
+		"connect": "Yhteyden muodostaminen epäonnistui",
+		"could-not-update-profile": "Permobil-palvelimen profiilin päivittäminen epäonnistui.",
+		"must-wear-watch": "[Check for Wrist] -asetus on käytössä, joten älykelloa on käytettävä SmartDrive-laitteen ohjaamiseen.",
+		"no-auth-for-saving": "Jos haluat tallentaa asetukset palvelimelle, joka on valinnainen, sinun on liitettävä PushTracker Wear OS -sovellus PushTracker Mobile -sovellukseen. Voit tehdä tämän seuraamalla PushTracker Mobile -sovelluksen Laitteen asetukset -sivun ohjeita.",
+		"not-connected-to-mobile": "Todennus Permobil-palvelimella epäonnistui. Yhteyden muodostaminen PushTracker Mobile -sovellukseen vaaditaan.",
+		"not-fully-initialized": "Alustetaan edelleen yhteyttä Permobil-palvelimeen. Asetukset lähetetään, kun mahdollista.",
+		"permissions": "Pyydettyä toimintoa ei voida suorittaa. Vaadittuja lupia ei annettu.",
+		"saving-activity": "Tapahtuman tallentaminen epäonnistui.",
+		"scan": "Skannaus epäonnistui.",
+		"title": "Ilmoitus"
+	},
+	"goals": {
+		"coast": {
+			"units": "sekuntia"
+		},
+		"distance": {
+			"english": "mailia",
+			"metric": "kilometriä"
+		}
+	},
+	"information": "Tiedot",
+	"language-list": {
+		"cs": "čeština",
+		"da": "Dansk",
+		"de": "deutsche",
+		"en": "Englanti",
+		"es": "español",
+		"fi": "Suomalainen",
+		"fr": "français",
+		"it": "italiano",
+		"ja": "日本語",
+		"ko": "한국어",
+		"nb": "Norsk Bokmål",
+		"nl": "Nederlands",
+		"pl": "polski",
+		"pt": "Português",
+		"sv": "Svenska",
+		"zh": "中國 傳統 的"
+	},
+	"languages": {
+		"da": "Tanskan kieli",
+		"de": "Saksan kieli",
+		"en": "Englanti",
+		"es": "Espanja",
+		"fr": "Ranskan kieli",
+		"it": "italialainen",
+		"ja": "japanilainen",
+		"ko": "Korealainen",
+		"nb": "Norjalainen [bokmål]",
+		"nl": "Hollannin kieli",
+		"sv": "Ruotsin kieli",
+		"zh": "Kiinalainen perinteinen]"
+	},
+	"menu": {
+		"about": "Noin",
+		"profile": "Profiili",
+		"title": "valikko"
+	},
+	"notifications": {
+		"add-pt-element": "Haluatko nopeamman pääsyn PushTracker-tilastoihisi? Voit muuttaa pikakuvaketta vaihtamalla kellotaulun. Katso lisätietoja YouTube-kanavastamme tai lähetä meille sähköpostia.",
+		"channels": {
+			"maintenance": "ylläpito",
+			"personal-record": "Henkilökohtainen ennätys",
+			"smartdrive": "SmartDrive"
+		},
+		"daily-push-warning": "Ystävällinen muistutus! Olet työntänyt tänään 25% enemmän kuin päivittäinen keskiarvo. Harkitse taukoa tai SmartDriven käyttöä enemmän.",
+		"foreground-service": "Permobil PushTracker kerää aktiviteettisi",
+		"new-coast-record": "Teit sen! Saavutit uuden henkilökohtaisen parhaan rannikkoajalle. Tehdä enemmän säästämällä hartiat! #ChooseToDoMore",
+		"titles": {
+			"add-pt-element": "Lisää PushTracker elementtinä",
+			"daily-push-warning": "Päivittäinen varoitus",
+			"new-coast-record": "Uusi rannikon aikatietue!",
+			"wheelchair-maintenance": "Yleinen WC-muistutus"
+		},
+		"wheelchair-maintenance": "Pyörätuolin ylläpitäminen helpottaa työntämistä. Pyörät, pyörähaarukat ja renkaiden kuluminen ovat yleisiä asioita, jotka vaikuttavat kykyyn työntää tuoliasi."
+	},
+	"permissions-reasons": {
+		"coarse-location": "Jos haluat muodostaa yhteyden iPhonen PushTracker Mobile -sovellukseen Bluetoothin avulla, sinun on annettava sijaintilupa [ACCESS_COARSE_LOCATION] seuraavassa näytössä. Tästä luvasta Permobil ei pääse sijaintitietoihin.",
+		"fine-location": "VALINNAINEN: etäisyyden mittaamiseksi älykellon GPS: n avulla meidän on annettava lupa [ACCESS_FINE_LOCATION] jollakin seuraavista näytöistä. Tästä luvasta Permobil ei pääse sijaintitietoihin.",
+		"phone-state": "VALINNAINEN: Jotta voisimme käyttää älykellon sarjanumeroasi, josta voi olla hyötyä tuki- ja takuutarkoituksissa, sinun on sallittava puhelinlupa [READ_PHONE_STATE] jollakin seuraavista näytöistä. Tämän luvan perusteella Permobil ei pääse käyttämään puhelinnumeroasi, matkapuhelinverkon tietoja tai muita tietoja paitsi älykellon sarjanumero."
+	},
+	"permissions-request": {
+		"title": "Lupailmoitus"
+	},
+	"profile": "Profiili",
+	"pushes": {
+		"units": "työntää"
+	},
+	"settings": {
+		"coastgoal": {
+			"description": "Tavoitteesi keskimääräiselle rannikkoajalle päivien välillä.",
+			"title": "Rannikkoajan tavoite",
+			"units": "S"
+		},
+		"connect-pushtracker": "Yhdistä PushTracker-mobiilisovellus",
+		"distancegoal": {
+			"description": "Tavoitteesi pyörätuolissasi kuljetun matkan saavuttamiseksi päivittäin SmartDriven avulla mitattuna.",
+			"title": "Kuljettu matka tavoite",
+			"units": {
+				"english": "mi",
+				"metric": "km"
+			}
+		},
+		"information": "Tiedot",
+		"install-smartdrive": "Asenna SmartDrive MX2 + Wear OS -sovellus",
+		"language": {
+			"change": "Haluatko varmasti vaihtaa kieltä? PushTracker-sovelluksen on käynnistettävä uudelleen, jotta kielen muutos voidaan ottaa käyttöön.",
+			"description": "PushTracker-sovelluksen tekstin kieli.",
+			"title": "kieli"
+		},
+		"pushsensitivity": {
+			"description": "Työntöjen laskemiseen käytetyn tunnistuksen herkkyys. Pienempi prosenttiosuus on vähemmän herkkä työntämisen havaitsemiselle - 0% on vähiten herkkä ja havaitsee siksi vähemmän työntymisiä, ja 100% on herkin ja havaitsee siksi enemmän työntöjä.",
+			"title": "Työnnä herkkyys"
+		},
+		"title": "PushTracker-asetukset",
+		"units": {
+			"description": "Yksikköjärjestelmä tai mittayksiköt mittausten näyttämiseksi käyttöliittymissä. Valitse joko Imperial [ft, mi ja lbs] tai Metrinen [cm, km ja kg].",
+			"title": "yksiköt",
+			"values": {
+				"english": "keisarillinen",
+				"metric": "Metrinen"
+			}
+		}
+	},
+	"units": {
+		"distance": {
+			"english": "mi",
+			"metric": "km"
+		},
+		"english": "keisarillinen",
+		"metric": "Metrinen"
+	},
+	"wearos-comms": {
+		"errors": {
+			"bad-authorization": "PushTracker Mobile -sovelluksesta vastaanotetut virheelliset tilin valtuutustiedot. Varmista, että tilisi tiedot ovat ajan tasalla ja älykello on yhteydessä Internetiin joko Wi-Fi: n tai puhelimesi kautta.",
+			"bad-data": "PushTracker Mobile -sovelluksesta vastaanotetut virheelliset tiedot. Tarkista yhteys ja yritä uudelleen."
+		}
+	}
+}
