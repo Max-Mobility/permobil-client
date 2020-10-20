@@ -1,153 +1,171 @@
 {
-  "about": {
-    "database": "데이터베이스 ID",
-    "title": "정보",
-    "user-email": "귀하의 이메일",
-    "user-name": "당신의 이름",
-    "version": "PushTracker Wear OS 앱 버전",
-    "watch-serial-number": "Smartwatch 일련 번호"
-  },
-  "busy": {
-    "synchronizing": "동기화 중 ..."
-  },
-  "buttons": {
-    "back": "뒤로",
-    "dismiss": "버리다",
-    "ok": "승인",
-    "cancel": "취소"
-  },
-  "charts": {
-    "coast": {
-      "title": "해안 시간 매일"
-    },
-    "distance": {
-      "title": "매일 이동 한 거리"
-    }
-  },
-  "enhancements": {
-    "coast-time": "해안 시간 매일",
-    "distance": "매일 거리",
-    "pushes": "매일 밀어"
-  },
-  "failures": {
-    "connect": "연결하지 못했습니다",
-    "could-not-update-profile": "Permobil 서버에서 프로파일을 업데이트하지 못했습니다.",
-    "must-wear-watch": "[Check for Wrist] 설정이 활성화되어 있으므로 SmartWatch를 착용하여 SmartDrive를 제어해야합니다.",
-    "no-auth-for-saving": "선택 사항 인 서버에 설정을 저장하려면 PushTracker Wear OS 앱을 PushTracker Mobile 앱에 연결해야합니다. 이렇게하려면 PushTracker Mobile 앱의 \"장치 설정\"페이지에있는 지침을 따르십시오.",
-    "not-connected-to-mobile": "Permobil 서버로 인증하지 못했습니다. PushTracker Mobile 앱에 다시 연결해야합니다.",
-    "not-fully-initialized": "Permobil 서버에 대한 연결을 아직 초기화 중입니다. 가능하면 설정이 전송됩니다.",
-    "permissions": "요청한 작업을 수행 할 수 없습니다. 필요한 권한이 부여되지 않았습니다.",
-    "saving-activity": "활동 저장에 실패했습니다.",
-    "scan": "스캔 할 수 없습니다.",
-    "title": "주의"
-  },
-  "goals": {
-    "coast": {
-      "units": "초"
-    },
-    "distance": {
-      "english": "마일",
-      "metric": "킬로미터"
-    }
-  },
-  "information": "정보",
-  "languages": {
-    "da": "덴마크 말",
-    "de": "독일 사람",
-    "en": "영어",
-    "es": "스페인 사람",
-    "fr": "프랑스 국민",
-    "it": "이탈리아 사람",
-    "ja": "일본어",
-    "ko": "한국어",
-    "nb": "노르웨이어 [Bokmål]",
-    "nl": "네덜란드 사람",
-    "sv": "스웨덴어",
-    "zh": "중국 전통]"
-  },
-  "menu": {
-    "about": "약",
-    "profile": "윤곽",
-    "title": "메뉴"
-  },
-  "notifications": {
-    "foreground-service": "Permobil PushTracker가 활동을 수집하고 있습니다",
-    "wheelchair-maintenance": "Keeping your wheelchair maintained makes pushing easier. Caster wheels, caster forks, and tire wear are common issues that influence your ability to push your chair.",
-    "add-pt-element": "Want quicker access to your PushTracker stats? You can change the watch face to set a shortcut. Check out our YouTube channel or email us for details.",
-    "new-coast-record": "You did it! You achieved a new personal best for coast time. Doing more, while saving your shoulders! #ChooseToDoMore",
-    "daily-push-warning": "Friendly reminder! You’ve pushed 25% more today than your daily average. Consider taking a break or using your SmartDrive more.",
-    "titles": {
-      "daily-push-warning": "Daily Push Warning",
-      "new-coast-record": "New Coast Time Record!",
-      "add-pt-element": "Add PushTracker as Element",
-      "wheelchair-maintenance": "General WC Maintenance Reminder"
-    },
-    "channels": {
-      "smartdrive": "SmartDrive",
-      "personal-record": "Personal Record",
-      "maintenance": "Maintenance"
-    }
-  },
-  "permissions-reasons": {
-    "coarse-location": "Bluetooth를 사용하여 iPhone에서 PushTracker Mobile 앱에 연결하려면 다음 화면에서 위치 권한 [ACCESS_COARSE_LOCATION]을 허용해야합니다. 이 권한으로 Permobil은 위치 데이터에 액세스하지 않습니다.",
-    "fine-location": "선택 사항 : 스마트 워치 GPS를 사용하여 거리를 측정하려면 다음 화면 중 하나에서 [ACCESS_FINE_LOCATION] 권한을 허용해야합니다. 이 권한으로 Permobil은 위치 데이터에 액세스하지 않습니다.",
-    "phone-state": "선택 사항 : 지원 및 보증 목적으로 유용 할 수있는 스마트 시계 일련 번호에 액세스하려면 다음 화면 중 하나에서 전화 권한 [READ_PHONE_STATE]을 허용해야합니다. 이 허가에서 Permobil은 귀하의 전화 번호, 셀룰러 네트워크 정보 또는 스마트 워치 일련 번호를 제외한 기타 데이터에 액세스하지 않습니다."
-  },
-  "permissions-request": {
-    "title": "권한 공지"
-  },
-  "profile": "윤곽",
-  "pushes": {
-    "units": "푸시"
-  },
-  "settings": {
-    "coastgoal": {
-      "description": "매일 해안 사이의 평균 해안 시간 목표는 매일입니다.",
-      "title": "해안 시간 목표",
-      "units": "에스"
-    },
-    "connect-pushtracker": "PushTracker 모바일 앱 연결",
-    "distancegoal": {
-      "description": "SmartDrive로 측정 한 거리에서 휠체어로 매일 이동 한 거리에 대한 목표.",
-      "title": "거리 여행 목표",
-      "units": {
-        "english": "미",
-        "metric": "km"
-      }
-    },
-    "information": "정보",
-    "install-smartdrive": "SmartDrive MX2 Wear OS 앱 설치",
-    "language": {
-      "description": "The language of the text in the app.",
-      "title": "Language",
-      "change": "The app language has been changed."
-    },
-    "pushsensitivity": {
-      "description": "푸시 횟수를 계산하는 데 사용되는 감지 감도. 백분율이 낮을수록 푸시 감지에 대한 민감도가 떨어집니다. 0 %가 가장 민감하지 않아서 더 적은 푸시를 감지하므로 100 %가 가장 민감하므로 더 많은 푸시를 감지합니다.",
-      "title": "푸시 감도"
-    },
-    "title": "PushTracker 설정",
-    "units": {
-      "description": "사용자 인터페이스 내에 측정 값을 표시하는 단위 시스템 또는 측정 단위입니다. 영국식 [ft, mi 및 lbs] 또는 미터법 [cm, km 및 kg]을 선택하십시오.",
-      "title": "단위",
-      "values": {
-        "english": "장엄한",
-        "metric": "미터법"
-      }
-    }
-  },
-  "units": {
-    "distance": {
-      "english": "미",
-      "metric": "km"
-    },
-    "english": "장엄한",
-    "metric": "미터법"
-  },
-  "wearos-comms": {
-    "errors": {
-      "bad-authorization": "PushTracker Mobile 앱에서 잘못된 계정 인증 데이터를 받았습니다. 계정 정보가 최신 상태이고 스마트 워치가 Wi-Fi 또는 전화를 통해 인터넷에 연결되어 있는지 확인하십시오.",
-      "bad-data": "PushTracker Mobile 앱에서 잘못된 데이터를 받았습니다. 연결을 확인하고 다시 시도하십시오."
-    }
-  }
+	"about": {
+		"database": "데이터베이스 ID",
+		"title": "정보",
+		"user-email": "귀하의 이메일",
+		"user-name": "당신의 이름",
+		"version": "PushTracker Wear OS 앱 버전",
+		"watch-serial-number": "Smartwatch 일련 번호"
+	},
+	"busy": {
+		"synchronizing": "동기화 중 ..."
+	},
+	"buttons": {
+		"back": "뒤로",
+		"cancel": "취소",
+		"dismiss": "버리다",
+		"ok": "승인"
+	},
+	"charts": {
+		"coast": {
+			"title": "해안 시간 매일"
+		},
+		"distance": {
+			"title": "매일 이동 한 거리"
+		}
+	},
+	"enhancements": {
+		"coast-time": "해안 시간 매일",
+		"distance": "매일 거리",
+		"pushes": "매일 밀어"
+	},
+	"failures": {
+		"connect": "연결하지 못했습니다",
+		"could-not-update-profile": "Permobil 서버에서 프로파일을 업데이트하지 못했습니다.",
+		"must-wear-watch": "[Check for Wrist] 설정이 활성화되어 있으므로 SmartWatch를 착용하여 SmartDrive를 제어해야합니다.",
+		"no-auth-for-saving": "선택 사항 인 서버에 설정을 저장하려면 PushTracker Wear OS 앱을 PushTracker Mobile 앱에 연결해야합니다. 이렇게하려면 PushTracker Mobile 앱의 \"장치 설정\"페이지에있는 지침을 따르십시오.",
+		"not-connected-to-mobile": "Permobil 서버로 인증하지 못했습니다. PushTracker Mobile 앱에 다시 연결해야합니다.",
+		"not-fully-initialized": "Permobil 서버에 대한 연결을 아직 초기화 중입니다. 가능하면 설정이 전송됩니다.",
+		"permissions": "요청한 작업을 수행 할 수 없습니다. 필요한 권한이 부여되지 않았습니다.",
+		"saving-activity": "활동 저장에 실패했습니다.",
+		"scan": "스캔 할 수 없습니다.",
+		"title": "주의"
+	},
+	"goals": {
+		"coast": {
+			"units": "초"
+		},
+		"distance": {
+			"english": "마일",
+			"metric": "킬로미터"
+		}
+	},
+	"information": "정보",
+	"language-list": {
+		"cs": "Čeština",
+		"da": "Dansk",
+		"de": "도이체",
+		"en": "영어",
+		"es": "스페인어",
+		"fi": "Suomalainen",
+		"fr": "프랑수아",
+		"it": "Italiano",
+		"ja": "日本語",
+		"ko": "한국어",
+		"nb": "노르 스크 보크 몰",
+		"nl": "네덜란드",
+		"pl": "Polski",
+		"pt": "Português",
+		"sv": "Svenska",
+		"zh": "中國 傳統 的"
+	},
+	"languages": {
+		"da": "덴마크 말",
+		"de": "독일 사람",
+		"en": "영어",
+		"es": "스페인 사람",
+		"fr": "프랑스 국민",
+		"it": "이탈리아 사람",
+		"ja": "일본어",
+		"ko": "한국어",
+		"nb": "노르웨이어 [Bokmål]",
+		"nl": "네덜란드 사람",
+		"sv": "스웨덴어",
+		"zh": "중국 전통]"
+	},
+	"menu": {
+		"about": "약",
+		"profile": "윤곽",
+		"title": "메뉴"
+	},
+	"notifications": {
+		"add-pt-element": "PushTracker 통계에 더 빠르게 액세스하고 싶으십니까? 시계 모드를 변경하여 바로 가기를 설정할 수 있습니다. 자세한 내용은 YouTube 채널을 확인하거나 이메일을 보내주십시오.",
+		"channels": {
+			"maintenance": "유지",
+			"personal-record": "개인 기록",
+			"smartdrive": "SmartDrive"
+		},
+		"daily-push-warning": "친절한 알림! 오늘 하루 평균보다 25 % 더 많이 밀었습니다. 휴식을 취하거나 SmartDrive를 더 많이 사용하십시오.",
+		"foreground-service": "Permobil PushTracker가 활동을 수집하고 있습니다",
+		"new-coast-record": "훌륭해! 해안 시간 동안 새로운 개인 최고 기록을 달성했습니다. 어깨를 아끼면서 더 많은 일을하세요! #ChooseToDoMore",
+		"titles": {
+			"add-pt-element": "PushTracker를 요소로 추가",
+			"daily-push-warning": "일일 푸시 경고",
+			"new-coast-record": "새로운 해안 시간 기록!",
+			"wheelchair-maintenance": "일반 화장실 유지 관리 알림"
+		},
+		"wheelchair-maintenance": "휠체어를 계속 유지하면 밀기가 더 쉬워집니다. 캐스터 휠, 캐스터 포크 및 타이어 마모는 의자를 밀 수있는 능력에 영향을 미치는 일반적인 문제입니다."
+	},
+	"permissions-reasons": {
+		"coarse-location": "Bluetooth를 사용하여 iPhone에서 PushTracker Mobile 앱에 연결하려면 다음 화면에서 위치 권한 [ACCESS_COARSE_LOCATION]을 허용해야합니다. 이 권한으로 Permobil은 위치 데이터에 액세스하지 않습니다.",
+		"fine-location": "선택 사항 : 스마트 워치 GPS를 사용하여 거리를 측정하려면 다음 화면 중 하나에서 [ACCESS_FINE_LOCATION] 권한을 허용해야합니다. 이 권한으로 Permobil은 위치 데이터에 액세스하지 않습니다.",
+		"phone-state": "선택 사항 : 지원 및 보증 목적으로 유용 할 수있는 스마트 시계 일련 번호에 액세스하려면 다음 화면 중 하나에서 전화 권한 [READ_PHONE_STATE]을 허용해야합니다. 이 허가에서 Permobil은 귀하의 전화 번호, 셀룰러 네트워크 정보 또는 스마트 워치 일련 번호를 제외한 기타 데이터에 액세스하지 않습니다."
+	},
+	"permissions-request": {
+		"title": "권한 공지"
+	},
+	"profile": "윤곽",
+	"pushes": {
+		"units": "푸시"
+	},
+	"settings": {
+		"coastgoal": {
+			"description": "매일 해안 사이의 평균 해안 시간 목표는 매일입니다.",
+			"title": "해안 시간 목표",
+			"units": "에스"
+		},
+		"connect-pushtracker": "PushTracker 모바일 앱 연결",
+		"distancegoal": {
+			"description": "SmartDrive로 측정 한 거리에서 휠체어로 매일 이동 한 거리에 대한 목표.",
+			"title": "거리 여행 목표",
+			"units": {
+				"english": "미",
+				"metric": "km"
+			}
+		},
+		"information": "정보",
+		"install-smartdrive": "SmartDrive MX2 Wear OS 앱 설치",
+		"language": {
+			"change": "언어를 변경 하시겠습니까? 언어 변경을 적용하려면 PushTracker 앱을 다시 시작해야합니다.",
+			"description": "PushTracker 앱의 텍스트 언어입니다.",
+			"title": "언어"
+		},
+		"pushsensitivity": {
+			"description": "푸시 횟수를 계산하는 데 사용되는 감지 감도. 백분율이 낮을수록 푸시 감지에 대한 민감도가 떨어집니다. 0 %가 가장 민감하지 않아서 더 적은 푸시를 감지하므로 100 %가 가장 민감하므로 더 많은 푸시를 감지합니다.",
+			"title": "푸시 감도"
+		},
+		"title": "PushTracker 설정",
+		"units": {
+			"description": "사용자 인터페이스 내에 측정 값을 표시하는 단위 시스템 또는 측정 단위입니다. 영국식 [ft, mi 및 lbs] 또는 미터법 [cm, km 및 kg]을 선택하십시오.",
+			"title": "단위",
+			"values": {
+				"english": "장엄한",
+				"metric": "미터법"
+			}
+		}
+	},
+	"units": {
+		"distance": {
+			"english": "미",
+			"metric": "km"
+		},
+		"english": "장엄한",
+		"metric": "미터법"
+	},
+	"wearos-comms": {
+		"errors": {
+			"bad-authorization": "PushTracker Mobile 앱에서 잘못된 계정 인증 데이터를 받았습니다. 계정 정보가 최신 상태이고 스마트 워치가 Wi-Fi 또는 전화를 통해 인터넷에 연결되어 있는지 확인하십시오.",
+			"bad-data": "PushTracker Mobile 앱에서 잘못된 데이터를 받았습니다. 연결을 확인하고 다시 시도하십시오."
+		}
+	}
 }

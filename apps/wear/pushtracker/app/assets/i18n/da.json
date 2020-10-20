@@ -1,153 +1,171 @@
 {
-  "about": {
-    "database": "Database ID",
-    "title": "Om information",
-    "user-email": "Din email",
-    "user-name": "Dit navn",
-    "version": "PushTracker Wear OS-appversion",
-    "watch-serial-number": "Smartwatch serienummer"
-  },
-  "busy": {
-    "synchronizing": "Synkronisering ..."
-  },
-  "buttons": {
-    "back": "Tilbage",
-    "dismiss": "Afskedige",
-    "ok": "Okay",
-    "cancel": "Afbestille"
-  },
-  "charts": {
-    "coast": {
-      "title": "Kysttid dagligt"
-    },
-    "distance": {
-      "title": "Afstand rejst dagligt"
-    }
-  },
-  "enhancements": {
-    "coast-time": "Kysttid dagligt",
-    "distance": "Afstand dagligt",
-    "pushes": "Skubber dagligt"
-  },
-  "failures": {
-    "connect": "Kunne ikke oprette forbindelse til",
-    "could-not-update-profile": "Kunne ikke opdatere profilen på Permobil-serveren.",
-    "must-wear-watch": "[Kontroller for håndled] Indstillingen er aktiveret, derfor skal smarturet bæres for at kontrollere din SmartDrive.",
-    "no-auth-for-saving": "For at gemme indstillinger på serveren, som er valgfri, skal du tilslutte PushTracker Wear OS-app til PushTracker Mobile-appen. For at gøre dette skal du følge instruktionerne på siden \"Enhedsopsætning\" i appen PushTracker Mobile.",
-    "not-connected-to-mobile": "Kunne ikke godkende med Permobil-serveren. Genforbindelse til PushTracker mobilapp kræves.",
-    "not-fully-initialized": "Initialiserer stadig forbindelsen til Permobil-serveren. Indstillinger sendes, når det er muligt.",
-    "permissions": "Kan ikke udføre den anmodede handling. Krævede tilladelser blev ikke tildelt.",
-    "saving-activity": "Gemt aktivitet ikke.",
-    "scan": "Kunne ikke scanne.",
-    "title": "Varsel"
-  },
-  "goals": {
-    "coast": {
-      "units": "sekunder"
-    },
-    "distance": {
-      "english": "miles",
-      "metric": "kilometer"
-    }
-  },
-  "information": "Information",
-  "languages": {
-    "da": "dansk",
-    "de": "tysk",
-    "en": "engelsk",
-    "es": "spansk",
-    "fr": "fransk",
-    "it": "italiensk",
-    "ja": "japansk",
-    "ko": "Korean",
-    "nb": "Norsk [bokmål]",
-    "nl": "hollandske",
-    "sv": "Svensk",
-    "zh": "Kinesisk [traditionelt]"
-  },
-  "menu": {
-    "about": "Om",
-    "profile": "Profil",
-    "title": "Menu"
-  },
-  "notifications": {
-    "foreground-service": "Permobil PushTracker indsamler din aktivitet",
-    "wheelchair-maintenance": "At holde din kørestol vedligeholdt gør det lettere at skubbe. Hjul, hjul og gafler og dækslitage er almindelige problemer, der påvirker din evne til at skubbe din stol.",
-    "add-pt-element": "Vil du have hurtigere adgang til dine PushTracker-statistikker? Du kan ændre urskiven for at indstille en genvej. Tjek vores YouTube-kanal eller mail os for detaljer.",
-    "new-coast-record": "Du gjorde det! Du opnåede et nyt personligt rekord for kysttiden. Gør mere, mens du sparer dine skuldre! #ChooseToDoMore",
-    "daily-push-warning": "Venlig påmindelse! Du har skubbet 25% mere i dag end dit daglige gennemsnit. Overvej at tage en pause eller bruge din SmartDrive mere.",
-    "titles": {
-      "daily-push-warning": "Daily Push Warning",
-      "new-coast-record": "New Coast Time Record!",
-      "add-pt-element": "Add PushTracker as Element",
-      "wheelchair-maintenance": "General WC Maintenance Reminder"
-    },
-    "channels": {
-      "smartdrive": "SmartDrive",
-      "personal-record": "Personal Record",
-      "maintenance": "Maintenance"
-    }
-  },
-  "permissions-reasons": {
-    "coarse-location": "For at oprette forbindelse til PushTracker-appen på din iPhone ved hjælp af Bluetooth kræver vi, at du tillader placeringstilladelse [ACCESS_COARSE_LOCATION] på følgende skærm. Fra denne tilladelse får Permobil ikke adgang til dine placeringsdata.",
-    "fine-location": "VALGFRITT: For at måle afstand ved hjælp af din smartwatch GPS har vi brug for dig for at tillade tilladelsen [ACCESS_FINE_LOCATION] på en af følgende skærme. Fra denne tilladelse får Permobil ikke adgang til dine placeringsdata.",
-    "phone-state": "VALGFRITT: For at få adgang til dit smartwatch-serienummer, som kan være nyttigt til support og garantiformål, har vi brug for, at du tillader telefontilladelse [READ_PHONE_STATE] på en af følgende skærme. Fra denne tilladelse får Permobil ikke adgang til dit telefonnummer, mobilnetværksoplysninger eller andre data undtagen smartwatch-serienummeret."
-  },
-  "permissions-request": {
-    "title": "Tilladelsesmeddelelse"
-  },
-  "profile": "Profil",
-  "pushes": {
-    "units": "skubber"
-  },
-  "settings": {
-    "coastgoal": {
-      "description": "Dit mål for gennemsnitlig kysttid mellem skubber hver dag.",
-      "title": "Coast Time Goal",
-      "units": "S"
-    },
-    "connect-pushtracker": "Tilslut PushTracker mobilapp",
-    "distancegoal": {
-      "description": "Dit mål for tilbagelagt afstand i din kørestol hver dag målt ved en SmartDrive.",
-      "title": "Afstand rejset mål",
-      "units": {
-        "english": "mi",
-        "metric": "km"
-      }
-    },
-    "information": "Information",
-    "install-smartdrive": "Installer SmartDrive MX2 Wear OS-app",
-    "language": {
-      "description": "The language of the text in the app.",
-      "title": "Language",
-      "change": "The app language has been changed."
-    },
-    "pushsensitivity": {
-      "description": "Følsomheden for detektionen, der bruges til at tælle skubber. Jo lavere procentdelen er, desto mindre følsom er det at opdage et skub - 0% er det mindst følsomme og registrerer derfor færre skub, og 100% er det mest følsomme og registrerer derfor flere skub.",
-      "title": "Skub følsomhed"
-    },
-    "title": "PushTracker-indstillinger",
-    "units": {
-      "description": "Enhedssystemet eller måleenhederne til at vise målingerne inden for brugergrænsefladerne. Vælg enten Imperial [ft, mi og lbs] eller Metric [cm, km og kg].",
-      "title": "enheder",
-      "values": {
-        "english": "Kejserlig",
-        "metric": "metric"
-      }
-    }
-  },
-  "units": {
-    "distance": {
-      "english": "mi",
-      "metric": "km"
-    },
-    "english": "Kejserlig",
-    "metric": "metric"
-  },
-  "wearos-comms": {
-    "errors": {
-      "bad-authorization": "Ugyldige kontotilladelsesdata modtaget fra PushTracker Mobile-appen. Sørg for, at dine kontooplysninger er opdaterede, og at din smartwatch er tilsluttet internettet enten via Wi-Fi eller din telefon.",
-      "bad-data": "Ugyldige data modtaget fra PushTracker Mobile-appen. Kontroller forbindelsen, og prøv igen."
-    }
-  }
+	"about": {
+		"database": "Database ID",
+		"title": "Om information",
+		"user-email": "Din email",
+		"user-name": "Dit navn",
+		"version": "PushTracker Wear OS-appversion",
+		"watch-serial-number": "Smartwatch serienummer"
+	},
+	"busy": {
+		"synchronizing": "Synkronisering ..."
+	},
+	"buttons": {
+		"back": "Tilbage",
+		"cancel": "afbestille",
+		"dismiss": "Afskedige",
+		"ok": "Okay"
+	},
+	"charts": {
+		"coast": {
+			"title": "Kysttid dagligt"
+		},
+		"distance": {
+			"title": "Afstand rejst dagligt"
+		}
+	},
+	"enhancements": {
+		"coast-time": "Kysttid dagligt",
+		"distance": "Afstand dagligt",
+		"pushes": "Skubber dagligt"
+	},
+	"failures": {
+		"connect": "Kunne ikke oprette forbindelse til",
+		"could-not-update-profile": "Kunne ikke opdatere profilen på Permobil-serveren.",
+		"must-wear-watch": "[Kontroller for håndled] Indstillingen er aktiveret, derfor skal smarturet bæres for at kontrollere din SmartDrive.",
+		"no-auth-for-saving": "For at gemme indstillinger på serveren, som er valgfri, skal du tilslutte PushTracker Wear OS-app til PushTracker Mobile-appen. For at gøre dette skal du følge instruktionerne på siden \"Enhedsopsætning\" i appen PushTracker Mobile.",
+		"not-connected-to-mobile": "Kunne ikke godkende med Permobil-serveren. Genforbindelse til PushTracker mobilapp kræves.",
+		"not-fully-initialized": "Initialiserer stadig forbindelsen til Permobil-serveren. Indstillinger sendes, når det er muligt.",
+		"permissions": "Kan ikke udføre den anmodede handling. Krævede tilladelser blev ikke tildelt.",
+		"saving-activity": "Gemt aktivitet ikke.",
+		"scan": "Kunne ikke scanne.",
+		"title": "Varsel"
+	},
+	"goals": {
+		"coast": {
+			"units": "sekunder"
+		},
+		"distance": {
+			"english": "miles",
+			"metric": "kilometer"
+		}
+	},
+	"information": "Information",
+	"language-list": {
+		"cs": "Čeština",
+		"da": "dansk",
+		"de": "Deutsche",
+		"en": "engelsk",
+		"es": "Español",
+		"fi": "Suomalainen",
+		"fr": "Français",
+		"it": "Italiano",
+		"ja": "日本語",
+		"ko": "한국어",
+		"nb": "Norsk bokmål",
+		"nl": "Nederlands",
+		"pl": "Polski",
+		"pt": "Português",
+		"sv": "Svenska",
+		"zh": "中國 傳統 的"
+	},
+	"languages": {
+		"da": "dansk",
+		"de": "tysk",
+		"en": "engelsk",
+		"es": "spansk",
+		"fr": "fransk",
+		"it": "italiensk",
+		"ja": "japansk",
+		"ko": "Korean",
+		"nb": "Norsk [bokmål]",
+		"nl": "hollandske",
+		"sv": "Svensk",
+		"zh": "Kinesisk [traditionelt]"
+	},
+	"menu": {
+		"about": "Om",
+		"profile": "Profil",
+		"title": "Menu"
+	},
+	"notifications": {
+		"add-pt-element": "Vil du have hurtigere adgang til dine PushTracker-statistikker? Du kan ændre urskiven for at indstille en genvej. Tjek vores YouTube-kanal eller mail os for detaljer.",
+		"channels": {
+			"maintenance": "Vedligeholdelse",
+			"personal-record": "Personlig registrering",
+			"smartdrive": "SmartDrive"
+		},
+		"daily-push-warning": "Venlig påmindelse! Du har skubbet 25% mere i dag end dit daglige gennemsnit. Overvej at tage en pause eller bruge din SmartDrive mere.",
+		"foreground-service": "Permobil PushTracker indsamler din aktivitet",
+		"new-coast-record": "Du gjorde det! Du opnåede et nyt personligt rekord for kysttiden. Gør mere, mens du sparer dine skuldre! #ChooseToDoMore",
+		"titles": {
+			"add-pt-element": "Tilføj PushTracker som element",
+			"daily-push-warning": "Daglig advarsel om push",
+			"new-coast-record": "Ny Coast Time Record!",
+			"wheelchair-maintenance": "Generel påmindelse om WC-vedligeholdelse"
+		},
+		"wheelchair-maintenance": "At holde din kørestol vedligeholdt gør det lettere at skubbe. Hjul, hjul og gafler og dækslitage er almindelige problemer, der påvirker din evne til at skubbe din stol."
+	},
+	"permissions-reasons": {
+		"coarse-location": "For at oprette forbindelse til PushTracker-appen på din iPhone ved hjælp af Bluetooth kræver vi, at du tillader placeringstilladelse [ACCESS_COARSE_LOCATION] på følgende skærm. Fra denne tilladelse får Permobil ikke adgang til dine placeringsdata.",
+		"fine-location": "VALGFRITT: For at måle afstand ved hjælp af din smartwatch GPS har vi brug for dig for at tillade tilladelsen [ACCESS_FINE_LOCATION] på en af følgende skærme. Fra denne tilladelse får Permobil ikke adgang til dine placeringsdata.",
+		"phone-state": "VALGFRITT: For at få adgang til dit smartwatch-serienummer, som kan være nyttigt til support og garantiformål, har vi brug for, at du tillader telefontilladelse [READ_PHONE_STATE] på en af følgende skærme. Fra denne tilladelse får Permobil ikke adgang til dit telefonnummer, mobilnetværksoplysninger eller andre data undtagen smartwatch-serienummeret."
+	},
+	"permissions-request": {
+		"title": "Tilladelsesmeddelelse"
+	},
+	"profile": "Profil",
+	"pushes": {
+		"units": "skubber"
+	},
+	"settings": {
+		"coastgoal": {
+			"description": "Dit mål for gennemsnitlig kysttid mellem skubber hver dag.",
+			"title": "Coast Time Goal",
+			"units": "S"
+		},
+		"connect-pushtracker": "Tilslut PushTracker mobilapp",
+		"distancegoal": {
+			"description": "Dit mål for tilbagelagt afstand i din kørestol hver dag målt ved en SmartDrive.",
+			"title": "Afstand rejset mål",
+			"units": {
+				"english": "mi",
+				"metric": "km"
+			}
+		},
+		"information": "Information",
+		"install-smartdrive": "Installer SmartDrive MX2 Wear OS-app",
+		"language": {
+			"change": "Er du sikker på, at du vil ændre sprog? PushTracker-appen skal genstarte for at anvende sprogændringen.",
+			"description": "Tekstens sprog i PushTracker-appen.",
+			"title": "Sprog"
+		},
+		"pushsensitivity": {
+			"description": "Følsomheden for detektionen, der bruges til at tælle skubber. Jo lavere procentdelen er, desto mindre følsom er det at opdage et skub - 0% er det mindst følsomme og registrerer derfor færre skub, og 100% er det mest følsomme og registrerer derfor flere skub.",
+			"title": "Skub følsomhed"
+		},
+		"title": "PushTracker-indstillinger",
+		"units": {
+			"description": "Enhedssystemet eller måleenhederne til at vise målingerne inden for brugergrænsefladerne. Vælg enten Imperial [ft, mi og lbs] eller Metric [cm, km og kg].",
+			"title": "enheder",
+			"values": {
+				"english": "Kejserlig",
+				"metric": "metric"
+			}
+		}
+	},
+	"units": {
+		"distance": {
+			"english": "mi",
+			"metric": "km"
+		},
+		"english": "Kejserlig",
+		"metric": "metric"
+	},
+	"wearos-comms": {
+		"errors": {
+			"bad-authorization": "Ugyldige kontotilladelsesdata modtaget fra PushTracker Mobile-appen. Sørg for, at dine kontooplysninger er opdaterede, og at din smartwatch er tilsluttet internettet enten via Wi-Fi eller din telefon.",
+			"bad-data": "Ugyldige data modtaget fra PushTracker Mobile-appen. Kontroller forbindelsen, og prøv igen."
+		}
+	}
 }
