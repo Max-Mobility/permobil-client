@@ -128,7 +128,7 @@ const translateKey = (key: string, language: string = 'en') => {
     // do nothing - we have our defaults
   }
   return translated;
-}
+};
 
 const applicationResources = Application.getResources();
 applicationResources.L = L;
