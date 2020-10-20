@@ -14,7 +14,8 @@ import {
   L,
   Prop,
   restartAndroidApp,
-  setDefaultLang
+  setDefaultLang,
+  translateKey
 } from '@permobil/nativescript';
 import * as LS from 'nativescript-localstorage';
 import { DataKeys } from '../../../enums';
@@ -206,8 +207,9 @@ export class ChangeSettingsViewModel extends Observable {
         }
         break;
       case 'language':
-        this.changeSettingKeyValue = L(
-          `language-list.${this._settings.language.toLowerCase()}`
+        this.changeSettingKeyValue = translateKey(
+          `language-list.${this._settings.language.toLowerCase()}`,
+          'en'
         );
         break;
       default:
