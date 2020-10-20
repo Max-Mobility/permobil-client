@@ -75,7 +75,7 @@
     "wheelchair-maintenance": "Keeping your wheelchair maintained makes pushing easier. Caster wheels, caster forks, and tire wear are common issues that influence your ability to push your chair.",
     "add-pt-element": "Want quicker access to your PushTracker stats? You can change the watch face to set a shortcut. Check out our YouTube channel or email us for details.",
     "new-coast-record": "You did it! You achieved a new personal best for coast time. Doing more, while saving your shoulders! #ChooseToDoMore",
-    "daily-push-warning": "Friendly reminder! You’ve pushed 25% more today than your daily average. Consider taking a break or using your SmartDrive more.",
+    "daily-push-warning": "Friendly reminder! You have pushed 25% more today than your daily average. Consider taking a break or using your SmartDrive more.",
     "titles": {
       "daily-push-warning": "Daily Push Warning",
       "new-coast-record": "New Coast Time Record!",
@@ -118,9 +118,9 @@
     "information": "Information",
     "install-smartdrive": "Install SmartDrive MX2+ Wear OS App",
     "language": {
-      "description": "The language of the text in the app.",
+      "description": "The language of the text in the PushTracker app.",
       "title": "Language",
-      "change": "The app language has been changed."
+      "change": "Are you sure you wish to change the language? The PushTracker app must restart to apply the language change."
     },
     "pushsensitivity": {
       "description": "The sensitivity of the detection used to count pushes. The lower the percentage is the less sensitive it is to detecting a push - 0% is the least sensitive and therefore will detect fewer pushes, and 100% is the most sensitive and therefore will detect more pushes.",
@@ -159,7 +159,7 @@
     "fi": "Suomalainen",
     "fr": "Français",
     "it": "Italiano",
-    "ja": "日本人",
+    "ja": "日本語",
     "ko": "한국어",
     "nb": "Norsk Bokmål",
     "nl": "Nederlands",
