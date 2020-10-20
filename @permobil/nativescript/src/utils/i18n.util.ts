@@ -120,10 +120,20 @@ const L = (...args: any[]) => {
   return translated;
 };
 
+const translateKey = (key: string, language: string = 'en') => {
+  let translated = key;
+  try {
+    translated = get(key, translations[language]) || translated;
+  } catch {
+    // do nothing - we have our defaults
+  }
+  return translated;
+};
+
 const applicationResources = Application.getResources();
 applicationResources.L = L;
 Application.setResources(applicationResources);
 // @ts-ignore
 global.L = L;
 
-export { getDefaultLang, setDefaultLang, use, load, update, L };
+export { getDefaultLang, setDefaultLang, use, load, translateKey, update, L };
