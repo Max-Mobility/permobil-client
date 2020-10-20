@@ -1,6 +1,6 @@
 import { Observable } from '@nativescript/core';
 import { mod } from '@permobil/core';
-import { L, getDefaultLang } from '@permobil/nativescript/src/utils';
+import { getDefaultLang, translateKey } from '@permobil/nativescript/src/utils';
 
 export class Profile extends Observable {
   settings = new Profile.Settings();
@@ -73,7 +73,7 @@ export namespace Profile {
 
     constructor() {
       super();
-      Profile.Settings.Languages.Options = Object.keys(L('language-list'));
+      Profile.Settings.Languages.Options = Object.keys(translateKey('language-list', 'en'));
     }
 
     getHeightDisplay(): string {

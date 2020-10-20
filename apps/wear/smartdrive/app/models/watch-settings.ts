@@ -1,5 +1,5 @@
 import { mod } from '@permobil/core/src/utils';
-import { L, getDefaultLang } from '@permobil/nativescript/src/utils';
+import { getDefaultLang, translateKey } from '@permobil/nativescript/src/utils';
 
 type TranslateFunction = (translationKey: string) => string;
 
@@ -23,7 +23,7 @@ export class WatchSettings {
   language: string = WatchSettings.Defaults.language;
 
   constructor() {
-    WatchSettings.Languages.Options = Object.keys(L('language-list'));
+    WatchSettings.Languages.Options = Object.keys(translateKey('language-list', 'en'));
   }
 
   toObj(): any {
@@ -98,7 +98,7 @@ export class WatchSettings {
             break;
           case 'language':
             translationKey = `language-list.${this.language.toLowerCase()}`;
-            displayString = TRANSLATE(translationKey);
+            displayString = translateKey(translationKey, 'en');
             break;
           default:
             break;

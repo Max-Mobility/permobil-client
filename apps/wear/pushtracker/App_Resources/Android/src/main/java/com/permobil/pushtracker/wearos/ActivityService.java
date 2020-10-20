@@ -411,6 +411,15 @@ public class ActivityService
         if (!isInitialized) {
             initializeCoastRecord();
         }
+        // make sure we only check later in the day (since coast time
+        // can fluctuate up and down throughout the day, we want to
+        // get the value towards the end of the day)
+        int hourOfDay = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if (hourOfDay < 19) {
+          // it's earlier than 7 PM / 19:00, so we return and don't
+          // bother checking yet
+          return;
+        }
         // check the max coast time (average)
         float coastToday = currentActivity.coast_time_avg;
         float coastRecordValue = datastore.getCoastTimeRecordValue();
