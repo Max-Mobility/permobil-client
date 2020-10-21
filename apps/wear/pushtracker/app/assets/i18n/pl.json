@@ -1,0 +1,171 @@
+{
+  "about": {
+    "database": "ID bazy danych",
+    "title": "Informacje",
+    "user-email": "Twój email",
+    "user-name": "Twoje imię",
+    "version": "Wersja aplikacji PushTracker Wear OS",
+    "watch-serial-number": "Numer seryjny smartwatcha"
+  },
+  "busy": {
+    "synchronizing": "Synchronizowanie ..."
+  },
+  "buttons": {
+    "back": "Z powrotem",
+    "cancel": "Anuluj",
+    "dismiss": "Odwołać",
+    "ok": "Dobrze"
+  },
+  "charts": {
+    "coast": {
+      "title": "Coast Time Daily (s)"
+    },
+    "distance": {
+      "title": "Przebyta odległość dziennie"
+    }
+  },
+  "enhancements": {
+    "coast-time": "Czas na przybycie codziennie",
+    "distance": "Odległość codziennie",
+    "pushes": "Popycha codziennie"
+  },
+  "failures": {
+    "connect": "Nie udało się połączyć z",
+    "could-not-update-profile": "Nie udało się zaktualizować profilu na serwerze Permobil.",
+    "must-wear-watch": "[Check for Wrist] Ustawienie jest włączone, dlatego smartwatch musi być noszony, aby sterować SmartDrive.",
+    "no-auth-for-saving": "Aby zapisać ustawienia na serwerze, co jest opcjonalne, należy połączyć aplikację PushTracker Wear OS z aplikacją PushTracker Mobile. Aby to zrobić, postępuj zgodnie z instrukcjami na stronie „Konfiguracja urządzenia” aplikacji mobilnej PushTracker.",
+    "not-connected-to-mobile": "Nie udało się uwierzytelnić na serwerze Permobil. Wymagane ponowne połączenie z aplikacją PushTracker Mobile.",
+    "not-fully-initialized": "Wciąż inicjuję połączenie z serwerem Permobil. Ustawienia zostaną wysłane, gdy będzie to możliwe.",
+    "permissions": "Nie można wykonać żądanej akcji. Wymagane uprawnienia nie zostały przyznane.",
+    "saving-activity": "Nie udało się zapisać aktywności.",
+    "scan": "Nie można skanować.",
+    "title": "Ogłoszenie"
+  },
+  "goals": {
+    "coast": {
+      "units": "sekundy"
+    },
+    "distance": {
+      "english": "Miles",
+      "metric": "Kilometry"
+    }
+  },
+  "information": "informacja",
+  "language-list": {
+    "cs": "čeština",
+    "da": "Dansk",
+    "de": "Deutsche",
+    "en": "język angielski",
+    "es": "Español",
+    "fi": "Suomalainen",
+    "fr": "Français",
+    "it": "Italiano",
+    "ja": "日本語",
+    "ko": "한국어",
+    "nb": "Norsk bokmål",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Português",
+    "sv": "Svenska",
+    "zh": "中國 傳統 的"
+  },
+  "languages": {
+    "da": "duński",
+    "de": "Niemiecki",
+    "en": "język angielski",
+    "es": "hiszpański",
+    "fr": "Francuski",
+    "it": "włoski",
+    "ja": "język japoński",
+    "ko": "koreański",
+    "nb": "Norweski [Bokmål]",
+    "nl": "holenderski",
+    "sv": "szwedzki",
+    "zh": "Chiński tradycyjny]"
+  },
+  "menu": {
+    "about": "O",
+    "profile": "Profil",
+    "title": "Menu"
+  },
+  "notifications": {
+    "add-pt-element": "Chcesz szybszego dostępu do statystyk PushTracker? Możesz zmienić tarczę zegarka, aby ustawić skrót. Sprawdź nasz kanał YouTube lub napisz do nas, aby uzyskać szczegółowe informacje.",
+    "channels": {
+      "maintenance": "Konserwacja",
+      "personal-record": "Osobisty rekord",
+      "smartdrive": "SmartDrive"
+    },
+    "daily-push-warning": "Przyjazne przypomnienie! Przesunąłeś dziś o 25% więcej niż średnia dzienna. Rozważ zrobienie sobie przerwy lub częstsze używanie SmartDrive.",
+    "foreground-service": "Permobil PushTracker zbiera Twoją aktywność",
+    "new-coast-record": "Zrobiłeś to! Udało ci się osiągnąć nowy rekord życiowy na wybrzeżu. Robić więcej, oszczędzając swoje ramiona! #ChooseToDoMore",
+    "titles": {
+      "add-pt-element": "Dodaj PushTracker jako element",
+      "daily-push-warning": "Codzienne ostrzeżenie push",
+      "new-coast-record": "Nowy rekord czasu na wybrzeżu!",
+      "wheelchair-maintenance": "Przypomnienie o konserwacji wózka inwalidzkiego"
+    },
+    "wheelchair-maintenance": "Utrzymanie wózka w dobrym stanie ułatwia pchanie. Kółka, widelce i zużycie opon to częste problemy, które wpływają na zdolność pchania krzesła."
+  },
+  "permissions-reasons": {
+    "coarse-location": "Aby połączyć się z aplikacją PushTracker Mobile na iPhonie za pomocą Bluetooth, musisz zezwolić na zezwolenie na lokalizację [ACCESS_COARSE_LOCATION] na następnym ekranie. Z tego uprawnienia Permobil nie będzie mieć dostępu do danych o Twojej lokalizacji.",
+    "fine-location": "OPCJONALNIE: Aby zmierzyć odległość za pomocą GPS w zegarku, musisz zezwolić na zezwolenie [ACCESS_FINE_LOCATION] na jednym z poniższych ekranów. Z tego uprawnienia Permobil nie będzie mieć dostępu do danych o Twojej lokalizacji.",
+    "phone-state": "OPCJONALNIE: Aby uzyskać dostęp do numeru seryjnego smartwatcha, który może być przydatny do celów wsparcia i gwarancji, musimy zezwolić na uprawnienie telefonu [READ_PHONE_STATE] na jednym z poniższych ekranów. Z tego pozwolenia Permobil nie będzie uzyskiwał dostępu do twojego numeru telefonu, informacji o sieci komórkowej ani żadnych innych danych oprócz numeru seryjnego smartwatcha."
+  },
+  "permissions-request": {
+    "title": "Powiadomienie o pozwoleniach"
+  },
+  "profile": "Profil",
+  "pushes": {
+    "units": "popycha"
+  },
+  "settings": {
+    "coastgoal": {
+      "description": "Twój cel dotyczący średniego czasu spędzonego na wodzie między pchnięciami każdego dnia.",
+      "title": "Cel czasu na wybrzeżu",
+      "units": "S"
+    },
+    "connect-pushtracker": "Połącz aplikację mobilną PushTracker",
+    "distancegoal": {
+      "description": "Twój cel dotyczący dystansu pokonywanego każdego dnia na wózku inwalidzkim, mierzonego za pomocą urządzenia SmartDrive.",
+      "title": "Przebyty dystans",
+      "units": {
+        "english": "mi",
+        "metric": "Km"
+      }
+    },
+    "information": "informacja",
+    "install-smartdrive": "Zainstaluj aplikację SmartDrive MX2 + Wear OS",
+    "language": {
+      "change": "Czy na pewno chcesz zmienić język? Aplikacja PushTracker musi zostać ponownie uruchomiona, aby zastosować zmianę języka.",
+      "description": "Język tekstu w aplikacji PushTracker.",
+      "title": "jezyk"
+    },
+    "pushsensitivity": {
+      "description": "Czułość wykrywania używanego do liczenia pchnięć. Im niższy procent, tym mniejsza czułość wykrywania pchnięcia - 0% jest najmniej czuła i dlatego wykryje mniejszą liczbę pchnięć, a 100% jest najbardziej czuła i dlatego wykryje więcej naciśnięć.",
+      "title": "Czułość Push"
+    },
+    "title": "Ustawienia PushTracker",
+    "units": {
+      "description": "System jednostek lub jednostki miary do wyświetlania pomiarów w interfejsach użytkownika. Wybierz opcję Imperial [ft, mi i lbs] lub Metric [cm, km i kg].",
+      "title": "Jednostki",
+      "values": {
+        "english": "Cesarski",
+        "metric": "Metryczny"
+      }
+    }
+  },
+  "units": {
+    "distance": {
+      "english": "mi",
+      "metric": "Km"
+    },
+    "english": "Cesarski",
+    "metric": "Metryczny"
+  },
+  "wearos-comms": {
+    "errors": {
+      "bad-authorization": "Nieprawidłowe dane autoryzacji konta otrzymane z aplikacji PushTracker Mobile. Upewnij się, że informacje o koncie są aktualne, a zegarek jest połączony z Internetem przez Wi-Fi lub telefon.",
+      "bad-data": "Nieprawidłowe dane otrzymane z aplikacji mobilnej PushTracker. Sprawdź połączenie i spróbuj ponownie."
+    }
+  }
+}

@@ -12,9 +12,9 @@
   },
   "buttons": {
     "back": "Tilbake",
+    "cancel": "Avbryt",
     "dismiss": "Avskjedige",
-    "ok": "OK",
-    "cancel": "Avbryt"
+    "ok": "OK"
   },
   "charts": {
     "coast": {
@@ -51,6 +51,24 @@
     }
   },
   "information": "informasjon",
+  "language-list": {
+    "cs": "Čeština",
+    "da": "dansk",
+    "de": "Deutsche",
+    "en": "engelsk",
+    "es": "español",
+    "fi": "Suomalainen",
+    "fr": "fransk",
+    "it": "Italiano",
+    "ja": "日本語",
+    "ko": "한국어",
+    "nb": "Norsk bokmål",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Português",
+    "sv": "Svenska",
+    "zh": "中國 傳統 的"
+  },
   "languages": {
     "da": "dansk",
     "de": "tysk",
@@ -71,22 +89,22 @@
     "title": "Meny"
   },
   "notifications": {
-    "foreground-service": "Permobil PushTracker samler inn aktiviteten din",
-    "wheelchair-maintenance": "Keeping your wheelchair maintained makes pushing easier. Caster wheels, caster forks, and tire wear are common issues that influence your ability to push your chair.",
-    "add-pt-element": "Want quicker access to your PushTracker stats? You can change the watch face to set a shortcut. Check out our YouTube channel or email us for details.",
-    "new-coast-record": "You did it! You achieved a new personal best for coast time. Doing more, while saving your shoulders! #ChooseToDoMore",
-    "daily-push-warning": "Friendly reminder! You’ve pushed 25% more today than your daily average. Consider taking a break or using your SmartDrive more.",
-    "titles": {
-      "daily-push-warning": "Daily Push Warning",
-      "new-coast-record": "New Coast Time Record!",
-      "add-pt-element": "Add PushTracker as Element",
-      "wheelchair-maintenance": "General WC Maintenance Reminder"
-    },
+    "add-pt-element": "Ønsker du raskere tilgang til PushTracker-statistikken din? Du kan endre urskiven for å angi en snarvei. Ta en titt på YouTube-kanalen vår eller send oss en e-post for mer informasjon.",
     "channels": {
-      "smartdrive": "SmartDrive",
-      "personal-record": "Personal Record",
-      "maintenance": "Maintenance"
-    }
+      "maintenance": "Vedlikehold",
+      "personal-record": "Personlig post",
+      "smartdrive": "Smart"
+    },
+    "daily-push-warning": "Vennlig påminnelse! Du har presset 25% mer i dag enn ditt daglige gjennomsnitt. Vurder å ta en pause eller bruke SmartDrive mer.",
+    "foreground-service": "Permobil PushTracker samler inn aktiviteten din",
+    "new-coast-record": "Du gjorde det! Du oppnådde et nytt personlig rekord for kysten. Gjør mer, mens du sparer skuldrene! #ChooseToDoMore",
+    "titles": {
+      "add-pt-element": "Legg til PushTracker som element",
+      "daily-push-warning": "Daglig push-advarsel",
+      "new-coast-record": "Ny Coast Time Record!",
+      "wheelchair-maintenance": "Påminnelse om vedlikehold av rullestol"
+    },
+    "wheelchair-maintenance": "Å holde rullestolen vedlikeholdt gjør det lettere å skyve. Hjul, hjul og hjulslitasje er vanlige problemer som påvirker din evne til å skyve stolen."
   },
   "permissions-reasons": {
     "coarse-location": "For å få forbindelse med PushTracker Mobile-appen på din iPhone ved hjelp av Bluetooth, krever vi at du tillater plasseringstillatelse [ACCESS_COARSE_LOCATION] på følgende skjermbilde. Fra denne tillatelsen får Permobil ikke tilgang til posisjonsdataene dine.",
@@ -118,9 +136,9 @@
     "information": "informasjon",
     "install-smartdrive": "Installer SmartDrive MX2 Wear OS-app",
     "language": {
-      "description": "The language of the text in the app.",
-      "title": "Language",
-      "change": "The app language has been changed."
+      "change": "Er du sikker på at du vil endre språk? PushTracker-appen må starte på nytt for å bruke språkendringen.",
+      "description": "Språket i teksten i PushTracker-appen.",
+      "title": "språk"
     },
     "pushsensitivity": {
       "description": "Følsomheten for deteksjonen som brukes til å telle skyver. Jo lavere prosentandel er, desto mindre følsom er det å oppdage et trykk - 0% er det minst følsomme og vil derfor oppdage færre trykk, og 100% er det mest følsomme og vil derfor oppdage flere trykk.",

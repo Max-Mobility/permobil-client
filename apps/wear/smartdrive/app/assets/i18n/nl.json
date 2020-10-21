@@ -66,6 +66,7 @@
       "overcurrent": "[ERR: 003] SD Stroom piek",
       "overtemperature": "[ERR: 004] SD Oververhitting"
     },
+    "load-more": "Meer laden",
     "loading": "Bezig met laden...",
     "no-errors": "Er zijn geen SmartDrive fouten geregistreerd of ontvangen.",
     "title": "SmartDrive Foutgeschiedenis"
@@ -94,22 +95,22 @@
     "too-many-smartdrives-found": "Meerdere SmartDrives gevonden. Zorg ervoor dat er slechts één SmartDrive ingeschakeld is tijdens het koppelen."
   },
   "language-list": {
-    "cs": "",
-    "da": "",
-    "de": "",
-    "en": "",
-    "es": "",
-    "fi": "",
-    "fr": "",
-    "it": "",
-    "ja": "",
-    "ko": "",
-    "nb": "",
-    "nl": "",
-    "pl": "",
-    "pt": "",
-    "sv": "",
-    "zh": ""
+    "cs": "Čeština",
+    "da": "Dansk",
+    "de": "Deutsch",
+    "en": "English",
+    "es": "Español",
+    "fi": "Suomalainen",
+    "fr": "français",
+    "it": "Italiano",
+    "ja": "日本人",
+    "ko": "한국어",
+    "nb": "Norsk bokmål",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Português",
+    "sv": "Svenska",
+    "zh": "中國 傳統 的"
   },
   "languages": {
     "cs": "Tsjechisch",
@@ -137,40 +138,40 @@
     "updates": "Draadloze Updates"
   },
   "notifications": {
-    "tire-pressure": "Tire pressure greatly impacts your ability to push. Have you checked it lately?",
-    "sd-roller-check": "Check your rollers.  See flat spots? Are they hard to spin? Contact SmartDrive today to discuss.",
-    "sd-clamp-check": "Time to check your alignment! Make sure your clamp or folding frame adapter are set correct. Refer to your user’s manual or contact us.",
-    "open-pt-wear": "Want to know more about your daily mobility? Open the PushTracker app to know your push count, coast time, and distance traveled each day.",
-    "access-more-features": "Want more features about your daily/weekly/monthly propulsion activities? Contact us to learn how to make your PushTracker E2 give your more features!",
-    "unlock-more-features": "Unlock more E2! Text messages, heart rate, and calendar alerts are just few other features you can get from your PushTracker E2. Refer to the instructions on your E2 box or contact us to learn how to make your PushTracker E2 give your more features!",
-    "daily-distance-record": "You did it! You achieved a new personal record for distance traveled in a day. Keep it up! And don’t forget to coast. #ChooseToDoMore",
-    "switch-control-reminder": "SwitchControl buttons give you another way to control your SmartDrive. Plug them directly in to SmartDrive charging port (no Bluetooth required). Press the button to go, stop, or set your speed. Contact you provider or SmartDrive support to learn more.",
-    "accelerate-while-moving": "Pick up your speed while you’re already moving! Push the wheel to go faster, then single tap with your PushTracker E2. Press and hold SwitchControl to increase speed again.",
-    "sc-light-indications": "Curious about the flashing lights are on your SwitchControl? Refer to your user manual or our YouTube page to find out what each one means.",
-    "sd-e2-charging": "For optimal performance charge your SmartDrive every night. Make sure you keep it charged above 25%, especially if you’re not going to use SmartDrive for a long time period. Check your user’s manual or contact us for details.",
-    "odometer-records-part-one": "Doing more while keeping your shoulders healthy is what it’s all about. You’ve put",
-    "odometer-records-part-two": "on your SmartDrive. #ChooseToDoMore",
-    "routine-maintenance": "Keeping your equipment clean helps it last longer! Use a damp sponge, mild detergent and dry thoroughly to keep your SmartDrive like new! (do not soak or immerse).",
-    "titles": {
-      "tire-pressure": "Tire Pressure Check",
-      "sd-roller-check": "SmartDrive Roller",
-      "sd-clamp-check": "SmartDrive Clamp Check/Folding Frame Adapter",
-      "open-pt-wear": "Open the PushTracker Wear App",
-      "access-more-features": "Access More Features",
-      "unlock-more-features": "Unlock more features",
-      "daily-distance-record": "Daily Distance Record!",
-      "switch-control-reminder": "SwitchControl Reminder",
-      "accelerate-while-moving": "Accelerate While Moving",
-      "sc-light-indications": "SC Light Indications",
-      "sd-e2-charging": "SmartDrive & E2 Charging",
-      "odometer-records": "Odometer Records",
-      "routine-maintenance": "Routine Maintenance"
-    },
+    "accelerate-while-moving": "Verhoog uw rijsnelheid terwijl u al aan het cruisen bent! Hoepel om sneller te gaan en tik vervolgens één keer met je PushTracker. Houd SwitchControl ingedrukt om de snelheid weer te verhogen.",
+    "access-more-features": "Wilt u meer informatie over uw dagelijkse / wekelijkse / maandelijkse hoepel-activiteit? Bezoek de Permobil-website om te leren hoe u het meeste uit uw SmartDrive en PushTracker kunt halen!",
     "channels": {
-      "maintenance": "Maintenance",
-      "smartdrive": "SmartDrive",
-      "personal-record": "Personal Record"
-    }
+      "maintenance": "Onderhoud",
+      "personal-record": "Persoonlijk record",
+      "smartdrive": "SmartDrive"
+    },
+    "daily-distance-record": "Je hebt het gedaan! Je hebt een nieuw persoonlijk record behaald voor de afgelegde afstand in een dag. Ga zo door! En vergeet niet te \"cruisen\". #ChooseToDoMore",
+    "odometer-records-part-one": "Meer doen en tegelijkertijd uw schouders gezond houden, daar draait het om. Je hebt",
+    "odometer-records-part-two": "gereden met je SmartDrive. #ChooseToDoMore",
+    "open-pt-wear": "Meer weten over uw dagelijkse mobiliteit? Open de PushTracker-app om uw push-telling, cruise-tijd en afgelegde afstand elke dag te zien.",
+    "routine-maintenance": "Door uw apparatuur schoon te houden, gaat deze langer mee! Gebruik een vochtige spons, een mild schoonmaakmiddel en droog hem grondig af om je SmartDrive als nieuw te houden! (Niet weken of onderdompelen)",
+    "sc-light-indications": "Benieuwd naar de knipperende lampjes op uw SwitchControl Buttons? Raadpleeg de gebruikershandleiding of de Permobil YouTube-pagina om te zien wat ze allemaal betekenen.",
+    "sd-clamp-check": "Tijd om adapter montage te controleren! Zorg ervoor dat uw klem- of vouwframe-adapter correct is ingesteld. Raadpleeg de instructies of neem contact met ons op.",
+    "sd-e2-charging": "Voor maximale prestaties begint u elke dag met uw SmartDrive volledig opgeladen. Zorg ervoor dat de batterij meer dan 25% opgeladen blijft, vooral als u hem voor langere tijd niet gebruikt. Raadpleeg uw gebruikershandleiding of neem contact op met Permobil voor details.",
+    "sd-roller-check": "Controleer je rollers. Zie vlakke plekken? Zijn ze moeilijk te draaien? Neem vandaag nog contact op met uw Dealer of Permobil om dit te bespreken.",
+    "switch-control-reminder": "SwitchControl-knoppen bieden u een andere manier van bediening. Sluit ze rechtstreeks aan op de SmartDrive-oplaadpoort (geen Bluetooth vereist). Druk op de knop om te rijden, te stoppen of uw snelheid in te stellen. Neem contact op met uw Dealer of met Permobil voor meer informatie.",
+    "tire-pressure": "De bandenspanning heeft een grote invloed op uw duwvermogen. Heb je het onlangs gecontroleerd?",
+    "titles": {
+      "accelerate-while-moving": "Versnellen",
+      "access-more-features": "Aandrijving en meer",
+      "daily-distance-record": "Dagelijks afstandsrecord!",
+      "odometer-records": "Kilometerteller record!",
+      "open-pt-wear": "Open de PushTracker Wear-app",
+      "routine-maintenance": "Gepland onderhoud",
+      "sc-light-indications": "Knop indicaties",
+      "sd-clamp-check": "Herinnering: Controleer de adapter",
+      "sd-e2-charging": "SmartDrive & PushTracker opladen",
+      "sd-roller-check": "Herinnering: Controleer de rollen",
+      "switch-control-reminder": "SwitchControl Knoppen",
+      "tire-pressure": "Herinnering: Bandencontrole",
+      "unlock-more-features": "Meer doen"
+    },
+    "unlock-more-features": "Tekstberichten en agendawaarschuwingen zijn slechts enkele andere functies die u van uw PushTracker kunt krijgen. Neem contact op met Permobil of bezoek onze website om te zien hoe u meer functionaliteit krijgt."
   },
   "ota": {
     "action": {
@@ -244,7 +245,7 @@
     "description": {
       "acceleration": "De acceleratie van de SmartDrive.",
       "controlmode": "MX2+: De standaard instelling is op tikken gebaseerde werking van de SmartDrive. In de MX2+ besturingsmodus gaat na een dubbele tik de SmartDrive rijden en versnellen. Met een enkele tik wordt de huidige snelheid vastgezet. Met een dubbele tik wordt rijden gedeactiveerd.\n\nMX2: In de MX2 besturingsmodus begint de SmartDrive te rijden door de hoepels te bewegen. Met een enkele tik wordt rijden  gedeactiveerd.\nHoud er rekening mee dat dit een oudere besturingsmode is.\n\nMX1: In de MX1 besturingsmodus begint de SmartDrive te rijden door de hoepels te bewegen.\nMet een enkele tik of remmen met de hoepels wordt rijden gedeactiveerd.",
-      "language": "The language of the text in the SmartDrive app.",
+      "language": "De taal van de tekst in de SmartDrive-app.",
       "maxspeed": "De maximale snelheid waarmee de SmartDrive kan rijden wanneer deze wordt bestuurd door uw Smartwatch.",
       "powerassistbuzzer": "Indien ingeschakeld, piept de SmartDrive telkens wanneer een verbinding vanaf een extern apparaat tot stand wordt gebracht of wanneer Schakelaarbesturung uit de stand-by status wordt gehaald.",
       "powerassisttimeout": "Als de SmartDrive is ingeschakeld, maar er wordt gedurende de ingestelde tijd niet gereden zal de SmartDrive automatisch worden uitgeschakeld.\n\nAls der Smartdrive wordt ingeschakeld maar komt er geen verbinding gemaakt worden met de SmartDrive dan schakelt deze na 1 minuut automatisch uit",
@@ -268,7 +269,8 @@
     },
     "scanning": "Scannen naar SmartDrive om te koppelen met ...",
     "select-smartdrive": "Selecteer SmartDrive",
-    "set-time": "Datum Tijd",
+    "send-settings-prompt": "Wijzigingen in de SmartDrive-instellingen worden pas van kracht als de PushTracker verbinding maakt met de SmartDrive. Wilt u de ondersteuning nu AAN zetten om verbinding te maken met de SmartDrive en de instellingen bij te werken?",
+    "set-time": "Datum en Tijd",
     "syncing-with-server": "Synchroniseren met server ...",
     "tap-sensitivity": "Tik gevoeligheid",
     "title": "SmartDrive instellingen",
@@ -298,6 +300,7 @@
     }
   },
   "updates": {
+    "available": "Er zijn updates beschikbaar voor uw SmartDrive. Wilt u naar de pagina Wireless Updates gaan om de updates te downloaden en uit te voeren?",
     "canceled": "SmartDrive updates geannuleerd.",
     "changes": "Samenvatting van de wijzigingen",
     "checking-for-updates": "Controleren op updates...",
@@ -314,6 +317,7 @@
     },
     "failed": "SmartDrive updates zijn mislukt.",
     "initializing": "Updates initialiseren...",
+    "perform": "Update SmartDrive",
     "status": "Updates Status",
     "success": "SmartDrive updates met succes voltooid!",
     "timeout": "Er is een time-out opgetreden voor SmartDrive updates.",
@@ -322,7 +326,7 @@
   },
   "warnings": {
     "saved-settings": {
-      "language": "Weet u zeker dat u de taal wilt wijzigen? De SmartDrive MX2 + -app moet opnieuw worden opgestart om de taalwijziging toe te passen.",
+      "language": "Weet u zeker dat u de taal wilt wijzigen? De SmartDrive MX2-app moet opnieuw worden opgestart om de taalwijziging toe te passen.",
       "message": "WAARSCHUWING: U MOET de gebruikershandleiding van de SmartDrive raadplegen hoe de wijzigingen van de instellingen, de werking en prestaties van de SmartDrive beïnvloeden.",
       "title": "Gewijzigde instellingen"
     },

@@ -12,9 +12,9 @@
   },
   "buttons": {
     "back": "Zurück",
+    "cancel": "Stornieren",
     "dismiss": "entlassen",
-    "ok": "OK",
-    "cancel": "Stornieren"
+    "ok": "OK"
   },
   "charts": {
     "coast": {
@@ -51,6 +51,24 @@
     }
   },
   "information": "Information",
+  "language-list": {
+    "cs": "čeština",
+    "da": "Dansk",
+    "de": "Deutsche",
+    "en": "Englisch",
+    "es": "Español",
+    "fi": "Suomalainen",
+    "fr": "Francais",
+    "it": "Italiano",
+    "ja": "日本語",
+    "ko": "한국어",
+    "nb": "Norsk bokmål",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Português",
+    "sv": "Svenska",
+    "zh": "中國 傳統 的"
+  },
   "languages": {
     "da": "dänisch",
     "de": "Deutsche",
@@ -71,22 +89,22 @@
     "title": "Speisekarte"
   },
   "notifications": {
-    "foreground-service": "Permobil PushTracker sammelt Ihre Aktivitäten",
-    "wheelchair-maintenance": "Keeping your wheelchair maintained makes pushing easier. Caster wheels, caster forks, and tire wear are common issues that influence your ability to push your chair.",
-    "add-pt-element": "Want quicker access to your PushTracker stats? You can change the watch face to set a shortcut. Check out our YouTube channel or email us for details.",
-    "new-coast-record": "You did it! You achieved a new personal best for coast time. Doing more, while saving your shoulders! #ChooseToDoMore",
-    "daily-push-warning": "Friendly reminder! You’ve pushed 25% more today than your daily average. Consider taking a break or using your SmartDrive more.",
-    "titles": {
-      "daily-push-warning": "Daily Push Warning",
-      "new-coast-record": "New Coast Time Record!",
-      "add-pt-element": "Add PushTracker as Element",
-      "wheelchair-maintenance": "General WC Maintenance Reminder"
-    },
+    "add-pt-element": "Möchten Sie schneller auf Ihre PushTracker-Statistiken zugreifen? Sie können das Zifferblatt ändern, um eine Verknüpfung festzulegen. Besuchen Sie unseren YouTube-Kanal oder senden Sie uns eine E-Mail, um weitere Informationen zu erhalten.",
     "channels": {
-      "smartdrive": "SmartDrive",
-      "personal-record": "Personal Record",
-      "maintenance": "Maintenance"
-    }
+      "maintenance": "Instandhaltung",
+      "personal-record": "Persönliche Aufzeichnung",
+      "smartdrive": "SmartDrive"
+    },
+    "daily-push-warning": "Freundliche Erinnerung! Sie haben heute 25% mehr als Ihr Tagesdurchschnitt geschoben. Machen Sie eine Pause oder verwenden Sie Ihr SmartDrive häufiger.",
+    "foreground-service": "Permobil PushTracker sammelt Ihre Aktivitäten",
+    "new-coast-record": "Du hast es geschafft! Sie haben eine neue persönliche Bestzeit für die Küstenzeit erreicht. Mehr tun und gleichzeitig die Schultern schonen! #ChooseToDoMore",
+    "titles": {
+      "add-pt-element": "Fügen Sie PushTracker als Element hinzu",
+      "daily-push-warning": "Tägliche Push-Warnung",
+      "new-coast-record": "Neuer Küstenzeitrekord!",
+      "wheelchair-maintenance": "Erinnerung an die Wartung von Rollstühlen"
+    },
+    "wheelchair-maintenance": "Wenn Sie Ihren Rollstuhl instand halten, wird das Schieben einfacher. Lenkräder, Lenkergabeln und Reifenverschleiß sind häufige Probleme, die Ihre Fähigkeit beeinflussen, Ihren Stuhl zu schieben."
   },
   "permissions-reasons": {
     "coarse-location": "Um über Bluetooth eine Verbindung mit der PushTracker Mobile-App auf Ihrem iPhone herzustellen, müssen Sie die Standortberechtigung [ACCESS_COARSE_LOCATION] auf dem folgenden Bildschirm zulassen. Von dieser Berechtigung aus greift Permobil nicht auf Ihre Standortdaten zu.",
@@ -118,9 +136,9 @@
     "information": "Information",
     "install-smartdrive": "Installieren Sie die SmartDrive MX2 Wear OS App",
     "language": {
-      "description": "The language of the text in the app.",
-      "title": "Language",
-      "change": "The app language has been changed."
+      "change": "Sind Sie sicher, dass Sie die Sprache ändern möchten? Die PushTracker-App muss neu gestartet werden, um die Sprachänderung anzuwenden.",
+      "description": "Die Sprache des Textes in der PushTracker-App.",
+      "title": "Sprache"
     },
     "pushsensitivity": {
       "description": "Die Empfindlichkeit der zum Zählen verwendeten Erkennung drückt. Je niedriger der Prozentsatz ist, desto unempfindlicher ist es für die Erkennung eines Stoßes. 0% ist am unempfindlichsten und erkennt daher weniger Stöße, und 100% ist am empfindlichsten und erkennt daher mehr Stöße.",

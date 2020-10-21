@@ -12,9 +12,9 @@
   },
   "buttons": {
     "back": "terug",
+    "cancel": "annuleren",
     "dismiss": "ontslaan",
-    "ok": "OK",
-    "cancel": "Annuleer"
+    "ok": "OK"
   },
   "charts": {
     "coast": {
@@ -51,6 +51,24 @@
     }
   },
   "information": "Informatie",
+  "language-list": {
+    "cs": "Čeština",
+    "da": "Dansk",
+    "de": "Deutsche",
+    "en": "Engels",
+    "es": "Español",
+    "fi": "Suomalainen",
+    "fr": "français",
+    "it": "Italiano",
+    "ja": "日本語",
+    "ko": "한국어",
+    "nb": "Norsk bokmål",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Português",
+    "sv": "Svenska",
+    "zh": "中國 傳統 的"
+  },
   "languages": {
     "da": "Deens",
     "de": "Duitse",
@@ -71,22 +89,22 @@
     "title": "Menu"
   },
   "notifications": {
-    "foreground-service": "Permobil PushTracker verzamelt uw activiteit",
-    "wheelchair-maintenance": "Keeping your wheelchair maintained makes pushing easier. Caster wheels, caster forks, and tire wear are common issues that influence your ability to push your chair.",
-    "add-pt-element": "Want quicker access to your PushTracker stats? You can change the watch face to set a shortcut. Check out our YouTube channel or email us for details.",
-    "new-coast-record": "You did it! You achieved a new personal best for coast time. Doing more, while saving your shoulders! #ChooseToDoMore",
-    "daily-push-warning": "Friendly reminder! You’ve pushed 25% more today than your daily average. Consider taking a break or using your SmartDrive more.",
-    "titles": {
-      "daily-push-warning": "Daily Push Warning",
-      "new-coast-record": "New Coast Time Record!",
-      "add-pt-element": "Add PushTracker as Element",
-      "wheelchair-maintenance": "General WC Maintenance Reminder"
-    },
+    "add-pt-element": "Wilt u snellere toegang tot uw PushTracker-statistieken? U kunt de wijzerplaat wijzigen om een snelkoppeling in te stellen. Bekijk ons YouTube-kanaal of stuur ons een e-mail voor meer informatie.",
     "channels": {
-      "smartdrive": "SmartDrive",
-      "personal-record": "Personal Record",
-      "maintenance": "Maintenance"
-    }
+      "maintenance": "Onderhoud",
+      "personal-record": "Persoonlijk record",
+      "smartdrive": "SmartDrive"
+    },
+    "daily-push-warning": "Vriendelijke herinnering! Je hebt vandaag 25% meer gepusht dan je dagelijkse gemiddelde. Overweeg een pauze te nemen of uw SmartDrive vaker te gebruiken.",
+    "foreground-service": "Permobil PushTracker verzamelt uw activiteit",
+    "new-coast-record": "Je hebt het gedaan! Je hebt een nieuw persoonlijk record behaald voor kusttijd. Meer doen en tegelijkertijd uw schouders sparen! #ChooseToDoMore",
+    "titles": {
+      "add-pt-element": "Voeg PushTracker toe als element",
+      "daily-push-warning": "Dagelijkse push-waarschuwing",
+      "new-coast-record": "Nieuw kusttijdrecord!",
+      "wheelchair-maintenance": "Herinnering rolstoelonderhoud"
+    },
+    "wheelchair-maintenance": "Door uw rolstoel goed te onderhouden, wordt het duwen gemakkelijker. Zwenkwielen, zwenkwielen en bandenslijtage zijn veel voorkomende problemen die van invloed zijn op uw duwvermogen."
   },
   "permissions-reasons": {
     "coarse-location": "Om via Bluetooth verbinding te maken met de PushTracker-app op uw iPhone, moet u de locatietoestemming [ACCESS_COARSE_LOCATION] op het volgende scherm toestaan. Met deze toestemming heeft Permobil geen toegang tot uw locatiegegevens.",
@@ -118,9 +136,9 @@
     "information": "Informatie",
     "install-smartdrive": "Installeer de SmartDrive MX2 Wear OS-app",
     "language": {
-      "description": "The language of the text in the app.",
-      "title": "Language",
-      "change": "The app language has been changed."
+      "change": "Weet u zeker dat u de taal wilt wijzigen? De PushTracker-app moet opnieuw worden opgestart om de taalwijziging toe te passen.",
+      "description": "De taal van de tekst in de PushTracker-app.",
+      "title": "Taal"
     },
     "pushsensitivity": {
       "description": "De gevoeligheid van de detectie die wordt gebruikt om pushen te tellen. Hoe lager het percentage, hoe minder gevoelig het is voor het detecteren van een push - 0% is het minst gevoelig en zal daarom minder pushs detecteren, en 100% is het meest gevoelig en zal daarom meer pushs detecteren.",

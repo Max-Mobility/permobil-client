@@ -12,9 +12,9 @@
   },
   "buttons": {
     "back": "Back",
+    "cancel": "Cancel",
     "dismiss": "Dismiss",
-    "ok": "OK",
-    "cancel": "Cancel"
+    "ok": "OK"
   },
   "charts": {
     "coast": {
@@ -51,6 +51,24 @@
     }
   },
   "information": "Information",
+  "language-list": {
+    "cs": "Čeština",
+    "da": "Dansk",
+    "de": "Deutsche",
+    "en": "English",
+    "es": "Español",
+    "fi": "Suomalainen",
+    "fr": "Français",
+    "it": "Italiano",
+    "ja": "日本語",
+    "ko": "한국어",
+    "nb": "Norsk Bokmål",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Português",
+    "sv": "Svenska",
+    "zh": "中國傳統的"
+  },
   "languages": {
     "da": "Danish",
     "de": "German",
@@ -71,22 +89,22 @@
     "title": "Menu"
   },
   "notifications": {
-    "foreground-service": "Permobil PushTracker is collecting your activity",
-    "wheelchair-maintenance": "Keeping your wheelchair maintained makes pushing easier. Caster wheels, caster forks, and tire wear are common issues that influence your ability to push your chair.",
     "add-pt-element": "Want quicker access to your PushTracker stats? You can change the watch face to set a shortcut. Check out our YouTube channel or email us for details.",
+    "channels": {
+      "maintenance": "Maintenance",
+      "personal-record": "Personal Record",
+      "smartdrive": "SmartDrive"
+    },
+    "daily-push-warning": "Friendly reminder! You have pushed 25% more today than your daily average. Consider taking a break or using your SmartDrive more.",
+    "foreground-service": "Permobil PushTracker is collecting your activity",
     "new-coast-record": "You did it! You achieved a new personal best for coast time. Doing more, while saving your shoulders! #ChooseToDoMore",
-    "daily-push-warning": "Friendly reminder! You’ve pushed 25% more today than your daily average. Consider taking a break or using your SmartDrive more.",
     "titles": {
+      "add-pt-element": "Add PushTracker as Element",
       "daily-push-warning": "Daily Push Warning",
       "new-coast-record": "New Coast Time Record!",
-      "add-pt-element": "Add PushTracker as Element",
-      "wheelchair-maintenance": "General WC Maintenance Reminder"
+      "wheelchair-maintenance": "Wheelchair Maintenance Reminder"
     },
-    "channels": {
-      "smartdrive": "SmartDrive",
-      "personal-record": "Personal Record",
-      "maintenance": "Maintenance"
-    }
+    "wheelchair-maintenance": "Keeping your wheelchair maintained makes pushing easier. Caster wheels, caster forks, and tire wear are common issues that influence your ability to push your chair."
   },
   "permissions-reasons": {
     "coarse-location": "To connect with the PushTracker Mobile app on your iPhone using Bluetooth we require you to allow the Location permission [ACCESS_COARSE_LOCATION] on the following screen. From this permission Permobil will not be accessing your location data.",
@@ -118,9 +136,9 @@
     "information": "Information",
     "install-smartdrive": "Install SmartDrive MX2+ Wear OS App",
     "language": {
-      "description": "The language of the text in the app.",
-      "title": "Language",
-      "change": "The app language has been changed."
+      "change": "Are you sure you wish to change the language? The PushTracker app must restart to apply the language change.",
+      "description": "The language of the text in the PushTracker app.",
+      "title": "Language"
     },
     "pushsensitivity": {
       "description": "The sensitivity of the detection used to count pushes. The lower the percentage is the less sensitive it is to detecting a push - 0% is the least sensitive and therefore will detect fewer pushes, and 100% is the most sensitive and therefore will detect more pushes.",
@@ -149,23 +167,5 @@
       "bad-authorization": "Invalid account authorization data received from PushTracker Mobile app. Ensure your account information is up-to-date and your smartwatch is connected to the internet either through Wi-Fi or your phone.",
       "bad-data": "Invalid data received from PushTracker Mobile app. Check the connection and try again."
     }
-  },
-  "language-list": {
-    "cs": "Čeština",
-    "da": "Dansk",
-    "de": "Deutsche",
-    "en": "English",
-    "es": "Español",
-    "fi": "Suomalainen",
-    "fr": "Français",
-    "it": "Italiano",
-    "ja": "日本人",
-    "ko": "한국어",
-    "nb": "Norsk Bokmål",
-    "nl": "Nederlands",
-    "pl": "Polski",
-    "pt": "Português",
-    "sv": "Svenska",
-    "zh": "中國傳統的"
   }
 }

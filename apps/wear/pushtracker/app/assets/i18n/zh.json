@@ -12,9 +12,9 @@
   },
   "buttons": {
     "back": "背部",
+    "cancel": "取消",
     "dismiss": "解僱",
-    "ok": "好",
-    "cancel": "取消"
+    "ok": "好"
   },
   "charts": {
     "coast": {
@@ -51,6 +51,24 @@
     }
   },
   "information": "信息",
+  "language-list": {
+    "cs": "切什蒂納",
+    "da": "丹斯克",
+    "de": "德意志",
+    "en": "英語",
+    "es": "西班牙文",
+    "fi": "索馬萊寧",
+    "fr": "法蘭西",
+    "it": "意大利語",
+    "ja": "日本語",
+    "ko": "한국어",
+    "nb": "Norskbokmål",
+    "nl": "荷蘭",
+    "pl": "波蘭語",
+    "pt": "葡萄牙語",
+    "sv": "斯文斯卡",
+    "zh": "中國傳統的"
+  },
   "languages": {
     "da": "丹麥",
     "de": "德語",
@@ -71,22 +89,22 @@
     "title": "菜單"
   },
   "notifications": {
-    "foreground-service": "Permobil PushTracker正在收集您的活動",
-    "wheelchair-maintenance": "Keeping your wheelchair maintained makes pushing easier. Caster wheels, caster forks, and tire wear are common issues that influence your ability to push your chair.",
-    "add-pt-element": "Want quicker access to your PushTracker stats? You can change the watch face to set a shortcut. Check out our YouTube channel or email us for details.",
-    "new-coast-record": "You did it! You achieved a new personal best for coast time. Doing more, while saving your shoulders! #ChooseToDoMore",
-    "daily-push-warning": "Friendly reminder! You’ve pushed 25% more today than your daily average. Consider taking a break or using your SmartDrive more.",
-    "titles": {
-      "daily-push-warning": "Daily Push Warning",
-      "new-coast-record": "New Coast Time Record!",
-      "add-pt-element": "Add PushTracker as Element",
-      "wheelchair-maintenance": "General WC Maintenance Reminder"
-    },
+    "add-pt-element": "想要更快地訪問您的PushTracker統計信息？您可以更改錶盤以設置快捷方式。查看我們的YouTube頻道或給我們發送電子郵件以獲取詳細信息。",
     "channels": {
-      "smartdrive": "SmartDrive",
-      "personal-record": "Personal Record",
-      "maintenance": "Maintenance"
-    }
+      "maintenance": "保養",
+      "personal-record": "個人記錄",
+      "smartdrive": "的SmartDrive"
+    },
+    "daily-push-warning": "溫馨的提示！今天您已將每日平均推送量提高了25%。考慮休息一下或更多使用SmartDrive。",
+    "foreground-service": "Permobil PushTracker正在收集您的活動",
+    "new-coast-record": "你做到了！您在海岸時間取得了新的個人最好成績。做更多的事情，同時節省您的肩膀！ #ChooseToDoMore",
+    "titles": {
+      "add-pt-element": "將PushTracker添加為元素",
+      "daily-push-warning": "每日推送警告",
+      "new-coast-record": "新海岸時間紀錄！",
+      "wheelchair-maintenance": "輪椅保養提醒"
+    },
+    "wheelchair-maintenance": "保持輪椅坐姿可以使推擠變得更加容易。腳輪，腳叉和輪胎磨損是影響您推椅子能力的常見問題。"
   },
   "permissions-reasons": {
     "coarse-location": "要使用藍牙與iPhone上的PushTracker Mobile應用程序連接，我們需要您在以下屏幕上允許“位置”權限[ACCESS_COARSE_LOCATION]。有了此許可，Permobil將不會訪問您的位置數據。",
@@ -118,9 +136,9 @@
     "information": "信息",
     "install-smartdrive": "安裝SmartDrive MX2 Wear OS App",
     "language": {
-      "description": "The language of the text in the app.",
-      "title": "Language",
-      "change": "The app language has been changed."
+      "change": "您確定要更改語言嗎？ PushTracker應用必須重新啟動才能應用語言更改。",
+      "description": "PushTracker應用中的文字語言。",
+      "title": "語言"
     },
     "pushsensitivity": {
       "description": "檢測計數的靈敏度。百分比越低，對推送的檢測就越不敏感-0%是最不敏感的，因此將檢測到較少的推送，而100%是最敏感的，因此將檢測到更多推送。",

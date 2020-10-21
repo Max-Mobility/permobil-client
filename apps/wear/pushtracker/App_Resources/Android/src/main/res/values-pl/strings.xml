@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PushTracker</string>
+    <string name="title_activity_kimera">PushTracker</string>
+    <string name="foreground_service_notification">Permobil PushTracker zbiera Twoją aktywność</string>
+    <string name="complications_provider_service_label_pushes">Popycha</string>
+    <string name="complications_provider_service_label_coast_time">Czas wybrzeża</string>
+    <string name="complications_provider_service_label_distance">Dystans</string>
+    <string name="smartdrive">SmartDrive</string>
+    <string name="personal_record">Osobisty rekord</string>
+    <string name="push_warning">Ostrzeżenie push</string>
+    <string name="push_warning_notification_text">Przyjazne przypomnienie! Przesunąłeś dziś o 25% więcej niż średnia dzienna. Rozważ zrobienie sobie przerwy lub częstsze używanie SmartDrive.</string>
+    <string name="new_coast_time_record">🏆 Nowy rekord czasu na wybrzeżu!</string>
+    <string name="coast_time_record_notification_text">Zrobiłeś to! Udało ci się osiągnąć nowy rekord życiowy na wybrzeżu. Robić więcej, oszczędzając jednocześnie swoje ramiona! #ChooseToDoMore</string>
+    <string name="activity_collection">Kolekcja aktywności</string>
+</resources>

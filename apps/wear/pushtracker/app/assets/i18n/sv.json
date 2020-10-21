@@ -12,9 +12,9 @@
   },
   "buttons": {
     "back": "Tillbaka",
+    "cancel": "Annullera",
     "dismiss": "Avfärda",
-    "ok": "ok",
-    "cancel": "Annullera"
+    "ok": "ok"
   },
   "charts": {
     "coast": {
@@ -51,6 +51,24 @@
     }
   },
   "information": "Information",
+  "language-list": {
+    "cs": "čeština",
+    "da": "Dansk",
+    "de": "Deutsche",
+    "en": "engelsk",
+    "es": "Español",
+    "fi": "Suomalainen",
+    "fr": "Français",
+    "it": "Italiano",
+    "ja": "日本語",
+    "ko": "한국어",
+    "nb": "Norsk bokmål",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Português",
+    "sv": "Svenska",
+    "zh": "中國 傳統 的"
+  },
   "languages": {
     "da": "danska",
     "de": "tysk",
@@ -71,22 +89,22 @@
     "title": "Meny"
   },
   "notifications": {
-    "foreground-service": "Permobil PushTracker samlar in din aktivitet",
-    "wheelchair-maintenance": "Keeping your wheelchair maintained makes pushing easier. Caster wheels, caster forks, and tire wear are common issues that influence your ability to push your chair.",
-    "add-pt-element": "Want quicker access to your PushTracker stats? You can change the watch face to set a shortcut. Check out our YouTube channel or email us for details.",
-    "new-coast-record": "You did it! You achieved a new personal best for coast time. Doing more, while saving your shoulders! #ChooseToDoMore",
-    "daily-push-warning": "Friendly reminder! You’ve pushed 25% more today than your daily average. Consider taking a break or using your SmartDrive more.",
-    "titles": {
-      "daily-push-warning": "Daily Push Warning",
-      "new-coast-record": "New Coast Time Record!",
-      "add-pt-element": "Add PushTracker as Element",
-      "wheelchair-maintenance": "General WC Maintenance Reminder"
-    },
+    "add-pt-element": "Vill du ha snabbare tillgång till din PushTracker-statistik? Du kan ändra urtavlan för att ställa in en genväg. Kolla in vår YouTube-kanal eller mejla oss för mer information.",
     "channels": {
-      "smartdrive": "SmartDrive",
-      "personal-record": "Personal Record",
-      "maintenance": "Maintenance"
-    }
+      "maintenance": "Underhåll",
+      "personal-record": "Personlig post",
+      "smartdrive": "Smart"
+    },
+    "daily-push-warning": "Vänlig påminnelse! Du har pressat 25% mer idag än ditt dagliga genomsnitt. Överväg att ta en paus eller använda din SmartDrive mer.",
+    "foreground-service": "Permobil PushTracker samlar in din aktivitet",
+    "new-coast-record": "Du gjorde det! Du uppnådde ett nytt personligt rekord för kusttiden. Gör mer, samtidigt som du sparar dina axlar! #ChooseToDoMore",
+    "titles": {
+      "add-pt-element": "Lägg till PushTracker som element",
+      "daily-push-warning": "Daglig pushvarning",
+      "new-coast-record": "Nytt kustrekord!",
+      "wheelchair-maintenance": "Påminnelse om rullstolsunderhåll"
+    },
+    "wheelchair-maintenance": "Att hålla din rullstol underhållet gör det lättare att skjuta. Hjul, hjul och gafflar är vanliga problem som påverkar din förmåga att skjuta din stol."
   },
   "permissions-reasons": {
     "coarse-location": "För att ansluta till PushTracker Mobile-appen på din iPhone med Bluetooth kräver vi att du tillåter platstillstånd [ACCESS_COARSE_LOCATION] på följande skärm. Från denna behörighet kommer Permobil inte att komma åt dina platsinformation.",
@@ -118,9 +136,9 @@
     "information": "Information",
     "install-smartdrive": "Installera SmartDrive MX2 Wear OS-app",
     "language": {
-      "description": "The language of the text in the app.",
-      "title": "Language",
-      "change": "The app language has been changed."
+      "change": "Är du säker på att du vill ändra språk? PushTracker-appen måste starta om för att tillämpa språkändringen.",
+      "description": "Språket för texten i PushTracker-appen.",
+      "title": "Språk"
     },
     "pushsensitivity": {
       "description": "Känsligheten för detektionen som används för att räkna tryck. Ju lägre procenten är desto mindre känslig är det att upptäcka en push - 0% är den minst känsliga och kommer därför att upptäcka färre tryck, och 100% är den mest känsliga och därför kommer att upptäcka fler tryck.",

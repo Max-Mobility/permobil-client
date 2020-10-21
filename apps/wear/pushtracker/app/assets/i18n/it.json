@@ -12,9 +12,9 @@
   },
   "buttons": {
     "back": "indietro",
+    "cancel": "Annulla",
     "dismiss": "Respingere",
-    "ok": "Ok",
-    "cancel": "Annulla"
+    "ok": "Ok"
   },
   "charts": {
     "coast": {
@@ -51,6 +51,24 @@
     }
   },
   "information": "Informazione",
+  "language-list": {
+    "cs": "čeština",
+    "da": "Dansk",
+    "de": "Deutsche",
+    "en": "Inglese",
+    "es": "Español",
+    "fi": "Suomalainen",
+    "fr": "Français",
+    "it": "Italiano",
+    "ja": "日本語",
+    "ko": "한국어",
+    "nb": "Norsk bokmål",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Português",
+    "sv": "Svenska",
+    "zh": "中國 傳統 的"
+  },
   "languages": {
     "da": "danese",
     "de": "Tedesco",
@@ -71,22 +89,22 @@
     "title": "Menu"
   },
   "notifications": {
-    "foreground-service": "Permobil PushTracker sta raccogliendo la tua attività",
-    "wheelchair-maintenance": "Keeping your wheelchair maintained makes pushing easier. Caster wheels, caster forks, and tire wear are common issues that influence your ability to push your chair.",
-    "add-pt-element": "Want quicker access to your PushTracker stats? You can change the watch face to set a shortcut. Check out our YouTube channel or email us for details.",
-    "new-coast-record": "You did it! You achieved a new personal best for coast time. Doing more, while saving your shoulders! #ChooseToDoMore",
-    "daily-push-warning": "Friendly reminder! You’ve pushed 25% more today than your daily average. Consider taking a break or using your SmartDrive more.",
-    "titles": {
-      "daily-push-warning": "Daily Push Warning",
-      "new-coast-record": "New Coast Time Record!",
-      "add-pt-element": "Add PushTracker as Element",
-      "wheelchair-maintenance": "General WC Maintenance Reminder"
-    },
+    "add-pt-element": "Vuoi un accesso più rapido alle tue statistiche PushTracker? È possibile modificare il quadrante dell'orologio per impostare una scorciatoia. Controlla il nostro canale YouTube o inviaci un'e-mail per i dettagli.",
     "channels": {
-      "smartdrive": "SmartDrive",
-      "personal-record": "Personal Record",
-      "maintenance": "Maintenance"
-    }
+      "maintenance": "Manutenzione",
+      "personal-record": "Record personale",
+      "smartdrive": "SmartDrive"
+    },
+    "daily-push-warning": "Promemoria amichevole! Oggi hai spinto il 25% in più rispetto alla tua media giornaliera. Considera l'idea di fare una pausa o di utilizzare di più il tuo SmartDrive.",
+    "foreground-service": "Permobil PushTracker sta raccogliendo la tua attività",
+    "new-coast-record": "Ce l'hai fatta! Hai ottenuto un nuovo record personale per il tempo costiero. Fare di più, risparmiando le spalle! #ChooseToDoMore",
+    "titles": {
+      "add-pt-element": "Aggiungi PushTracker come elemento",
+      "daily-push-warning": "Avviso push giornaliero",
+      "new-coast-record": "Nuovo record di tempo della costa!",
+      "wheelchair-maintenance": "Promemoria per la manutenzione della sedia a rotelle"
+    },
+    "wheelchair-maintenance": "Mantenere la sedia a rotelle in manutenzione facilita la spinta. Ruote girevoli, forcelle girevoli e usura dei pneumatici sono problemi comuni che influenzano la capacità di spingere la sedia."
   },
   "permissions-reasons": {
     "coarse-location": "Per connettersi con l'app PushTracker Mobile sul tuo iPhone tramite Bluetooth, ti chiediamo di consentire l'autorizzazione Posizione [ACCESS_COARSE_LOCATION] nella schermata seguente. Da questa autorizzazione, Permobil non accederà ai dati sulla tua posizione.",
@@ -118,9 +136,9 @@
     "information": "Informazione",
     "install-smartdrive": "Installa l'app SmartDrive MX2 Wear OS",
     "language": {
-      "description": "The language of the text in the app.",
-      "title": "Language",
-      "change": "The app language has been changed."
+      "change": "Sei sicuro di voler cambiare la lingua? L'app PushTracker deve riavviarsi per applicare la modifica della lingua.",
+      "description": "La lingua del testo nell'app PushTracker.",
+      "title": "linguaggio"
     },
     "pushsensitivity": {
       "description": "La sensibilità del rilevamento utilizzata per contare le spinte. Più bassa è la percentuale, meno sensibile è il rilevamento di una spinta: lo 0% è il meno sensibile e pertanto rileverà meno spinte e il 100% è la più sensibile e quindi rileverà più spinte.",

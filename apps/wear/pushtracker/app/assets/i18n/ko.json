@@ -12,9 +12,9 @@
   },
   "buttons": {
     "back": "뒤로",
+    "cancel": "취소",
     "dismiss": "버리다",
-    "ok": "승인",
-    "cancel": "취소"
+    "ok": "승인"
   },
   "charts": {
     "coast": {
@@ -51,6 +51,24 @@
     }
   },
   "information": "정보",
+  "language-list": {
+    "cs": "Čeština",
+    "da": "Dansk",
+    "de": "도이체",
+    "en": "영어",
+    "es": "스페인어",
+    "fi": "Suomalainen",
+    "fr": "프랑수아",
+    "it": "Italiano",
+    "ja": "日本語",
+    "ko": "한국어",
+    "nb": "노르 스크 보크 몰",
+    "nl": "네덜란드",
+    "pl": "Polski",
+    "pt": "Português",
+    "sv": "Svenska",
+    "zh": "中國 傳統 的"
+  },
   "languages": {
     "da": "덴마크 말",
     "de": "독일 사람",
@@ -71,22 +89,22 @@
     "title": "메뉴"
   },
   "notifications": {
-    "foreground-service": "Permobil PushTracker가 활동을 수집하고 있습니다",
-    "wheelchair-maintenance": "Keeping your wheelchair maintained makes pushing easier. Caster wheels, caster forks, and tire wear are common issues that influence your ability to push your chair.",
-    "add-pt-element": "Want quicker access to your PushTracker stats? You can change the watch face to set a shortcut. Check out our YouTube channel or email us for details.",
-    "new-coast-record": "You did it! You achieved a new personal best for coast time. Doing more, while saving your shoulders! #ChooseToDoMore",
-    "daily-push-warning": "Friendly reminder! You’ve pushed 25% more today than your daily average. Consider taking a break or using your SmartDrive more.",
-    "titles": {
-      "daily-push-warning": "Daily Push Warning",
-      "new-coast-record": "New Coast Time Record!",
-      "add-pt-element": "Add PushTracker as Element",
-      "wheelchair-maintenance": "General WC Maintenance Reminder"
-    },
+    "add-pt-element": "PushTracker 통계에 더 빠르게 액세스하고 싶으십니까? 시계 모드를 변경하여 바로 가기를 설정할 수 있습니다. 자세한 내용은 YouTube 채널을 확인하거나 이메일을 보내주십시오.",
     "channels": {
-      "smartdrive": "SmartDrive",
-      "personal-record": "Personal Record",
-      "maintenance": "Maintenance"
-    }
+      "maintenance": "유지",
+      "personal-record": "개인 기록",
+      "smartdrive": "SmartDrive"
+    },
+    "daily-push-warning": "친절한 알림! 오늘 하루 평균보다 25 % 더 많이 밀었습니다. 휴식을 취하거나 SmartDrive를 더 많이 사용하십시오.",
+    "foreground-service": "Permobil PushTracker가 활동을 수집하고 있습니다",
+    "new-coast-record": "훌륭해! 해안 시간 동안 새로운 개인 최고 기록을 달성했습니다. 어깨를 아끼면서 더 많은 일을하세요! #ChooseToDoMore",
+    "titles": {
+      "add-pt-element": "PushTracker를 요소로 추가",
+      "daily-push-warning": "일일 푸시 경고",
+      "new-coast-record": "새로운 해안 시간 기록!",
+      "wheelchair-maintenance": "휠체어 유지 보수 알림"
+    },
+    "wheelchair-maintenance": "휠체어를 계속 유지하면 밀기가 더 쉬워집니다. 캐스터 휠, 캐스터 포크 및 타이어 마모는 의자를 밀 수있는 능력에 영향을 미치는 일반적인 문제입니다."
   },
   "permissions-reasons": {
     "coarse-location": "Bluetooth를 사용하여 iPhone에서 PushTracker Mobile 앱에 연결하려면 다음 화면에서 위치 권한 [ACCESS_COARSE_LOCATION]을 허용해야합니다. 이 권한으로 Permobil은 위치 데이터에 액세스하지 않습니다.",
@@ -118,9 +136,9 @@
     "information": "정보",
     "install-smartdrive": "SmartDrive MX2 Wear OS 앱 설치",
     "language": {
-      "description": "The language of the text in the app.",
-      "title": "Language",
-      "change": "The app language has been changed."
+      "change": "언어를 변경 하시겠습니까? 언어 변경을 적용하려면 PushTracker 앱을 다시 시작해야합니다.",
+      "description": "PushTracker 앱의 텍스트 언어입니다.",
+      "title": "언어"
     },
     "pushsensitivity": {
       "description": "푸시 횟수를 계산하는 데 사용되는 감지 감도. 백분율이 낮을수록 푸시 감지에 대한 민감도가 떨어집니다. 0 %가 가장 민감하지 않아서 더 적은 푸시를 감지하므로 100 %가 가장 민감하므로 더 많은 푸시를 감지합니다.",

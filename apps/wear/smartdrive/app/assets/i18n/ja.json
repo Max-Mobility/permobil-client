@@ -23,7 +23,7 @@
     "deny": "拒否",
     "disable": "無効にする",
     "dismiss": "やめる",
-    "do-not-show-again": "再び表示しない",
+    "do-not-show-again": "今後表示しない",
     "enable": "有効にする",
     "ok": "OK"
   },
@@ -66,6 +66,7 @@
       "overcurrent": "[ERR：003] SD電流スパイク",
       "overtemperature": "[ERR：004] SDの過熱"
     },
+    "load-more": "もっと読み込む",
     "loading": "読み込み中...",
     "no-errors": "SmartDriveエラーは記録または受信されていません。",
     "title": "SmartDriveエラー履歴"
@@ -94,22 +95,22 @@
     "too-many-smartdrives-found": "複数のSmartDriveが見つかりました。ペアリングするときは、近くにSmartDriveが1つだけあることを確認してください。"
   },
   "language-list": {
-    "cs": "",
-    "da": "",
-    "de": "",
-    "en": "",
-    "es": "",
-    "fi": "",
-    "fr": "",
-    "it": "",
-    "ja": "",
-    "ko": "",
-    "nb": "",
-    "nl": "",
-    "pl": "",
-    "pt": "",
-    "sv": "",
-    "zh": ""
+    "cs": "チェコ語",
+    "da": "デンマーク語",
+    "de": "ドイツ語",
+    "en": "英語",
+    "es": "スペイン語",
+    "fi": "フィンランド語",
+    "fr": "フランス語",
+    "it": "イタリア語",
+    "ja": "日本語",
+    "ko": "韓国語",
+    "nb": "ノルウェー語",
+    "nl": "オランダ語",
+    "pl": "ポーランド語",
+    "pt": "ポルトガル語",
+    "sv": "スウェーデン語",
+    "zh": "中国語"
   },
   "languages": {
     "cs": "チェコ語",
@@ -137,40 +138,40 @@
     "updates": "ワイヤレスアップデート"
   },
   "notifications": {
-    "tire-pressure": "Tire pressure greatly impacts your ability to push. Have you checked it lately?",
-    "sd-roller-check": "Check your rollers.  See flat spots? Are they hard to spin? Contact SmartDrive today to discuss.",
-    "sd-clamp-check": "Time to check your alignment! Make sure your clamp or folding frame adapter are set correct. Refer to your user’s manual or contact us.",
-    "open-pt-wear": "Want to know more about your daily mobility? Open the PushTracker app to know your push count, coast time, and distance traveled each day.",
-    "access-more-features": "Want more features about your daily/weekly/monthly propulsion activities? Contact us to learn how to make your PushTracker E2 give your more features!",
-    "unlock-more-features": "Unlock more E2! Text messages, heart rate, and calendar alerts are just few other features you can get from your PushTracker E2. Refer to the instructions on your E2 box or contact us to learn how to make your PushTracker E2 give your more features!",
-    "daily-distance-record": "You did it! You achieved a new personal record for distance traveled in a day. Keep it up! And don’t forget to coast. #ChooseToDoMore",
-    "switch-control-reminder": "SwitchControl buttons give you another way to control your SmartDrive. Plug them directly in to SmartDrive charging port (no Bluetooth required). Press the button to go, stop, or set your speed. Contact you provider or SmartDrive support to learn more.",
-    "accelerate-while-moving": "Pick up your speed while you’re already moving! Push the wheel to go faster, then single tap with your PushTracker E2. Press and hold SwitchControl to increase speed again.",
-    "sc-light-indications": "Curious about the flashing lights are on your SwitchControl? Refer to your user manual or our YouTube page to find out what each one means.",
-    "sd-e2-charging": "For optimal performance charge your SmartDrive every night. Make sure you keep it charged above 25%, especially if you’re not going to use SmartDrive for a long time period. Check your user’s manual or contact us for details.",
-    "odometer-records-part-one": "Doing more while keeping your shoulders healthy is what it’s all about. You’ve put",
-    "odometer-records-part-two": "on your SmartDrive. #ChooseToDoMore",
-    "routine-maintenance": "Keeping your equipment clean helps it last longer! Use a damp sponge, mild detergent and dry thoroughly to keep your SmartDrive like new! (do not soak or immerse).",
-    "titles": {
-      "tire-pressure": "Tire Pressure Check",
-      "sd-roller-check": "SmartDrive Roller",
-      "sd-clamp-check": "SmartDrive Clamp Check/Folding Frame Adapter",
-      "open-pt-wear": "Open the PushTracker Wear App",
-      "access-more-features": "Access More Features",
-      "unlock-more-features": "Unlock more features",
-      "daily-distance-record": "Daily Distance Record!",
-      "switch-control-reminder": "SwitchControl Reminder",
-      "accelerate-while-moving": "Accelerate While Moving",
-      "sc-light-indications": "SC Light Indications",
-      "sd-e2-charging": "SmartDrive & E2 Charging",
-      "odometer-records": "Odometer Records",
-      "routine-maintenance": "Routine Maintenance"
-    },
+    "accelerate-while-moving": "すでに走行中の運転速度を上げてください！ホイールをこいで速く進み、PushTrackerで1回タップします。 SwitchControlを押し続けると、速度が再び上がります。",
+    "access-more-features": "あなたの毎日/毎週/毎月の走行状況についてもっと知りたいですか？ SmartDriveとPushTrackerを最大限に活用する方法については、PermobilのWebサイトにアクセスしてください。",
     "channels": {
-      "maintenance": "Maintenance",
-      "smartdrive": "SmartDrive",
-      "personal-record": "Personal Record"
-    }
+      "maintenance": "メンテナンス",
+      "personal-record": "個人記録",
+      "smartdrive": "SmartDrive"
+    },
+    "daily-distance-record": "おめでとうございます！ 1日の移動距離で新しい個人記録を達成しました。その調子で頑張りましょう。また、惰走することを心がけましょう。#ChooseToDoMore",
+    "odometer-records-part-one": "肩を健康に保ちながらより多くのことをすることが大切です。あなたのSmartDriveでの走行距離は",
+    "odometer-records-part-two": "です。 #ChooseToDoMore",
+    "open-pt-wear": "あなたの毎日のモビリティについてもっと知りたいですか？ PushTrackerアプリを開くと、こいだ回数、惰走走行時間、毎日の移動距離を確認できます。",
+    "routine-maintenance": "機器を清潔に保つと、長持ちします。湿らせたスポンジで中性洗剤にて洗浄後、完全に乾かしてSmartDriveを新品のように保ちます。 （浸さないでください）",
+    "sc-light-indications": "SwitchControlボタンのライトの点滅について気になりますか？それぞれの意味については、ユーザーズマニュアルまたはペルモビールのYouTubeページを参照してください。",
+    "sd-clamp-check": "アライメントを確認しましょう！クランプまたは折りたたみフレームアダプタが正しく設定されていることを確認してください。説明書を参照するか、お問い合わせください。",
+    "sd-e2-charging": "最大限のパフォーマンスを得るには、SmartDriveを完全に充電した状態で毎日使用してください。特に長期間使用しない場合は、25%以上の充電を維持してください。詳細については、ユーザーズマニュアルを確認するか、ペルモビールにお問い合わせください。",
+    "sd-roller-check": "ローラーを確認してください。平らになった箇所は見られますか？ローラーは回転しずらくなっていますか？確認後、ペルモビールに連絡してください。",
+    "switch-control-reminder": "SwitchControlボタンは、別の制御方法を提供します。それらをSmartDrive充電ポートに直接接続します（Bluetoothは必要ありません）。ボタンを押して、走行、停止、または速度を設定します。詳細については、販売店またはPermobilにお問い合わせください。",
+    "tire-pressure": "タイヤの空気圧は、車いすをこぐ能力に大きく影響します。最近チェックしましたか？",
+    "titles": {
+      "accelerate-while-moving": "スピードアップ",
+      "access-more-features": "推進力など",
+      "daily-distance-record": "毎日の走行距離記録！",
+      "odometer-records": "走行距離計の記録！",
+      "open-pt-wear": "PushTrackerWearアプリを開きます",
+      "routine-maintenance": "定期メンテナンス",
+      "sc-light-indications": "ボタンの表示",
+      "sd-clamp-check": "アタッチメントチェックのリマインダー",
+      "sd-e2-charging": "SmartDriveとPushTrackerの充電",
+      "sd-roller-check": "ローラーチェックのリマインダー",
+      "switch-control-reminder": "SwitchControlボタン",
+      "tire-pressure": "タイヤチェックのリマインダー",
+      "unlock-more-features": "その他"
+    },
+    "unlock-more-features": "テキストメッセージとカレンダーアラートは、PushTrackerから取得できる他のいくつかの機能です。ペルモビールに連絡するか、当社のWebサイトにアクセスして、より多くの機能を提供する方法を確認してください。"
   },
   "ota": {
     "action": {
@@ -244,7 +245,7 @@
     "description": {
       "acceleration": "SmartDriveの加速または速度上昇率。",
       "controlmode": "MX2+：デフォルトは、ジェスチャベースのSmartDriveの操作。 MX2＋制御モードでは、ダブルタップで速度を上げてモーターの駆動を開始し、シングルタップで現在の速度で惰性走行し、ダブルタップで駆動を停止します。\n\nMX2：MX2制御モードでは、SmartDriveはプッシュを感知すると運転を開始し、タップすると運転を無効にします。これは以前からサポートされているオプションです。\n\nMX1：MX1制御モードでは、SmartDriveはプッシュを感知すると運転を開始し、タップするかハンドリムをブレーキすると運転を停止します。これは以前からサポートされているオプションです。",
-      "language": "The language of the text in the SmartDrive app.",
+      "language": "SmartDriveアプリのテキストの言語。",
       "maxspeed": "スマートウォッチで制御されたときにSmartDriveが駆動できる最大速度。",
       "powerassistbuzzer": "有効にすると、リモートデバイスからの接続が確立されるたびに、またはSwitchControlがスタンバイ状態から解除されるたびに、SmartDriveからビープ音が鳴ります。",
       "powerassisttimeout": "パワーアシストをオンにした状態でSmartDriveに接続すると、モーターが選択した時間内に駆動されなかった場合、自動的にパワーアシストがオフになります。\n\nパワーアシストがオンになっているけどSmartDriveに接続されていない場合、パワーアシストは1分後に自動的にオフになります。",
@@ -268,7 +269,8 @@
     },
     "scanning": "ペアリングするSmartDriveをスキャンしています...",
     "select-smartdrive": "SmartDriveを選択",
-    "set-time": "日付時刻",
+    "send-settings-prompt": "SmartDriveの設定への変更は、PushTrackerがSmartDriveに接続するまで有効になりません。パワーアシストをオンにしてSmartDriveに接続し、その設定を更新しますか？",
+    "set-time": "日付と時刻",
     "syncing-with-server": "サーバーと同期しています...",
     "tap-sensitivity": "タップ感度",
     "title": "SmartDrive設定",
@@ -298,6 +300,7 @@
     }
   },
   "updates": {
+    "available": "SmartDriveのアップデートが利用可能ですが、ワイヤレスアップデートページに移動してアップデートをダウンロードして実行しますか？",
     "canceled": "SmartDriveの更新はキャンセルされました。",
     "changes": "変更の概要",
     "checking-for-updates": "アップデートの確認 ...",
@@ -314,6 +317,7 @@
     },
     "failed": "SmartDriveの更新に失敗しました。",
     "initializing": "アップデートを開始しています ...",
+    "perform": "SmartDriveを更新する",
     "status": "更新ステータス",
     "success": "SmartDriveの更新が正常に完了しました！",
     "timeout": "SmartDriveの更新がタイムアウトしました。",
@@ -322,7 +326,7 @@
   },
   "warnings": {
     "saved-settings": {
-      "language": "言語を変更してもよろしいですか？言語の変更を適用するには、SmartDrive MX2 +アプリを再起動する必要があります。",
+      "language": "言語を変更してもよろしいですか？言語の変更を適用するには、SmartDriveMX2アプリを再起動する必要があります。",
       "message": "注意：設定の変更がその操作と動作に与える影響については、SmartDriveユーザーマニュアルを参照する必要があります。",
       "title": "変更された設定"
     },

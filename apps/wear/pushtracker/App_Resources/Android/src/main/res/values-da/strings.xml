@@ -8,7 +8,7 @@
     <string name="complications_provider_service_label_distance">Kysttid dagligt</string>
     <string name="personal_record">Personlig registrering</string>
     <string name="push_warning">Skubadvarsel</string>
-    <string name="push_warning_notification_text">Venlig påmindelse! Du har skubbet 25% mere i dag end dit daglige gennemsnit. Overvej at tage en pause eller bruge dit Smart Drive mere.</string>
+    <string name="push_warning_notification_text">Venlig påmindelse! Du har skubbet 25% mere i dag end dit daglige gennemsnit. Overvej at tage en pause eller bruge din SmartDrive mere.</string>
     <string name="new_coast_time_record">🏆 Ny Coast Time Record!</string>
     <string name="coast_time_record_notification_text">Du gjorde det! Du opnåede et nyt personligt rekord for kysttiden. Gør mere, mens du sparer dine skuldre! #choosetodomore</string>
     <string name="activity_collection">Aktivitetssamling</string>

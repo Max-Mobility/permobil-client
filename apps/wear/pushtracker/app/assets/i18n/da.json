@@ -12,9 +12,9 @@
   },
   "buttons": {
     "back": "Tilbage",
+    "cancel": "afbestille",
     "dismiss": "Afskedige",
-    "ok": "Okay",
-    "cancel": "Afbestille"
+    "ok": "Okay"
   },
   "charts": {
     "coast": {
@@ -51,6 +51,24 @@
     }
   },
   "information": "Information",
+  "language-list": {
+    "cs": "Čeština",
+    "da": "dansk",
+    "de": "Deutsche",
+    "en": "engelsk",
+    "es": "Español",
+    "fi": "Suomalainen",
+    "fr": "Français",
+    "it": "Italiano",
+    "ja": "日本語",
+    "ko": "한국어",
+    "nb": "Norsk bokmål",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Português",
+    "sv": "Svenska",
+    "zh": "中國 傳統 的"
+  },
   "languages": {
     "da": "dansk",
     "de": "tysk",
@@ -71,22 +89,22 @@
     "title": "Menu"
   },
   "notifications": {
-    "foreground-service": "Permobil PushTracker indsamler din aktivitet",
-    "wheelchair-maintenance": "At holde din kørestol vedligeholdt gør det lettere at skubbe. Hjul, hjul og gafler og dækslitage er almindelige problemer, der påvirker din evne til at skubbe din stol.",
     "add-pt-element": "Vil du have hurtigere adgang til dine PushTracker-statistikker? Du kan ændre urskiven for at indstille en genvej. Tjek vores YouTube-kanal eller mail os for detaljer.",
-    "new-coast-record": "Du gjorde det! Du opnåede et nyt personligt rekord for kysttiden. Gør mere, mens du sparer dine skuldre! #ChooseToDoMore",
-    "daily-push-warning": "Venlig påmindelse! Du har skubbet 25% mere i dag end dit daglige gennemsnit. Overvej at tage en pause eller bruge din SmartDrive mere.",
-    "titles": {
-      "daily-push-warning": "Daily Push Warning",
-      "new-coast-record": "New Coast Time Record!",
-      "add-pt-element": "Add PushTracker as Element",
-      "wheelchair-maintenance": "General WC Maintenance Reminder"
-    },
     "channels": {
-      "smartdrive": "SmartDrive",
-      "personal-record": "Personal Record",
-      "maintenance": "Maintenance"
-    }
+      "maintenance": "Vedligeholdelse",
+      "personal-record": "Personlig registrering",
+      "smartdrive": "SmartDrive"
+    },
+    "daily-push-warning": "Venlig påmindelse! Du har skubbet 25% mere i dag end dit daglige gennemsnit. Overvej at tage en pause eller bruge din SmartDrive mere.",
+    "foreground-service": "Permobil PushTracker indsamler din aktivitet",
+    "new-coast-record": "Du gjorde det! Du opnåede et nyt personligt rekord for kysttiden. Gør mere, mens du sparer dine skuldre! #ChooseToDoMore",
+    "titles": {
+      "add-pt-element": "Tilføj PushTracker som element",
+      "daily-push-warning": "Daglig advarsel om push",
+      "new-coast-record": "Ny Coast Time Record!",
+      "wheelchair-maintenance": "Påmindelse om vedligeholdelse af kørestol"
+    },
+    "wheelchair-maintenance": "At holde din kørestol vedligeholdt gør det lettere at skubbe. Hjul, hjul og gafler og dækslitage er almindelige problemer, der påvirker din evne til at skubbe din stol."
   },
   "permissions-reasons": {
     "coarse-location": "For at oprette forbindelse til PushTracker-appen på din iPhone ved hjælp af Bluetooth kræver vi, at du tillader placeringstilladelse [ACCESS_COARSE_LOCATION] på følgende skærm. Fra denne tilladelse får Permobil ikke adgang til dine placeringsdata.",
@@ -118,9 +136,9 @@
     "information": "Information",
     "install-smartdrive": "Installer SmartDrive MX2 Wear OS-app",
     "language": {
-      "description": "The language of the text in the app.",
-      "title": "Language",
-      "change": "The app language has been changed."
+      "change": "Er du sikker på, at du vil ændre sprog? PushTracker-appen skal genstarte for at anvende sprogændringen.",
+      "description": "Tekstens sprog i PushTracker-appen.",
+      "title": "Sprog"
     },
     "pushsensitivity": {
       "description": "Følsomheden for detektionen, der bruges til at tælle skubber. Jo lavere procentdelen er, desto mindre følsom er det at opdage et skub - 0% er det mindst følsomme og registrerer derfor færre skub, og 100% er det mest følsomme og registrerer derfor flere skub.",

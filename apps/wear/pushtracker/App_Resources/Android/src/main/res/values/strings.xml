@@ -9,7 +9,7 @@
     <string name="smartdrive" translatable="false">SmartDrive</string>
     <string name="personal_record">Personal Record</string>
     <string name="push_warning">Push Warning</string>
-    <string name="push_warning_notification_text">Friendly reminder! You’ve pushed 25% more today than your daily average. Consider taking a break or using your SmartDrive more.</string>
+    <string name="push_warning_notification_text">Friendly reminder! You have pushed 25% more today than your daily average. Consider taking a break or using your SmartDrive more.</string>
     <string name="new_coast_time_record">🏆 New Coast Time Record!</string>
     <string name="coast_time_record_notification_text">You did it! You achieved a new personal best for coast time. Doing more, while saving your shoulders! #choosetodomore</string>
     <string name="activity_collection">Activity Collection</string>
