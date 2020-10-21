@@ -1,5 +1,6 @@
 import {
   fromObject,
+  Dialogs,
   Page,
   ShowModalOptions,
   ShownModallyData,
@@ -140,7 +141,7 @@ export function onShowErrorHistory(args) {
 
 export async function onSDSerialNumberTap() {
   if (!kinveyService.user) {
-    await alert({
+    await Dialogs.alert({
       title: L('failures.title'),
       message: L('about.smartdrive-serial-number-info'),
       okButtonText: L('buttons.ok')
@@ -159,7 +160,7 @@ export async function onWatchSerialNumberTap() {
   const p = android.Manifest.permission.READ_PHONE_STATE;
   const needPermission = !hasPermission(p);
   if (needPermission) {
-    await alert({
+    await Dialogs.alert({
       title: L('permissions-request.title'),
       message: L('permissions-reasons.phone-state'),
       okButtonText: L('buttons.ok')

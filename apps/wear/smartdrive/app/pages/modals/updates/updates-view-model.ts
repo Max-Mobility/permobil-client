@@ -2,6 +2,7 @@ import { AnimatedCircle } from '@nativescript/animated-circle';
 import {
   Application,
   ApplicationSettings,
+  Dialogs,
   EventData,
   Observable,
   ObservableArray
@@ -247,7 +248,7 @@ export class UpdatesViewModel extends Observable {
     });
     if (neededPermissions && neededPermissions.length > 0) {
       // sentryBreadCrumb('requesting permissions: ' + neededPermissions);
-      await alert({
+      await Dialogs.alert({
         title: L('permissions-request.title'),
         message: reasons.join('\n\n'),
         okButtonText: L('buttons.ok')
@@ -603,7 +604,7 @@ export class UpdatesViewModel extends Observable {
     if (isUpToDate) {
       this.smartDriveOtaState = L('updates.up-to-date');
       // let the user know early if they are already up to date!
-      await alert({
+      await Dialogs.alert({
         title: L('updates.status'),
         message: L('updates.up-to-date'),
         okButtonText: L('buttons.ok')
@@ -616,7 +617,7 @@ export class UpdatesViewModel extends Observable {
         k => this.currentVersions[k].changes
       );
       // Log.D('got changes', changes);
-      await alert({
+      await Dialogs.alert({
         title: L('updates.version') + ' ' + version,
         message: L('updates.changes') + '\n\n' + flatten(changes).join('\n\n'),
         okButtonText: L('buttons.ok')
@@ -727,7 +728,7 @@ export class UpdatesViewModel extends Observable {
     });
     Sentry.captureException(err);
     if (alertMsg !== undefined) {
-      alert({
+      Dialogs.alert({
         title: L('updates.failed'),
         message: alertMsg,
         okButtonText: L('buttons.ok')
@@ -813,7 +814,7 @@ export class UpdatesViewModel extends Observable {
       return true;
     } catch (err) {
       Sentry.captureException(err);
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: L('failures.connect') + '\n\n' + address,
         okButtonText: L('buttons.ok')
@@ -831,7 +832,7 @@ export class UpdatesViewModel extends Observable {
 
   async connectToSavedSmartDrive() {
     if (!this.hasSavedSmartDrive()) {
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: L('failures.no-smartdrive-paired'),
         okButtonText: L('buttons.ok')
