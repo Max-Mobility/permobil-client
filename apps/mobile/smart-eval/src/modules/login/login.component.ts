@@ -1,11 +1,22 @@
 import { Component, NgZone, OnInit } from '@angular/core';
+import { Kinvey } from '@bradmartin/kinvey-nativescript-sdk';
 import { RouterExtensions } from '@nativescript/angular';
-import { Button, EventData, isAndroid, isIOS, Page, TextField } from '@nativescript/core';
+import {
+  Button,
+  EventData,
+  isAndroid,
+  isIOS,
+  Page,
+  TextField
+} from '@nativescript/core';
 import { alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
-import { isIosSimulator, preventKeyboardFromShowing, setMarginForIosSafeArea } from '@permobil/nativescript';
+import {
+  isIosSimulator,
+  preventKeyboardFromShowing,
+  setMarginForIosSafeArea
+} from '@permobil/nativescript';
 import { validate } from 'email-validator';
-import { Kinvey } from 'kinvey-nativescript-sdk';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import { LoggingService, ProgressService, UserService } from '../../services';
 

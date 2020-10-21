@@ -1,23 +1,24 @@
 import { Component, NgZone } from '@angular/core';
+import { User as KinveyUser } from '@bradmartin/kinvey-nativescript-sdk';
 import { RouterExtensions } from '@nativescript/angular';
-import { setTimeout } from '@nativescript/core/timer';
 import {
+  ApplicationSettings as appSettings,
   BottomNavigation,
+  Dialogs,
   isAndroid,
   isIOS,
   Page,
-  SelectedIndexChangedEventData
+  SelectedIndexChangedEventData,
+  Utils
 } from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
-import { action, alert, confirm } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBar } from '@nstudio/nativescript-snackbar';
 import { Device, Log } from '@permobil/core';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import assign from 'lodash/assign';
 import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
 import * as LS from 'nativescript-localstorage';
+import { Sentry } from 'nativescript-sentry';
 import { APP_LANGUAGES, CONFIGURATIONS } from '../../enums';
 import { PushTracker, PushTrackerUser } from '../../models';
 import {
@@ -48,7 +49,7 @@ interface DeferredSettings {
   templateUrl: './tabs.component.html'
 })
 export class TabsComponent {
-  public CONFIGURATIONS = CONFIGURATIONS;
+  CONFIGURATIONS = CONFIGURATIONS;
   pushTracker: PushTracker;
   user: PushTrackerUser;
   private _debouncedSettingsAlert: any = null;
@@ -95,7 +96,7 @@ export class TabsComponent {
       this.alertPushTrackerSettingsDiffer.bind(this),
       1000,
       { leading: false, trailing: true },
-      function(acc: any, args: any) {
+      function (acc: any, args: any) {
         return assign(acc || {}, ...args);
       }
     );
@@ -167,7 +168,19 @@ export class TabsComponent {
 
     this.registerBluetoothEvents();
 
-    setTimeout(this.configureBluetooth.bind(this), 1000);
+    Utils.setTimeout(this.configureBluetooth.bind(this), 1000);
+
+    // Set the Sentry Context Tags
+    if (user?.data) {
+      Sentry.setContextTags({
+        pushtracker_serial_number: user.data.pushtracker_serial_number
+          ? user.data.pushtracker_serial_number
+          : '',
+        smartdrive_serial_number: user.data.smartdrive_serial_number
+          ? user.data.smartdrive_serial_number
+          : ''
+      });
+    }
   }
 
   private async configureBluetooth() {
@@ -190,7 +203,7 @@ export class TabsComponent {
             // only show our permissions alert on android - on iOS the
             // system has already shown the permissions request at this
             // point, and the text for it comes from Info.plist
-            await alert({
+            await Dialogs.alert({
               title: this._translateService.instant(
                 'permissions-request.title'
               ),
@@ -363,7 +376,7 @@ export class TabsComponent {
 
   private onBluetoothAdvertiseError(args: any) {
     const error = args.data.error;
-    alert({
+    Dialogs.alert({
       title: this._translateService.instant('bluetooth.service-failure'),
       okButtonText: this._translateService.instant('general.ok'),
       message: `${error}`
@@ -412,7 +425,7 @@ export class TabsComponent {
     // TODO: should get this version from the server somewhere!
     if (!smartDriveUpToDate && !ptUpToDate) {
       // both the pushtrackers and the smartdrives are not up to date
-      alert({
+      Dialogs.alert({
         title: this._translateService.instant(
           'profile-settings.update-notice.title'
         ),
@@ -423,7 +436,7 @@ export class TabsComponent {
       });
     } else if (!smartDriveUpToDate) {
       // the pushtrackers are up to date but the smartdrives are not
-      alert({
+      Dialogs.alert({
         title: this._translateService.instant(
           'profile-settings.update-notice.title'
         ),
@@ -434,7 +447,7 @@ export class TabsComponent {
       });
     } else if (!ptUpToDate) {
       // only the pushtrackers are out of date
-      alert({
+      Dialogs.alert({
         title: this._translateService.instant(
           'profile-settings.update-notice.title'
         ),
@@ -708,7 +721,7 @@ export class TabsComponent {
     const pushTracker = args.pushTracker;
     const settings = args.settings;
     const switchControlSettings = args.switchControlSettings;
-    const selection = await action({
+    const selection = await Dialogs.action({
       cancelable: false,
       title: this._translateService.instant('settings-different.title'),
       message: this._translateService.instant('settings-different.message'),
@@ -797,7 +810,7 @@ export class TabsComponent {
         TabsComponent.name,
         'Asking user to open settings on iOS'
       );
-      const confirmResult = await confirm({
+      const confirmResult = await Dialogs.confirm({
         message: this._translateService.instant('bluetooth.ios-open-settings'),
         cancelable: true,
         okButtonText: this._translateService.instant('dialogs.yes'),

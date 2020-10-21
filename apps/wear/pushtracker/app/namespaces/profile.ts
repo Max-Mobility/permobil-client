@@ -1,8 +1,9 @@
 import { Observable } from '@nativescript/core';
 import { mod } from '@permobil/core';
+import { getDefaultLang, translateKey } from '@permobil/nativescript/src/utils';
 
 export class Profile extends Observable {
-  public settings = new Profile.Settings();
+  settings = new Profile.Settings();
 
   constructor() {
     super();
@@ -46,14 +47,19 @@ export namespace Profile {
   }
 
   export class Settings extends Observable {
-    public static Defaults = {
+    static Languages = class {
+      static Options: string[];
+    };
+
+    static Defaults = {
       chairMake: Profile.ChairMake.Default,
       chairType: Profile.ChairType.Default,
       coastGoal: 10.0, // seconds
       distanceGoal: 5.0, // miles
       height: 1.778, // meters
       weight: 80, // kg
-      units: Profile.Units.Default
+      units: Profile.Units.Default,
+      language: getDefaultLang()
     };
 
     chairMake: string = Profile.Settings.Defaults.chairMake;
@@ -63,9 +69,11 @@ export namespace Profile {
     height: number = Profile.Settings.Defaults.height;
     weight: number = Profile.Settings.Defaults.weight;
     units: string = Profile.Settings.Defaults.units;
+    language: string = Profile.Settings.Defaults.language;
 
     constructor() {
       super();
+      Profile.Settings.Languages.Options = Object.keys(translateKey('language-list', 'en'));
     }
 
     getHeightDisplay(): string {
@@ -160,6 +168,11 @@ export namespace Profile {
           index = mod(index + 1, Profile.Units.Options.length);
           this.units = Profile.Units.Options[index];
           break;
+        case 'language':
+          index = Profile.Settings.Languages.Options.indexOf(this.language);
+          index = mod(index + 1, Profile.Settings.Languages.Options.length);
+          this.language = Profile.Settings.Languages.Options[index];
+          break;
       }
     }
 
@@ -195,6 +208,11 @@ export namespace Profile {
           index = Profile.Units.Options.indexOf(this.units);
           index = mod(index - 1, Profile.Units.Options.length);
           this.units = Profile.Units.Options[index];
+          break;
+        case 'language':
+          index = Profile.Settings.Languages.Options.indexOf(this.language);
+          index = mod(index - 1, Profile.Settings.Languages.Options.length);
+          this.language = Profile.Settings.Languages.Options[index];
           break;
       }
     }

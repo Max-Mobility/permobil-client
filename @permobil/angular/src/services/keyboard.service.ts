@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as app from '@nativescript/core/application';
-import { fromObject } from '@nativescript/core/data/observable';
-import { isIOS, Observable } from '@nativescript/core';
+import { Application, fromObject, isIOS, Observable } from '@nativescript/core';
 
 @Injectable()
 export class KeyboardService {
@@ -16,15 +14,14 @@ export class KeyboardService {
         'Currently no implementation for iOS; should only be constructed for Android.'
       );
     }
-    this.activity = app.android.startActivity | app.android.foregroundActivity;
+    this.activity =
+      Application.android.startActivity |
+      Application.android.foregroundActivity;
     this.events = fromObject({});
   }
 
   start() {
-    const rootView = this.activity
-      .getWindow()
-      .getDecorView()
-      .getRootView();
+    const rootView = this.activity.getWindow().getDecorView().getRootView();
     this.callBack = new android.view.ViewTreeObserver.OnGlobalLayoutListener({
       onGlobalLayout: (): void => {
         const rect = new android.graphics.Rect();
@@ -48,10 +45,7 @@ export class KeyboardService {
   }
 
   stop() {
-    const rootView = this.activity
-      .getWindow()
-      .getDecorView()
-      .getRootView();
+    const rootView = this.activity.getWindow().getDecorView().getRootView();
     rootView.getViewTreeObserver().removeGlobalOnLayoutListener(this.callBack);
   }
 

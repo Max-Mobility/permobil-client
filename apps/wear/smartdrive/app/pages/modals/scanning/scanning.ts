@@ -1,5 +1,4 @@
-import { Page, ShownModallyData } from '@nativescript/core';
-import { fromObject } from '@nativescript/core/data/observable';
+import { fromObject, Page, ShownModallyData } from '@nativescript/core';
 import { Log } from '@permobil/core';
 import { L } from '@permobil/nativescript';
 

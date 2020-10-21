@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
+import {
+  DataStore as KinveyDataStore,
+  DataStoreType,
+  Query as KinveyQuery,
+  User as KinveyUser
+} from '@bradmartin/kinvey-nativescript-sdk';
 import { Device } from '@permobil/core';
-import { DataStore as KinveyDataStore, DataStoreType, Query as KinveyQuery, User as KinveyUser } from 'kinvey-nativescript-sdk';
 import * as LS from 'nativescript-localstorage';
 import { STORAGE_KEYS } from '../enums';
 import { LoggingService } from './logging.service';

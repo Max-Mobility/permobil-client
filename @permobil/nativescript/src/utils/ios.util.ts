@@ -1,5 +1,4 @@
-import { isIOS, Page } from '@nativescript/core';
-import * as app from '@nativescript/core/application';
+import { Application, isIOS, Page } from '@nativescript/core';
 
 /**
  * Sets margins for the safe area on iOS devices with safeAreaInsets
@@ -23,8 +22,8 @@ export function getSafeAreaInsets():
       bottom: number;
       right: number;
     } {
-  if (isIOS && app.ios.window.safeAreaInsets) {
-    return app.ios.window.safeAreaInsets;
+  if (isIOS && Application.ios.window.safeAreaInsets) {
+    return Application.ios.window.safeAreaInsets;
   } else {
     return undefined;
   }

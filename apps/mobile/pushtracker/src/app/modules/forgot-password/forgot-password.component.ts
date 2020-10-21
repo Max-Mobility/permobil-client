@@ -1,14 +1,19 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { RouterExtensions } from '@nativescript/angular/router';
-import { Page, isAndroid, isIOS, TextField } from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
-import { device } from '@nativescript/core/platform';
-import { alert } from '@nativescript/core/ui/dialogs';
+import { User as KinveyUser } from '@bradmartin/kinvey-nativescript-sdk';
+import { RouterExtensions } from '@nativescript/angular';
+import {
+  ApplicationSettings as appSettings,
+  Device,
+  Dialogs,
+  isAndroid,
+  isIOS,
+  Page,
+  TextField
+} from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { preventKeyboardFromShowing } from '@permobil/nativescript';
 import { validate } from 'email-validator';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { AppResourceIcons, APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
 
@@ -64,7 +69,7 @@ export class ForgotPasswordComponent implements OnInit {
     if (isIOS) {
       const uiTF = (args.object as TextField).ios as UITextField;
       uiTF.textContentType = UITextContentTypeEmailAddress;
-    } else if (isAndroid && device.sdkVersion >= '26') {
+    } else if (isAndroid && Device.sdkVersion >= '26') {
       const et = (args.object as TextField).android; // android.widget.EditText
       et.setAutofillHints([
         (android.view.View as any).AUTOFILL_HINT_EMAIL_ADDRESS
@@ -103,7 +108,7 @@ export class ForgotPasswordComponent implements OnInit {
     KinveyUser.resetPassword(this.userEmail)
       .then(_ => {
         this._loadingIndicator.hide();
-        alert({
+        Dialogs.alert({
           title: this._translateService.instant('general.email-sent'),
           message: this._translateService.instant('general.check-email'),
           okButtonText: this._translateService.instant('general.ok')

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ModalDialogParams } from '@nativescript/angular';
-import { PropertyChangeData, Switch } from '@nativescript/core';
-import * as utilityModule from '@nativescript/core/utils/utils';
+import { PropertyChangeData, Switch, Utils } from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -47,7 +46,7 @@ export class PrivacyPolicyComponent {
 
   openWebsite(url: string) {
     const newUrl = this._translateService.instant(url);
-    utilityModule.openUrl(newUrl);
+    Utils.openUrl(newUrl);
   }
 
   close() {

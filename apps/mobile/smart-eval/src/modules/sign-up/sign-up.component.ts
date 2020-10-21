@@ -1,12 +1,18 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { User as KinveyUser } from '@bradmartin/kinvey-nativescript-sdk';
 import { ModalDialogService, RouterExtensions } from '@nativescript/angular';
 import { Page } from '@nativescript/core';
 import { alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
-import { preventKeyboardFromShowing, setMarginForIosSafeArea } from '@permobil/nativescript';
+import {
+  preventKeyboardFromShowing,
+  setMarginForIosSafeArea
+} from '@permobil/nativescript';
 import { validate } from 'email-validator';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { SelectedIndexChangedEventData, ValueList } from 'nativescript-drop-down';
+import {
+  SelectedIndexChangedEventData,
+  ValueList
+} from 'nativescript-drop-down';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import { User, UserTypes } from '../../models';
 import { PrivacyPolicyComponent } from '../../privacy-policy';

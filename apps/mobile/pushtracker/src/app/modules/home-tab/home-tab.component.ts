@@ -1,18 +1,36 @@
 import { Component, NgZone, ViewContainerRef } from '@angular/core';
+import { User as KinveyUser } from '@bradmartin/kinvey-nativescript-sdk';
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 import { ModalDialogService } from '@nativescript/angular';
-import { Color, ObservableArray } from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
-import { screen } from '@nativescript/core/platform';
+import {
+  ApplicationSettings as appSettings,
+  Color,
+  ObservableArray,
+  Screen
+} from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import { Toasty } from 'nativescript-toasty';
 import { ActivityComponent } from '..';
-import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
-import { PushTrackerUser, DeviceBase, PushTracker } from '../../models';
-import { ActivityService, BluetoothService, SmartDriveUsageService, LoggingService } from '../../services';
-import { convertToMilesIfUnitPreferenceIsMiles, getFirstDayOfWeek, milesToKilometers, YYYY_MM_DD } from '../../utils';
+import {
+  APP_THEMES,
+  CONFIGURATIONS,
+  DISTANCE_UNITS,
+  STORAGE_KEYS
+} from '../../enums';
+import { DeviceBase, PushTracker, PushTrackerUser } from '../../models';
+import {
+  ActivityService,
+  BluetoothService,
+  LoggingService,
+  SmartDriveUsageService
+} from '../../services';
+import {
+  convertToMilesIfUnitPreferenceIsMiles,
+  getFirstDayOfWeek,
+  milesToKilometers,
+  YYYY_MM_DD
+} from '../../utils';
 
 @Component({
   selector: 'home-tab',
@@ -24,7 +42,7 @@ export class HomeTabComponent {
   DISTANCE_UNITS = DISTANCE_UNITS;
   CONFIGURATIONS = CONFIGURATIONS;
   user: PushTrackerUser;
-  screenWidth = screen.mainScreen.widthDIPs;
+  screenWidth = Screen.mainScreen.widthDIPs;
   distanceCirclePercentage: number = 0;
   distanceCirclePercentageMaxValue;
   coastTimeCirclePercentage: number;
@@ -68,9 +86,6 @@ export class HomeTabComponent {
   private _debouncedLoadWeeklyActivity: any;
   private _debouncedLoadWeeklyUsage: any;
 
-  public static api_base = PushTrackerKinveyKeys.HOST_URL;
-  public static api_app_key = PushTrackerKinveyKeys.PROD_KEY;
-  public static api_app_secret = PushTrackerKinveyKeys.PROD_SECRET;
   private _weeklyActivityFromKinvey: any;
   private _weeklyUsageFromKinvey: any;
 
@@ -146,8 +161,10 @@ export class HomeTabComponent {
   }
 
   private registerPushTrackerEvents() {
-    if (this.user.data.control_configuration !==
-      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE) {
+    if (
+      this.user.data.control_configuration !==
+      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+    ) {
       // we only register for these events if the user is configured
       // to have a PushTracker!
       return;
@@ -191,7 +208,7 @@ export class HomeTabComponent {
     const pt = args.object as PushTracker;
     this._zone.run(() => {
       this.ptBattery = pt.battery + '%';
-      this.sdBattery = pt.sdBattery ? (pt.sdBattery + '%') : '--';
+      this.sdBattery = pt.sdBattery ? pt.sdBattery + '%' : '--';
     });
   }
 
@@ -220,8 +237,8 @@ export class HomeTabComponent {
     // Off to a good start if the user is > 0 of one of the goals but < 30% of both goals
     else if (
       (coastTimeValue > 0.0 || distanceValue > 0.0) &&
-      (this.coastTimeCirclePercentage < 30 &&
-        this.distanceCirclePercentage < 30)
+      this.coastTimeCirclePercentage < 30 &&
+      this.distanceCirclePercentage < 30
     ) {
       this.todayMessage = this._translateService.instant(
         'home-tab.off-to-a-good-start'
@@ -312,8 +329,10 @@ export class HomeTabComponent {
         await kinveyUser.me();
         this.parseUser(kinveyUser);
       } catch (err) {
-        this._logService.logBreadCrumb(HomeTabComponent.name,
-          'Failed to refresh user from kinvey');
+        this._logService.logBreadCrumb(
+          HomeTabComponent.name,
+          'Failed to refresh user from kinvey'
+        );
       }
       return true;
     } catch (err) {
@@ -338,12 +357,10 @@ export class HomeTabComponent {
       if (forceRefresh) {
         try {
           await this._activityService.refreshWeekly();
-        } catch (err) {
-        }
+        } catch (err) { }
         try {
           await this._usageService.refreshWeekly();
-        } catch (err) {
-        }
+        } catch (err) { }
       }
 
       // The user might come back and refresh the next day, just keeping
@@ -411,7 +428,8 @@ export class HomeTabComponent {
 
     const date = YYYY_MM_DD(weekStartDate);
 
-    return this._usageService.getWeeklyActivity(date, 1)
+    return this._usageService
+      .getWeeklyActivity(date, 1)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -441,7 +459,10 @@ export class HomeTabComponent {
         return Promise.resolve(this._weeklyUsageFromKinvey);
       })
       .catch(err => {
-        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to get JSON from kinvey');
+        this._logService.logBreadCrumb(
+          HomeTabComponent.name,
+          'Failed to get JSON from kinvey'
+        );
         // this._logService.logException(err);
         return Promise.reject([]);
       });
@@ -512,7 +533,10 @@ export class HomeTabComponent {
         this._updateProgress();
       })
       .catch(err => {
-        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to load smartdrive usage');
+        this._logService.logBreadCrumb(
+          HomeTabComponent.name,
+          'Failed to load smartdrive usage'
+        );
         // this._logService.logException(err);
       });
   }
@@ -526,7 +550,8 @@ export class HomeTabComponent {
     if (!this.user) return Promise.resolve(result);
 
     // don't want to filter by date, just give the latest data available
-    return this._usageService.getWeeklyActivity(null, 1)
+    return this._usageService
+      .getWeeklyActivity(null, 1)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -555,7 +580,10 @@ export class HomeTabComponent {
         return Promise.resolve(this._weeklyUsageFromKinvey);
       })
       .catch(err => {
-        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to get JSON from kinvey when loading latest smartdrive usage');
+        this._logService.logBreadCrumb(
+          HomeTabComponent.name,
+          'Failed to get JSON from kinvey when loading latest smartdrive usage'
+        );
         // this._logService.logException(err);
         return Promise.reject({});
       });
@@ -569,7 +597,8 @@ export class HomeTabComponent {
     let result = {} as any;
     if (!this.user) return result;
 
-    return this._activityService.getWeeklyActivity(null, 1)
+    return this._activityService
+      .getWeeklyActivity(null, 1)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -617,7 +646,8 @@ export class HomeTabComponent {
 
     const date = YYYY_MM_DD(weekStartDate);
 
-    return this._activityService.getWeeklyActivity(date, 1)
+    return this._activityService
+      .getWeeklyActivity(date, 1)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -647,7 +677,10 @@ export class HomeTabComponent {
         return Promise.resolve(this._weeklyActivityFromKinvey);
       })
       .catch(err => {
-        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to get JSON from kinvey when loading weekly activity');
+        this._logService.logBreadCrumb(
+          HomeTabComponent.name,
+          'Failed to get JSON from kinvey when loading weekly activity'
+        );
         // this._logService.logException(err);
         return Promise.reject([]);
       });
@@ -729,12 +762,18 @@ export class HomeTabComponent {
             this._updateProgress();
           })
           .catch(err => {
-            this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to format activity from view');
+            this._logService.logBreadCrumb(
+              HomeTabComponent.name,
+              'Failed to format activity from view'
+            );
             // this._logService.logException(err);
           });
       })
       .catch(err => {
-        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to load weekly activity');
+        this._logService.logBreadCrumb(
+          HomeTabComponent.name,
+          'Failed to load weekly activity'
+        );
         // this._logService.logException(err);
       });
   }
@@ -952,7 +991,7 @@ export class HomeTabComponent {
       let driveTotal = weekDriveEnd;
       if (coastTotal === 0) {
         // get last usage for odometer --- https://github.com/Max-Mobility/permobil-client/issues/459
-        const latest = (await this.loadLatestSmartDriveUsageFromKinvey());
+        const latest = await this.loadLatestSmartDriveUsageFromKinvey();
         coastTotal = (latest && latest.distance_smartdrive_coast) || 0;
         driveTotal = (latest && latest.distance_smartdrive_drive) || 0;
       }

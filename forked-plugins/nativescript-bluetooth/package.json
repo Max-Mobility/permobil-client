@@ -1,6 +1,6 @@
 {
   "name": "nativescript-bluetooth",
-  "version": "1.3.1",
+  "version": "2.0.1",
   "description": "Connect to and interact with Bluetooth LE peripherals",
   "main": "index",
   "typings": "index.d.ts",
@@ -31,7 +31,7 @@
     }
   },
   "scripts": {
-    "build": "tsc"
+    "build": "npm i && ts-patch install && tsc"
   },
   "repository": {
     "type": "git",
@@ -64,7 +64,10 @@
   "homepage": "https://github.com/eddyverbruggen/nativescript-bluetooth",
   "devDependencies": {
     "@nativescript/core": "../../node_modules/@nativescript/core",
-    "tns-platform-declarations": "../../node_modules/tns-platform-declarations",
+    "@nativescript/types": "../../node_modules/@nativescript/types",
+    "@nativescript/webpack": "../../node_modules/@nativescript/webpack",
+    "ts-patch": "~1.3.0",
+    "ts-node": "~9.0.0",
     "typescript": "../../node_modules/typescript"
   }
 }

@@ -1,8 +1,9 @@
-import * as Application from '@nativescript/core/application';
-import * as Dialogs from '@nativescript/core/ui/dialogs';
-import * as Utility from '@nativescript/core/utils/utils';
-import { setTimeout } from '@nativescript/core/timer';
-import * as appSettings from '@nativescript/core/application-settings';
+import {
+  Application,
+  ApplicationSettings,
+  Dialogs,
+  Utils
+} from '@nativescript/core';
 
 declare var android: any;
 
@@ -46,17 +47,17 @@ export class Ratings {
   }
 
   init() {
-    this.showCount = appSettings.getNumber(this.configuration.id, 0);
+    this.showCount = ApplicationSettings.getNumber(this.configuration.id, 0);
   }
 
   increment() {
-    this.showCount = appSettings.getNumber(this.configuration.id, 0);
+    this.showCount = ApplicationSettings.getNumber(this.configuration.id, 0);
     this.showCount++;
-    appSettings.setNumber(this.configuration.id, this.showCount);
+    ApplicationSettings.setNumber(this.configuration.id, this.showCount);
   }
 
   prompt() {
-    const userRated = appSettings.getBoolean(
+    const userRated = ApplicationSettings.getBoolean(
       'PUSHTRACKER.RATER.ACCEPTED',
       false
     );
@@ -65,7 +66,7 @@ export class Ratings {
       return;
     }
 
-    const userDeclined = appSettings.getBoolean(
+    const userDeclined = ApplicationSettings.getBoolean(
       'PUSHTRACKER.RATER.DECLINED',
       false
     );
@@ -75,7 +76,7 @@ export class Ratings {
     }
 
     if (this.showCount >= this.configuration.showOnCount) {
-      setTimeout(() => {
+      Utils.setTimeout(() => {
         Dialogs.confirm({
           title: this.configuration.title,
           message: this.configuration.text,
@@ -85,7 +86,7 @@ export class Ratings {
           cancelable: false
         }).then(result => {
           if (result === true) {
-            appSettings.setBoolean('PUSHTRACKER.RATER.ACCEPTED', true);
+            ApplicationSettings.setBoolean('PUSHTRACKER.RATER.ACCEPTED', true);
             let appStore = '';
             if (Application.android) {
               const androidPackageName = this.configuration.androidPackageId
@@ -107,12 +108,12 @@ export class Ratings {
                 'itms-apps://itunes.apple.com/en/app/id' +
                 this.configuration.iTunesAppId;
             }
-            Utility.openUrl(appStore);
+            Utils.openUrl(appStore);
           } else if (result === false) {
             // Decline
-            appSettings.setBoolean('PUSHTRACKER.RATER.DECLINED', true);
+            ApplicationSettings.setBoolean('PUSHTRACKER.RATER.DECLINED', true);
           } else {
-            appSettings.setNumber(this.configuration.id, 0);
+            ApplicationSettings.setNumber(this.configuration.id, 0);
           }
         });
       });

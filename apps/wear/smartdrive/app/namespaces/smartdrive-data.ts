@@ -1,6 +1,6 @@
-import { File, Http, knownFolders, path } from '@nativescript/core';
-import { device } from '@nativescript/core/platform';
-import { eachDay, format, subDays } from 'date-fns';
+import { Device, File, Http, knownFolders, path } from '@nativescript/core';
+import { eachDayOfInterval, subDays } from 'date-fns';
+import { formatDateTime } from '../utils';
 
 export namespace SmartDriveData {
   export namespace Info {
@@ -33,9 +33,9 @@ export namespace SmartDriveData {
 
     export function getDateValue(date?: any) {
       if (date !== undefined) {
-        return format(new Date(date), 'YYYY/MM/DD');
+        return formatDateTime(new Date(date), 'yyyy/MM/dd').formatted;
       } else {
-        return format(new Date(), 'YYYY/MM/DD');
+        return formatDateTime(new Date(), 'yyyy/MM/dd').formatted;
       }
     }
 
@@ -62,7 +62,10 @@ export namespace SmartDriveData {
 
     export function getPastDates(numDates: number) {
       const now = new Date();
-      return eachDay(subDays(now, numDates), now);
+      return eachDayOfInterval({
+        start: subDays(now, numDates),
+        end: now
+      });
     }
 
     export function makeRecord(
@@ -72,10 +75,10 @@ export namespace SmartDriveData {
     ) {
       const timestamp = SmartDriveData.Info.getHalfHourDate().getTime();
       return {
-        [SmartDriveData.Info.BatteryName]: battery,
-        [SmartDriveData.Info.CoastDistanceName]: coast,
-        [SmartDriveData.Info.DriveDistanceName]: drive,
-        [SmartDriveData.Info.StartTimeName]: timestamp
+        [SmartDriveData.Info.BatteryName]: +battery,
+        [SmartDriveData.Info.CoastDistanceName]: +coast,
+        [SmartDriveData.Info.DriveDistanceName]: +drive,
+        [SmartDriveData.Info.StartTimeName]: +timestamp
       };
     }
 
@@ -101,7 +104,8 @@ export namespace SmartDriveData {
       if (records && records.length) {
         // determine if we need a new record
         const record = records[records.length - 1];
-        const timeDiffMs = timeMs - record[SmartDriveData.Info.StartTimeName];
+        const recordTimeMs = +record[SmartDriveData.Info.StartTimeName] || 0;
+        const timeDiffMs = timeMs - recordTimeMs;
         if (timeDiffMs > SmartDriveData.Info.RECORD_LENGTH_MS) {
           // we need a new record
           const record = SmartDriveData.Info.makeRecord(
@@ -112,12 +116,14 @@ export namespace SmartDriveData {
           // now append it
           records.push(record);
         } else {
+          const currentBattery = +record[SmartDriveData.Info.BatteryName] || 0;
+          const updatedBattery = battery + currentBattery;
           // can just update this record
-          record[SmartDriveData.Info.BatteryName] += battery;
+          record[SmartDriveData.Info.BatteryName] = +updatedBattery;
           record[SmartDriveData.Info.CoastDistanceName] =
-            coastDistance || record[SmartDriveData.Info.CoastDistanceName];
+            +coastDistance || +record[SmartDriveData.Info.CoastDistanceName];
           record[SmartDriveData.Info.DriveDistanceName] =
-            driveDistance || record[SmartDriveData.Info.DriveDistanceName];
+            +driveDistance || +record[SmartDriveData.Info.DriveDistanceName];
         }
       } else {
         // we have no records, make a new one
@@ -148,7 +154,8 @@ export namespace SmartDriveData {
         return null;
       }
       // compute updates
-      const updatedBattery = battery + info[SmartDriveData.Info.BatteryName];
+      const currentBattery = +info[SmartDriveData.Info.BatteryName] || 0;
+      const updatedBattery = battery + currentBattery;
       const updatedDriveDistance =
         driveDistance || info[SmartDriveData.Info.DriveDistanceName];
       const updatedCoastDistance =
@@ -171,9 +178,9 @@ export namespace SmartDriveData {
       }
       // now return the updates
       return {
-        [SmartDriveData.Info.BatteryName]: updatedBattery,
-        [SmartDriveData.Info.DriveDistanceName]: updatedDriveDistance,
-        [SmartDriveData.Info.CoastDistanceName]: updatedCoastDistance,
+        [SmartDriveData.Info.BatteryName]: +updatedBattery,
+        [SmartDriveData.Info.DriveDistanceName]: +updatedDriveDistance,
+        [SmartDriveData.Info.CoastDistanceName]: +updatedCoastDistance,
         [SmartDriveData.Info.RecordsName]: recordString,
         [SmartDriveData.Info.HasBeenSentName]: 0
       };
@@ -335,7 +342,7 @@ export namespace SmartDriveData {
           version: SmartDriveData.Firmwares.versionStringToByte(f['version']),
           name: f['_filename'],
           data: fileData,
-          changes: f['change_notes'][device.language] || f['change_notes']['en']
+          changes: f['change_notes'][Device.language] || f['change_notes']['en']
         };
       });
     }

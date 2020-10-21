@@ -1,12 +1,35 @@
-import { ApplicationSettings, Frame, knownFolders, Observable, Page, path, ShowModalOptions, ViewBase } from '@nativescript/core';
-import * as application from '@nativescript/core/application';
-import { getFile } from '@nativescript/core/http';
+import {
+  AndroidActivityEventData,
+  AndroidApplication,
+  Application,
+  ApplicationSettings,
+  Dialogs,
+  Frame,
+  Http,
+  knownFolders,
+  Observable,
+  Page,
+  path,
+  ShowModalOptions,
+  ViewBase
+} from '@nativescript/core';
 import { Device, Log, wait } from '@permobil/core';
-import { getDefaultLang, L, Prop } from '@permobil/nativescript';
+import {
+  getDefaultLang,
+  L,
+  Prop,
+  restartAndroidApp,
+  setDefaultLang
+} from '@permobil/nativescript';
 import { Sentry } from 'nativescript-sentry';
 import { WatchSettings } from '../../../models';
 import { SettingsService, SmartDriveKinveyService } from '../../../services';
-import { configureLayout, isNetworkAvailable, sentryBreadCrumb, _isActivityThis } from '../../../utils';
+import {
+  configureLayout,
+  isNetworkAvailable,
+  sentryBreadCrumb,
+  _isActivityThis
+} from '../../../utils';
 
 export class SettingsViewModel extends Observable {
   @Prop() insetPadding = 0;
@@ -24,6 +47,11 @@ export class SettingsViewModel extends Observable {
   private _isDownloadingFiles: boolean = false;
   private _shouldDownloadFiles: boolean = true;
 
+  private _closeCallback: (shouldConnect: boolean) => {};
+  // if the user changes accel, SC mode, SC max speed then we should
+  // connect to the smartdrive to update its settings.
+  private _shouldConnectSmartDrive: boolean = false;
+
   constructor(
     page: Page,
     settingsService: SettingsService,
@@ -38,6 +66,7 @@ export class SettingsViewModel extends Observable {
     const res = configureLayout(wearOsLayout);
     this.chinSize = res.chinSize;
     this.insetPadding = res.insetPadding;
+    this._closeCallback = data.closeCallback;
     wearOsLayout.nativeView.setPadding(
       this.insetPadding,
       this.insetPadding,
@@ -47,9 +76,9 @@ export class SettingsViewModel extends Observable {
 
     // set event listener so we do not DOWNLOAD the files when the activity resumes
     // related https://github.com/Max-Mobility/permobil-client/issues/794
-    application.android.on(
-      application.AndroidApplication.activityResumedEvent,
-      (args: application.AndroidActivityEventData) => {
+    Application.android.on(
+      AndroidApplication.activityResumedEvent,
+      (args: AndroidActivityEventData) => {
         if (_isActivityThis(args.activity)) {
           // we dont want to download anything
           this._shouldDownloadFiles = false;
@@ -64,6 +93,16 @@ export class SettingsViewModel extends Observable {
         this._downloadTranslationFiles();
       }
     });
+  }
+
+  close() {
+    this._closeCallback(this._shouldConnectSmartDrive);
+  }
+
+  settingRequiresSmartDriveConnection(setting: string) {
+    return setting === 'acceleration' ||
+      setting === 'switchcontrolmode' ||
+      setting === 'switchcontrolspeed';
   }
 
   onChangeSettingsItemTap(args) {
@@ -99,6 +138,7 @@ export class SettingsViewModel extends Observable {
       ) => {
         this._showingModal = false;
         if (confirmedByUser) {
+          // actually update the settings to make sure they're saved
           this._settingsService.settings.copy(_tempSettings);
           this._settingsService.switchControlSettings.copy(
             _tempSwitchControlSettings
@@ -106,12 +146,39 @@ export class SettingsViewModel extends Observable {
           this._settingsService.watchSettings.copy(_tempWatchSettings);
           this._settingsService.hasSentSettings = false;
           this._settingsService.saveSettings();
+          // keep track of whether the user has changed a setting
+          // which they should send to the smartdrive
+          this._shouldConnectSmartDrive = this._shouldConnectSmartDrive ||
+            this.settingRequiresSmartDriveConnection(this.activeSettingToChange);
           // warning / indication to the user that they've updated their settings
-          alert({
-            title: L('warnings.saved-settings.title'),
-            message: L('warnings.saved-settings.message'),
-            okButtonText: L('buttons.ok')
-          });
+          if (this.activeSettingToChange === 'language') {
+            Dialogs.confirm({
+              title: L('warnings.saved-settings.title'),
+              message: L('warnings.saved-settings.language'),
+              okButtonText: L('buttons.ok'),
+              cancelButtonText: L('buttons.cancel'),
+              cancelable: true
+            }).then(res => {
+              if (res === true) {
+                setDefaultLang(this._settingsService.watchSettings.language);
+                sentryBreadCrumb(
+                  `User confirmed language file change ${this._settingsService.watchSettings.language}`
+                );
+                // kill current app and relaunches
+                restartAndroidApp();
+              } else {
+                // revert back the watch settings language if the user cancels the change
+                this._settingsService.watchSettings.language = getDefaultLang();
+                this._settingsService.saveSettings();
+              }
+            });
+          } else {
+            Dialogs.alert({
+              title: L('warnings.saved-settings.title'),
+              message: L('warnings.saved-settings.message'),
+              okButtonText: L('buttons.ok')
+            });
+          }
         }
       },
       animated: false,
@@ -185,8 +252,8 @@ export class SettingsViewModel extends Observable {
       acc[_filename] = !current
         ? val
         : val._version > current._version
-        ? val
-        : current;
+          ? val
+          : current;
       return acc;
     }, {});
 
@@ -216,7 +283,7 @@ export class SettingsViewModel extends Observable {
     for (f of filesToDownload) {
       // need to make sure the downloadUrl of the file uses `https` and not `http` to avoid IOExceptions
       const fileUrl = f._downloadURL.replace(/^http:\/\//i, 'https://');
-      await getFile(
+      await Http.getFile(
         {
           url: fileUrl,
           timeout: 30000,
@@ -247,7 +314,7 @@ export class SettingsViewModel extends Observable {
   private _handleDownloadError(err) {
     sentryBreadCrumb(`Error downloading files: ${JSON.stringify(err)}`);
     Sentry.captureException(err);
-    alert({
+    Dialogs.alert({
       title: L('failures.title'),
       message: L('failures.downloading-translations'),
       okButtonText: L('buttons.ok')

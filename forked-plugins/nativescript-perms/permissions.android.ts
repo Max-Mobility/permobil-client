@@ -1,6 +1,15 @@
-import * as application from '@nativescript/core/application';
-import * as applicationSettings from '@nativescript/core/application-settings';
-import { CheckOptions, Rationale, RequestOptions, Status } from './permissions.common';
+import {
+  AndroidActivityRequestPermissionsEventData,
+  AndroidApplication,
+  Application,
+  ApplicationSettings as applicationSettings
+} from '@nativescript/core';
+import {
+  CheckOptions,
+  Rationale,
+  RequestOptions,
+  Status
+} from './permissions.common';
 
 export * from './permissions.common';
 
@@ -101,8 +110,8 @@ namespace PermissionsAndroid {
    */
   export function check(permission: string) {
     const context: android.content.Context =
-      application.android.foregroundActivity ||
-      application.android.startActivity;
+      Application.android.foregroundActivity ||
+      Application.android.startActivity;
     if (android.os.Build.VERSION.SDK_INT < 23) {
       return Promise.resolve(
         context.checkPermission(
@@ -160,7 +169,7 @@ namespace PermissionsAndroid {
 let mRequestCode = 0;
 function requestPermission(permission: string): Promise<PermissionStatus> {
   const activity: android.app.Activity =
-    application.android.foregroundActivity || application.android.startActivity;
+    Application.android.foregroundActivity || Application.android.startActivity;
   if (android.os.Build.VERSION.SDK_INT < 23) {
     return Promise.resolve(
       activity.checkPermission(
@@ -183,9 +192,9 @@ function requestPermission(permission: string): Promise<PermissionStatus> {
     try {
       const requestCode = mRequestCode++;
       activity.requestPermissions([permission], requestCode);
-      application.android.on(
-        application.AndroidApplication.activityRequestPermissionsEvent,
-        (args: application.AndroidActivityRequestPermissionsEventData) => {
+      Application.android.on(
+        AndroidApplication.activityRequestPermissionsEvent,
+        (args: AndroidActivityRequestPermissionsEventData) => {
           if (args.requestCode === requestCode) {
             if (
               args.grantResults.length > 0 &&
@@ -217,7 +226,7 @@ function requestMultiplePermissions(
   let checkedPermissionsCount = 0;
 
   const context: android.content.Context =
-    application.android.foregroundActivity || application.android.startActivity;
+    Application.android.foregroundActivity || Application.android.startActivity;
 
   for (let i = 0; i < permissions.length; i++) {
     const perm = permissions[i];
@@ -247,14 +256,14 @@ function requestMultiplePermissions(
   }
 
   const activity: android.app.Activity =
-    application.android.foregroundActivity || application.android.startActivity;
+    Application.android.foregroundActivity || Application.android.startActivity;
   return new Promise((resolve, reject) => {
     try {
       const requestCode = mRequestCode++;
       activity.requestPermissions(permissionsToCheck, requestCode);
-      application.android.on(
-        application.AndroidApplication.activityRequestPermissionsEvent,
-        (args: application.AndroidActivityRequestPermissionsEventData) => {
+      Application.android.on(
+        AndroidApplication.activityRequestPermissionsEvent,
+        (args: AndroidActivityRequestPermissionsEventData) => {
           if (args.requestCode === requestCode) {
             const results = args.grantResults;
             console.log(
@@ -305,7 +314,7 @@ function shouldShowRequestPermissionRationale(permission: string) {
     return Promise.resolve(false);
   }
   const activity: android.app.Activity =
-    application.android.foregroundActivity || application.android.startActivity;
+    Application.android.foregroundActivity || Application.android.startActivity;
   try {
     return Promise.resolve(
       activity.shouldShowRequestPermissionRationale(permission)

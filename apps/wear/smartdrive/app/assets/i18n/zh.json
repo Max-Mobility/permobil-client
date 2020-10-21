@@ -23,6 +23,7 @@
     "deny": "拒絕",
     "disable": "禁用",
     "dismiss": "發送",
+    "do-not-show-again": "不再顯示",
     "enable": "開啟",
     "ok": "確認"
   },
@@ -59,11 +60,13 @@
       "batteryvoltage": "[錯誤：001] SD電池電壓",
       "bledisconnect": "[錯誤：007]藍牙斷開連接",
       "gyrorange": "[錯誤號：005] SD角度",
+      "motordriverfault": "[ERR：008] SD馬達芯片",
       "motorphases": "[錯誤號：002] SD馬達",
       "otaunavailable": "[錯誤：006]更新不可用",
       "overcurrent": "[ERR：003] SD電流尖脈衝",
       "overtemperature": "[錯誤號：004] SD過熱"
     },
+    "load-more": "加載更多",
     "loading": "載入中...",
     "no-errors": "未記錄或接收到SmartDrive的錯誤。",
     "title": "SmartDrive錯誤歷史記錄"
@@ -91,6 +94,24 @@
     "title": "注意",
     "too-many-smartdrives-found": "找到了多個SmartDrives。配對時，確保附近只有一個開啓的SmartDrive。"
   },
+  "language-list": {
+    "cs": "Čeština",
+    "da": "Dansk",
+    "de": "Deutsche",
+    "en": "English",
+    "es": "Español",
+    "fi": "Suomalainen",
+    "fr": "Français",
+    "it": "Italiano",
+    "ja": "日本語",
+    "ko": "한국어",
+    "nb": "Norsk Bokmål",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Português",
+    "sv": "Svenska",
+    "zh": "繁體中文"
+  },
   "languages": {
     "cs": "捷克語",
     "da": "丹麥語",
@@ -115,6 +136,42 @@
     "title": "SmartDrive MX2+目錄",
     "training": "敲擊訓練",
     "updates": "無線更新"
+  },
+  "notifications": {
+    "accelerate-while-moving": "在已經巡航的情況下加快行駛速度！推動滾輪以加快速度，然後與PushTracker一起單擊。按住SwitchControl再次提高速度。",
+    "access-more-features": "是否需要有關您的每日/每週/每月推進活動的更多信息？訪問Permobil網站，了解如何充分利用您的SmartDrive和PushTracker！",
+    "channels": {
+      "maintenance": "保養",
+      "personal-record": "個人記錄",
+      "smartdrive": "SmartDrive"
+    },
+    "daily-distance-record": "您做到了！您達成了一天中行駛距離的新個人記錄。保持！而且不要忘記滑行。 #選擇做更多",
+    "odometer-records-part-one": "這就是所有要做的，同時保持肩膀健康。您已經通過您的Smart Drive行進了",
+    "odometer-records-part-two": "的距離。 #選擇做更多",
+    "open-pt-wear": "想進一步瞭解您的日常出行情況嗎？打開PushTracker應用，開始查看您的推行計數，滑行時間和每天行進的距離。",
+    "routine-maintenance": "保持設備清潔有助於延長使用壽命！使用潮濕的海綿，中性清潔劑並徹底乾燥，以使SmartDrive保持如新狀態！ （請勿浸泡）",
+    "sc-light-indications": "您是否對開關控制按鈕上的指示燈閃爍感到好奇？請參閱《用戶手冊》或“ Permobil YouTube”頁面，以了解每種含義。",
+    "sd-clamp-check": "是時候檢查安裝位置了！確保您的夾子或折疊框架適配器設置正確。請參閱說明或與我們聯繫。",
+    "sd-e2-charging": "為了獲得最佳性能，請從每天充滿電的SmartDrive開始。確保將其充電至25%以上，尤其是如果您不打算長時間使用它時。請查看您的《用戶手冊》或聯繫Permobil以獲得詳細信息。",
+    "sd-roller-check": "檢查滾輪。看到平坦的點嗎？他們很難旋轉嗎？立即聯繫Permobil進行討論。",
+    "switch-control-reminder": "SwitchControl按鈕為您提供了另一種控制方式。將它們直接插入SmartDrive充電端口（無需藍牙）。按下按鈕以驅動，停止或設置速度。請與您的提供商或Permobil支持聯繫以了解更多信息。",
+    "tire-pressure": "輪胎壓力會大大影響您的推力。您最近檢查過嗎？",
+    "titles": {
+      "accelerate-while-moving": "加速中",
+      "access-more-features": "推行和更多",
+      "daily-distance-record": "每日距離記錄！",
+      "odometer-records": "里程表記錄！",
+      "open-pt-wear": "打開PushTracker Wear應用",
+      "routine-maintenance": "例行保養",
+      "sc-light-indications": "按鈕指示",
+      "sd-clamp-check": "附件檢查提醒",
+      "sd-e2-charging": "SmartDrive和PushTracker充電",
+      "sd-roller-check": "滾輪檢查提醒",
+      "switch-control-reminder": "開關控制按鈕",
+      "tire-pressure": "輪胎檢查提醒",
+      "unlock-more-features": "做更多"
+    },
+    "unlock-more-features": "簡訊和日曆警報只是您可以從PushTracker獲得的其他一部分功能。聯繫Permobil或訪問我們的網站以瞭解如何使它的更多功能。"
   },
   "ota": {
     "action": {
@@ -188,6 +245,7 @@
     "description": {
       "acceleration": "SmartDrive的加速或速度增加率。",
       "controlmode": "MX2+：本機預設SmartDrive姿勢控制模式。在MX2+控制模式下，敲擊兩次將通過提高馬達速度啟動馬達，再敲擊一次將會以當前速度行駛，再次敲擊兩次將停止行駛。\n\nMX2：在MX2控制模式下，SmartDrive將在感應到您的推動時開始行駛，並在您輕敲時停駛。請注意，這是既有SmartDrive的控制方式之一。\n\nMX1：在MX1控制模式下，SmartDrive將在感應到您的推動時開始行駛，並在您輕敲或您在握住手扶圈刹車時停駛。請注意，這亦是既有SmartDrive的控制方式之一。",
+      "language": "SmartDrive應用程序中文本的語言。",
       "maxspeed": "SmartDrive在智能手錶控制下可以達到的最高速度。",
       "powerassistbuzzer": "開啟後，SmartDrive與遠程設備建立連結時，或者當缐控退出待機狀態時，SmartDrive會發出蜂鳴聲。",
       "powerassisttimeout": "連結到助推系統開啟的SmartDrive時，如果在選定的時間內未行駛，它將自動關閉助推系統。\n\n如果助推系統開啟，但未連結到SmartDrive，則將在1分鐘後自動關閉助推系統。",
@@ -199,6 +257,7 @@
     },
     "error-history": "錯誤訊息歷史記錄",
     "information": "信息",
+    "language": "語言",
     "max-speed": "最大速度",
     "pair-smartdrive": "配對SmartDrive",
     "paired-to-smartdrive": "與SmartDrive完成配對。",
@@ -210,6 +269,8 @@
     },
     "scanning": "掃描SmartDrive與...配對",
     "select-smartdrive": "選擇SmartDrive",
+    "send-settings-prompt": "在PushTracker連接到SmartDrive之前，對SmartDrive設置的更改將不會生效。您現在要打開電源輔助以連接到SmartDrive並更新其設置嗎？",
+    "set-time": "日期&時間",
     "syncing-with-server": "與伺服器同步中",
     "tap-sensitivity": "敲擊靈敏度",
     "title": "SmartDrive設定",
@@ -239,6 +300,7 @@
     }
   },
   "updates": {
+    "available": "SmartDrive有可用的更新，您是否要轉到“無線更新”頁面下載並執行更新？",
     "canceled": "SmartDrive更新已取消。",
     "changes": "變更摘要",
     "checking-for-updates": "查詢更新...",
@@ -255,6 +317,7 @@
     },
     "failed": "SmartDrive更新失敗。",
     "initializing": "初始化更新...",
+    "perform": "更新SmartDrive",
     "status": "更新狀態",
     "success": "SmartDrive更新已成功完成！",
     "timeout": "SmartDrive更新超時。",
@@ -263,6 +326,7 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "您確定要更改語言嗎？ SmartDrive MX2應用程序必須重新啟動才能應用語言更改。",
       "message": "注意：您必須參考SmartDrive用戶手冊，了解更改設定如何影響其操作和性能。",
       "title": "更改了設定"
     },

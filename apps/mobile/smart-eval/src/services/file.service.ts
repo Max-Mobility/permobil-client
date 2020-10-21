@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
+import * as Kinvey from '@bradmartin/kinvey-nativescript-sdk';
 import { TranslateService } from '@ngx-translate/core';
-import * as Kinvey from 'kinvey-nativescript-sdk';
 import * as localStorage from 'nativescript-localstorage';
 import * as fs from 'tns-core-modules/file-system';
 import * as http from 'tns-core-modules/http';

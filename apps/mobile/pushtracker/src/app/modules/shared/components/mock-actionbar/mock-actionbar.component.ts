@@ -1,13 +1,23 @@
-import { Component, EventEmitter, Input, NgZone, Output, ViewContainerRef } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  NgZone,
+  Output,
+  ViewContainerRef
+} from '@angular/core';
 import { ModalDialogService, registerElement } from '@nativescript/angular';
-import { Color } from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
+import { ApplicationSettings as appSettings, Color, Dialogs } from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { Toasty } from 'nativescript-toasty';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
-import { AppInfoComponent, ProfileSettingsComponent, SupportComponent, WirelessUpdatesComponent } from '../../../../modules';
-const dialogs = require('@nativescript/core/ui/dialogs');
+import {
+  AppInfoComponent,
+  ProfileSettingsComponent,
+  SupportComponent,
+  WirelessUpdatesComponent
+} from '../../../../modules';
 
 @Component({
   selector: 'MockActionBar',

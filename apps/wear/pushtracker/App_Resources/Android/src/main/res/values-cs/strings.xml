@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PushTracker</string>
+    <string name="title_activity_kimera">PushTracker</string>
+    <string name="foreground_service_notification">Permobil PushTracker shromažďuje vaši aktivitu</string>
+    <string name="complications_provider_service_label_pushes">Tlačí</string>
+    <string name="complications_provider_service_label_coast_time">Čas na pobřeží</string>
+    <string name="complications_provider_service_label_distance">Vzdálenost</string>
+    <string name="smartdrive">SmartDrive</string>
+    <string name="personal_record">Osobní rekord</string>
+    <string name="push_warning">Varování push</string>
+    <string name="push_warning_notification_text">Přátelské připomenutí! Dnes jste posunuli o 25% více, než je váš denní průměr. Zvažte přestávku nebo více používejte svůj SmartDrive.</string>
+    <string name="new_coast_time_record">🏆 Nový časový záznam pobřeží!</string>
+    <string name="coast_time_record_notification_text">Udělal jsi to! Dosáhli jste nového osobního maxima pro čas na pobřeží. Dělejte více a současně šetřete ramena! #ChooseToDoMore</string>
+    <string name="activity_collection">Sbírka aktivit</string>
+</resources>

@@ -1,18 +1,20 @@
 import { EventData, Observable } from '@nativescript/core';
-import * as app from '@nativescript/core/application';
-import { device } from '@nativescript/core/platform';
 import { Log } from '@permobil/core';
 import { Injectable } from 'injection-js';
-import { AndroidSensorListener, AndroidSensors, SensorDelay } from 'nativescript-android-sensors';
+import {
+  AndroidSensorListener,
+  AndroidSensors,
+  SensorDelay
+} from 'nativescript-android-sensors';
 import { Level, Sentry } from 'nativescript-sentry';
 
 @Injectable()
 export class SensorService extends Observable {
-  public static SensorChanged = 'SensorChanged';
-  public static AccuracyChanged = 'AccuracyChanged';
-  public androidSensorClass: AndroidSensors;
-  public androidSensorListener;
-  public registeredSensors: android.hardware.Sensor[];
+  static SensorChanged = 'SensorChanged';
+  static AccuracyChanged = 'AccuracyChanged';
+  androidSensorClass: AndroidSensors;
+  androidSensorListener;
+  registeredSensors: android.hardware.Sensor[];
   private _identifier: string = 'XXPERMOBILR&DXX';
 
   constructor() {
@@ -217,7 +219,7 @@ export class SensorService extends Observable {
     this._identifier = id;
   }
 
-  public flush() {
+  flush() {
     this.androidSensorClass.flush();
   }
 }

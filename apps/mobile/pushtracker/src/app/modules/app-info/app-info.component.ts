@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ModalDialogParams } from '@nativescript/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LoggingService } from '../../services';
+import { LottieView } from 'nativescript-lottie';
 
 @Component({
   selector: 'app-info',
@@ -26,6 +27,15 @@ export class AppInfoComponent implements OnInit {
       this.infoItems = sections;
     } else {
       this.infoItems = Object.values(sections);
+    }
+  }
+
+  lottieLoaded(event, item) {
+    console.log(event.object);
+    // set the lottie src if we have it for the item
+    if (item.lottie) {
+      const lottieView = event.object as LottieView;
+      lottieView.src = item.lottie;
     }
   }
 

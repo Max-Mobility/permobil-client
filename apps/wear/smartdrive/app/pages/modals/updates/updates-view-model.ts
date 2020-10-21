@@ -1,15 +1,16 @@
-import { EventData, Observable, ObservableArray } from '@nativescript/core';
-import * as application from '@nativescript/core/application';
-import * as appSettings from '@nativescript/core/application-settings';
-import { alert } from '@nativescript/core/ui/dialogs';
-import { ad as androidUtils } from '@nativescript/core/utils/utils';
+import { AnimatedCircle } from '@nativescript/animated-circle';
+import {
+  Application,
+  ApplicationSettings,
+  EventData,
+  Observable,
+  ObservableArray
+} from '@nativescript/core';
 import { Log } from '@permobil/core';
-import { getDefaultLang, L, Prop } from '@permobil/nativescript';
-import { format } from 'date-fns';
+import { L, Prop } from '@permobil/nativescript';
 import debounce from 'lodash/debounce';
 import flatten from 'lodash/flatten';
 import last from 'lodash/last';
-import { AnimatedCircle } from 'nativescript-animated-circle';
 import * as LS from 'nativescript-localstorage';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Sentry } from 'nativescript-sentry';
@@ -17,26 +18,20 @@ import * as themes from 'nativescript-themes';
 import { DataKeys } from '../../../enums';
 import { SmartDrive, SmartDriveException } from '../../../models';
 import { SmartDriveData } from '../../../namespaces';
-import { BluetoothService, SmartDriveKinveyService, SqliteService } from '../../../services';
-import { sentryBreadCrumb } from '../../../utils';
+import {
+  BluetoothService,
+  SmartDriveKinveyService,
+  SqliteService
+} from '../../../services';
+import {
+  checkFirmwareMetaData,
+  formatDateTime,
+  getCurrentFirmwareData,
+  sentryBreadCrumb
+} from '../../../utils';
 
 const ambientTheme = require('../../../scss/theme-ambient.css').toString();
 const defaultTheme = require('../../../scss/theme-default.css').toString();
-
-const dateLocales = {
-  da: require('date-fns/locale/da'),
-  de: require('date-fns/locale/de'),
-  en: require('date-fns/locale/en'),
-  es: require('date-fns/locale/es'),
-  fr: require('date-fns/locale/fr'),
-  it: require('date-fns/locale/it'),
-  ja: require('date-fns/locale/ja'),
-  ko: require('date-fns/locale/ko'),
-  nb: require('date-fns/locale/nb'),
-  nl: require('date-fns/locale/nl'),
-  nn: require('date-fns/locale/nb'),
-  zh: require('date-fns/locale/zh_cn')
-};
 
 export class UpdatesViewModel extends Observable {
   @Prop() updateProgressCircle: AnimatedCircle;
@@ -70,7 +65,6 @@ export class UpdatesViewModel extends Observable {
   private initialized: boolean = false;
   private wakeLock: any = null;
   private hasAppliedTheme: boolean = false;
-
   private _bluetoothService: BluetoothService;
   private _kinveyService: SmartDriveKinveyService;
   private _sqliteService: SqliteService;
@@ -100,7 +94,7 @@ export class UpdatesViewModel extends Observable {
       return this.wakeLock;
     } else {
       // initialize the wake lock here
-      const powerManager = application.android.context.getSystemService(
+      const powerManager = Application.android.context.getSystemService(
         android.content.Context.POWER_SERVICE
       ) as android.os.PowerManager;
       this.wakeLock = powerManager.newWakeLock(
@@ -127,7 +121,9 @@ export class UpdatesViewModel extends Observable {
     sentryBreadCrumb('Time updates registered.');
 
     // load savedSmartDriveAddress from settings / memory
-    const savedSDAddr = appSettings.getString(DataKeys.SD_SAVED_ADDRESS);
+    const savedSDAddr = ApplicationSettings.getString(
+      DataKeys.SD_SAVED_ADDRESS
+    );
     if (savedSDAddr && savedSDAddr.length) {
       this.updateSmartDrive(savedSDAddr);
     }
@@ -216,7 +212,9 @@ export class UpdatesViewModel extends Observable {
     // sentryBreadCrumb('asking for permissions');
     // determine if we have shown the permissions request
     const hasShownRequest =
-      appSettings.getBoolean(DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST) || false;
+      ApplicationSettings.getBoolean(
+        DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST
+      ) || false;
     // will throw an error if permissions are denied, else will
     // return either true or a permissions object detailing all the
     // granted permissions. The error thrown details which
@@ -226,13 +224,16 @@ export class UpdatesViewModel extends Observable {
     const neededPermissions = this.permissionsNeeded.filter(
       p =>
         !hasPermission(p) &&
-        (application.android.foregroundActivity.shouldShowRequestPermissionRationale(
+        (Application.android.foregroundActivity.shouldShowRequestPermissionRationale(
           p
         ) ||
           !hasShownRequest)
     );
     // update the has-shown-request
-    appSettings.setBoolean(DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST, true);
+    ApplicationSettings.setBoolean(
+      DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST,
+      true
+    );
     const reasoning = {
       [android.Manifest.permission.ACCESS_COARSE_LOCATION]: L(
         'permissions-reasons.coarse-location'
@@ -268,9 +269,17 @@ export class UpdatesViewModel extends Observable {
 
   async getSmartDriveVersion() {
     return new Promise((resolve, reject) => {
+      sentryBreadCrumb('getting smartdrive version');
       if (this.smartDrive && this.smartDrive.hasVersionInfo()) {
         // if we've already talked to this SD and gotten its
         // version info then we can just resolve
+        sentryBreadCrumb(
+          'Already have smartdrive version:' +
+          '\n\tmcu: ' +
+          this.smartDrive.mcu_version_string +
+          '\n\tble: ' +
+          this.smartDrive.ble_version_string
+        );
         resolve(true);
         return;
       } else {
@@ -291,6 +300,13 @@ export class UpdatesViewModel extends Observable {
         const onVersion = () => {
           remove();
           clearTimeout(connectTimeoutId);
+          sentryBreadCrumb(
+            'Got smartdrive version:' +
+            '\n\tmcu: ' +
+            this.smartDrive.mcu_version_string +
+            '\n\tble: ' +
+            this.smartDrive.ble_version_string
+          );
           resolve();
         };
         this.smartDrive.on(SmartDrive.smartdrive_mcu_version_event, onVersion);
@@ -323,8 +339,16 @@ export class UpdatesViewModel extends Observable {
     const serialNumberPermission = android.Manifest.permission.READ_PHONE_STATE;
     if (!hasPermission(serialNumberPermission)) return;
     this.watchSerialNumber = android.os.Build.getSerial();
-    appSettings.setString(DataKeys.WATCH_SERIAL_NUMBER, this.watchSerialNumber);
+    ApplicationSettings.setString(
+      DataKeys.WATCH_SERIAL_NUMBER,
+      this.watchSerialNumber
+    );
     this._kinveyService.watch_serial_number = this.watchSerialNumber;
+
+    // Set the Sentry Context Tags
+    Sentry.setContextTags({
+      watch_serial_number: this.watchSerialNumber
+    });
   }
 
   registerForSmartDriveEvents() {
@@ -388,6 +412,8 @@ export class UpdatesViewModel extends Observable {
     this.unregisterForSmartDriveEvents();
     if (this.smartDrive) {
       this.smartDrive.cancelOTA();
+      sentryBreadCrumb('Updating saved SD state');
+      this.smartDrive.saveStateToLS();
     }
     this.unregisterForTimeUpdates();
     this._closeCallback();
@@ -455,7 +481,9 @@ export class UpdatesViewModel extends Observable {
         );
       }
     }
-
+    if (state !== this.smartDriveOtaState) {
+      sentryBreadCrumb('SmartDrive OTA Status, new state: ' + state);
+    }
     this.smartDriveOtaState = state;
   }
 
@@ -468,64 +496,35 @@ export class UpdatesViewModel extends Observable {
     this.smartDriveOtaState = L('updates.checking-for-updates');
     // @ts-ignore
     this.updateProgressCircle.spin();
-    try {
-      this.currentVersions = await this.getFirmwareData();
-    } catch (err) {
+    this.currentVersions = await getCurrentFirmwareData().catch(err => {
       return this.updateError(err, L('updates.errors.loading'), `${err}`);
-    }
+    });
     sentryBreadCrumb(
       `Current FW Versions: ${JSON.stringify(this.currentVersions, null, 2)}`
     );
-    let response = null;
-    const query = {
-      $or: [
-        { _filename: 'SmartDriveBLE.ota' },
-        { _filename: 'SmartDriveMCU.ota' }
-      ],
-      firmware_file: true
-    };
-    try {
-      // NOTE: This is the only kinvey service function which *DOES
-      // NOT REQUIRE USER AUTHENTICATION*, so we don't need to check
-      // this._kinveyService.hasAuth()
-      response = await this._kinveyService.getFile(undefined, query);
-    } catch (err) {
-      const errorMessage = `
-      ${L('updates.errors.connection-failure')}\n\n${err}
-      `;
-      return this.updateError(err, L('updates.errors.getting'), errorMessage);
-    }
-    // Now that we have the metadata, check to see if we already
-    // have the most up to date firmware files and download them
-    // if we don't
+
+    const response = await this._kinveyService
+      .downloadFirmwareFiles()
+      .catch(err => {
+        const errorMessage = `${L(
+          'updates.errors.connection-failure'
+        )}\n\n${err}`;
+        return this.updateError(err, L('updates.errors.getting'), errorMessage);
+      });
+
+    // Now that we have the metadata, check to see if we already have
+    // the most up to date firmware files and download them if we don't
     const mds = response;
-    sentryBreadCrumb('mds: ' + mds);
-    let promises = [];
-    const files = [];
-    // get the max firmware version for each firmware
-    const reducedMaxes = mds.reduce((maxes, md) => {
-      const v = SmartDriveData.Firmwares.versionStringToByte(md['version']);
-      const fwName = md['_filename'];
-      if (!maxes[fwName]) maxes[fwName] = 0;
-      maxes[fwName] = Math.max(v, maxes[fwName]);
-      return maxes;
-    }, {});
-    // filter only the firmwares that we don't have or that are newer
-    // than the ones we have (and are the max)
-    const fileMetaDatas = mds.filter(f => {
-      const v = SmartDriveData.Firmwares.versionStringToByte(f['version']);
-      const fwName = f['_filename'];
-      const current = this.currentVersions[fwName];
-      const currentVersion = current && current.version;
-      const isMax = v === reducedMaxes[fwName];
-      return isMax && (!current || v > currentVersion);
-    });
+    const fileMetaDatas = await checkFirmwareMetaData(mds, this.currentVersions);
+
     // @ts-ignore
     this.updateProgressCircle.stopSpinning();
     sentryBreadCrumb(
       'Got file metadatas, length: ' + (fileMetaDatas && fileMetaDatas.length)
     );
+
     // do we need to download any firmware files?
+    const files: any = [];
     if (fileMetaDatas && fileMetaDatas.length) {
       sentryBreadCrumb('downloading firmwares');
       // update progress text
@@ -549,31 +548,30 @@ export class UpdatesViewModel extends Observable {
         );
       }
     }
-    // Now that we have the files, write them to disk and update
-    // our local metadata
-    promises = [];
+
+    // Now that we have the files, write them to disk and update our local metadata
+    let promises = [];
     if (files && files.length) {
       sentryBreadCrumb('updating firmware data');
-      promises = files.filter(f => f).map(this.updateFirmwareData.bind(this));
+      promises = files
+        .filter(f => f)
+        .map(this.updateFirmwareData.bind(this));
     }
+
     try {
       await Promise.all(promises);
     } catch (err) {
       return this.updateError(err, L('updates.errors.saving'), `${err}`);
     }
-    // Now let's connect to the SD to make sure that we get it's
-    // version information
-    try {
-      sentryBreadCrumb('getting smartdrive version');
-      await this.getSmartDriveVersion();
-    } catch (err) {
+
+    // Now let's connect to the SD to make sure that we get it's version information
+    await this.getSmartDriveVersion().catch(err => {
       sentryBreadCrumb('Connecting to smartdrive failed');
       return this.updateError(err, L('updates.errors.connecting'), err);
-    }
-    // Now perform the SmartDrive updates if we need to
+    });
 
-    // now see what we need to do with the data
-    sentryBreadCrumb('Finished downloading updates.');
+    // Now perform the SmartDrive updates if we need to
+    sentryBreadCrumb('Finished checking for updates');
     this.performSmartDriveWirelessUpdate();
   }
 
@@ -594,55 +592,81 @@ export class UpdatesViewModel extends Observable {
     const version = SmartDriveData.Firmwares.versionByteToString(
       Math.max(mcuVersion, bleVersion)
     );
-    sentryBreadCrumb('got version: ' + version);
-    // show dialog to user informing them of the version number and changes
-    const changes = Object.keys(this.currentVersions).map(
-      k => this.currentVersions[k].changes
-    );
-    // Log.D('got changes', changes);
-    await alert({
-      title: L('updates.version') + ' ' + version,
-      message: L('updates.changes') + '\n\n' + flatten(changes).join('\n\n'),
-      okButtonText: L('buttons.ok')
-    });
-    sentryBreadCrumb('Beginning SmartDrive update');
-
-    const bleFw = new Uint8Array(
-      this.currentVersions['SmartDriveBLE.ota'].data
-    );
-    const mcuFw = new Uint8Array(
-      this.currentVersions['SmartDriveMCU.ota'].data
-    );
-    sentryBreadCrumb(`mcu length: ${mcuFw.length}`);
-    sentryBreadCrumb(`ble length: ${bleFw.length}`);
-    // maintain CPU resources while updating
-    this.maintainCPU();
-    // smartdrive needs to update
-    let otaStatus = '';
-    try {
-      this._otaStarted = true;
-      otaStatus = await this.smartDrive.performOTA(
-        bleFw,
-        mcuFw,
-        bleVersion,
-        mcuVersion,
-        300 * 1000
+    const versionString = [mcuVersion, bleVersion]
+      .map(SmartDriveData.Firmwares.versionByteToString)
+      .join(', ');
+    sentryBreadCrumb('got curent firmware versions: ' + versionString);
+    // do we need to update?
+    const isUpToDate =
+      this.smartDrive.isMcuUpToDate(mcuVersion) &&
+      this.smartDrive.isBleUpToDate(bleVersion);
+    if (isUpToDate) {
+      this.smartDriveOtaState = L('updates.up-to-date');
+      // let the user know early if they are already up to date!
+      await alert({
+        title: L('updates.status'),
+        message: L('updates.up-to-date'),
+        okButtonText: L('buttons.ok')
+      });
+      // now close the updates page
+      this.closeModal();
+    } else {
+      // show dialog to user informing them of the version number and changes
+      const changes = Object.keys(this.currentVersions).map(
+        k => this.currentVersions[k].changes
       );
-      this._otaStarted = false;
-      sentryBreadCrumb('"' + otaStatus + '" ' + typeof otaStatus);
-      if (otaStatus === 'updates.canceled') {
-        this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
-          label: L('ota.action.close'),
-          func: this._debouncedCloseModal.bind(this),
-          action: 'ota.action.close',
-          class: 'action-close'
-        });
+      // Log.D('got changes', changes);
+      await alert({
+        title: L('updates.version') + ' ' + version,
+        message: L('updates.changes') + '\n\n' + flatten(changes).join('\n\n'),
+        okButtonText: L('buttons.ok')
+      });
+      sentryBreadCrumb('Beginning SmartDrive update');
+
+      const bleFw = new Uint8Array(
+        this.currentVersions['SmartDriveBLE.ota'].data
+      );
+      const mcuFw = new Uint8Array(
+        this.currentVersions['SmartDriveMCU.ota'].data
+      );
+      sentryBreadCrumb(`mcu length: ${mcuFw.length}`);
+      sentryBreadCrumb(`ble length: ${bleFw.length}`);
+      // maintain CPU resources while updating
+      this.maintainCPU();
+      // smartdrive needs to update
+      let otaStatus = '';
+      try {
+        this._otaStarted = true;
+        this.registerForSmartDriveEvents();
+        otaStatus = await this.smartDrive.performOTA(
+          bleFw,
+          mcuFw,
+          bleVersion,
+          mcuVersion,
+          300 * 1000
+        );
+        this._otaStarted = false;
+        sentryBreadCrumb(
+          'ota status at end: "' + otaStatus + '" type=' + typeof otaStatus
+        );
+        if (otaStatus === 'updates.canceled') {
+          this.smartDriveOtaActions.splice(
+            0,
+            this.smartDriveOtaActions.length,
+            {
+              label: L('ota.action.close'),
+              func: this._debouncedCloseModal.bind(this),
+              action: 'ota.action.close',
+              class: 'action-close'
+            }
+          );
+        }
+      } catch (err) {
+        return this.updateError(err, L('updates.failed'), `${err}`);
       }
-    } catch (err) {
-      return this.updateError(err, L('updates.failed'), `${err}`);
+      const updateMsg = L(otaStatus);
+      await this.stopUpdates(updateMsg, false);
     }
-    const updateMsg = L(otaStatus);
-    await this.stopUpdates(updateMsg, false);
   }
 
   async updateFirmwareData(f: any) {
@@ -826,44 +850,11 @@ export class UpdatesViewModel extends Observable {
     }
   }
 
-  async getFirmwareData() {
-    sentryBreadCrumb('Getting firmware data');
-    try {
-      const objs = await this._sqliteService.getAll({
-        tableName: SmartDriveData.Firmwares.TableName
-      });
-      Log.D('Done getting objects from SqliteService');
-      // @ts-ignore
-      const mds = objs.map(o => SmartDriveData.Firmwares.loadFirmware(...o));
-      // make the metadata
-      return mds.reduce((data, md) => {
-        const fname = md[SmartDriveData.Firmwares.FileName];
-        const blob = SmartDriveData.Firmwares.loadFromFileSystem({
-          filename: fname
-        });
-        if (blob && blob.length) {
-          data[md[SmartDriveData.Firmwares.FirmwareName]] = {
-            version: md[SmartDriveData.Firmwares.VersionName],
-            filename: fname,
-            id: md[SmartDriveData.Firmwares.IdName],
-            changes: md[SmartDriveData.Firmwares.ChangesName],
-            data: blob
-          };
-        }
-        return data;
-      }, {});
-    } catch (err) {
-      sentryBreadCrumb('Could not get firmware metadata: ' + err);
-      Sentry.captureException(err);
-      return {};
-    }
-  }
-
   unregisterForTimeUpdates() {
-    application.android.unregisterBroadcastReceiver(
+    Application.android.unregisterBroadcastReceiver(
       android.content.Intent.ACTION_TIME_TICK
     );
-    application.android.unregisterBroadcastReceiver(
+    Application.android.unregisterBroadcastReceiver(
       android.content.Intent.ACTION_TIMEZONE_CHANGED
     );
   }
@@ -871,34 +862,19 @@ export class UpdatesViewModel extends Observable {
   registerForTimeUpdates() {
     // monitor the clock / system time for display and logging:
     this.updateTimeDisplay();
-    application.android.registerBroadcastReceiver(
+    Application.android.registerBroadcastReceiver(
       android.content.Intent.ACTION_TIME_TICK,
       this.timeReceiverCallback
     );
-    application.android.registerBroadcastReceiver(
+    Application.android.registerBroadcastReceiver(
       android.content.Intent.ACTION_TIMEZONE_CHANGED,
       this.timeReceiverCallback
     );
   }
 
-  _format(d: Date, fmt: string) {
-    return format(d, fmt, {
-      locale: dateLocales[getDefaultLang()] || dateLocales['en']
-    });
-  }
-
   updateTimeDisplay() {
-    const now = new Date();
-    const context = androidUtils.getApplicationContext();
-    const is24HourFormat = android.text.format.DateFormat.is24HourFormat(
-      context
-    );
-    if (is24HourFormat) {
-      this.currentTime = this._format(now, 'HH:mm');
-      this.currentTimeMeridiem = ''; // in 24 hour format we don't need AM/PM
-    } else {
-      this.currentTime = this._format(now, 'h:mm');
-      this.currentTimeMeridiem = this._format(now, 'A');
-    }
+    const datetime = formatDateTime(new Date());
+    this.currentTime = datetime.time;
+    this.currentTimeMeridiem = datetime.timeMeridiem;
   }
 }

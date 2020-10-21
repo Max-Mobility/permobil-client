@@ -1,6 +1,9 @@
 import { File, knownFolders, path } from '@nativescript/core';
 import { eachDay, format, subDays } from 'date-fns';
-import { DownloadProgress } from 'nativescript-download-progress';
+import {
+  DownloadProgress,
+  RequestOptions
+} from 'nativescript-download-progress';
 
 export namespace SmartDriveData {
   export namespace Info {
@@ -326,8 +329,12 @@ export namespace SmartDriveData {
       console.log('Downloading FW update', f['_filename']);
 
       const download = new DownloadProgress();
+      const requestOptions: RequestOptions = {
+        method: 'GET',
+        headers: {}
+      };
       return download
-        .downloadFile(url)
+        .downloadFile(url, requestOptions)
         .then(file => {
           const fileData = File.fromPath(file.path).readSync();
           return {

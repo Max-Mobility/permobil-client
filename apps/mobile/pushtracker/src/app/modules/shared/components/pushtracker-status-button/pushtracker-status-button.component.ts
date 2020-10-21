@@ -1,11 +1,16 @@
 import { Component, NgZone } from '@angular/core';
 import { registerElement } from '@nativescript/angular';
-import { ImageSource } from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
-import { alert } from '@nativescript/core/ui/dialogs';
+import {
+  ApplicationSettings as appSettings,
+  Dialogs,
+  ImageSource
+} from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
-import { BluetoothService, PushTrackerState } from '../../../../services/bluetooth.service';
+import {
+  BluetoothService,
+  PushTrackerState
+} from '../../../../services/bluetooth.service';
 
 @Component({
   selector: 'pushtracker-status-button',
@@ -84,7 +89,7 @@ export class PushTrackerStatusButtonComponent {
       'profile-settings.watch-status-alert-title'
     );
     const msg = this.getMessage();
-    alert({
+    Dialogs.alert({
       title: title,
       message: msg,
       okButtonText: this._translateService.instant('dialogs.ok')
@@ -110,13 +115,11 @@ export class PushTrackerStatusButtonComponent {
             msg += '\n\n';
             msg += `${pt.address}`;
             msg += '\n';
-            msg += this._translateService.instant(
-              'pt-battery'
-            ) + `: ${ptBattery}`;
+            msg +=
+              this._translateService.instant('pt-battery') + `: ${ptBattery}`;
             msg += '\n';
-            msg += this._translateService.instant(
-              'sd-battery'
-            ) + `: ${sdBattery}`;
+            msg +=
+              this._translateService.instant('sd-battery') + `: ${sdBattery}`;
             break;
           default:
             break;
@@ -129,7 +132,7 @@ export class PushTrackerStatusButtonComponent {
   private getMessage() {
     let msg = this._translateService.instant(
       'profile-settings.watch-status-alert-message.' +
-      this._getTranslationKeyForPushTrackerStatus()
+        this._getTranslationKeyForPushTrackerStatus()
     );
     msg += this.getBatteryMessage(false);
     return msg;

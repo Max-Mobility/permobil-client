@@ -1,14 +1,22 @@
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
-import { EventData, Observable, Page, ShowModalOptions, View, ViewBase } from '@nativescript/core';
-import * as application from '@nativescript/core/application';
-import * as appSettings from '@nativescript/core/application-settings';
-import { screen } from '@nativescript/core/platform';
-import { setTimeout } from '@nativescript/core/timer';
-import { alert } from '@nativescript/core/ui/dialogs';
-import { ad as androidUtils } from '@nativescript/core/utils/utils';
+import {
+  AndroidActivityEventData,
+  AndroidApplication,
+  Application,
+  ApplicationEventData,
+  ApplicationSettings,
+  EventData,
+  Observable,
+  Page,
+  Screen,
+  ShowModalOptions,
+  Utils,
+  View,
+  ViewBase
+} from '@nativescript/core';
 import { Log } from '@permobil/core';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';
-import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
+import { closestIndexTo, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import * as LS from 'nativescript-localstorage';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
@@ -18,22 +26,14 @@ import { DataBroadcastReceiver } from '../../data-broadcast-receiver';
 import { DataKeys } from '../../enums';
 import { DailyActivity, Profile } from '../../namespaces';
 import { PushTrackerKinveyService, SqliteService } from '../../services';
-import { getSerialNumber, loadSerialNumber, saveSerialNumber, sentryBreadCrumb } from '../../utils';
-
-const dateLocales = {
-  da: require('date-fns/locale/da'),
-  de: require('date-fns/locale/de'),
-  en: require('date-fns/locale/en'),
-  es: require('date-fns/locale/es'),
-  fr: require('date-fns/locale/fr'),
-  it: require('date-fns/locale/it'),
-  ja: require('date-fns/locale/ja'),
-  ko: require('date-fns/locale/ko'),
-  nb: require('date-fns/locale/nb'),
-  nl: require('date-fns/locale/nl'),
-  nn: require('date-fns/locale/nb'),
-  zh: require('date-fns/locale/zh_cn')
-};
+import {
+  formatDateTime,
+  getSerialNumber,
+  loadSerialNumber,
+  saveSerialNumber,
+  sentryBreadCrumb,
+  setupAllLocalNotifications
+} from '../../utils';
 
 const ambientTheme = require('../../scss/theme-ambient.scss');
 const defaultTheme = require('../../scss/theme-default.scss');
@@ -159,6 +159,7 @@ export class MainViewModel extends Observable {
     try {
       await this._init();
       Log.D('init finished in the main-view-model');
+      setupAllLocalNotifications();
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
@@ -198,10 +199,10 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(this.ANDROID_MARKET_SMARTDRIVE_URI));
-    application.android.foregroundActivity.startActivity(intent);
+    Application.android.foregroundActivity.startActivity(intent);
   }
 
   async onSettingsTap(args) {
@@ -245,9 +246,8 @@ export class MainViewModel extends Observable {
       },
       closeCallback: () => {
         this._showingModal = false;
-        // we dont do anything with the about to return anything
       },
-      animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
+      animated: false,
       fullscreen: true
     };
     this._showingModal = true;
@@ -369,15 +369,15 @@ export class MainViewModel extends Observable {
     const plottedDates = DailyActivity.Info.getPastDates(6);
     let distanceData = plottedDates.map(d => {
       return {
-        day: this.format(new Date(d), 'dd'),
+        day: formatDateTime(new Date(d), 'EEE').formatted.slice(0, 2),
         value: 0
       };
     });
-    const today = this.format(new Date(), 'YYYY/MM/DD');
+    const today = formatDateTime(new Date(), 'yyyy/MM/dd').formatted;
     let maxDist = 0;
     let currentDist = 0;
     try {
-      const cursor = androidUtils
+      const cursor = Utils.android
         .getApplicationContext()
         .getContentResolver()
         .query(
@@ -405,15 +405,15 @@ export class MainViewModel extends Observable {
         distanceData = plottedDates.map(d => {
           const date = new Date(d);
           let value = 0;
-          const dateKey = this.format(date, 'YYYY/MM/DD');
+          const dateKey = formatDateTime(date, 'yyyy/MM/dd').formatted;
           if (data[dateKey] !== undefined && data[dateKey].total > 0) {
             // for now we're using total
-            value = (100.0 * data[dateKey].total) / maxDist;
+            value = Math.round((100.0 * data[dateKey].total) / maxDist);
             // @ts-ignore
             if (value) value += '%';
           }
           return {
-            day: this.format(date, 'dd'),
+            day: formatDateTime(date, 'EEE').formatted.slice(0, 2),
             value: value
           };
         });
@@ -437,7 +437,7 @@ export class MainViewModel extends Observable {
 
   private _loadCurrentActivityData() {
     const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-    const sharedPreferences = androidUtils
+    const sharedPreferences = Utils.android
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0);
     this.currentPushCount = sharedPreferences.getInt(
@@ -469,7 +469,7 @@ export class MainViewModel extends Observable {
   private _registerForServiceDataUpdates() {
     sentryBreadCrumb('Registering for service data updates.');
     this.serviceDataReceiver.onReceiveFunction = this._onServiceData.bind(this);
-    const context = androidUtils.getApplicationContext();
+    const context = Utils.android.getApplicationContext();
     androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(
       context
     ).registerReceiver(
@@ -505,7 +505,7 @@ export class MainViewModel extends Observable {
     Log.D('Got auth', userId, token);
     // now save it to datastore for service to use
     const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-    const sharedPreferences = androidUtils
+    const sharedPreferences = Utils.android
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0);
     const editor = sharedPreferences.edit();
@@ -519,7 +519,7 @@ export class MainViewModel extends Observable {
     );
     editor.commit();
     try {
-      const contentResolver = androidUtils
+      const contentResolver = Utils.android
         .getApplicationContext()
         .getContentResolver();
       // write token to content provider for smartdrive wear
@@ -599,7 +599,7 @@ export class MainViewModel extends Observable {
     try {
       sentryBreadCrumb('Sending intent to Activity Service.');
       const intent = new android.content.Intent();
-      const context = application.android.context;
+      const context = Application.android.context;
       intent.setClassName(context, 'com.permobil.pushtracker.ActivityService');
       intent.setAction('ACTION_START_SERVICE');
       // The startService() method now throws an IllegalStateException if an app targeting Android 8.0 tries to use that method in a situation when it isn't permitted to create background services.
@@ -630,7 +630,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => {});
+        await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
         // and return true letting the caller know we got the permissions
@@ -655,36 +655,49 @@ export class MainViewModel extends Observable {
    */
   private _registerAppEventHandlers() {
     // handle ambient mode callbacks
-    application.on('enterAmbient', () => {
+    Application.on('enterAmbient', () => {
       sentryBreadCrumb('*** enterAmbient ***');
       this._applyTheme('ambient');
     });
 
-    application.on('updateAmbient', () => {});
+    Application.on('updateAmbient', () => { });
 
-    application.on('exitAmbient', () => {
+    Application.on('exitAmbient', () => {
       sentryBreadCrumb('*** exitAmbient ***');
       this._applyTheme('default');
+      this._androidResumeEventHandlers();
     });
 
     // Activity lifecycle event handlers
-    application.on(application.exitEvent, async () => {
+    Application.on(Application.exitEvent, async () => {
       sentryBreadCrumb('*** appExit ***');
       await WearOsComms.stopWatch();
     });
-    application.on(
-      application.lowMemoryEvent,
-      (args: application.ApplicationEventData) => {
-        sentryBreadCrumb('*** appLowMemory ***');
+
+    Application.on(Application.lowMemoryEvent, (args: ApplicationEventData) => {
+      sentryBreadCrumb('*** appLowMemory ***');
+    });
+
+    Application.android.on(
+      AndroidApplication.activityResumedEvent,
+      (args: AndroidActivityEventData) => {
+        sentryBreadCrumb('*** android app resume ***');
+        this._androidResumeEventHandlers();
+      }
+    );
+
+    Application.android.on(
+      AndroidApplication.activityPausedEvent,
+      (args: AndroidActivityEventData) => {
+        sentryBreadCrumb('*** android app paused ***');
       }
     );
   }
 
-  private format(d: Date, fmt: string) {
-    return format(d, fmt, {
-      // THIS IS FOR PRODCUTION RELEASE ONLY - at launch PT.M will only support english
-      locale: dateLocales['en'] // getDefaultLang()] || dateLocales['en']
-    });
+  private _androidResumeEventHandlers() {
+    this._loadCurrentActivityData();
+    this._updateGoalDisplay();
+    this._registerForServiceDataUpdates();
   }
 
   private showSynchronizing() {
@@ -737,8 +750,8 @@ export class MainViewModel extends Observable {
       const userEmail = userData.username;
       const userId = userData._id;
       // set the info for display
-      appSettings.setString(DataKeys.USER_NAME, userName);
-      appSettings.setString(DataKeys.USER_EMAIL, userEmail);
+      ApplicationSettings.setString(DataKeys.USER_NAME, userName);
+      ApplicationSettings.setString(DataKeys.USER_EMAIL, userEmail);
       // set the info for sentry
       Sentry.setContextUser({
         id: userId,
@@ -814,7 +827,7 @@ export class MainViewModel extends Observable {
 
   private async _showConfirmation(animationType: number, message?: string) {
     const intent = new android.content.Intent(
-      androidUtils.getApplicationContext(),
+      Utils.android.getApplicationContext(),
       android.support.wearable.activity.ConfirmationActivity.class
     );
     intent.putExtra(
@@ -829,8 +842,8 @@ export class MainViewModel extends Observable {
       );
     }
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
-    application.android.foregroundActivity.startActivity(intent);
-    application.android.foregroundActivity.overridePendingTransition(0, 0);
+    Application.android.foregroundActivity.startActivity(intent);
+    Application.android.foregroundActivity.overridePendingTransition(0, 0);
   }
 
   private _registerForTimeUpdates() {
@@ -847,11 +860,11 @@ export class MainViewModel extends Observable {
         // Sentry.captureException(error);
       }
     };
-    application.android.registerBroadcastReceiver(
+    Application.android.registerBroadcastReceiver(
       android.content.Intent.ACTION_TIME_TICK,
       timeReceiverCallback
     );
-    application.android.registerBroadcastReceiver(
+    Application.android.registerBroadcastReceiver(
       android.content.Intent.ACTION_TIMEZONE_CHANGED,
       timeReceiverCallback
     );
@@ -874,11 +887,11 @@ export class MainViewModel extends Observable {
         return obj.coast_time_avg > max ? obj.coast_time_avg : max;
       }, 0);
       const coastData = activityData.map(e => {
-        let value = (e.coast_time_avg * 100.0) / (maxCoast || 1);
+        let value = Math.round((e.coast_time_avg * 100.0) / (maxCoast || 1));
         // @ts-ignore
         if (value) value += '%';
         return {
-          day: this.format(new Date(e.date), 'dd'),
+          day: formatDateTime(new Date(e.date), 'EEE').formatted.slice(0, 2),
           value: value
         };
       });
@@ -938,7 +951,7 @@ export class MainViewModel extends Observable {
     this.currentPushCountDisplay = this.currentPushCount.toFixed(0);
   }
 
-  private _updateSpeedDisplay() {}
+  private _updateSpeedDisplay() { }
 
   /**
    * SmartDrive Associated App Functions
@@ -946,7 +959,7 @@ export class MainViewModel extends Observable {
   private _checkPackageInstalled(packageName: string) {
     let found = true;
     try {
-      application.android.context
+      Application.android.context
         .getPackageManager()
         .getPackageInfo(packageName, 0);
     } catch (err) {
@@ -1043,7 +1056,7 @@ export class MainViewModel extends Observable {
     let authorization = null;
     let userId = null;
     const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-    const sharedPreferences = androidUtils
+    const sharedPreferences = Utils.android
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0);
     const savedToken = sharedPreferences.getString(
@@ -1064,7 +1077,7 @@ export class MainViewModel extends Observable {
       // Mobile app
       Log.D('No authorization found in app settings!');
       try {
-        const contentResolver = androidUtils
+        const contentResolver = Utils.android
           .getApplicationContext()
           .getContentResolver();
         const authCursor = contentResolver.query(
@@ -1124,15 +1137,15 @@ export class MainViewModel extends Observable {
 
   private _setupInsetChin() {
     // https://developer.android.com/reference/android/content/res/Configuration.htm
-    const androidConfig = androidUtils
+    const androidConfig = Utils.android
       .getApplicationContext()
       .getResources()
       .getConfiguration();
     const isCircleWatch = androidConfig.isScreenRound();
-    const widthPixels = screen.mainScreen.widthPixels;
-    const heightPixels = screen.mainScreen.heightPixels;
-    const widthDIPs = screen.mainScreen.widthDIPs;
-    const heightDIPs = screen.mainScreen.heightDIPs;
+    const widthPixels = Screen.mainScreen.widthPixels;
+    const heightPixels = Screen.mainScreen.heightPixels;
+    const widthDIPs = Screen.mainScreen.widthDIPs;
+    const heightDIPs = Screen.mainScreen.heightDIPs;
     this.screenWidth = widthDIPs;
     this.screenHeight = heightDIPs;
     if (isCircleWatch) {

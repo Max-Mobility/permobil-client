@@ -1,8 +1,16 @@
 import { Injectable } from '@angular/core';
-import { File, knownFolders, Observable, path } from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
 // for querying kinvey for translation files
-import { Files as KinveyFiles, Query as KinveyQuery } from 'kinvey-nativescript-sdk';
+import {
+  Files as KinveyFiles,
+  Query as KinveyQuery
+} from '@bradmartin/kinvey-nativescript-sdk';
+import {
+  ApplicationSettings,
+  File,
+  knownFolders,
+  Observable,
+  path
+} from '@nativescript/core';
 import { DownloadProgress } from 'nativescript-download-progress';
 import { LoggingService } from './logging.service';
 
@@ -105,7 +113,7 @@ export class TranslationService extends Observable {
       }
 
       // save the metadata to app settings
-      appSettings.setString(
+      ApplicationSettings.setString(
         TranslationService.CURRENT_VERSIONS_KEY,
         JSON.stringify(this.currentVersions)
       );
@@ -121,7 +129,10 @@ export class TranslationService extends Observable {
     let versions = {};
     try {
       versions = JSON.parse(
-        appSettings.getString(TranslationService.CURRENT_VERSIONS_KEY, '{}')
+        ApplicationSettings.getString(
+          TranslationService.CURRENT_VERSIONS_KEY,
+          '{}'
+        )
       );
     } catch (err) {}
     const objs = Object.values(versions);

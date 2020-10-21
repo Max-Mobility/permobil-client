@@ -1,17 +1,18 @@
 import { Injectable } from '@angular/core';
 import {
-  DataStoreType as DataStoreType,
   DataStore as KinveyDataStore,
+  DataStoreType,
   Query as KinveyQuery,
   User as KinveyUser
-} from 'kinvey-nativescript-sdk';
+} from '@bradmartin/kinvey-nativescript-sdk';
 import { LoggingService } from './logging.service';
-import { BehaviorSubject } from 'rxjs';
-import { connectionType, getConnectionType } from '@nativescript/core/connectivity';
 
 @Injectable()
 export class SmartDriveErrorsService {
-  private datastore = KinveyDataStore.collection('DailyPushTrackerErrors', DataStoreType.Sync);
+  private datastore = KinveyDataStore.collection(
+    'DailyPushTrackerErrors',
+    DataStoreType.Sync
+  );
 
   constructor(private _logService: LoggingService) {
     this.reset();
@@ -33,18 +34,21 @@ export class SmartDriveErrorsService {
 
   async _query(query: KinveyQuery): Promise<any[]> {
     return new Promise((resolve, reject) => {
-      this.datastore.find(query)
-        .subscribe((data: any[]) => {
+      this.datastore.find(query).subscribe(
+        (data: any[]) => {
           resolve(data);
-        }, (err) => {
+        },
+        err => {
           console.error('\n', 'error finding error by query', err);
           reject(err);
-        }, () => {
+        },
+        () => {
           // this seems to be called right at the very end - after
           // we've gotten data, so this resolve will have been
           // superceded by the resolve(data) above
           resolve([]);
-        });
+        }
+      );
     });
   }
 
@@ -62,24 +66,32 @@ export class SmartDriveErrorsService {
             const id = data[0]._id;
             dailyErrors._id = id;
             // Accumulate errors w/ saved info in DB
-            dailyErrors.num_battery_voltage_errors += data[0].num_battery_voltage_errors || 0;
-            dailyErrors.num_over_current_errors += data[0].num_over_current_errors || 0;
-            dailyErrors.num_motor_phase_errors += data[0].num_motor_phase_errors || 0;
-            dailyErrors.num_gyro_range_errors += data[0].num_gyro_range_errors || 0;
-            dailyErrors.num_over_temperature_errors += data[0].num_over_temperature_errors || 0;
-            dailyErrors.num_ble_disconnect_errors += data[0].num_ble_disconnect_errors || 0;
+            dailyErrors.num_battery_voltage_errors +=
+              data[0].num_battery_voltage_errors || 0;
+            dailyErrors.num_over_current_errors +=
+              data[0].num_over_current_errors || 0;
+            dailyErrors.num_motor_phase_errors +=
+              data[0].num_motor_phase_errors || 0;
+            dailyErrors.num_gyro_range_errors +=
+              data[0].num_gyro_range_errors || 0;
+            dailyErrors.num_over_temperature_errors +=
+              data[0].num_over_temperature_errors || 0;
+            dailyErrors.num_ble_disconnect_errors +=
+              data[0].num_ble_disconnect_errors || 0;
           }
-          return this.datastore.save(dailyErrors)
-            .then((_) => {
-              return true;
-            });
+          return this.datastore.save(dailyErrors).then(_ => {
+            return true;
+          });
         })
-        .catch((error) => {
+        .catch(error => {
           this._logService.logException(error);
           return false;
         });
     } catch (err) {
-      this._logService.logBreadCrumb(SmartDriveErrorsService.name, 'Failed to save daily errors from pushtracker in Kinvey');
+      this._logService.logBreadCrumb(
+        SmartDriveErrorsService.name,
+        'Failed to save daily errors from pushtracker in Kinvey'
+      );
       // his._logService.logException(err);
       return false;
     }
@@ -104,5 +116,4 @@ export class SmartDriveErrorsService {
       throw new Error('no active user');
     }
   }
-
 }

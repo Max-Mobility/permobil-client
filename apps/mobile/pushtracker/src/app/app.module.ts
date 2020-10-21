@@ -1,13 +1,20 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ModalDialogService, NativeScriptCommonModule, NativeScriptFormsModule, NativeScriptHttpClientModule, NativeScriptModule } from '@nativescript/angular';
+import { NativeScriptMaterialBottomSheetModule } from '@nativescript-community/ui-material-bottomsheet/angular';
+import {
+  ModalDialogService,
+  NativeScriptCommonModule,
+  NativeScriptFormsModule,
+  NativeScriptHttpClientModule,
+  NativeScriptModule
+} from '@nativescript/angular';
+import { NativeScriptAnimatedCircleModule } from '@nativescript/animated-circle/angular';
+import { NativeScriptDateTimePickerModule } from '@nativescript/datetimepicker/angular';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { PermobilCoreModule } from '@permobil/angular';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
-import { NativeScriptDateTimePickerModule } from 'nativescript-datetimepicker/angular';
-import { NativeScriptMaterialBottomSheetModule } from 'nativescript-material-bottomsheet/angular';
-import { NgRippleModule } from 'nativescript-ng-ripple';
 import { NativeScriptUICalendarModule } from 'nativescript-ui-calendar/angular';
 import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
+import { NgRippleModule } from 'nativescript-ripple/angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { COMPONENTS, ENTRY_COMPONENTS } from './modules';
@@ -31,10 +38,10 @@ export function createTranslateLoader() {
     NativeScriptModule,
     NativeScriptHttpClientModule,
     NativeScriptFormsModule,
+    NativeScriptAnimatedCircleModule,
     NativeScriptDateTimePickerModule,
     NativeScriptUICalendarModule,
     NativeScriptUIChartModule,
-    NgRippleModule,
     SharedModule,
     PermobilCoreModule,
     AppRoutingModule,
@@ -44,6 +51,7 @@ export function createTranslateLoader() {
         useFactory: createTranslateLoader
       }
     }),
+    NgRippleModule,
     // This will call the install method and inject a global service called BottomSheetService
     NativeScriptMaterialBottomSheetModule.forRoot()
   ],
@@ -60,4 +68,4 @@ export function createTranslateLoader() {
 /*
 Pass your application module to the bootstrapModule function located in main.ts to start your app
 */
-export class AppModule { }
+export class AppModule {}

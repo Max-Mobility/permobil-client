@@ -23,6 +23,7 @@
     "deny": "Neka",
     "disable": "Koppla från",
     "dismiss": "Avvisa",
+    "do-not-show-again": "Visa inte igen",
     "enable": "Aktivera",
     "ok": "OK"
   },
@@ -59,11 +60,13 @@
       "batteryvoltage": "[ERR: 001] SD Batterispänning",
       "bledisconnect": "[ERR: 007] Bluetooth koppling",
       "gyrorange": "[ERR: 005] SD Vinkel",
+      "motordriverfault": "[ERR: 008] SD-motorchip",
       "motorphases": "[ERR: 002] SD Motor",
       "otaunavailable": "[ERR: 006] Uppdateringar ej tillgängligt",
       "overcurrent": "[ERR: 003] SD Strömstegring",
       "overtemperature": "[ERR: 004] SD Överhettning"
     },
+    "load-more": "Ladda mer",
     "loading": "Laddning ...",
     "no-errors": "Inga SmartDrive  fel har registrerats eller tagits emot.",
     "title": "SmartDrive Felhistorik"
@@ -75,7 +78,7 @@
       "timeout": "Appanslutningen har gått ut."
     },
     "connect": "Det gick inte att ansluta till SmartDrive.",
-    "could-not-enable-tap-sensor": "Det gick inte att aktivea enhetens sensor.",
+    "could-not-enable-tap-sensor": "Det gick inte att aktivera enhetens sensor.",
     "downloading-translations": "Det gick inte att ladda ner de uppdaterade språkfilerna.",
     "getting-error": "Det gick inte att få  fram SmartDrive felet.",
     "must-wear-watch": "[Kontrollera för handled] Inställningen är aktiverad, därför måste klockan bäras för att styra din SmartDrive.",
@@ -91,20 +94,38 @@
     "title": "Meddelande",
     "too-many-smartdrives-found": "Flera SmartDrives hittade. Se till att det bara finns en SmartDrive på i närheten när du par-kopplar."
   },
-  "languages": {
-    "cs": "tjeck",
+  "language-list": {
+    "cs": "Tjeckiska",
     "da": "Danska",
     "de": "Tyska",
     "en": "Engelska",
     "es": "Spanska",
-    "fi": "finsk",
+    "fi": "Finska",
+    "fr": "Franska",
+    "it": "Italienska",
+    "ja": "Japanska",
+    "ko": "Koreanska",
+    "nb": "Norsk bokmål",
+    "nl": "Holländska",
+    "pl": "Polska",
+    "pt": "Portugisiska",
+    "sv": "Svenska",
+    "zh": "Kinesiska"
+  },
+  "languages": {
+    "cs": "tjeckiska",
+    "da": "Danska",
+    "de": "Tyska",
+    "en": "Engelska",
+    "es": "Spanska",
+    "fi": "Finska",
     "fr": "Franska",
     "it": "Italienska",
     "ja": "Japanska",
     "ko": "Koreanska",
     "nb": "Norska [bokmål]",
     "nl": "Holländska",
-    "pl": "putsa",
+    "pl": "polska",
     "pt": "portugisiska",
     "sv": "Svenska",
     "zh": "Kineiska [Traditionell]"
@@ -115,6 +136,42 @@
     "title": "SmartDrive MX2+ Meny",
     "training": "Knackträning",
     "updates": "Trådlösa uppdateringar"
+  },
+  "notifications": {
+    "accelerate-while-moving": "Öka din körhastighet medan du redan körr! Skjut på drivhjulet för att köra snabbare och knacka sedan en gång med din PushTracker. Håll SwitchControl intryckt för att öka hastigheten igen.",
+    "access-more-features": "Vill du ha mer information om din dagliga / veckovisa / månatliga körhistorik? Besök Permobils hemsida för att lära dig hur du får ut mesta möjliga av din SmartDrive och PushTracker!",
+    "channels": {
+      "maintenance": "Underhåll",
+      "personal-record": "Personlig historik",
+      "smartdrive": "SmartDrive"
+    },
+    "daily-distance-record": "Du gjorde det! Du uppnådde ett nytt personligt distansrekord på en dag. Fortsätt så!\n#ChooseToDoMore",
+    "odometer-records-part-one": "Att göra mer medan du håller dina axlar friska är vad det handlar om. Du har nu kört 30 km med din SmartDrive.",
+    "odometer-records-part-two": "Du har nu kört 50 km med din SmartDrive. #ChooseToDoMore",
+    "open-pt-wear": "Vill du veta mer om din dagliga aktivitet? Öppna PushTracker-appen för att börja se antalet pushar, körtid och distans som du har kört varje dag.",
+    "routine-maintenance": "Att hålla din utrustning ren hjälper den att hålla längre! Använd en fuktig svamp, ett milt rengöringsmedel och torka noggrant för att hålla din SmartDrive som ny! (Blötlägg eller doppa ej i vätska)",
+    "sc-light-indications": "Är du nyfiken på att de blinkande lamporna är på dina SwitchControl-knappar? Se användarhandboken eller Permobil YouTube-sidan för att ta reda på vad var och en betyder.",
+    "sd-clamp-check": "Dags att kontrollera din inställning! Se till att klämman eller fällramadaptern är rätt inställd. Se instruktionerna eller kontakta oss.",
+    "sd-e2-charging": "För maximal prestanda, börja varje dag med din SmartDrive fulladdad. Se till att du håller den laddad över 25%, speciellt om du inte ska använda den under en längre tid. Kontrollera din användarhandbok eller kontakta Permobil för mer information.",
+    "sd-roller-check": "Kontrollera dina rullar. Ser du platta fläckar? Är de svåra att snurra på? Kontakta Permobil idag för att diskutera.",
+    "switch-control-reminder": "SwitchControl-knapparna ger dig ett annat sätt att manövrera. Anslut dem direkt till SmartDrive-laddningsporten (ingen Bluetooth krävs). Tryck på knappen för att köra, stanna eller ställa in din hastighet. Kontakta din leverantör eller Permobil support för mer information.",
+    "tire-pressure": "Däcktrycket påverkar kraftigt din förmåga att köra. Har du kollat det nyligen?",
+    "titles": {
+      "accelerate-while-moving": "Ökar farten",
+      "access-more-features": "Drivegenskaper och mer",
+      "daily-distance-record": "Daglig distanshistorik!",
+      "odometer-records": "Distanshistorik!",
+      "open-pt-wear": "Öppna PushTracker Wear-appen",
+      "routine-maintenance": "kontinuerligt underhåll",
+      "sc-light-indications": "Knappindikationer",
+      "sd-clamp-check": "Påminnelse om bilaga",
+      "sd-e2-charging": "SmartDrive & PushTracker laddning",
+      "sd-roller-check": "Påminnelse om att kontrollera rullarna",
+      "switch-control-reminder": "SwitchControl-knappar",
+      "tire-pressure": "Påminnelse om däckkontroll",
+      "unlock-more-features": "Gör mer"
+    },
+    "unlock-more-features": "SMS och kalendervarningar är bara några andra funktioner som du kan få från din PushTracker. Kontakta Permobil eller besök vår webbplats för att lära dig hur du får den att ge dig mer funktionalitet."
   },
   "ota": {
     "action": {
@@ -188,6 +245,7 @@
     "description": {
       "acceleration": "SmartDrive's accelerations- eller hastighetsfrekvens.",
       "controlmode": "MX2+: Standard driftsläge för SmartDrive. I MX2+ driftläge kommer en dubbelknackning/klapp på drivringen för att starta motorn genom att höja hastigheten, en enda knackning/klapp på drivring kommer att låsa den aktuell hastighet och en dubbelknackning/klapp på drivring stannar motorn.\n\nMX2: I MX2 driftsläge kommer SmartDrive att börja köra när du trycker på knappen och den känner av din ökning och avaktiverar körningen när du trycker på. Observera att detta är ett val-support alternativ.\n\nMX1: I MX1-kontrollläge kommer SmartDrive att börja köra när du trycker på knappen och den känner av din ökning och kommer att sluta köra när du knackar eller när du bromsar på drivringarna. Observera att detta är ett val-support alternativ.",
+      "language": "Språket för texten i SmartDrive-appen.",
       "maxspeed": "Den maximala hastigheten som SmartDrive kan köra på när den styrs av din klocka.",
       "powerassistbuzzer": "När den är aktiverad piper SmartDrive varje gång en anslutning från en fjärrenhet upprättas, eller när SwitchControl tas ur vänteläget.",
       "powerassisttimeout": "När den är ansluten till SmartDrive med strömassistent ON, om motorn inte har körts under den valda tiden kommer den automatiskt att stänga av strömassistenten.\n\nOm strömhjälpen är PÅ men den inte är ansluten till SmartDrive stängs den automatiskt av efter 1 minut.",
@@ -199,6 +257,7 @@
     },
     "error-history": "Felhistorik",
     "information": "Information",
+    "language": "Språk",
     "max-speed": "Max hastighet",
     "pair-smartdrive": "Parkoppla SmartDrive",
     "paired-to-smartdrive": "Parkopplingen fungerade till SmartDrive.",
@@ -210,6 +269,8 @@
     },
     "scanning": "Skannar efter SmartDrive för att parakoppla med ...",
     "select-smartdrive": "Välj SmartDrive",
+    "send-settings-prompt": "Ändringar av SmartDrive-inställningarna träder inte i kraft förrän PushTracker ansluts till SmartDrive. Vill du sätta på strömhjälp nu för att ansluta till SmartDrive och uppdatera dess inställningar?",
+    "set-time": "Datum Tid",
     "syncing-with-server": "Synkroniserar med servern ...",
     "tap-sensitivity": "Klappkänslighet",
     "title": "SmartDrive Inställningar",
@@ -239,6 +300,7 @@
     }
   },
   "updates": {
+    "available": "Uppdateringar är tillgängliga för din SmartDrive. Vill du gå till sidan Trådlösa uppdateringar för att ladda ner och utföra uppdateringarna?",
     "canceled": "SmartDrive uppdateringar avbrutna.",
     "changes": "Sammanfattning av förändringar",
     "checking-for-updates": "Letar efter uppdateringar ...",
@@ -255,6 +317,7 @@
     },
     "failed": "SmartDrive uppdateringar misslyckades.",
     "initializing": "Hämtar uppdateringar ...",
+    "perform": "Uppdatera SmartDrive",
     "status": "Status uppdateringar",
     "success": "SmartDrive-uppdateringar lyckades!",
     "timeout": "SmartDrive uppdateringar avbrutits.",
@@ -263,6 +326,7 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "Är du säker på att du vill ändra språk? SmartDrive MX2-appen måste starta om för att kunna tillämpa språkändringen.",
       "message": "FÖRSIKTIGHET: Du MÅSTE läsa SmartDrive bruksanvisningen för hur ändring av inställningar kan påverkar dess funktion och prestanda.",
       "title": "Ändrade inställningar"
     },
