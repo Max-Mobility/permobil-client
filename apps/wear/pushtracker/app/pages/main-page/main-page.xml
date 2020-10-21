@@ -1,5 +1,5 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" 
-  xmlns:nac="nativescript-animated-circle" 
+  xmlns:nac="@nativescript/animated-circle" 
   xmlns:wol="nativescript-wear-os/packages/wear-os-layout" navigatingTo="onNavigatedTo" marginBottom="{{ chinSize / 2 }}" actionBarHidden="true">
   <GridLayout rows="*" columns="*">
     <ScrollView>
@@ -42,19 +42,19 @@
             <Label text="{{ coastChartMaxValue }}" row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
             // Coast Usage Bar Chart
             <GridLayout rows="*, auto" columns="*, *, *, *, *, *, *" row="2" colSpan="2" width="100%" class="chart-stack">
-              <Label col="0" height="{{ coastChartData[0].value }}" class="coast-line"/>
+              <Label col="0" height="{{ coastChartData[0].value }}" class="coast-line" visibility="{{ coastChartData[0].value ? 'visible' : 'collapsed' }}" />
               <Label col="0" row="1" text="{{ coastChartData[0].day }}" class="line-label" />
-              <Label col="1" height="{{ coastChartData[1].value }}" class="coast-line"/>
+              <Label col="1" height="{{ coastChartData[1].value }}" class="coast-line" visibility="{{ coastChartData[1].value ? 'visible' : 'collapsed' }}" />
               <Label col="1" row="1" text="{{ coastChartData[1].day }}" class="line-label" />
-              <Label col="2" height="{{ coastChartData[2].value }}" class="coast-line"/>
+              <Label col="2" height="{{ coastChartData[2].value }}" class="coast-line" visibility="{{ coastChartData[2].value ? 'visible' : 'collapsed' }}" />
               <Label col="2" row="1" text="{{ coastChartData[2].day }}" class="line-label" />
-              <Label col="3" height="{{ coastChartData[3].value }}" class="coast-line"/>
+              <Label col="3" height="{{ coastChartData[3].value }}" class="coast-line" visibility="{{ coastChartData[3].value ? 'visible' : 'collapsed' }}" />
               <Label col="3" row="1" text="{{ coastChartData[3].day }}" class="line-label" />
-              <Label col="4" height="{{ coastChartData[4].value }}" class="coast-line"/>
+              <Label col="4" height="{{ coastChartData[4].value }}" class="coast-line" visibility="{{ coastChartData[4].value ? 'visible' : 'collapsed' }}" />
               <Label col="4" row="1" text="{{ coastChartData[4].day }}" class="line-label" />
-              <Label col="5" height="{{ coastChartData[5].value }}" class="coast-line"/>
+              <Label col="5" height="{{ coastChartData[5].value }}" class="coast-line" visibility="{{ coastChartData[5].value ? 'visible' : 'collapsed' }}" />
               <Label col="5" row="1" text="{{ coastChartData[5].day }}" class="line-label" />
-              <Label col="6" height="{{ coastChartData[6].value }}" class="coast-line"/>
+              <Label col="6" height="{{ coastChartData[6].value }}" class="coast-line" visibility="{{ coastChartData[6].value ? 'visible' : 'collapsed' }}" />
               <Label col="6" row="1" text="{{ coastChartData[6].day }}" class="line-label" />
             </GridLayout>
           </GridLayout>
@@ -69,19 +69,19 @@
             <Label text="{{ distanceChartMaxValue }}" row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
             // Distance Traveled Bar Chart
             <GridLayout rows="*, auto" columns="*, *, *, *, *, *, *" row="2" colSpan="2" width="100%" class="chart-stack">
-              <Label col="0" height="{{ distanceChartData[0].value }}" class="distance-line"/>
+              <Label col="0" height="{{ distanceChartData[0].value }}" class="distance-line" visibility="{{ distanceChartData[0].value ? 'visible' : 'collapsed' }}" />
               <Label col="0" row="1" text="{{ distanceChartData[0].day }}" class="line-label" />
-              <Label col="1" height="{{ distanceChartData[1].value }}" class="distance-line"/>
+              <Label col="1" height="{{ distanceChartData[1].value }}" class="distance-line" visibility="{{ distanceChartData[1].value ? 'visible' : 'collapsed' }}" />
               <Label col="1" row="1" text="{{ distanceChartData[1].day }}" class="line-label" />
-              <Label col="2" height="{{ distanceChartData[2].value }}" class="distance-line"/>
+              <Label col="2" height="{{ distanceChartData[2].value }}" class="distance-line" visibility="{{ distanceChartData[2].value ? 'visible' : 'collapsed' }}" />
               <Label col="2" row="1" text="{{ distanceChartData[2].day }}" class="line-label" />
-              <Label col="3" height="{{ distanceChartData[3].value }}" class="distance-line"/>
+              <Label col="3" height="{{ distanceChartData[3].value }}" class="distance-line" visibility="{{ distanceChartData[3].value ? 'visible' : 'collapsed' }}" />
               <Label col="3" row="1" text="{{ distanceChartData[3].day }}" class="line-label" />
-              <Label col="4" height="{{ distanceChartData[4].value }}" class="distance-line"/>
+              <Label col="4" height="{{ distanceChartData[4].value }}" class="distance-line" visibility="{{ distanceChartData[4].value ? 'visible' : 'collapsed' }}" />
               <Label col="4" row="1" text="{{ distanceChartData[4].day }}" class="line-label" />
-              <Label col="5" height="{{ distanceChartData[5].value }}" class="distance-line"/>
+              <Label col="5" height="{{ distanceChartData[5].value }}" class="distance-line" visibility="{{ distanceChartData[5].value ? 'visible' : 'collapsed' }}" />
               <Label col="5" row="1" text="{{ distanceChartData[5].day }}" class="line-label" />
-              <Label col="6" height="{{ distanceChartData[6].value }}" class="distance-line"/>
+              <Label col="6" height="{{ distanceChartData[6].value }}" class="distance-line" visibility="{{ distanceChartData[6].value ? 'visible' : 'collapsed' }}" />
               <Label col="6" row="1" text="{{ distanceChartData[6].day }}" class="line-label" />
             </GridLayout>
           </GridLayout>

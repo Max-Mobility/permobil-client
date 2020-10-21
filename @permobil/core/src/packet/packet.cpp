@@ -35,7 +35,8 @@ public:
     OverTemperature,
     GyroRange,
     OTAUnavailable,
-    BLEDisconnect
+    BLEDisconnect,
+    MotorDriverFault
   };
 
   enum class ControlMode : uint8_t
@@ -285,6 +286,7 @@ public:
     uint8_t numGyroRangeErrors;
     uint8_t numOverTemperatureErrors;
     uint8_t numBLEDisconnectErrors;
+    uint8_t numMotorDriverErrors;
   };
 
   // BatteryInfo: Used for keeping track of battery and last time
@@ -756,7 +758,8 @@ EMSCRIPTEN_BINDINGS(packet_bindings)
       .field("numMotorPhaseErrors", &Packet::ErrorInfo::numMotorPhaseErrors)
       .field("numGyroRangeErrors", &Packet::ErrorInfo::numGyroRangeErrors)
       .field("numOverTemperatureErrors", &Packet::ErrorInfo::numOverTemperatureErrors)
-      .field("numBLEDisconnectErrors", &Packet::ErrorInfo::numBLEDisconnectErrors);
+      .field("numBLEDisconnectErrors", &Packet::ErrorInfo::numBLEDisconnectErrors)
+      .field("numMotorDriverErrors", &Packet::ErrorInfo::numMotorDriverErrors);
 
   emscripten::value_object<Packet::DeviceInfo>("DeviceInfo")
       .field("device", &Packet::DeviceInfo::device)
@@ -801,7 +804,8 @@ EMSCRIPTEN_BINDINGS(packet_bindings)
       .value("OverTemperature", SmartDrive::Error::OverTemperature)
       .value("GyroRange", SmartDrive::Error::GyroRange)
       .value("OTAUnavailable", SmartDrive::Error::OTAUnavailable)
-      .value("BLEDisconnect", SmartDrive::Error::BLEDisconnect);
+      .value("BLEDisconnect", SmartDrive::Error::BLEDisconnect)
+      .value("MotorDriverFault", SmartDrive::Error::MotorDriverFault);
 
   emscripten::class_<Packet>("Packet")
       .constructor<>()

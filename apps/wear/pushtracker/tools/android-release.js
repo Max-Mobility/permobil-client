@@ -25,7 +25,7 @@ askKeystorePassword().then(result => {
   );
   // execute the android release build cmd with the result as password
   exec(
-    `tns build android --release --no-hmr --env.uglify --env.hiddenSourceMap --key-store-path ./pt.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --aab --copy-to ./pushtracker-wear.aab`,
+    `ns clean && ns build android --release --no-hmr --env.uglify --key-store-path ./pt.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --aab --copy-to ./pushtracker-wear.aab`,
     // `npm i && cd apps/wear/pushtracker && rimraf platforms node_modules hooks && tns build android --release --env.uglify --env.hiddenSourceMap --key-store-path ./tools/pushtracker-wearos.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --copy-to ./tools/pushtracker-wearos.apk`,
     (err, stdout, stderr) => {
       if (err) {
@@ -39,7 +39,7 @@ askKeystorePassword().then(result => {
       }
 
       console.log(
-        'Android release finished. A new release APK should be located in the permobil-client/apps/wear/pushtracker/tools/ directory.'
+        'Android release finished. A new release AAB should be located in the permobil-client/apps/wear/pushtracker/tools/ directory.'
       );
     }
   );

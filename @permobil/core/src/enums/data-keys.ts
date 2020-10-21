@@ -1,4 +1,5 @@
 export enum DataKeys {
+  'APP_LANGUAGE_FILE' = 'app.language.file.for.internationalization',
   'USER_IDENTIFIER' = 'user_identifier',
   'HEART_RATE' = 'heart_rate',
   'WATCH_SERIAL_NUMBER' = 'watch.serial-number',

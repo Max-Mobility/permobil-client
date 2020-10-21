@@ -1,5 +1,4 @@
-import { Observable } from '@nativescript/core';
-import * as app from '@nativescript/core/application';
+import { Application, Observable } from '@nativescript/core';
 import { Injectable } from 'injection-js';
 
 function cbExists(cb) {
@@ -8,11 +7,11 @@ function cbExists(cb) {
 
 @Injectable()
 export class NetworkService extends Observable {
-  public static network_available_event = 'network_available_event';
-  public static network_capabilities_changed_event =
+  static network_available_event = 'network_available_event';
+  static network_capabilities_changed_event =
     'network_capabilities_changed_event';
-  public static network_unavailable_event = 'network_unavailable_event';
-  public static network_lost_event = 'network_lost_event';
+  static network_unavailable_event = 'network_unavailable_event';
+  static network_lost_event = 'network_lost_event';
 
   private connectivityManager: android.net.ConnectivityManager;
   private networkCallback: Callback;
@@ -21,7 +20,7 @@ export class NetworkService extends Observable {
     super();
     // set up the connectivity manager and network callback
     const context = android.content.Context;
-    this.connectivityManager = app.android.context.getSystemService(
+    this.connectivityManager = Application.android.context.getSystemService(
       context.CONNECTIVITY_SERVICE
     );
     this.networkCallback = new Callback({
@@ -143,7 +142,7 @@ export class NetworkService extends Observable {
 }
 
 class Callback extends android.net.ConnectivityManager.NetworkCallback {
-  public isRegistered: boolean = false;
+  isRegistered: boolean = false;
 
   private _onAvailableCallback: any = null;
   private _onCapabilitiesChangedCallback: any = null;

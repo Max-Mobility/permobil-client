@@ -1,4 +1,4 @@
-import * as appSettings from '@nativescript/core/application-settings';
+import { ApplicationSettings } from '@nativescript/core';
 import { Device } from '@permobil/core';
 import { Injectable } from 'injection-js';
 import * as LS from 'nativescript-localstorage';
@@ -29,22 +29,24 @@ export class SettingsService {
     );
     // for backwards compatibility
     this.watchSettings.disableWearCheck =
-      appSettings.getBoolean(DataKeys.REQUIRE_WATCH_BEING_WORN) || false;
+      ApplicationSettings.getBoolean(DataKeys.REQUIRE_WATCH_BEING_WORN) ||
+      false;
     // new watch settings format:
     this.watchSettings.copy(
-      LS.getItem(
-        'com.permobil.smartdrive.wearos.smartdrive.watch-settings'
-      )
+      LS.getItem('com.permobil.smartdrive.wearos.smartdrive.watch-settings')
     );
     this.hasSentSettings =
-      appSettings.getBoolean(DataKeys.SD_SETTINGS_DIRTY_FLAG) || false;
+      ApplicationSettings.getBoolean(DataKeys.SD_SETTINGS_DIRTY_FLAG) || false;
   }
 
   saveSettings() {
     // make sure to save the units setting for the complications
-    appSettings.setString(DataKeys.SD_UNITS, this.settings.units.toLowerCase());
+    ApplicationSettings.setString(
+      DataKeys.SD_UNITS,
+      this.settings.units.toLowerCase()
+    );
     // save state and local settings
-    appSettings.setBoolean(
+    ApplicationSettings.setBoolean(
       DataKeys.SD_SETTINGS_DIRTY_FLAG,
       this.hasSentSettings
     );

@@ -1,9 +1,16 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
-import { NativeScriptCommonModule, NativeScriptRouterModule } from '@nativescript/angular';
+import {
+  NativeScriptCommonModule,
+  NativeScriptRouterModule
+} from '@nativescript/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgRippleModule } from 'nativescript-ng-ripple';
 import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
-import { HomeTabComponent, JourneyTabComponent, ProfileTabComponent, TabsComponent } from '..';
+import {
+  HomeTabComponent,
+  JourneyTabComponent,
+  ProfileTabComponent,
+  TabsComponent
+} from '..';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
@@ -15,8 +22,7 @@ import { SharedModule } from '../shared/shared.module';
     ]),
     NativeScriptUIChartModule,
     SharedModule,
-    TranslateModule,
-    NgRippleModule
+    TranslateModule
   ],
   exports: [SharedModule],
   declarations: [

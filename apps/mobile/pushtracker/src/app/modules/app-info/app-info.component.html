@@ -9,7 +9,7 @@
       <StackLayout padding="5" width="90%" *ngFor="let item of infoItems">
         <Label class="section-title" [text]="item.title" textWrap="true"></Label>
         <Label class="section-text" [text]="item.text" textWrap="true"></Label>
-        <LottieView height="120" [src]="item.lottie" loop="true" autoPlay="true" [visibility]="item.lottie ? 'visible' : 'collapsed'"></LottieView>
+        <LottieView height="120" (loaded)="lottieLoaded($event, item)" loop="true" autoPlay="true" [visibility]="item.lottie ? 'visible' : 'collapsed'"></LottieView>
       </StackLayout>
     </StackLayout>
   </ScrollView>

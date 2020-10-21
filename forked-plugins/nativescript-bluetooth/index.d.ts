@@ -1,5 +1,14 @@
 import { Observable } from '@nativescript/core';
-import { ConnectOptions, DisconnectOptions, ReadOptions, ReadResult, StartNotifyingOptions, StartScanningOptions, StopNotifyingOptions, WriteOptions } from './common';
+import {
+  ConnectOptions,
+  DisconnectOptions,
+  ReadOptions,
+  ReadResult,
+  StartNotifyingOptions,
+  StartScanningOptions,
+  StopNotifyingOptions,
+  WriteOptions
+} from './common';
 
 export declare class BluetoothCommon extends Observable {
   constructor();

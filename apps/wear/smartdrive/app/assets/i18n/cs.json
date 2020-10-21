@@ -23,6 +23,7 @@
     "deny": "Odmítnout",
     "disable": "Zakázat",
     "dismiss": "Propustit",
+    "do-not-show-again": "Znovu se neukazuj",
     "enable": "Umožnit",
     "ok": "OK"
   },
@@ -59,11 +60,13 @@
       "batteryvoltage": "[ERR: 001] Napětí baterie SD",
       "bledisconnect": "[ERR: 007] Odpojení Bluetooth",
       "gyrorange": "[ERR: 005] Úhel SD",
+      "motordriverfault": "[ERR: 008] SD motorový čip",
       "motorphases": "[ERR: 002] SD Motor",
       "otaunavailable": "[ERR: 006] Aktualizace nejsou k dispozici",
       "overcurrent": "[ERR: 003] Aktuální proud SD",
       "overtemperature": "[ERR: 004] Přehřátí SD"
     },
+    "load-more": "Načíst další",
     "loading": "Načítání ...",
     "no-errors": "Nebyly zaznamenány ani přijaty žádné chyby SmartDrive.",
     "title": "Historie chyb SmartDrive"
@@ -91,6 +94,24 @@
     "title": "Oznámení",
     "too-many-smartdrives-found": "Bylo nalezeno více SmartDrives. Při párování se ujistěte, že je v blízkosti pouze jeden SmartDrive."
   },
+  "language-list": {
+    "cs": "čeština",
+    "da": "Dansk",
+    "de": "Deutsche",
+    "en": "Angličtina",
+    "es": "Español",
+    "fi": "Suomalainen",
+    "fr": "Français",
+    "it": "Italiano",
+    "ja": "日本人",
+    "ko": "한국어",
+    "nb": "Norsk Bokmål",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Portugalský",
+    "sv": "Svenska",
+    "zh": "中國 傳統 的"
+  },
   "languages": {
     "cs": "čeština",
     "da": "dánský",
@@ -115,6 +136,42 @@
     "title": "Nabídka SmartDrive MX2+",
     "training": "Klepněte na Školení",
     "updates": "Bezdrátové aktualizace"
+  },
+  "notifications": {
+    "accelerate-while-moving": "Zvyšte svou rychlost jízdy, když už jedete! Chcete-li jet rychleji, stiskněte kolečko a poté pomocí aplikace PushTracker jedno klepnutí. Stisknutím a podržením spínače ControlControl rychlost opět zvýšíte.",
+    "access-more-features": "Chcete více informací o své denní / týdenní / měsíční pohonné činnosti? Navštivte web Permobil a zjistěte, jak ze svého SmartDrive a PushTracker vytěžit maximum!",
+    "channels": {
+      "maintenance": "Údržba",
+      "personal-record": "Osobní rekord",
+      "smartdrive": "SmartDrive"
+    },
+    "daily-distance-record": "Udělal jsi to! Dosáhli jste nového osobního rekordu v ujeté vzdálenosti za den. Jen tak dál! A nezapomeňte na pobřeží. #ChooseToDoMore",
+    "odometer-records-part-one": "O to jde, když děláte více a přitom udržujete zdravá ramena. Dali jste",
+    "odometer-records-part-two": "na vašem SmartDrive. #ChooseToDoMore",
+    "open-pt-wear": "Chcete vědět více o své každodenní mobilitě? Otevřete aplikaci PushTracker a začněte sledovat počet stisknutí, čas dojezdu a ujetou vzdálenost každý den.",
+    "routine-maintenance": "Udržování čistoty vašeho zařízení pomáhá, aby vydrželo déle! Použijte vlhkou houbu, jemný čisticí prostředek a důkladně osušte, aby byl váš SmartDrive jako nový! (Nenamáčejte ani neponořujte)",
+    "sc-light-indications": "Zajímá vás, jak blikají světla na vašich tlačítkách SwitchControl? V uživatelské příručce nebo na stránce Permobil YouTube zjistíte, co každý z nich znamená.",
+    "sd-clamp-check": "Je čas zkontrolovat vaše zarovnání! Ujistěte se, že je vaše objímka nebo adaptér skládacího rámu správně nastaven. Přečtěte si pokyny nebo nás kontaktujte.",
+    "sd-e2-charging": "Pro maximální výkon začněte každý den s plně nabitým systémem SmartDrive. Ujistěte se, že je nabitá na více než 25%, zejména pokud ji nebudete delší dobu používat. Podrobnější informace najdete v uživatelské příručce nebo kontaktujte společnost Permobil.",
+    "sd-roller-check": "Zkontrolujte válečky. Vidíte plochá místa? Je těžké točit? Kontaktujte Permobil ještě dnes a diskutujte.",
+    "switch-control-reminder": "Tlačítka SwitchControl vám dávají další způsob ovládání. Připojte je přímo k nabíjecímu portu SmartDrive (není vyžadováno Bluetooth). Stisknutím tlačítka můžete řídit, zastavit nebo nastavit rychlost. Další informace získáte od svého poskytovatele nebo podpory společnosti Permobil.",
+    "tire-pressure": "Tlak v pneumatikách výrazně ovlivňuje vaši schopnost tlačit. Zkontroloval jsi to v poslední době?",
+    "titles": {
+      "accelerate-while-moving": "Zrychlování",
+      "access-more-features": "Pohon a další",
+      "daily-distance-record": "Denní záznam vzdálenosti!",
+      "odometer-records": "Záznam tachometru!",
+      "open-pt-wear": "Otevřete aplikaci PushTracker Wear",
+      "routine-maintenance": "Běžná údržba",
+      "sc-light-indications": "Indikace tlačítek",
+      "sd-clamp-check": "Připomenutí kontroly přílohy",
+      "sd-e2-charging": "Nabíjení SmartDrive a PushTracker",
+      "sd-roller-check": "Připomenutí kontroly válců",
+      "switch-control-reminder": "Tlačítka SwitchControl",
+      "tire-pressure": "Připomenutí kontroly pneumatik",
+      "unlock-more-features": "Dělat více"
+    },
+    "unlock-more-features": "Textové zprávy a upozornění v kalendáři jsou jen některé z dalších funkcí, které můžete získat z aplikace PushTracker. Obraťte se na společnost Permobil nebo navštivte naše webové stránky, kde se dozvíte, jak vám může poskytnout více funkcí."
   },
   "ota": {
     "action": {
@@ -188,6 +245,7 @@
     "description": {
       "acceleration": "Zrychlení nebo rychlostní rampa SmartDrive.",
       "controlmode": "MX2+: Výchozí operace SmartDrive založená na gestach. V režimu ovládání MX2 začne dvojité odbočení řídit motor zvyšováním jeho rychlosti, jediné odbočení se sníží při aktuální rychlosti a dvojité odbočení deaktivuje řízení.\n\nMX2: V režimu ovládání MX2 SmartDrive začne jezdit, jakmile zjistí váš tlak, a po klepnutí deaktivuje jízdu. Vezměte prosím na vědomí, že se jedná o možnost starší podpory.\n\nMX1: V režimu ovládání MX1 začne SmartDrive jízdu, jakmile zjistí váš tlak, a zastaví jízdu, když klepnete na tlačítko nebo když zabrzdíte na držadlech. Vezměte prosím na vědomí, že se jedná o možnost starší podpory.",
+      "language": "Jazyk textu v aplikaci SmartDrive.",
       "maxspeed": "Maximální rychlost, kterou SmartDrive dokáže řídit, když je ovládáte pomocí smartwatch.",
       "powerassistbuzzer": "Pokud je povoleno, SmartDrive vydá zvukový signál při každém navázání spojení ze vzdáleného zařízení nebo po přepnutí SwitchControl z pohotovostního stavu.",
       "powerassisttimeout": "SmartDrive MX2 automaticky deaktivuje posilovač napájení po stanovené době, pokud má uživatel aktivní asistenční napájení a je připojen k SmartDrive, ale neaktivoval motor před vypršením časového limitu.\n\nPoznámka: SmartDrive MX2 automaticky deaktivuje posilovač napájení po 1 minutě, pokud není připojen k SmartDrive.",
@@ -199,6 +257,7 @@
     },
     "error-history": "Historie chyb",
     "information": "Informace",
+    "language": "jazyk",
     "max-speed": "Maximální rychlost",
     "pair-smartdrive": "Spárujte SmartDrive",
     "paired-to-smartdrive": "Úspěšně spárováno s SmartDrive.",
@@ -210,6 +269,8 @@
     },
     "scanning": "Hledání SmartDrive pro spárování s ...",
     "select-smartdrive": "Vyberte SmartDrive",
+    "send-settings-prompt": "Změny nastavení SmartDrive se projeví, až když se PushTracker připojí k SmartDrive. Chcete nyní zapnout posilovač, abyste se připojili k SmartDrive a aktualizovali jeho nastavení?",
+    "set-time": "Čas schůzky",
     "syncing-with-server": "Synchronizace se serverem ...",
     "tap-sensitivity": "Klepněte na Citlivost",
     "title": "Nastavení SmartDrive",
@@ -239,6 +300,7 @@
     }
   },
   "updates": {
+    "available": "Pro váš SmartDrive jsou k dispozici aktualizace. Chcete přejít na stránku Bezdrátové aktualizace a stáhnout a provést aktualizace?",
     "canceled": "Aktualizace SmartDrive byla zrušena.",
     "changes": "Shrnutí změn",
     "checking-for-updates": "Probíhá kontrola aktualizací ...",
@@ -255,6 +317,7 @@
     },
     "failed": "Aktualizace SmartDrive selhala.",
     "initializing": "Inicializace aktualizací ...",
+    "perform": "Aktualizujte SmartDrive",
     "status": "Aktualizuje stav",
     "success": "Aktualizace SmartDrive byla úspěšně dokončena!",
     "timeout": "Aktualizace SmartDrive vypršela.",
@@ -263,6 +326,7 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "Opravdu chcete změnit jazyk? Chcete-li použít změnu jazyka, musí se aplikace SmartDrive MX2 restartovat.",
       "message": "UPOZORNĚNÍ: MUSÍTE se podívat do uživatelské příručky SmartDrive o tom, jak změna nastavení ovlivňuje jeho provoz a výkon.",
       "title": "Změněné nastavení"
     },

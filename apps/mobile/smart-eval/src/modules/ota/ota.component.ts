@@ -7,7 +7,10 @@ import { allowSleepAgain, keepAwake } from 'nativescript-insomnia';
 import { Subscription } from 'rxjs';
 import * as app from 'tns-core-modules/application';
 import { Color } from 'tns-core-modules/color';
-import { ChangedData, ObservableArray } from 'tns-core-modules/data/observable-array';
+import {
+  ChangedData,
+  ObservableArray
+} from 'tns-core-modules/data/observable-array';
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
 import { EventData } from 'tns-core-modules/ui/core/view';
 import { alert, confirm } from 'tns-core-modules/ui/dialogs';
@@ -15,7 +18,12 @@ import { Label } from 'tns-core-modules/ui/label';
 import { Page } from 'tns-core-modules/ui/page';
 import { ScrollView } from 'tns-core-modules/ui/scroll-view';
 import { PushTracker, SmartDrive } from '../../models';
-import { BluetoothService, FirmwareService, LoggingService, ProgressService } from '../../services';
+import {
+  BluetoothService,
+  FirmwareService,
+  LoggingService,
+  ProgressService
+} from '../../services';
 
 @Component({
   selector: 'ota',

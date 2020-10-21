@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as Kinvey from 'kinvey-nativescript-sdk';
+import * as Kinvey from '@bradmartin/kinvey-nativescript-sdk';
 import { Push } from 'kinvey-nativescript-sdk/push';
 import { Feedback } from 'nativescript-feedback';
 import * as fs from 'tns-core-modules/file-system';

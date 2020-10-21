@@ -1,6 +1,7 @@
+@NativeClass()
 @JavaProxy('com.permobil.pushtracker.ResultReceiver')
 export class ResultReceiver extends android.os.ResultReceiver {
-  public onReceiveFunction: any = null;
+  onReceiveFunction: any = null;
   constructor(handler: android.os.Handler) {
     super(handler);
     return global.__native(this);

@@ -25,7 +25,7 @@ askKeystorePassword().then(result => {
   );
   // execute the android release build cmd with the result as password
   exec(
-    `tns build android --release --no-hmr --env.aot --env.uglify --env.hiddenSourceMap --key-store-path ./tools/smarteval-keystore.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --aab --copy-to ./smart-eval.aab`,
+    `ns clean && ns build android --release --no-hmr --env.aot --env.uglify --key-store-path ./tools/smarteval-keystore.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --aab --copy-to ./smart-eval.aab`,
     // `tns build android --release --bundle --env.aot --env.uglify --key-store-path ../tools/smarteval-keystore.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --aab --copy-to ./smart-eval.aab`,
     (err, stdout, stderr) => {
       if (err) {
@@ -34,7 +34,7 @@ askKeystorePassword().then(result => {
       }
 
       console.log(
-        'Android release finished. A new release APK should be located in the permobil-mobile/apps/smart-eval/ directory.'
+        'Android release finished. A new release AAB should be located in the permobil/apps/mobile/smart-eval/tools directory.'
       );
     }
   );

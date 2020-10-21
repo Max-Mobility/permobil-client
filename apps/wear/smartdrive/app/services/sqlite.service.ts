@@ -11,7 +11,7 @@ export class SqliteService {
 
   private _db: any = null;
 
-  public getDatabase() {
+  getDatabase() {
     return new Sqlite(SqliteService.DatabaseName);
   }
 
@@ -31,7 +31,7 @@ export class SqliteService {
     }
   }
 
-  public closeDatabase() {
+  closeDatabase() {
     this.db
       .then((db: any) => {
         db.close();
@@ -41,7 +41,7 @@ export class SqliteService {
       });
   }
 
-  public makeTable(tableName: string, idName: string, keys: any[]) {
+  makeTable(tableName: string, idName: string, keys: any[]) {
     const keyString = keys.map(k => {
       return `${k.name} ${k.type}`;
     });
@@ -60,7 +60,7 @@ export class SqliteService {
       });
   }
 
-  public insertIntoTable(tableName: string, obj: any) {
+  insertIntoTable(tableName: string, obj: any) {
     return this.db.then(db => {
       const objKeyNames = Object.keys(obj);
       const values = objKeyNames.map(key => obj[key]);
@@ -73,7 +73,7 @@ export class SqliteService {
     });
   }
 
-  public updateInTable(tableName: string, sets: any, queries: any) {
+  updateInTable(tableName: string, sets: any, queries: any) {
     /**
      *  expects sets to be an object of the form:
      *   {
@@ -110,7 +110,7 @@ export class SqliteService {
     });
   }
 
-  public delete(tableName: string, queries: any) {
+  delete(tableName: string, queries: any) {
     /**
      *  expects queries to be an object of the form:
      *   {
@@ -132,7 +132,7 @@ export class SqliteService {
     });
   }
 
-  public getLast(tableName: string, idName: string) {
+  getLast(tableName: string, idName: string) {
     return this.db.then(db => {
       return db
         .get(`SELECT * FROM ${tableName} ORDER BY ${idName} DESC LIMIT 1`)
@@ -142,7 +142,7 @@ export class SqliteService {
     });
   }
 
-  public getOne(args: {
+  getOne(args: {
     tableName: string;
     queries?: any;
     orderBy?: string;
@@ -186,7 +186,7 @@ export class SqliteService {
     });
   }
 
-  public getAll(args: {
+  getAll(args: {
     tableName: string;
     queries?: any;
     orderBy?: string;
@@ -240,7 +240,7 @@ export class SqliteService {
     });
   }
 
-  public getSum(tableName: string, columnName: string) {
+  getSum(tableName: string, columnName: string) {
     return this.db
       .then(db => {
         const dbString = `SELECT SUM(${columnName}) as Total FROM ${tableName}`;
@@ -248,6 +248,79 @@ export class SqliteService {
       })
       .then(row => {
         return row && row[0];
+      });
+  }
+
+  getMin(tableName: string, columnName: string) {
+    return this.db
+      .then(db => {
+        const dbString = `SELECT MIN(${columnName}) as SmallestValue FROM ${tableName}`;
+        return db.execSQL(dbString);
+      })
+      .then(row => {
+        return row && row[0];
+      });
+  }
+
+  getMax(tableName: string, columnName: string) {
+    return this.db
+      .then(db => {
+        const dbString = `SELECT MAX(${columnName}) as SmallestValue FROM ${tableName}`;
+        return db.execSQL(dbString);
+      })
+      .then(row => {
+        return row && row[0];
+      });
+  }
+
+  getAllColumnDifferences(args: {
+    tableName: string;
+    columnA: string;
+    columnB: string;
+    minimum?: number;
+    limit?: number;
+    ascending?: boolean;
+  }) {
+    return this.db.then(db => {
+      const tableName = args.tableName;
+      const ascending = args.ascending;
+      const limit = args.limit;
+      const minimum = args.minimum;
+      const columnA = args.columnA;
+      const columnB = args.columnB;
+      const diffColumn = `${columnA} - ${columnB}`;
+      let dbGetString = `SELECT *, ${diffColumn} as Difference from ${tableName}`;
+      if (minimum !== undefined) {
+        dbGetString += ` WHERE Difference > ${minimum}`;
+      }
+      dbGetString += ` ORDER BY Difference`;
+      if (ascending) {
+        dbGetString += ' ASC';
+      } else {
+        dbGetString += ' DESC';
+      }
+      if (limit > 0) {
+        dbGetString += ` LIMIT ${limit}`;
+      }
+      return db.all(dbGetString).catch(err => {
+        return [];
+      });
+    });
+  }
+
+  getNumRows(tableName: string, columnName: string, condition?: string) {
+    return this.db
+      .then(db => {
+        let dbNumString = `SELECT COUNT(${columnName}) from ${tableName}`;
+        if (condition) {
+          dbNumString += ` WHERE ${condition}`;
+        }
+        return db.all(dbNumString).catch(err => {
+          return [];
+        });
+      })
+      .then(row => {
+        return (row && row[0]) || 0;
       });
   }
 }

@@ -8,11 +8,11 @@ import { SmartDrive } from '../models/smartdrive';
 @Injectable()
 export class BluetoothService {
   // static members
-  public static SmartDrives = new ObservableArray<SmartDrive>();
+  static SmartDrives = new ObservableArray<SmartDrive>();
 
-  // public members
-  public enabled: boolean = false;
-  public initialized: boolean = false;
+  // members
+  enabled: boolean = false;
+  initialized: boolean = false;
 
   // private members
   private _bluetooth: Bluetooth;
@@ -27,7 +27,7 @@ export class BluetoothService {
     this._bluetooth.debug = false;
   }
 
-  public setEventListeners() {
+  setEventListeners() {
     this.clearEventListeners();
     // setup event listeners
     this._bluetooth.on(
@@ -68,7 +68,7 @@ export class BluetoothService {
     );
   }
 
-  public clearEventListeners() {
+  clearEventListeners() {
     // setup event listeners
     this._bluetooth.off(Bluetooth.peripheral_connected_event);
     this._bluetooth.off(Bluetooth.peripheral_disconnected_event);
@@ -79,7 +79,7 @@ export class BluetoothService {
     this._bluetooth.off(Bluetooth.server_connection_state_changed_event);
   }
 
-  public clearSmartDrives() {
+  clearSmartDrives() {
     const connectedSDs = BluetoothService.SmartDrives.slice().filter(
       sd => sd.connected
     );
@@ -90,25 +90,25 @@ export class BluetoothService {
     );
   }
 
-  public async enableRadio() {
+  async enableRadio() {
     const didEnable = await this._bluetooth.enable();
     return didEnable;
   }
 
-  public async radioEnabled() {
+  async radioEnabled() {
     const _enabled = await this._bluetooth.isBluetoothEnabled();
     return _enabled;
   }
 
-  public async available() {
+  async available() {
     return this.isActive();
   }
 
-  public isActive(): Promise<boolean> {
+  isActive(): Promise<boolean> {
     return Promise.resolve(this.enabled && this.initialized);
   }
 
-  public async initialize() {
+  async initialize() {
     if (!this.enabled || !this.initialized) {
       this.clearEventListeners();
       this.setEventListeners();
@@ -117,7 +117,7 @@ export class BluetoothService {
     }
   }
 
-  public async scanForSmartDrives(timeout: number = 4) {
+  async scanForSmartDrives(timeout: number = 4) {
     this.clearSmartDrives();
     const result = await this._bluetooth.startScanning({
       serviceUUIDs: [SmartDrive.ServiceUUID],
@@ -159,11 +159,11 @@ export class BluetoothService {
     });
   }
 
-  public stopScanning(): Promise<any> {
+  stopScanning(): Promise<any> {
     return this._bluetooth.stopScanning();
   }
 
-  public connect(address: string, onConnected?: any, onDisconnected?: any) {
+  connect(address: string, onConnected?: any, onDisconnected?: any) {
     return this._bluetooth.connect({
       UUID: address,
       onConnected: onConnected,
@@ -171,7 +171,7 @@ export class BluetoothService {
     });
   }
 
-  public disconnectAll(): Promise<any> {
+  disconnectAll(): Promise<any> {
     // TODO: the android implementation of these functions don't
     //       work
 
@@ -198,42 +198,42 @@ export class BluetoothService {
         */
   }
 
-  public disconnect(args: any): Promise<any> {
+  disconnect(args: any): Promise<any> {
     return this._bluetooth.disconnect(args);
   }
 
-  public discoverServices(opts: any) {}
+  discoverServices(opts: any) {}
 
-  public discoverCharacteristics(opts: any) {}
+  discoverCharacteristics(opts: any) {}
 
-  public startNotifying(opts: any) {
+  startNotifying(opts: any) {
     return this._bluetooth.startNotifying(opts);
   }
 
-  public stopNotifying(opts: any) {
+  stopNotifying(opts: any) {
     return this._bluetooth.stopNotifying(opts);
   }
 
-  public requestConnectionPriority(address: string, priority: number) {
+  requestConnectionPriority(address: string, priority: number) {
     return this._bluetooth.requestConnectionPriority(address, priority);
   }
 
-  public readRssi(address: string) {
+  readRssi(address: string) {
     return this._bluetooth.readRSSI(address);
   }
 
-  public write(opts: any) {
+  write(opts: any) {
     return this._bluetooth.write(opts);
   }
 
-  public async stop() {
+  async stop() {
     this.enabled = false;
     this.initialized = false;
     // stop listening for events
     this.clearEventListeners();
   }
 
-  public async restart() {
+  async restart() {
     await this.stop();
     await this.initialize();
   }
@@ -344,7 +344,7 @@ export class BluetoothService {
     // Log.D('finished peripheral disconnected!');
   }
 
-  public getOrMakeSmartDrive(device: any): SmartDrive {
+  getOrMakeSmartDrive(device: any): SmartDrive {
     let sd = BluetoothService.SmartDrives.filter(
       (x: SmartDrive) => x.address === device.address
     )[0];
@@ -367,7 +367,7 @@ export class BluetoothService {
     return sd;
   }
 
-  public getSmartDrive(address: string) {
+  getSmartDrive(address: string) {
     return BluetoothService.SmartDrives.filter(sd => sd.address === address)[0];
   }
 

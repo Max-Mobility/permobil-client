@@ -1,16 +1,20 @@
-import { Page, ShownModallyData } from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
-import { fromObject } from '@nativescript/core/data/observable';
-import { screen } from '@nativescript/core/platform';
-import { alert } from '@nativescript/core/ui/dialogs';
-import { ad as androidUtils } from '@nativescript/core/utils/utils';
+import {
+  ApplicationSettings,
+  Dialogs,
+  fromObject,
+  Page,
+  Screen,
+  ShownModallyData,
+  Utils
+} from '@nativescript/core';
 import { Log } from '@permobil/core';
-import { L } from '@permobil/nativescript';
+import { getDeviceSerialNumber, L } from '@permobil/nativescript';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
+import { Sentry } from 'nativescript-sentry';
 import { WearOsLayout } from 'nativescript-wear-os';
 import { DataKeys } from '../../../enums';
 import { PushTrackerKinveyService } from '../../../services';
-import { getSerialNumber, saveSerialNumber } from '../../../utils';
+import { saveSerialNumber } from '../../../utils';
 
 let closeCallback;
 let page: Page;
@@ -40,10 +44,10 @@ export function onShownModally(args: ShownModallyData) {
   closeCallback = args.closeCallback; // the closeCallback handles closing the modal
 
   // get the device serial number
-  data.watchSerialNumber = getSerialNumber() || '---';
+  data.watchSerialNumber = getDeviceSerialNumber() || '---';
 
   // get the app version
-  const ctx = androidUtils.getApplicationContext();
+  const ctx = Utils.android.getApplicationContext();
   const packageManager = ctx.getPackageManager();
   const packageInfo = packageManager.getPackageInfo(ctx.getPackageName(), 0);
   const versionName = packageInfo.versionName;
@@ -61,8 +65,8 @@ export function onShownModally(args: ShownModallyData) {
   configureLayout(wearOsLayout);
 
   // load user name / email from appsettings
-  const userName = appSettings.getString(DataKeys.USER_NAME, '---');
-  const userEmail = appSettings.getString(DataKeys.USER_EMAIL, '---');
+  const userName = ApplicationSettings.getString(DataKeys.USER_NAME, '---');
+  const userEmail = ApplicationSettings.getString(DataKeys.USER_EMAIL, '---');
   // now set the binding context
   page.bindingContext.set('userName', userName);
   page.bindingContext.set('userEmail', userEmail);
@@ -72,16 +76,20 @@ export async function onSerialNumberTap(_: any) {
   Log.D('about-page onSerialNumberTap');
   const p = android.Manifest.permission.READ_PHONE_STATE;
   if (!hasPermission(p)) {
-    await alert({
+    await Dialogs.alert({
       title: L('permissions-request.title'),
       message: L('permissions-reasons.phone-state'),
       okButtonText: L('buttons.ok')
     });
     try {
       await requestPermissions([p], () => {});
-      const watchSerialNumber = getSerialNumber();
+      const watchSerialNumber = getDeviceSerialNumber();
       saveSerialNumber(watchSerialNumber);
       kinveyService.watch_serial_number = watchSerialNumber;
+      // Set the Sentry Context Tags
+      Sentry.setContextTags({
+        watch_serial_number: watchSerialNumber
+      });
     } catch (err) {}
   } else {
     Log.D('Already has permission.');
@@ -90,13 +98,13 @@ export async function onSerialNumberTap(_: any) {
 
 function configureLayout(layout: WearOsLayout) {
   // determine inset padding
-  const androidConfig = androidUtils
+  const androidConfig = Utils.android
     .getApplicationContext()
     .getResources()
     .getConfiguration();
   const isCircleWatch = androidConfig.isScreenRound();
-  const screenWidth = screen.mainScreen.widthPixels;
-  const screenHeight = screen.mainScreen.heightPixels;
+  const screenWidth = Screen.mainScreen.widthPixels;
+  const screenHeight = Screen.mainScreen.heightPixels;
 
   if (isCircleWatch) {
     data.insetPadding = Math.round(0.146467 * screenWidth);

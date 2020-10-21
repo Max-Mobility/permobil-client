@@ -11,7 +11,7 @@ export class SqliteService {
 
   private _db: any = null;
 
-  public getDatabase() {
+  getDatabase() {
     return new Sqlite(SqliteService.DatabaseName);
   }
 
@@ -30,7 +30,7 @@ export class SqliteService {
     }
   }
 
-  public closeDatabase() {
+  closeDatabase() {
     this.db
       .then((db: any) => {
         db.close();
@@ -40,7 +40,7 @@ export class SqliteService {
       });
   }
 
-  public makeTable(tableName: string, idName: string, keys: any[]) {
+  makeTable(tableName: string, idName: string, keys: any[]) {
     const keyString = keys.map(k => {
       return `${k.name} ${k.type}`;
     });
@@ -59,7 +59,7 @@ export class SqliteService {
       });
   }
 
-  public insertIntoTable(tableName: string, obj: any) {
+  insertIntoTable(tableName: string, obj: any) {
     return this.db.then(db => {
       const objKeyNames = Object.keys(obj);
       const values = objKeyNames.map(key => obj[key]);
@@ -72,7 +72,7 @@ export class SqliteService {
     });
   }
 
-  public updateInTable(tableName: string, sets: any, queries: any) {
+  updateInTable(tableName: string, sets: any, queries: any) {
     /**
      *  expects sets to be an object of the form:
      *   {
@@ -109,7 +109,7 @@ export class SqliteService {
     });
   }
 
-  public delete(tableName: string, queries: any) {
+  delete(tableName: string, queries: any) {
     /**
      *  expects queries to be an object of the form:
      *   {
@@ -131,7 +131,7 @@ export class SqliteService {
     });
   }
 
-  public getLast(tableName: string, idName: string) {
+  getLast(tableName: string, idName: string) {
     return this.db.then(db => {
       return db.get(
         `SELECT * FROM ${tableName} ORDER BY ${idName} DESC LIMIT 1`
@@ -139,7 +139,7 @@ export class SqliteService {
     });
   }
 
-  public getOne(args: {
+  getOne(args: {
     tableName: string;
     queries?: any;
     orderBy?: string;
@@ -181,7 +181,7 @@ export class SqliteService {
     });
   }
 
-  public getAll(args: {
+  getAll(args: {
     tableName: string;
     queries?: any;
     orderBy?: string;
@@ -233,7 +233,7 @@ export class SqliteService {
     });
   }
 
-  public getSum(tableName: string, columnName: string) {
+  getSum(tableName: string, columnName: string) {
     return this.db
       .then(db => {
         const dbString = `SELECT SUM(${columnName}) as Total FROM ${tableName}`;

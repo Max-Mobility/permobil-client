@@ -1,9 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { registerElement } from '@nativescript/angular';
 import { GridLayout, StackLayout, TextField } from '@nativescript/core';
+import {
+  DateTimePicker,
+  DateTimePickerStyle
+} from '@nativescript/datetimepicker';
 import { TranslateService } from '@ngx-translate/core';
 import { subYears } from 'date-fns';
-import { DateTimePicker, DateTimePickerStyle } from 'nativescript-datetimepicker';
 import { LoggingService } from '../../../../services';
 import { YYYY_MM_DD } from '../../../../utils';
 

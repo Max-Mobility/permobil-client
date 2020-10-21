@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="__PACKAGE__">
+
+  <supports-screens
+      android:smallScreens="true"
+      android:normalScreens="true"
+      android:largeScreens="true"
+      android:xlargeScreens="true"/>
+
+  <uses-sdk android:targetSdkVersion="__APILEVEL__"/>
+
+  <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.BLUETOOTH"/>
+  <uses-permission android:name="android.permission.BODY_SENSORS"/>
+  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+  <!-- 
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
+  -->
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+  <uses-feature android:name="android.hardware.bluetooth_le" android:required="false"/>
+  <uses-feature android:name="android.hardware.type.watch" android:required="true" />
+
+  <application
+      android:name="com.tns.NativeScriptApplication"
+      android:allowBackup="true"
+      android:icon="@mipmap/ic_launcher"
+      android:label="@string/app_name"
+      android:theme="@style/AppTheme">
+
+
+    <service
+        android:name="com.permobil.pushtracker.MessageListener" >
+      <intent-filter>
+        <!-- listeners receive events that match the action and data filters -->
+        <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+        <data android:scheme="wear" android:host="*" android:pathPrefix="/user-data"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+        <data android:scheme="wear" android:host="*" android:pathPrefix="/app-message"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+        <data android:scheme="wear" android:host="*" android:pathPrefix="/wear-data"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+        <data android:scheme="wear" android:host="*" android:pathPrefix="/wear-message"/>
+      </intent-filter>
+    </service>
+
+    <service
+        android:name="com.permobil.pushtracker.ActivityService"
+        android:enabled="true"
+        android:exported="false"
+        android:permission="android.permission.BIND_JOB_SERVICE">
+    </service>
+
+    <receiver
+        android:name="com.permobil.pushtracker.BootReceiver"
+        android:enabled="true">
+      <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+      </intent-filter>
+    </receiver>
+
+    <uses-library android:name="com.google.android.wearable" android:required="true" />
+
+    <!--
+        Set to true if your app is Standalone, that is, it does not require the handheld
+        app to run.
+    -->
+    <meta-data android:name="com.google.android.wearable.standalone" android:value="true"/>
+
+    <meta-data android:name="io.sentry.dsn" android:value="https://5670a4108fb84bc6b2a8c427ab353472@o138545.ingest.sentry.io/1485857" />
+
+    <!-- for main activity -->
+    <activity
+        android:name="com.permobil.pushtracker.MainActivity"
+        android:label="@string/title_activity_kimera"
+        android:launchMode="singleInstance"
+        android:configChanges="keyboardHidden|orientation|screenSize"
+        android:theme="@style/LaunchScreenTheme">
+      <meta-data android:name="SET_THEME_ON_LAUNCH" android:resource="@style/AppTheme" />
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+    <!-- end for main activity -->
+    <activity android:name="com.tns.ErrorReportActivity"/>
+
+    <!-- for confirmation (success / failure / open-on-phone) activity -->
+    <activity
+        android:name="android.support.wearable.activity.ConfirmationActivity"
+        android:theme="@style/Theme.Transparent">
+    </activity>
+    <!-- end for confirmation (success / failure / open-on-phone) activity -->
+
+    <!-- for allowing apps to access our data -->
+    <provider android:name="com.permobil.pushtracker.DataProvider"
+              android:authorities="com.permobil.pushtracker.data"
+              android:exported="true"/>
+    <!-- end for allowing apps to access our data -->
+
+    <!-- for providing complications -->
+    <service
+        android:name="com.permobil.pushtracker.PushesComplicationProviderService"
+        android:icon="@drawable/ic_pushes_white"
+        android:label="@string/complications_provider_service_label_pushes"
+        android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+      <intent-filter>
+        <action
+            android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST"/>
+      </intent-filter>
+      <meta-data
+          android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+          android:value="SHORT_TEXT"/>
+      <meta-data
+          android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+          android:value="600"/>
+    </service>
+    <service
+        android:name="com.permobil.pushtracker.CoastTimeComplicationProviderService"
+        android:icon="@drawable/ic_coast_time_white"
+        android:label="@string/complications_provider_service_label_coast_time"
+        android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+      <intent-filter>
+        <action
+            android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST"/>
+      </intent-filter>
+      <meta-data
+          android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+          android:value="SHORT_TEXT"/>
+      <meta-data
+          android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+          android:value="600"/>
+    </service>
+    <!--
+    <service
+        android:name="com.permobil.pushtracker.DistanceComplicationProviderService"
+        android:icon="@drawable/ic_distance_white"
+        android:label="@string/complications_provider_service_label_distance"
+        android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+      <intent-filter>
+        <action
+            android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST"/>
+      </intent-filter>
+      <meta-data
+          android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+          android:value="SHORT_TEXT"/>
+      <meta-data
+          android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+          android:value="600"/>
+    </service>
+    -->
+    <!-- end for providing complications -->
+
+    <!-- for receiving complications -->
+    <receiver android:name="com.permobil.pushtracker.ComplicationToggleReceiver" />
+    <!-- end for receiving complications -->
+
+  </application>
+</manifest>

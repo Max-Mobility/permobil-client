@@ -1,6 +1,6 @@
+import { Observable } from '@nativescript/core';
 import { bindingTypeToString } from '../packet';
 import { mod } from '../utils';
-import { Observable } from '@nativescript/core';
 
 type TranslateFunction = (translationKey: string) => string;
 
@@ -8,7 +8,8 @@ export namespace Device {
   // for rendering the different parts of each of the settings in
   // different ways
   export enum Display {
-    Label, Value
+    Label,
+    Value
   }
 
   // Standard Device Settings:
@@ -89,7 +90,11 @@ export namespace Device {
       return flags;
     }
 
-    getDisplayString(displayType: Device.Display, key: string, TRANSLATE: TranslateFunction): string {
+    getDisplayString(
+      displayType: Device.Display,
+      key: string,
+      TRANSLATE: TranslateFunction
+    ): string {
       key = key.toLowerCase().replace(/\W/g, '');
       let translationKey = '';
       let displayString = undefined;
@@ -106,9 +111,7 @@ export namespace Device {
               displayString = TRANSLATE('settings.tap-sensitivity');
               break;
             case 'powerassistbuzzer':
-              displayString = TRANSLATE(
-                'settings.power-assist-buzzer'
-              );
+              displayString = TRANSLATE('settings.power-assist-buzzer');
               break;
             case 'controlmode':
               displayString = TRANSLATE('settings.control-mode');
@@ -144,8 +147,7 @@ export namespace Device {
               displayString = `${this.controlMode}`;
               break;
             case 'units':
-              translationKey =
-                'sd.settings.units.' + this.units.toLowerCase();
+              translationKey = 'sd.settings.units.' + this.units.toLowerCase();
               displayString = TRANSLATE(translationKey);
               break;
           }
@@ -297,7 +299,9 @@ export namespace Device {
 
     copy(s: any) {
       // from a push-settings class exactly like this
-      Object.keys(Device.PushSettings.Defaults).forEach(k => this.copyKey(k, s));
+      Object.keys(Device.PushSettings.Defaults).forEach(k =>
+        this.copyKey(k, s)
+      );
     }
 
     equals(ps: any): boolean {
@@ -335,7 +339,11 @@ export namespace Device {
       super();
     }
 
-    getDisplayString(displayType: Device.Display, key: string, TRANSLATE: TranslateFunction): string {
+    getDisplayString(
+      displayType: Device.Display,
+      key: string,
+      TRANSLATE: TranslateFunction
+    ): string {
       key = key.toLowerCase().replace(/\W/g, '');
       let translationKey = '';
       let displayString = undefined;
@@ -357,8 +365,7 @@ export namespace Device {
               break;
             case 'switchcontrolmode':
               translationKey =
-                'sd.switch-settings.mode.' +
-                this.mode.toLowerCase();
+                'sd.switch-settings.mode.' + this.mode.toLowerCase();
               displayString = TRANSLATE(translationKey);
               break;
           }

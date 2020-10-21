@@ -1,19 +1,17 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es5",
-    "esModuleInterop": true,
+    "module": "ESNext",
+    "target": "es2017",
+    "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "diagnostics": false,
-    "listEmittedFiles": false,
     "noEmitHelpers": true,
-    "noEmitOnError": false,
+    "noEmitOnError": true,
     "removeComments": true,
     "skipLibCheck": true,
     "noImplicitUseStrict": true,
     "declaration": false,
-    "lib": ["es6", "dom", "ES2020", "es2015.iterable"],
+    "lib": ["es2018", "es2017", "dom", "es6"],
     "baseUrl": ".",
     "paths": {
       "~/*": ["src/*"],
@@ -21,22 +19,15 @@
       "@permobil/angular": ["../../../@permobil/angular"],
       "@permobil/core/*": ["../../../@permobil/core/*"],
       "@permobil/nativescript/*": ["../../../@permobil/nativescript/*"],
-      "*": ["./node_modules/tns-core-modules/*", "./node_modules/*"]
-    }
+      "*": ["./node_modules/*"]
+    },
+    "allowSyntheticDefaultImports": true // for lodash
   },
-  "files": ["./src/main.ts"],
-  "include": [
-    "./src/app/**/*.module.ts",
-    "../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/src/**/*.ts",
-    "../../../@permobil/nativescript/src/**/*.ts",
-    "../../../forked-plugins/nativescript-bluetooth/**/*.ts"
-  ],
+  "include": ["src/tests/**/*.ts", "src/**/*.ios.ts", "src/**/*.android.ts"],
+  "files": ["./references.d.ts", "./src/main.ts"],
   "exclude": [
     "node_modules",
     "platforms",
-    "../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/demo/**/*.ts"
-  ],
-  "angularCompilerOptions": {
-    "disableTypeScriptVersionCheck": true // disabling for now to use TS 3.7.3 which should be fine with Angular and available in Q1 with NG9 release
-  }
+    "../../../@permobil/nativescript/src/plugins/**/*.ts"
+  ]
 }

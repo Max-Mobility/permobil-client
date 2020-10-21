@@ -1,35 +1,40 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" 
-    xmlns:ui="nativescript-auto-fit-text" 
-    xmlns:RL="nativescript-ng-ripple/ripple-view" class="change-settings-page" marginBottom="{{ chinSize / 2 }}" shownModally="onShownModally" actionBarHidden="true">
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+    xmlns:ui="@nativescript/auto-fit-text"
+    xmlns:mdr="@nativescript-community/ui-material-ripple" class="change-settings-page" marginBottom="{{ chinSize / 2 }}" shownModally="onShownModally" actionBarHidden="true">
     <GridLayout id="changeSettingsPage" rows="auto, *, auto" columns="auto, *, auto" width="100%" height="100%" paddingBottom="{{ insetPadding }}">
             // Increase the config value
-        <RL:Ripple row="0" col="1" rippleColor="#ddd" class="increase-btn">
+        <mdr:Ripple row="0" col="1" rippleColor="#ddd" class="increase-btn">
             <StackLayout tap="{{ onIncreaseSettingsTap }}">
                 <Label text="&#xe904;" fontSize="42" />
             </StackLayout>
-        </RL:Ripple>
+        </mdr:Ripple>
+        <!-- <RL:Ripple row="0" col="1" rippleColor="#ddd" class="increase-btn"> -->
+        <!-- <StackLayout tap="{{ onIncreaseSettingsTap }}">
+                <Label text="&#xe904;" fontSize="42" />
+            </StackLayout> -->
+        <!-- </RL:Ripple> -->
             // Cancel Button - closes the layout
-        <RL:Ripple row="1" col="0" rippleColor="#ddd" class="cancel-btn">
+        <mdr:Ripple row="1" col="0" rippleColor="#ddd" class="cancel-btn">
             <StackLayout tap="onCancelChangesTap">
                 <Label text="&#xe900;" fontSize="32" />
             </StackLayout>
-        </RL:Ripple>
+        </mdr:Ripple>
         <StackLayout row="1" col="1" class="value-circle" tap="{{ onSettingsInfoItemTap }}">
             <ui:AutoFitText text="{{ changeSettingKeyValue }}" class="changeSettingsValue" />
             <Label text="{{ changeSettingKeyString }}" textWrap="true" class="changeSettingsTitle no-margin"/>
             <Label text="&#xe908;" class="info-icon"/>
         </StackLayout>
             // Confirm button - will save the changes
-        <RL:Ripple row="1" col="2" rippleColor="#ddd" class="confirm-btn">
+        <mdr:Ripple row="1" col="2" rippleColor="#ddd" class="confirm-btn">
             <StackLayout tap="{{ onConfirmChangesTap }}">
                 <Label text="&#xe906;" fontSize="32" />
             </StackLayout>
-        </RL:Ripple>
+        </mdr:Ripple>
             // Decrease the config value
-        <RL:Ripple row="2" col="1" rippleColor="#ddd" class="decrease-btn">
+        <mdr:Ripple row="2" col="1" rippleColor="#ddd" class="decrease-btn">
             <StackLayout tap="{{ onDecreaseSettingsTap }}">
                 <Label text="&#xe901;" fontSize="42" />
             </StackLayout>
-        </RL:Ripple>
+        </mdr:Ripple>
     </GridLayout>
 </Page>

@@ -23,6 +23,7 @@
     "deny": "Kieltää",
     "disable": "Poista käytöstä",
     "dismiss": "Erottaa",
+    "do-not-show-again": "Älä näytä uudelleen",
     "enable": "Ota käyttöön",
     "ok": "Kunnossa"
   },
@@ -59,11 +60,13 @@
       "batteryvoltage": "[ERR: 001] SD-akun jännite",
       "bledisconnect": "[ERR: 007] Bluetooth-yhteyden katkaisu",
       "gyrorange": "[ERR: 005] SD-kulma",
+      "motordriverfault": "[ERR: 008] SD-moottorisiru",
       "motorphases": "[ERR: 002] SD-moottori",
       "otaunavailable": "[ERR: 006] Päivitykset eivät ole käytettävissä",
       "overcurrent": "[ERR: 003] SD-virtapiikki",
       "overtemperature": "[ERR: 004] SD-ylikuumeneminen"
     },
+    "load-more": "Lataa lisää",
     "loading": "Ladataan ...",
     "no-errors": "Mitään SmartDrive-virheitä ei ole tallennettu tai vastaanotettu.",
     "title": "SmartDrive-virhehistoria"
@@ -91,6 +94,24 @@
     "title": "Ilmoitus",
     "too-many-smartdrives-found": "Löydetty useita SmartDrive-koneita. Varmista, että lähellä on vain yksi SmartDrive-laite pariliitoksen muodostamisen aikana."
   },
+  "language-list": {
+    "cs": "čeština",
+    "da": "Dansk",
+    "de": "deutsche",
+    "en": "Englanti",
+    "es": "español",
+    "fi": "Suomalainen",
+    "fr": "français",
+    "it": "italiano",
+    "ja": "日本人",
+    "ko": "한국어",
+    "nb": "Norsk Bokmål",
+    "nl": "Nederlands",
+    "pl": "polski",
+    "pt": "Português",
+    "sv": "Svenska",
+    "zh": "中國 傳統 的"
+  },
   "languages": {
     "cs": "Czech",
     "da": "Tanskan kieli",
@@ -115,6 +136,42 @@
     "title": "SmartDrive MX2 -valikko",
     "training": "Napauta Training",
     "updates": "Langattomat päivitykset"
+  },
+  "notifications": {
+    "accelerate-while-moving": "Nosta ajonopeus, kun olet jo risteilyssä! Työnnä pyörää mennäksesi nopeammin, ja yhdellä napautuksella PushTrackerillä. Pidä SwitchControl-painiketta painettuna lisätäksesi nopeutta uudelleen.",
+    "access-more-features": "Haluatko lisätietoja päivittäisestä / viikottaisesta / kuukausittaisesta propulsiotoiminnastasi? Käy Permobilin verkkosivustolla saadaksesi lisätietoja SmartDriven ja PushTrackerin hyödyntämisestä!",
+    "channels": {
+      "maintenance": "ylläpito",
+      "personal-record": "Henkilökohtainen ennätys",
+      "smartdrive": "SmartDrive"
+    },
+    "daily-distance-record": "Teit sen! Saavutit uuden henkilökohtaisen ennätyksen päivässä kuluneista matkoista. Jatka samoin! Älä unohda rannikkoa. #ChooseToDoMore",
+    "odometer-records-part-one": "Kyse on siitä, että teet enemmän pitäen hartiat terveinä. Olet laittanut",
+    "odometer-records-part-two": "SmartDrive-laitteellasi. #ChooseToDoMore",
+    "open-pt-wear": "Haluatko tietää enemmän päivittäisestä liikkuvuudestasi? Avaa PushTracker-sovellus, jotta näet päivittäisen työntömäärän, rannikkoajan ja kuljetun matkan.",
+    "routine-maintenance": "Laitteesi pitäminen puhtaana auttaa sitä kestämään pidempään! Käytä kosteaa sientä, mietoa pesuainetta ja kuivaa huolellisesti, jotta SmartDrive pysyy uudenlaisena! (Älä liota tai upota)",
+    "sc-light-indications": "Kiinnostaako vilkkuvat valot SwitchControl-painikkeissasi? Katso käyttöoppaasta tai Permobil YouTube -sivulta, mitä kukin tarkoittaa.",
+    "sd-clamp-check": "Aika tarkistaa kohdistuksesi! Varmista, että kiinnitin tai taittokehyssovitin on asetettu oikein. Katso ohjeet tai ota meihin yhteyttä.",
+    "sd-e2-charging": "Parhaan suorituskyvyn saavuttamiseksi aloita joka päivä SmartDrive täyteen ladattuna. Varmista, että pidät sitä yli 25%: n varauksessa, varsinkin jos et aio käyttää sitä pitkään aikaan. Tarkista käyttöohjeet tai ota yhteys Permobiliin saadaksesi lisätietoja.",
+    "sd-roller-check": "Tarkista rullasi. Näetkö tasaisia paikkoja? Onko niitä vaikea pyörittää? Ota yhteyttä Permobiliin tänään keskustellaksesi.",
+    "switch-control-reminder": "SwitchControl-painikkeet antavat sinulle toisen tavan hallita. Liitä ne suoraan SmartDrive-latausporttiin (ei tarvita Bluetoothia). Paina painiketta ajaaksesi, pysäyttääksesi tai asettaaksesi nopeutesi. Ota yhteyttä palveluntarjoajaasi tai Permobil-tukeen saadaksesi lisätietoja.",
+    "tire-pressure": "Rengaspaine vaikuttaa suuresti kykyyn työntää. Oletko tarkistanut sen viime aikoina?",
+    "titles": {
+      "accelerate-while-moving": "Nopeuttaa",
+      "access-more-features": "Käyttövoima ja paljon muuta",
+      "daily-distance-record": "Päivittäinen matkatietue!",
+      "odometer-records": "Matkamittarin ennätys!",
+      "open-pt-wear": "Avaa PushTracker Wear -sovellus",
+      "routine-maintenance": "Rutiinihuolto",
+      "sc-light-indications": "Painikkeen merkinnät",
+      "sd-clamp-check": "Liitetarkistuksen muistutus",
+      "sd-e2-charging": "SmartDrive- ja PushTracker-lataus",
+      "sd-roller-check": "Rullien tarkistusmuistutus",
+      "switch-control-reminder": "SwitchControl-painikkeet",
+      "tire-pressure": "Renkaiden tarkastuksen muistutus",
+      "unlock-more-features": "Enemmän"
+    },
+    "unlock-more-features": "Tekstiviestit ja kalenterihälytykset ovat vain muutamia muita ominaisuuksia, jotka saat PushTracker-laitteeltasi. Ota yhteyttä Permobiliin tai käy verkkosivustollamme saadaksesi lisätietoja siitä, miten se antaa sinulle enemmän toimintoja."
   },
   "ota": {
     "action": {
@@ -188,6 +245,7 @@
     "description": {
       "acceleration": "SmartDriven kiihtyvyys- tai nopeudenrampinopeus.",
       "controlmode": "MX2: SmartDriven oletusarvoinen eleperusteinen toiminta. MX2-ohjaustilassa kaksoisnapautus alkaa ajaa moottoria lisäämällä sen nopeutta, yksi napautus menee rannalle nykyisellä nopeudella ja kaksoisnapautus poistaa käytöstä ajon.\n\nMX2: MX2-ohjaustilassa SmartDrive alkaa ajaa tunteessasi työntösi ja deaktivoi ajamisen, kun napautat. Huomaa, että tämä on vanha tukivaihtoehto.\n\nMX1: MX1-ohjaustilassa SmartDrive alkaa ajaa tunteessasi työntösi ja lopettaa ajamisen, kun napautat tai jarrutat käsipyörää. Huomaa, että tämä on vanha tukivaihtoehto.",
+      "language": "SmartDrive-sovelluksen tekstin kieli.",
       "maxspeed": "Suurin nopeus, jolla SmartDrive voi ajaa, kun älykellosi sitä ohjaa.",
       "powerassistbuzzer": "Kun asetus on käytössä, SmartDrive antaa äänimerkin aina, kun yhteys etälaitteesta muodostetaan tai kun SwitchControl poistetaan valmiustilasta.",
       "powerassisttimeout": "SmartDrive deaktivoi virranohjauksen automaattisesti määritetyn ajan kuluttua, jos käyttäjällä on virranhallintatoiminto aktiivinen ja hän on kytketty SmartDriveen, mutta ei ole aktivoinut moottoria ennen aikakatkaisun päättymistä.\n\nHuomaa: SmartDrive deaktivoi virranohjauksen automaattisesti yhden minuutin kuluttua, jos sitä ei ole kytketty SmartDriveen.",
@@ -199,6 +257,7 @@
     },
     "error-history": "Virhehistoria",
     "information": "Tiedot",
+    "language": "kieli",
     "max-speed": "Maksiminopeus",
     "pair-smartdrive": "Yhdistä SmartDrive",
     "paired-to-smartdrive": "Yhdistäminen onnistuneesti SmartDriveen.",
@@ -210,6 +269,8 @@
     },
     "scanning": "Skannataan SmartDrive-paria pariksi ...",
     "select-smartdrive": "Valitse SmartDrive",
+    "send-settings-prompt": "SmartDrive-asetusten muutokset tulevat voimaan vasta, kun PushTracker on muodostanut yhteyden SmartDriveen. Haluatko kytkeä virranhallinnan päälle nyt, kun haluat muodostaa yhteyden SmartDriveen ja päivittää sen asetukset?",
+    "set-time": "Treffiaika",
     "syncing-with-server": "Synkronointi palvelimen kanssa ...",
     "tap-sensitivity": "Napauta Herkkyys",
     "title": "SmartDrive-asetukset",
@@ -239,6 +300,7 @@
     }
   },
   "updates": {
+    "available": "SmartDriveesi on saatavilla päivityksiä. Haluatko mennä Langattomat päivitykset -sivulle lataamaan ja suorittamaan päivitykset?",
     "canceled": "SmartDrive-päivitykset peruutettiin.",
     "changes": "Yhteenveto muutoksista",
     "checking-for-updates": "Tarkistetaan päivitykset ...",
@@ -255,6 +317,7 @@
     },
     "failed": "SmartDrive-päivitykset epäonnistuivat.",
     "initializing": "Päivitysten alustaminen ...",
+    "perform": "Päivitä SmartDrive",
     "status": "Päivitysten tila",
     "success": "SmartDrive-päivitykset onnistui!",
     "timeout": "SmartDrive-päivitykset ovat vanhentuneet.",
@@ -263,6 +326,7 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "Haluatko varmasti vaihtaa kieltä? SmartDrive MX2 -sovelluksen on käynnistyttävä uudelleen, jotta kielen muutos voidaan ottaa käyttöön.",
       "message": "VAROITUS: Sinun on Tutustu SmartDrive-käyttöoppaaseen kuinka asetusten muuttaminen vaikuttaa laitteen toimintaan ja suorituskykyyn.",
       "title": "Muutetut asetukset"
     },

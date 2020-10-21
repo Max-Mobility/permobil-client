@@ -1,18 +1,45 @@
 import { Component, ViewContainerRef } from '@angular/core';
+import {
+  Query as KinveyQuery,
+  User as KinveyUser
+} from '@bradmartin/kinvey-nativescript-sdk';
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 import { ModalDialogService } from '@nativescript/angular';
-import { Color, ImageSource, ItemEventData, Page } from '@nativescript/core';
-import * as appSettings from '@nativescript/core/application-settings';
+import {
+  ApplicationSettings as appSettings,
+  Color,
+  ImageSource,
+  ItemEventData,
+  Page
+} from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
-import { User as KinveyUser, Query as KinveyQuery } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
 import { Toasty } from 'nativescript-toasty';
 import { ActivityComponent } from '..';
-import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS, TIME_FORMAT } from '../../enums';
-import { PushTrackerUser, DeviceBase } from '../../models';
-import { ActivityService, SmartDriveUsageService, LoggingService } from '../../services';
-import { areDatesSame, convertToMilesIfUnitPreferenceIsMiles, format24Hour, formatAMPM, getDayOfWeek, getFirstDayOfWeek, getTimeOfDayFromStartTime, getTimeOfDayString, YYYY_MM_DD } from '../../utils';
+import {
+  APP_THEMES,
+  DISTANCE_UNITS,
+  STORAGE_KEYS,
+  TIME_FORMAT
+} from '../../enums';
+import { DeviceBase, PushTrackerUser } from '../../models';
+import {
+  ActivityService,
+  LoggingService,
+  SmartDriveUsageService
+} from '../../services';
+import {
+  areDatesSame,
+  convertToMilesIfUnitPreferenceIsMiles,
+  format24Hour,
+  formatAMPM,
+  getDayOfWeek,
+  getFirstDayOfWeek,
+  getTimeOfDayFromStartTime,
+  getTimeOfDayString,
+  YYYY_MM_DD
+} from '../../utils';
 
 enum JourneyType {
   'ROLL',
@@ -33,8 +60,8 @@ class JourneyItem {
   templateUrl: './journey-tab.component.html'
 })
 export class JourneyTabComponent {
-  public APP_THEMES = APP_THEMES;
-  public DISTANCE_UNITS = DISTANCE_UNITS;
+  APP_THEMES = APP_THEMES;
+  DISTANCE_UNITS = DISTANCE_UNITS;
   journeyItems = undefined;
   CURRENT_THEME: string;
   savedTimeFormat: string;
@@ -49,13 +76,13 @@ export class JourneyTabComponent {
   private _weekStart: Date;
   private _rollingWeekStart: Date;
   private _journeyMap = {};
-  public noMorePushTrackerActivityDataAvailable = false;
-  public noMoreSmartDriveUsageDataAvailable = false;
-  public noMoreDataAvailable = false;
+  noMorePushTrackerActivityDataAvailable = false;
+  noMoreSmartDriveUsageDataAvailable = false;
+  noMoreDataAvailable = false;
 
-  public static api_base = PushTrackerKinveyKeys.HOST_URL;
-  public static api_app_key = PushTrackerKinveyKeys.PROD_KEY;
-  public static api_app_secret = PushTrackerKinveyKeys.PROD_SECRET;
+  static api_base = PushTrackerKinveyKeys.HOST_URL;
+  static api_app_key = PushTrackerKinveyKeys.PROD_KEY;
+  static api_app_secret = PushTrackerKinveyKeys.PROD_SECRET;
   private _weeklyActivityFromKinvey: any;
   private _weeklyUsageFromKinvey: any;
   private MAX_COMMIT_INTERVAL_MS: number = 1 * 3000; // 3 seconds
@@ -68,7 +95,7 @@ export class JourneyTabComponent {
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _page: Page
-  ) { }
+  ) {}
 
   onJourneyTabLoaded() {
     this._logService.logBreadCrumb(JourneyTabComponent.name, 'Loaded');
@@ -84,14 +111,19 @@ export class JourneyTabComponent {
       .then(() => {
         this.savedTimeFormat =
           this.user.data.time_format_preference || TIME_FORMAT.AM_PM;
-        this._refresh(false)
-          .catch(err => {
-            this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to init journey items');
-            // this._logService.logException(err);
-          });
+        this._refresh(false).catch(err => {
+          this._logService.logBreadCrumb(
+            JourneyTabComponent.name,
+            'Failed to init journey items'
+          );
+          // this._logService.logException(err);
+        });
       })
       .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to refresh user from kinvey');
+        this._logService.logBreadCrumb(
+          JourneyTabComponent.name,
+          'Failed to refresh user from kinvey'
+        );
         // this._logService.logException(err);
       });
     this._today = new Date();
@@ -133,7 +165,10 @@ export class JourneyTabComponent {
         this.showLoadingIndicator = false;
       })
       .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load data for date in onLoadMoreItems' + err);
+        this._logService.logBreadCrumb(
+          JourneyTabComponent.name,
+          'Failed to load data for date in onLoadMoreItems' + err
+        );
         // this._logService.logException(err);
       });
   }
@@ -143,7 +178,7 @@ export class JourneyTabComponent {
       let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
         DeviceBase.caseTicksToKilometers(
           this.todayUsage.distance_smartdrive_coast -
-          this.todayUsage.distance_smartdrive_coast_start
+            this.todayUsage.distance_smartdrive_coast_start
         ),
         this.user.data.distance_unit_preference
       );
@@ -177,17 +212,14 @@ export class JourneyTabComponent {
     this._logService.logBreadCrumb(JourneyTabComponent.name, 'Refreshing data');
     return this.refreshUserFromKinvey()
       .then(async () => {
-
         // actually synchronize with the server
         if (syncWithServer) {
           try {
             await this._activityService.refreshWeekly();
-          } catch (err) {
-          }
+          } catch (err) {}
           try {
             await this._usageService.refreshWeekly();
-          } catch (err) {
-          }
+          } catch (err) {}
         }
 
         // now load the cached or refreshed data and display it
@@ -212,13 +244,19 @@ export class JourneyTabComponent {
             this.journeyItemsLoaded = true;
           })
           .catch(err => {
-            this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load data for date when refreshing user' + err);
+            this._logService.logBreadCrumb(
+              JourneyTabComponent.name,
+              'Failed to load data for date when refreshing user' + err
+            );
             // this._logService.logException(err);
             this.journeyItemsLoaded = true;
           });
       })
       .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to refresh user from kinvey in _refresh');
+        this._logService.logBreadCrumb(
+          JourneyTabComponent.name,
+          'Failed to refresh user from kinvey in _refresh'
+        );
         // this._logService.logException(err);
       });
   }
@@ -236,12 +274,18 @@ export class JourneyTabComponent {
                   return result;
                 })
                 .catch(err => {
-                  this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to process journey map');
+                  this._logService.logBreadCrumb(
+                    JourneyTabComponent.name,
+                    'Failed to process journey map'
+                  );
                   // this._logService.logException(err);
                 });
             })
             .catch(err => {
-              this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load weekly smartdrive usage' + err);
+              this._logService.logBreadCrumb(
+                JourneyTabComponent.name,
+                'Failed to load weekly smartdrive usage' + err
+              );
               // this._logService.logException(err);
             });
         } else {
@@ -258,12 +302,18 @@ export class JourneyTabComponent {
               return result;
             })
             .catch(err => {
-              this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to process journey map');
+              this._logService.logBreadCrumb(
+                JourneyTabComponent.name,
+                'Failed to process journey map'
+              );
               // this._logService.logException(err);
             });
         })
         .catch(err => {
-          this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load weekly smartdrive usage');
+          this._logService.logBreadCrumb(
+            JourneyTabComponent.name,
+            'Failed to load weekly smartdrive usage'
+          );
           // this._logService.logException(err);
         });
     } else {
@@ -295,7 +345,7 @@ export class JourneyTabComponent {
       })
       .sort()
       .reverse()
-      .forEach(function(key) {
+      .forEach(function (key) {
         orderedJourneyMap[key] = self._journeyMap[key];
       });
 
@@ -424,9 +474,14 @@ export class JourneyTabComponent {
           // https://github.com/Max-Mobility/permobil-client/issues/249
           // If coastTime is zero, if coastDistance is less then 0.1
           // then hide the list item
-          if (!journey.coastTime || journey.coastTime === 0 ||
-            !journey.coastCount || journey.coastCount <= 10 ||
-            !journey.pushCount || journey.pushCount <= 10) {
+          if (
+            !journey.coastTime ||
+            journey.coastTime === 0 ||
+            !journey.coastCount ||
+            journey.coastCount <= 10 ||
+            !journey.pushCount ||
+            journey.pushCount <= 10
+          ) {
             if (!journey.coastDistance || journey.coastDistance < 0.1) continue;
           }
 
@@ -460,27 +515,29 @@ export class JourneyTabComponent {
             icon_small:
               this.CURRENT_THEME === APP_THEMES.DEFAULT
                 ? ImageSource.fromResourceSync(
-                  journey.journeyType === JourneyType.ROLL
-                    ? 'roll_black'
-                    : 'smartdrive_material_black_45'
-                )
+                    journey.journeyType === JourneyType.ROLL
+                      ? 'roll_black'
+                      : 'smartdrive_material_black_45'
+                  )
                 : ImageSource.fromResourceSync(
-                  journey.journeyType === JourneyType.ROLL
-                    ? 'roll_white'
-                    : 'smartdrive_material_white_45'
-                ),
-            icon_large:
-              ImageSource.fromResourceSync(
-                journey.journeyType === JourneyType.ROLL
-                  ? 'roll_white'
-                  : 'smartdrive_material_white_45'
-              )
+                    journey.journeyType === JourneyType.ROLL
+                      ? 'roll_white'
+                      : 'smartdrive_material_white_45'
+                  ),
+            icon_large: ImageSource.fromResourceSync(
+              journey.journeyType === JourneyType.ROLL
+                ? 'roll_white'
+                : 'smartdrive_material_white_45'
+            )
           });
         }
         return newJourneyItems;
       })
       .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to merge journey items');
+        this._logService.logBreadCrumb(
+          JourneyTabComponent.name,
+          'Failed to merge journey items'
+        );
         // this._logService.logException(err);
       });
   }
@@ -491,8 +548,8 @@ export class JourneyTabComponent {
       journeyList.push({ startTime: key, stats: orderedJourneyMap[key] });
     }
 
-    const arrayRemove = function(arr, value) {
-      return arr.filter(function(ele) {
+    const arrayRemove = function (arr, value) {
+      return arr.filter(function (ele) {
         return ele !== value;
       });
     };
@@ -515,10 +572,16 @@ export class JourneyTabComponent {
           // https://github.com/Max-Mobility/permobil-client/issues/249
           // If coastTime is zero, if coastDistance is less then 0.1
           // then hide the list item
-          if (!second.stats.coastTime || second.stats.coastTime === 0 ||
-            !second.stats.coastCount || second.stats.coastCount <= 10 ||
-            !second.stats.pushCount || second.stats.pushCount <= 10) {
-            if (!second.stats.coastDistance || second.stats.coastDistance < 0.1) break;
+          if (
+            !second.stats.coastTime ||
+            second.stats.coastTime === 0 ||
+            !second.stats.coastCount ||
+            second.stats.coastCount <= 10 ||
+            !second.stats.pushCount ||
+            second.stats.pushCount <= 10
+          ) {
+            if (!second.stats.coastDistance || second.stats.coastDistance < 0.1)
+              break;
           }
 
           // Then, merge entries
@@ -588,7 +651,8 @@ export class JourneyTabComponent {
     query.lessThanOrEqualTo('date', date);
     query.descending('date');
     query.limit = 1;
-    return this._activityService.getWeeklyActivityWithQuery(query)
+    return this._activityService
+      .getWeeklyActivityWithQuery(query)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -607,7 +671,10 @@ export class JourneyTabComponent {
         return Promise.resolve(this._weeklyActivityFromKinvey);
       })
       .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to get activity from kinvey');
+        this._logService.logBreadCrumb(
+          JourneyTabComponent.name,
+          'Failed to get activity from kinvey'
+        );
         // this._logService.logException(err);
         return Promise.reject([]);
       });
@@ -622,7 +689,9 @@ export class JourneyTabComponent {
           // query.lessThanOrEqualTo('date', date), it could load a
           // week prior to the week we actually requested -
           // https://github.com/Max-Mobility/permobil-client/issues/566
-          if (YYYY_MM_DD(this._weekStart) === this._weeklyActivityFromKinvey.date) {
+          if (
+            YYYY_MM_DD(this._weekStart) === this._weeklyActivityFromKinvey.date
+          ) {
             const index = getDayOfWeek(new Date());
             this.todayActivity = this._weeklyActivityFromKinvey.days[index];
           }
@@ -658,7 +727,10 @@ export class JourneyTabComponent {
         return didLoad;
       })
       .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Faield to load weekly pushtracker activity from kinvey');
+        this._logService.logBreadCrumb(
+          JourneyTabComponent.name,
+          'Faield to load weekly pushtracker activity from kinvey'
+        );
         // this._logService.logException(err);
         return false;
       });
@@ -678,7 +750,8 @@ export class JourneyTabComponent {
     query.lessThanOrEqualTo('date', date);
     query.descending('date');
     query.limit = 1;
-    return this._usageService.getWeeklyActivityWithQuery(query)
+    return this._usageService
+      .getWeeklyActivityWithQuery(query)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -697,7 +770,10 @@ export class JourneyTabComponent {
         return Promise.resolve(this._weeklyUsageFromKinvey);
       })
       .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to get usage from kinvey');
+        this._logService.logBreadCrumb(
+          JourneyTabComponent.name,
+          'Failed to get usage from kinvey'
+        );
         // this._logService.logException(err);
         return Promise.reject([]);
       });
@@ -712,7 +788,9 @@ export class JourneyTabComponent {
           // query.lessThanOrEqualTo('date', date), it could load a
           // week prior to the week we actually requested -
           // https://github.com/Max-Mobility/permobil-client/issues/566
-          if (YYYY_MM_DD(this._weekStart) === this._weeklyUsageFromKinvey.date) {
+          if (
+            YYYY_MM_DD(this._weekStart) === this._weeklyUsageFromKinvey.date
+          ) {
             const index = getDayOfWeek(new Date());
             this.todayUsage = this._weeklyUsageFromKinvey.days[index];
           }
@@ -786,7 +864,10 @@ export class JourneyTabComponent {
         return didLoad;
       })
       .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load weekly smartdrive usage from kinvey' + err);
+        this._logService.logBreadCrumb(
+          JourneyTabComponent.name,
+          'Failed to load weekly smartdrive usage from kinvey' + err
+        );
         // this._logService.logException(err);
         return Promise.reject(false);
       });

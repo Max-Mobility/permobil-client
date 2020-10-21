@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Kinvey } from '@bradmartin/kinvey-nativescript-sdk';
 import { TranslateService } from '@ngx-translate/core';
-import { Kinvey } from 'kinvey-nativescript-sdk';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import { EventData } from 'tns-core-modules/data/observable';
 import { isIOS } from 'tns-core-modules/platform';

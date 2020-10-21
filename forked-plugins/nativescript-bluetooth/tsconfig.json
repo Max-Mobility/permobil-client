@@ -1,36 +1,24 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "target": "ES2017",
+    "module": "esnext",
+    "moduleResolution": "node",
     "skipLibCheck": true,
-    "target": "es5",
     "removeComments": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "noEmitHelpers": true,
-    "noEmitOnError": false,
+    "noEmitOnError": true,
     "declaration": false,
-    "lib": ["es6", "es2016", "dom"],
-    "baseUrl": "."
+    "lib": ["es6", "dom"],
+    "baseUrl": ".",
+    "plugins": [
+      {
+        "transform": "@nativescript/webpack/transformers/ns-transform-native-classes",
+        "type": "raw"
+      }
+    ]
   },
   "compileOnSave": false,
-  "files": [
-    "./node_modules/@nativescript/core/nativescript-core.d.ts",
-    "./node_modules/tns-platform-declarations/android/android-platform-23.d.ts",
-    "./node_modules/tns-platform-declarations/ios.d.ts",
-    "common.ts",
-    "index.ts",
-    "index.ios.ts",
-    "index.android.ts",
-    "./ios/CBCentralManagerDelegateImpl.ts",
-    "./ios/CBPeripheralDelegateImpl.ts",
-    "./ios/CBPeripheralManagerDelegateImpl.ts",
-    "./android/android_main.ts",
-    "./android/TNS_AdvertiseCallback.ts",
-    "./android/TNS_BluetoothGattCallback.ts",
-    "./android/TNS_BluetoothGattServerCallback.ts",
-    "./android/TNS_BroadcastReceiver.ts",
-    "./android/TNS_LeScanCallback.ts",
-    "./android/TNS_ScanCallback.ts"
-  ],
-  "exclude": ["node_modules", "platforms"]
+  "exclude": ["node_modules", "platforms", "typings"]
 }

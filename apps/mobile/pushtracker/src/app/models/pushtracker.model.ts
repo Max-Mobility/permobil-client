@@ -1,9 +1,11 @@
-import { File, isIOS, knownFolders, path } from '@nativescript/core';
-import * as timer from '@nativescript/core/timer';
+import { File, isIOS, knownFolders, path, Utils } from '@nativescript/core';
 import { bindingTypeToString, Device, Packet } from '@permobil/core';
 import { differenceInCalendarDays } from 'date-fns';
 import throttle from 'lodash/throttle';
-import { DownloadProgress } from 'nativescript-download-progress';
+import {
+  DownloadProgress,
+  RequestOptions
+} from 'nativescript-download-progress';
 import { BluetoothService } from '../services';
 import { DeviceBase } from './device-base.model';
 
@@ -55,15 +57,15 @@ export class PushTracker extends DeviceBase {
   static ota_ready_event = 'ota_ready_event';
 
   // user interaction events
-  public static ota_start_event = 'ota_start_event';
-  public static ota_pause_event = 'ota_pause_event';
-  public static ota_resume_event = 'ota_resume_event';
-  public static ota_cancel_event = 'ota_cancel_event';
-  public static ota_force_event = 'ota_force_event';
-  public static ota_retry_event = 'ota_retry_event';
-  public static ota_failed_event = 'ota_failed_event';
-  public static ota_timeout_event = 'ota_timeout_event';
-  public static pushtracker_ota_status_event = 'pushtracker_ota_status_event'; // sends state, actions, progress
+  static ota_start_event = 'ota_start_event';
+  static ota_pause_event = 'ota_pause_event';
+  static ota_resume_event = 'ota_resume_event';
+  static ota_cancel_event = 'ota_cancel_event';
+  static ota_force_event = 'ota_force_event';
+  static ota_retry_event = 'ota_retry_event';
+  static ota_failed_event = 'ota_failed_event';
+  static ota_timeout_event = 'ota_timeout_event';
+  static pushtracker_ota_status_event = 'pushtracker_ota_status_event'; // sends state, actions, progress
 
   canBackNavigate = true;
 
@@ -275,10 +277,10 @@ export class PushTracker extends DeviceBase {
           }
           // stop the timer
           if (otaIntervalID) {
-            timer.clearInterval(otaIntervalID);
+            Utils.clearInterval(otaIntervalID);
           }
           // now actually start the ota
-          otaIntervalID = timer.setInterval(runOTA, 250);
+          otaIntervalID = Utils.setInterval(runOTA, 250);
         };
 
         // Handlers
@@ -300,9 +302,9 @@ export class PushTracker extends DeviceBase {
           this.otaStartTime = new Date();
           // start the timeout timer
           if (otaTimeoutID) {
-            timer.clearTimeout(otaTimeoutID);
+            Utils.clearTimeout(otaTimeoutID);
           }
-          otaTimeoutID = timer.setTimeout(() => {
+          otaTimeoutID = Utils.setTimeout(() => {
             this.sendEvent(PushTracker.ota_timeout_event);
           }, otaTimeout);
         };
@@ -376,7 +378,7 @@ export class PushTracker extends DeviceBase {
           if (cancelOTA) {
             return;
           } else if (paused) {
-            timer.setTimeout(() => {
+            Utils.setTimeout(() => {
               writeFirmwareSector(fwSector, characteristic, nextState);
             }, 100);
           } else if (index < fileSize) {
@@ -390,7 +392,7 @@ export class PushTracker extends DeviceBase {
                 .then(_ => {
                   index += payloadSize;
                   if (isIOS) {
-                    timer.setTimeout(() => {
+                    Utils.setTimeout(() => {
                       writeFirmwareSector(fwSector, characteristic, nextState);
                     }, 30);
                   } else {
@@ -398,19 +400,19 @@ export class PushTracker extends DeviceBase {
                   }
                 })
                 .catch(_ => {
-                  timer.setTimeout(() => {
+                  Utils.setTimeout(() => {
                     writeFirmwareSector(fwSector, characteristic, nextState);
                   }, 100);
                 });
             } else {
-              timer.setTimeout(() => {
+              Utils.setTimeout(() => {
                 writeFirmwareSector(fwSector, characteristic, nextState);
               }, 500);
             }
           } else {
             // we are done with the sending change
             // state to the next state
-            timer.setTimeout(() => {
+            Utils.setTimeout(() => {
               // wait for a little bit
               this.otaState = nextState;
             }, 1500);
@@ -426,10 +428,10 @@ export class PushTracker extends DeviceBase {
           this.setOtaActions();
           // stop timers
           if (otaIntervalID) {
-            timer.clearInterval(otaIntervalID);
+            Utils.clearInterval(otaIntervalID);
           }
           if (otaTimeoutID) {
-            timer.clearInterval(otaTimeoutID);
+            Utils.clearInterval(otaTimeoutID);
           }
 
           unregister();
@@ -441,7 +443,7 @@ export class PushTracker extends DeviceBase {
             this.on(PushTracker.ota_cancel_event, otaCancelHandler);
             this.on(PushTracker.ota_retry_event, otaRetryHandler);
             this.setOtaActions(['ota.action.retry']);
-            otaIntervalID = timer.setInterval(runOTA, 250);
+            otaIntervalID = Utils.setInterval(runOTA, 250);
           } else {
             resolve(reason);
           }
@@ -503,7 +505,7 @@ export class PushTracker extends DeviceBase {
                 this.otaCurrentTime = new Date();
               }
               if (otaTimeoutID) {
-                timer.clearTimeout(otaTimeoutID);
+                Utils.clearTimeout(otaTimeoutID);
               }
               if (index === -1) {
                 writeFirmwareSector(
@@ -662,7 +664,7 @@ export class PushTracker extends DeviceBase {
     );
   }
 
-  public sendTime(d?: Date) {
+  sendTime(d?: Date) {
     const p = new Packet();
     const timeSettings = p.data('timeInfo');
     const date = d !== undefined ? new Date(d) : new Date();
@@ -1023,8 +1025,12 @@ export namespace PushTrackerData {
       console.log('Downloading FW update', f['_filename']);
 
       const download = new DownloadProgress();
+      const requestOptions: RequestOptions = {
+        method: 'GET',
+        headers: {}
+      };
       return download
-        .downloadFile(url)
+        .downloadFile(url, requestOptions)
         .then(file => {
           const fileData = File.fromPath(file.path).readSync();
           return {

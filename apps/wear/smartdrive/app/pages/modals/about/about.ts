@@ -1,12 +1,20 @@
-import { Page, ShowModalOptions, ShownModallyData } from '@nativescript/core';
-import { fromObject } from '@nativescript/core/data/observable';
-import { alert } from '@nativescript/core/ui/dialogs';
-import { ad as androidUtils } from '@nativescript/core/utils/utils';
+import {
+  fromObject,
+  Page,
+  ShowModalOptions,
+  ShownModallyData,
+  Utils
+} from '@nativescript/core';
 import { Log } from '@permobil/core';
-import { L } from '@permobil/nativescript';
+import { getDeviceSerialNumber, L } from '@permobil/nativescript';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
+import { Sentry } from 'nativescript-sentry';
 import { SmartDriveKinveyService } from '../../../services';
-import { configureLayout, getSerialNumber, sentryBreadCrumb } from '../../../utils';
+import {
+  configureLayout,
+  getSerialNumber,
+  sentryBreadCrumb
+} from '../../../utils';
 
 let closeCallback;
 let kinveyService;
@@ -64,7 +72,7 @@ export function onShownModally(args: ShownModallyData) {
   data.sqliteService = args.context.sqliteService;
 
   // get the app version
-  const ctx = androidUtils.getApplicationContext();
+  const ctx = Utils.android.getApplicationContext();
   const packageManager = ctx.getPackageManager();
   const packageInfo = packageManager.getPackageInfo(ctx.getPackageName(), 0);
   const versionName = packageInfo.versionName;
@@ -157,7 +165,15 @@ export async function onWatchSerialNumberTap() {
       okButtonText: L('buttons.ok')
     });
     try {
-      await requestPermissions([p], () => {});
+      await requestPermissions([p], () => {
+        // Set the Sentry Context Tags
+        const device_serial_number = getDeviceSerialNumber();
+        if (device_serial_number) {
+          Sentry.setContextTags({
+            watch_serial_number: device_serial_number
+          });
+        }
+      });
     } catch (permissionsObj) {
       // could not get the permission
     }

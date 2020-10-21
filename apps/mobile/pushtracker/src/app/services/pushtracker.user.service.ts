@@ -3,10 +3,10 @@ import { Observable } from '@nativescript/core';
 
 @Injectable({ providedIn: 'root' })
 export class PushTrackerUserService extends Observable {
-  public static configuration_change_event = 'configuration_change_event';
-  public static theme_change_event = 'theme_change_event';
-  public static goal_change_event = 'goal_change_event';
-  public static units_change_event = 'units_change_event';
+  static configuration_change_event = 'configuration_change_event';
+  static theme_change_event = 'theme_change_event';
+  static goal_change_event = 'goal_change_event';
+  static units_change_event = 'units_change_event';
 
   constructor() {
     super();

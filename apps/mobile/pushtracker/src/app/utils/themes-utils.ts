@@ -1,7 +1,11 @@
-import { Color, isAndroid, isIOS } from '@nativescript/core';
-import * as TNSApplication from '@nativescript/core/application';
-import * as appSettings from '@nativescript/core/application-settings';
-import { device } from '@nativescript/core/platform';
+import {
+  Application as TNSApplication,
+  ApplicationSettings,
+  Color,
+  Device,
+  isAndroid,
+  isIOS
+} from '@nativescript/core';
 import * as themes from 'nativescript-themes';
 import { clearLightStatusBar, setDarkStatusBar, setLightStatusBar } from '.';
 import { APP_THEMES, STORAGE_KEYS } from '../enums';
@@ -35,7 +39,7 @@ export function enableDarkTheme() {
   }
 
   // save the dark theme to app-settings
-  appSettings.setString(STORAGE_KEYS.APP_THEME, APP_THEMES.DARK);
+  ApplicationSettings.setString(STORAGE_KEYS.APP_THEME, APP_THEMES.DARK);
 }
 
 export function enableDefaultTheme() {
@@ -53,11 +57,11 @@ export function enableDefaultTheme() {
   }
 
   // save the theme to app settings so we can read/load it on app_start
-  appSettings.setString(STORAGE_KEYS.APP_THEME, APP_THEMES.DEFAULT);
+  ApplicationSettings.setString(STORAGE_KEYS.APP_THEME, APP_THEMES.DEFAULT);
 }
 
 function setDarkNavigationBar() {
-  if (isAndroid && device.sdkVersion >= '23') {
+  if (isAndroid && Device.sdkVersion >= '23') {
     const darkColor = new Color('#000');
     const androidActivity: android.app.Activity =
       TNSApplication.android.startActivity ||

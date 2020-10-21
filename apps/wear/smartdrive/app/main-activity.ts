@@ -1,9 +1,14 @@
-import * as application from '@nativescript/core/application';
-import { AndroidActivityCallbacks, setActivityCallbacks } from '@nativescript/core/ui/frame';
+import {
+  AndroidActivityCallbacks,
+  Application,
+  setActivityCallbacks
+} from '@nativescript/core';
 
+@NativeClass()
 @JavaProxy('com.permobil.smartdrive.wearos.MainActivity')
 @Interfaces([androidx.wear.ambient.AmbientModeSupport.AmbientCallbackProvider])
-class MainActivity extends androidx.appcompat.app.AppCompatActivity
+class MainActivity
+  extends androidx.appcompat.app.AppCompatActivity
   implements androidx.wear.ambient.AmbientModeSupport.AmbientCallbackProvider {
   constructor() {
     super();
@@ -13,17 +18,17 @@ class MainActivity extends androidx.appcompat.app.AppCompatActivity
    * Ambient mode controller attached to this display. Used by Activity to see if it is in ambient
    * mode.
    */
-  public ambientController: androidx.wear.ambient.AmbientModeSupport.AmbientController;
+  ambientController: androidx.wear.ambient.AmbientModeSupport.AmbientController;
 
-  public isNativeScriptActivity;
+  isNativeScriptActivity;
 
   private _callbacks: AndroidActivityCallbacks;
 
-  public getAmbientCallback(): androidx.wear.ambient.AmbientModeSupport.AmbientCallback {
+  getAmbientCallback(): androidx.wear.ambient.AmbientModeSupport.AmbientCallback {
     return new MyAmbientCallback();
   }
 
-  public onCreate(savedInstanceState: android.os.Bundle): void {
+  onCreate(savedInstanceState: android.os.Bundle): void {
     // Set the isNativeScriptActivity in onCreate (as done in the original NativeScript activity code)
     // The JS constructor might not be called because the activity is created from Android.
     this.isNativeScriptActivity = true;
@@ -43,7 +48,7 @@ class MainActivity extends androidx.appcompat.app.AppCompatActivity
     );
   }
 
-  public onSaveInstanceState(outState: android.os.Bundle): void {
+  onSaveInstanceState(outState: android.os.Bundle): void {
     this._callbacks.onSaveInstanceState(
       this,
       outState,
@@ -51,23 +56,23 @@ class MainActivity extends androidx.appcompat.app.AppCompatActivity
     );
   }
 
-  public onStart(): void {
+  onStart(): void {
     this._callbacks.onStart(this, super.onStart);
   }
 
-  public onStop(): void {
+  onStop(): void {
     this._callbacks.onStop(this, super.onStop);
   }
 
-  public onDestroy(): void {
+  onDestroy(): void {
     this._callbacks.onDestroy(this, super.onDestroy);
   }
 
-  public onBackPressed(): void {
+  onBackPressed(): void {
     this._callbacks.onBackPressed(this, super.onBackPressed);
   }
 
-  public onRequestPermissionsResult(
+  onRequestPermissionsResult(
     requestCode: number,
     permissions: Array<string>,
     grantResults: Array<number>
@@ -81,7 +86,7 @@ class MainActivity extends androidx.appcompat.app.AppCompatActivity
     );
   }
 
-  public onActivityResult(
+  onActivityResult(
     requestCode: number,
     resultCode: number,
     data: android.content.Intent
@@ -96,18 +101,33 @@ class MainActivity extends androidx.appcompat.app.AppCompatActivity
   }
 }
 
+@NativeClass()
 class MyAmbientCallback extends androidx.wear.ambient.AmbientModeSupport
   .AmbientCallback {
   /** If the display is low-bit in ambient mode. i.e. it requires anti-aliased fonts. */
-  public mIsLowBitAmbient: boolean;
+  mIsLowBitAmbient: boolean;
 
   /**
    * If the display requires burn-in protection in ambient mode, rendered pixels need to be
    * intermittently offset to avoid screen burn-in.
    */
-  public mDoBurnInProtection: boolean;
+  mDoBurnInProtection: boolean;
 
-  public onEnterAmbient(ambientDetails: android.os.Bundle): void {
+  onAmbientOffloadInvalidated(): void {
+    // Called to inform an activity that whatever decomposition it has sent to Sidekick
+    // is no longer valid and should be re-sent before enabling ambient offload.
+    const eventData = {
+      eventName: 'ambientOffloadInvalidated',
+      object: null,
+      data: {
+        isLowBitAmbient: this.mIsLowBitAmbient,
+        doBurnInProtection: this.mDoBurnInProtection
+      }
+    };
+    Application.notify(eventData);
+  }
+
+  onEnterAmbient(ambientDetails: android.os.Bundle): void {
     this.mIsLowBitAmbient = ambientDetails.getBoolean(
       androidx.wear.ambient.AmbientModeSupport.EXTRA_LOWBIT_AMBIENT,
       false
@@ -126,10 +146,10 @@ class MyAmbientCallback extends androidx.wear.ambient.AmbientModeSupport
         doBurnInProtection: this.mDoBurnInProtection
       }
     };
-    application.notify(eventData);
+    Application.notify(eventData);
   }
 
-  public onExitAmbient(): void {
+  onExitAmbient(): void {
     // Handle exiting ambient mode
     const eventData = {
       eventName: 'exitAmbient',
@@ -139,10 +159,10 @@ class MyAmbientCallback extends androidx.wear.ambient.AmbientModeSupport
         doBurnInProtection: this.mDoBurnInProtection
       }
     };
-    application.notify(eventData);
+    Application.notify(eventData);
   }
 
-  public onUpdateAmbient(): void {
+  onUpdateAmbient(): void {
     // Update the content
     const eventData = {
       eventName: 'updateAmbient',
@@ -152,6 +172,6 @@ class MyAmbientCallback extends androidx.wear.ambient.AmbientModeSupport
         doBurnInProtection: this.mDoBurnInProtection
       }
     };
-    application.notify(eventData);
+    Application.notify(eventData);
   }
 }

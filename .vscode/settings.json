@@ -13,6 +13,9 @@
   "[html]": {
     "editor.formatOnSave": false
   },
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": false
+  },
   "scss.lint.validProperties": [
     "horizontal-align",
     "android-elevation",

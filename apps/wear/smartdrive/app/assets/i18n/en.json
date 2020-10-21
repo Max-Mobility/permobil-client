@@ -23,6 +23,7 @@
     "deny": "Deny",
     "disable": "Disable",
     "dismiss": "Dismiss",
+    "do-not-show-again": "Do not show again",
     "enable": "Enable",
     "ok": "OK"
   },
@@ -59,11 +60,13 @@
       "batteryvoltage": "[ERR: 001] SD Battery Voltage",
       "bledisconnect": "[ERR: 007] Bluetooth Disconnect",
       "gyrorange": "[ERR: 005] SD Angle",
+      "motordriverfault": "[ERR: 008] SD Motor Chip",
       "motorphases": "[ERR: 002] SD Motor",
       "otaunavailable": "[ERR: 006] Updates Unavailable",
       "overcurrent": "[ERR: 003] SD Current Spike",
       "overtemperature": "[ERR: 004] SD Overheating"
     },
+    "load-more": "Load More",
     "loading": "Loading...",
     "no-errors": "No SmartDrive errors have been recorded or received.",
     "title": "SmartDrive Error History"
@@ -91,6 +94,24 @@
     "title": "Notice",
     "too-many-smartdrives-found": "Multiple SmartDrives found. Make sure there is only one SmartDrive on in the vicinity when pairing."
   },
+  "language-list": {
+    "cs": "Čeština",
+    "da": "Dansk",
+    "de": "Deutsche",
+    "en": "English",
+    "es": "Español",
+    "fi": "Suomalainen",
+    "fr": "Français",
+    "it": "Italiano",
+    "ja": "日本語",
+    "ko": "한국어",
+    "nb": "Norsk Bokmål",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Português",
+    "sv": "Svenska",
+    "zh": "中國傳統的"
+  },
   "languages": {
     "cs": "Czech",
     "da": "Danish",
@@ -115,6 +136,42 @@
     "title": "SmartDrive MX2+ Menu ",
     "training": "Tap Training",
     "updates": "Wireless Updates"
+  },
+  "notifications": {
+    "accelerate-while-moving": "Pick up your driving speed while you are already cruising! Push the wheel to go faster, then single tap with your PushTracker. Press and hold SwitchControl to increase speed again.",
+    "access-more-features": "Want more information about your daily/weekly/monthly propulsion activity? Visit the Permobil website to learn how to get the most from your SmartDrive and PushTracker!",
+    "channels": {
+      "maintenance": "Maintenance",
+      "personal-record": "Personal Record",
+      "smartdrive": "SmartDrive"
+    },
+    "daily-distance-record": "You did it! You achieved a new personal record for distance traveled in a day. Keep it up! And don’t forget to coast. #ChooseToDoMore",
+    "odometer-records-part-one": "Doing more while keeping your shoulders healthy is what it is all about. You have put",
+    "odometer-records-part-two": "on your SmartDrive. #ChooseToDoMore",
+    "open-pt-wear": "Want to know more about your daily mobility? Open the PushTracker app to begin to see your push count, coast time, and distance traveled each day.",
+    "routine-maintenance": "Keeping your equipment clean helps it last longer! Use a damp sponge, mild detergent and dry thoroughly to keep your SmartDrive like new! (Do not soak or immerse)",
+    "sc-light-indications": "Curious about the flashing lights are on your SwitchControl Buttons? Refer to the User's Manual or the Permobil YouTube page to find out what each one means.",
+    "sd-clamp-check": "Time to check your alignment! Make sure your clamp or folding frame adapter are set correctly. Refer to the Instructions or contact us.",
+    "sd-e2-charging": "For maximum performance, start each day with your SmartDrive fully charged. Make sure you keep it charged above 25%, especially if you are not going to use it for an extended period of time. Check your User’s Manual or contact Permobil for details.",
+    "sd-roller-check": "Check your rollers. See flat spots? Are they hard to spin? Contact Permobil today to discuss.",
+    "switch-control-reminder": "SwitchControl Buttons give you another way of control. Plug them directly in to the SmartDrive charging port (no Bluetooth required). Press the button to drive, stop or set your speed. Contact your provider or Permobil support to learn more.",
+    "tire-pressure": "Tire pressure greatly impacts your ability to push. Have you checked it lately?",
+    "titles": {
+      "accelerate-while-moving": "Speeding Up",
+      "access-more-features": "Propulsion and More",
+      "daily-distance-record": "Daily Distance Record!",
+      "odometer-records": "Odometer Record!",
+      "open-pt-wear": "Open the PushTracker Wear App",
+      "routine-maintenance": "Routine Maintenance",
+      "sc-light-indications": "Button Indications",
+      "sd-clamp-check": "Attachment Check Reminder",
+      "sd-e2-charging": "SmartDrive & PushTracker Charging",
+      "sd-roller-check": "Rollers Check Reminder",
+      "switch-control-reminder": "SwitchControl Buttons",
+      "tire-pressure": "Tire Check Reminder",
+      "unlock-more-features": "Doing More"
+    },
+    "unlock-more-features": "Text messages and calendar alerts are just a few other features you can get from your PushTracker. Contact Permobil or visit our website to learn how to have it give you more functionality."
   },
   "ota": {
     "action": {
@@ -188,6 +245,7 @@
     "description": {
       "acceleration": "The acceleration or speed ramp rate of the SmartDrive.",
       "controlmode": "MX2+: The default, gesture based operation of the SmartDrive. In MX2+ Control Mode, a double tap will start driving the motor by ramping up its speed, a single tap will coast at the current speed, and a double tap will deactivate the driving.\n\nMX2: In MX2 Control Mode, the SmartDrive will start driving when it senses your push, and will deactivate driving when you tap. Please note this is a legacy-support option.\n\nMX1: In MX1 Control Mode, the SmartDrive will start driving when it senses your push, and will stop driving when you tap or when you brake on the handrims. Please note this is a legacy-support option.",
+      "language": "The language of the text in the SmartDrive app.",
       "maxspeed": "The maximum speed the SmartDrive can drive at when controlled by your smartwatch.",
       "powerassistbuzzer": "When enabled, the SmartDrive will beep any time a connection from a remote device is established, or when SwitchControl is taken out of the standby state.",
       "powerassisttimeout": "When connected to the SmartDrive with power assist ON, if the motor hasn't been driven in the selected amount of time it will automatically turn power assist OFF. \n\nIf power assist is ON but it is not connected to the SmartDrive, it will automatically turn power assist OFF after 1 minute.",
@@ -199,6 +257,7 @@
     },
     "error-history": "Error History",
     "information": "Information",
+    "language": "Language",
     "max-speed": "Max Speed",
     "pair-smartdrive": "Pair SmartDrive",
     "paired-to-smartdrive": "Successfully paired to SmartDrive.",
@@ -210,6 +269,8 @@
     },
     "scanning": "Scanning for SmartDrive to pair with...",
     "select-smartdrive": "Select SmartDrive",
+    "send-settings-prompt": "Changes to the SmartDrive settings will not take effect until the PushTracker connects to the SmartDrive. Would you like to turn power assist ON now to connect to the SmartDrive and update its settings?",
+    "set-time": "Date & Time",
     "syncing-with-server": "Synchronizing with server...",
     "tap-sensitivity": "Tap Sensitivity",
     "title": "SmartDrive Settings",
@@ -239,6 +300,7 @@
     }
   },
   "updates": {
+    "available": "Updates are available for your SmartDrive, would you like to go to the Wireless Updates page to download and perform the updates?",
     "canceled": "SmartDrive updates canceled.",
     "changes": "Summary of Changes",
     "checking-for-updates": "Checking for updates...",
@@ -255,6 +317,7 @@
     },
     "failed": "SmartDrive updates failed.",
     "initializing": "Initializing updates...",
+    "perform": "Update SmartDrive",
     "status": "Updates Status",
     "success": "SmartDrive updates completed successfully!",
     "timeout": "SmartDrive updates has timed out.",
@@ -263,6 +326,7 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "Are you sure you wish to change the language? The SmartDrive MX2+ app must restart to apply the language change.",
       "message": "CAUTION: You MUST consult the SmartDrive User's Manual on how changing the settings affects its operation and performance.",
       "title": "Changed Settings"
     },

@@ -1,14 +1,14 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" 
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
   xmlns:wol="nativescript-wear-os/packages/wear-os-layout" shownModally="onShownModally" actionBarHidden="true">
   <wol:WearOsLayout id="wearOsLayout" disableInsetConstraint="true" height="100%" width="100%">
     <StackLayout height="100%">
       <Label text="{{ L('settings.title') }}" class="chart-title" textWrap="true" />
       <Label text="" class="hr-blue" />
       <ScrollView height="100%" marginBottom="{{ chinSize / 2 }}">
-        <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *" paddingBottom="{{ insetPadding }}">
+        <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *" paddingBottom="{{ insetPadding }}">
           // Back
           <Label row="0" col="0" text="&#xe907;" class="bullet-list-icon" fontSize="18" fontWeight="bold" textWrap="true" />
-          <Label row="0" col="1" text="{{ L('buttons.back') }}" tap="onCloseTap" class="settings-label" textWrap="true" />
+          <Label row="0" col="1" text="{{ L('buttons.back') }}" tap="{{ close }}" class="settings-label" textWrap="true" />
           // Max Speed
           <Label row="1" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
           <Label row="1" col="1" text="{{ L('settings.max-speed') }}" class="settings-label" textWrap="true" id="maxSpeed" tap="{{ onChangeSettingsItemTap }}" />
@@ -39,6 +39,9 @@
           // Power Assist Timeout
           <Label row="10" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
           <Label row="10" col="1" text="{{ L('settings.power-assist-timeout.title') }}" class="settings-label" textWrap="true" id="powerAssistTimeout" tap="{{ onChangeSettingsItemTap }}" />
+          // Language
+          <Label row="11" col="0" text="&#xe905;" class="bullet-list-icon" textWrap="true" />
+          <Label row="11" col="1" text="{{ L('settings.language') }}" class="settings-label" textWrap="true" id="language" tap="{{ onChangeSettingsItemTap }}" />
         </GridLayout>
       </ScrollView>
     </StackLayout>

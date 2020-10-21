@@ -23,6 +23,7 @@
     "deny": "Ablehnen",
     "disable": "Deaktivieren",
     "dismiss": "Verwerfen",
+    "do-not-show-again": "Nicht mehr anzeigen",
     "enable": "Aktivieren",
     "ok": "OK"
   },
@@ -59,11 +60,13 @@
       "batteryvoltage": "[ERR: 001] SD-Batteriespannung",
       "bledisconnect": "[ERR: 007] Bluetooth-Verbindung getrennt",
       "gyrorange": "[ERR: 005] SD-Winkel",
+      "motordriverfault": "[ERR: 008] SD-Motorchip",
       "motorphases": "[ERR: 002] SD-Motor",
       "otaunavailable": "[ERR: 006] Keine Updates verfügbar",
       "overcurrent": "[ERR: 003] SD-Spannungsspitzen",
       "overtemperature": "[ERR: 004] SD-Überhitzung"
     },
+    "load-more": "Mehr laden",
     "loading": "Wird geladen...",
     "no-errors": "Es wurden keine SmartDrive-Fehler aufgezeichnet oder empfangen.",
     "title": "SmartDrive-Fehlerhistorie"
@@ -91,6 +94,24 @@
     "title": "Hinweis beachten",
     "too-many-smartdrives-found": "Mehrere SmartDrives gefunden. Vergewissern Sie sich, dass sich beim Koppeln nur ein SmartDrive in der Nähe befindet."
   },
+  "language-list": {
+    "cs": "čeština",
+    "da": "Dansk",
+    "de": "Deutsch",
+    "en": "Englisch",
+    "es": "Español",
+    "fi": "Suomalainen",
+    "fr": "Francais",
+    "it": "Italiano",
+    "ja": "日本人",
+    "ko": "한국어",
+    "nb": "Norsk bokmål",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Português",
+    "sv": "Svenska",
+    "zh": "中國 傳統 的"
+  },
   "languages": {
     "cs": "Tschechisch",
     "da": "Dänisch",
@@ -115,6 +136,42 @@
     "title": "SmartDrive MX2+ Menü",
     "training": "Training einschalten",
     "updates": "Wireless Updates"
+  },
+  "notifications": {
+    "accelerate-while-moving": "Nehmen Sie Ihre Fahrgeschwindigkeit auf, während Sie bereits unterwegs sind! Schieben Sie am Greifreifen, um schneller zu fahren und tippen Sie dann einmal mit Ihrem PushTracker. Halten Sie SwitchControl gedrückt, um die Geschwindigkeit erneut zu erhöhen.",
+    "access-more-features": "Wünschen Sie weitere Informationen zu Ihrer täglichen / wöchentlichen / monatlichen Antriebsaktivität? Besuchen Sie die Permobil-Website, um zu erfahren, wie Sie Ihr SmartDrive und Ihren PushTracker optimal nutzen können!",
+    "channels": {
+      "maintenance": "Instandhaltung",
+      "personal-record": "Persönliche Ziele",
+      "smartdrive": "SmartDrive"
+    },
+    "daily-distance-record": "Sie haben es geschafft! Sie haben einen neuen persönlichen Rekord für die an einem Tag zurückgelegte Strecke erzielt. Machen Sie weiter! Und vergessen Sie nicht den Tempomat zu benutzen. #ChooseToDoMore",
+    "odometer-records-part-one": "Es geht darum, mehr zu tun und gleichzeitig die Schultern zu entlasten. Sie haben jetzt",
+    "odometer-records-part-two": "mit Ihren SmartDrive gefahren. #ChooseToDoMore",
+    "open-pt-wear": "Möchten Sie mehr über Ihre tägliche Mobilität erfahren? Öffnen Sie die PushTracker-App, um Ihre tägliche Push-Anzahl, die Tempomatzeit und die zurückgelegte Entfernung anzuzeigen.",
+    "routine-maintenance": "Wenn Sie Ihre Ausrüstung sauber halten, hält sie länger! Verwenden Sie einen feuchten Schwamm, ein mildes Reinigungsmittel und trocknen Sie es gründlich ab, damit Ihr SmartDrive wie neu bleibt! (Nicht einweichen oder eintauchen)",
+    "sc-light-indications": "Benötigen Sie Erklärungen über die blinkenden Lichter auf Ihren SwitchControl-Tasten? Weitere Informationen finden Sie im Benutzerhandbuch oder auf der YouTube-Seite von Permobil.",
+    "sd-clamp-check": "Zeit, Ihren Adapter zu überprüfen! Stellen Sie sicher, dass Ihre Klemme oder Ihr Klapprahmenadapter richtig eingestellt ist. Lesen Sie die Anweisungen oder kontaktieren Sie uns.",
+    "sd-e2-charging": "Beginnen Sie jeden Tag mit maximal aufgeladenem SmartDrive, um maximale Leistung zu erzielen. Stellen Sie sicher, dass die Ladung über 25 % liegt, insbesondere wenn Sie sie längere Zeit nicht verwenden. Weitere Informationen finden Sie in Ihrem Benutzerhandbuch oder bei Permobil.",
+    "sd-roller-check": "Überprüfen Sie Ihre Rollen. Sehen Sie flache Stellen? Sind sie schwer zu drehen? Wenden Sie sich noch heute an Permobil, um dies zu besprechen.",
+    "switch-control-reminder": "Mit den SwitchControl-Tasten können Sie auf andere Weise fahren. Schließen Sie sie direkt an den SmartDrive-Ladeanschluss an (kein Bluetooth erforderlich). Drücken Sie die Taste, um zu fahren, anzuhalten oder Ihre Geschwindigkeit einzustellen. Wenden Sie sich an Ihren Händler oder den Permobil-Support, um weitere Informationen zu erhalten.",
+    "tire-pressure": "Der Reifendruck wirkt sich stark auf Ihre Schubkraft aus. Haben Sie es in letzter Zeit überprüft?",
+    "titles": {
+      "accelerate-while-moving": "Beschleunigen",
+      "access-more-features": "Antrieb und mehr",
+      "daily-distance-record": "Täglicher Entfernungsrekord!",
+      "odometer-records": "Kilometerzähler Rekord!",
+      "open-pt-wear": "Öffnen Sie die PushTracker Wear App",
+      "routine-maintenance": "Routinewartung",
+      "sc-light-indications": "Tastenanzeigen",
+      "sd-clamp-check": "Erinnerung an Adapterbefestigung",
+      "sd-e2-charging": "SmartDrive & PushTracker Laden",
+      "sd-roller-check": "Erinnerung: Rollenprüfung",
+      "switch-control-reminder": "SwitchControl-Tasten",
+      "tire-pressure": "Erinnerung: Reifendruckprüfung",
+      "unlock-more-features": "Mehr machen"
+    },
+    "unlock-more-features": "Textnachrichten und Kalenderbenachrichtigungen sind nur einige weitere Funktionen, die Sie von Ihrem PushTracker erhalten können. Wenden Sie sich an Permobil oder besuchen Sie unsere Website, um zu erfahren, wie Sie mehr Funktionen erhalten."
   },
   "ota": {
     "action": {
@@ -188,6 +245,7 @@
     "description": {
       "acceleration": "Die Beschleunigungsrate des SmartDrive.",
       "controlmode": "MX2+: Die standardmäßige Bedienung des SmartDrive. Im MX2+ Steuermodus startet ein doppeltes Antippen des Greifreifens den Antrieb des Motors durch Hochfahren seiner Drehzahl. Durch einmaliges Antippen des Greifreifens während der Beschleunigung wird ein Tempomat aktiviert. Durch erneutes zweimaliges Antippen schaltet sich der Antrieb in den Stand-by-Modus.\n\nMX2: Im MX2 Steuermodus fährt der SmartDrive los, wenn Sie über die Greifreifen den Rollstuhl antreiben. Durch einmaliges Antippen des Greifreifens deaktivieren Sie das Fahren. Bitte beachten Sie, dass dies eine Legacy-Support-Option ist.\n\nMX1: Im MX1 Steuermodus fährt der SmartDrive los, wenn Sie über die Greifreifen den Rollstuhl antreiben. Durch Bremsen der Greifreifen bzw. durch einmaliges Antippen dieser deaktivieren Sie das Fahren. Bitte beachten Sie, dass dies eine Legacy-Support-Option ist.",
+      "language": "Die Sprache des Textes in der SmartDrive-App.",
       "maxspeed": "Die maximale Geschwindigkeit, die der SmartDrive fahren kann, wenn er mit Ihrem PushTracker E2 (Smartwatch) gesteuert wird.",
       "powerassistbuzzer": "Wenn diese Option aktiviert ist, piept der SmartDrive jedes Mal, wenn eine Verbindung von einem Remote-Gerät hergestellt wird oder wenn SwitchControl aus dem Standby-Modus entfernt wird.",
       "powerassisttimeout": "Wenn der Motor bei eingeschalteter POWER ASSIT mit dem SmartDrive verbunden ist und nicht in der ausgewählten Zeit gefahren wurde, wird POWER ASSIST automatisch ausgeschaltet.\n\nWenn POWER ASSIST eingeschlatet ist, aber nicht mit dem SmartDrive verbunden ist, wird es nach 1 Minute automatisch ausgeschaltet.",
@@ -199,6 +257,7 @@
     },
     "error-history": "Fehlerhistorie",
     "information": "Information",
+    "language": "Sprache",
     "max-speed": "Höchstgeschwindigkeit",
     "pair-smartdrive": "SmartDrive koppeln",
     "paired-to-smartdrive": "Erfolgreich mit dem SmartDrive gekoppelt.",
@@ -210,6 +269,8 @@
     },
     "scanning": "SmartDrive Suche zum Koppeln mit...",
     "select-smartdrive": "Wählen Sie SmartDrive",
+    "send-settings-prompt": "Änderungen an den SmartDrive-Einstellungen werden erst wirksam, wenn der PushTracker eine Verbindung zum SmartDrive herstellt. Möchten Sie SmartDrive jetzt einschalten, um eine Verbindung herzustellen und dessen Einstellungen zu aktualisieren?",
+    "set-time": "Datum und Zeit",
     "syncing-with-server": "Mit Server synchronisieren ...",
     "tap-sensitivity": "Tippen Sie auf Empfindlichkeit",
     "title": "SmartDrive-Einstellungen",
@@ -239,6 +300,7 @@
     }
   },
   "updates": {
+    "available": "Für Ihr SmartDrive sind Updates verfügbar. Möchten Sie Wireless-Updates öffnen, um die Updates herunterzuladen und auszuführen?",
     "canceled": "SmartDrive-Updates abgebrochen.",
     "changes": "Zusammenfassung der Änderungen",
     "checking-for-updates": "Nach Updates suchen...",
@@ -255,6 +317,7 @@
     },
     "failed": "SmartDrive-Updates fehlgeschlagen",
     "initializing": "Updates initialisieren...",
+    "perform": "Aktualisieren Sie SmartDrive",
     "status": "Updatestatus",
     "success": "SmartDrive-Updates erfolgreich abgeschlossen!",
     "timeout": "Zeitüberschreitung bei SmartDrive-Updates",
@@ -263,6 +326,7 @@
   },
   "warnings": {
     "saved-settings": {
+      "language": "Sind Sie sicher, dass Sie die Sprache ändern möchten? Die SmartDrive MX2-App muss neu gestartet werden, um die Sprachänderung anzuwenden.",
       "message": "Warnung: Sie MÜSSEN im SmartDrive-Benutzerhandbuch nachlesen, wie sich das Ändern der Einstellungen auf den Betrieb und die Leistung auswirkt.",
       "title": "Geänderte Einstellungen"
     },

@@ -1,18 +1,18 @@
-import 'reflect-metadata';
-// this import should be first in order to load some required settings (like globals and reflect-metadata)
 import { platformNativeScriptDynamic } from '@nativescript/angular';
+// this import should be first in order to load some required settings (like globals and reflect-metadata)
 /**
  * be sure to keep the above imports first
  */
+
+import 'reflect-metadata';
 import { enableProdMode } from '@angular/core';
-import { isIOS } from '@nativescript/core';
-import * as application from '@nativescript/core/application';
-import * as appSettings from '@nativescript/core/application-settings';
+import { Application, ApplicationSettings, isIOS } from '@nativescript/core';
 import * as themes from 'nativescript-themes';
 import { AppModule } from './app/app.module';
 import { APP_THEMES, STORAGE_KEYS } from './app/enums';
 import { Ratings } from './app/utils/ratings-utils';
-require('nativescript-plugin-firebase'); // for configuring push notifications
+
+// require('@nativescript/firebase'); // for configuring push notifications
 
 // If built with env.uglify
 declare const __UGLIFIED__;
@@ -28,7 +28,7 @@ if (typeof __UGLIFIED__ !== 'undefined' && __UGLIFIED__) {
 //   require('./app/scss/theme-default.scss').toString(),
 //   'theme-default.scss'
 // );
-const SAVED_THEME = appSettings.getString(
+const SAVED_THEME = ApplicationSettings.getString(
   STORAGE_KEYS.APP_THEME,
   APP_THEMES.DEFAULT
 );
@@ -45,9 +45,11 @@ if (SAVED_THEME === APP_THEMES.DEFAULT) {
 }
 
 if (isIOS) {
-  class PushTrackerIOSDelegate extends UIResponder
+  @NativeClass()
+  class PushTrackerIOSDelegate
+    extends UIResponder
     implements UIApplicationDelegate {
-    public static ObjCProtocols = [UIApplicationDelegate];
+    static ObjCProtocols = [UIApplicationDelegate];
     applicationDidBecomeActive(application: UIApplication): void {
       const ratings = new Ratings({
         id: 'PUSHTRACKER.RATER.COUNT',
@@ -61,7 +63,7 @@ if (isIOS) {
       ratings.increment();
     }
   }
-  application.ios.delegate = PushTrackerIOSDelegate;
+  Application.ios.delegate = PushTrackerIOSDelegate;
 }
 
 // A traditional NativeScript application starts by initializing global objects,

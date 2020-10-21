@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
-import { isAndroid, isIOS, knownFolders, ObservableArray, path } from '@nativescript/core';
-import * as httpModule from '@nativescript/core/http';
-import * as Kinvey from 'kinvey-nativescript-sdk';
+import * as Kinvey from '@bradmartin/kinvey-nativescript-sdk';
+import {
+  Http,
+  isIOS,
+  knownFolders,
+  ObservableArray,
+  path
+} from '@nativescript/core';
 import * as LS from 'nativescript-localstorage';
 
 @Injectable()
@@ -38,7 +43,7 @@ export class FirmwareService {
     }
   };
 
-  constructor() { }
+  constructor() {}
 
   static versionByteToString(version: number): string {
     if (version === 0xff || version === 0x00) {
@@ -158,11 +163,8 @@ export class FirmwareService {
   // FOR LOADING A FW FILE FROM SERVER
   getData(url, filename) {
     const firmwares = knownFolders.documents().getFolder('firmwares');
-    const filePath = path.join(
-      firmwares.path,
-      filename
-    );
-    return httpModule.getFile(url, filePath);
+    const filePath = path.join(firmwares.path, filename);
+    return Http.getFile(url, filePath);
   }
 
   onError(error: Response | any) {

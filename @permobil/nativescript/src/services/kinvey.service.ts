@@ -1,5 +1,5 @@
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
-import { request } from '@nativescript/core/http';
+import { Http } from '@nativescript/core';
 import * as LS from 'nativescript-localstorage';
 
 export class KinveyService {
@@ -127,7 +127,7 @@ export class KinveyService {
       KinveyService.api_user_route +
       KinveyService.api_app_key +
       `/${this._userId}`;
-    const response = await request({
+    const response = await Http.request({
       url: url,
       method: 'PUT',
       headers: {
@@ -145,7 +145,7 @@ export class KinveyService {
       KinveyService.api_user_route +
       KinveyService.api_app_key +
       `/${userId}`;
-    const response = await request({
+    const response = await Http.request({
       url: url,
       method: 'GET',
       headers: {
@@ -165,7 +165,7 @@ export class KinveyService {
       username,
       password
     };
-    const response = await request({
+    const response = await Http.request({
       url: url,
       method: 'POST',
       headers: {
@@ -208,7 +208,7 @@ export class KinveyService {
     if (args.length) {
       url += '?' + args.map(a => `${a}=${JSON.stringify(argObj[a])}`).join('&');
     }
-    const response = await request({
+    const response = await Http.request({
       url: url,
       method: 'GET',
       headers: {
@@ -245,7 +245,7 @@ export class KinveyService {
     if (args.length) {
       url += '?' + args.map(a => `${a}=${JSON.stringify(argObj[a])}`).join('&');
     }
-    const response = await request({
+    const response = await Http.request({
       url: url,
       method: 'GET',
       headers: {
@@ -262,7 +262,7 @@ export class KinveyService {
       KinveyService.api_data_route +
       KinveyService.api_app_key +
       db;
-    const response = await request({
+    const response = await Http.request({
       url: url,
       method: 'POST',
       headers: {
@@ -282,7 +282,7 @@ export class KinveyService {
       KinveyService.api_app_key +
       db +
       `/${id}`;
-    const response = await request({
+    const response = await Http.request({
       url: url,
       method: 'PUT',
       headers: {
