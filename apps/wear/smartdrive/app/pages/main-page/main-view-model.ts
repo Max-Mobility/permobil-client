@@ -674,6 +674,7 @@ export class MainViewModel extends Observable {
   }
 
   async disablePowerAssist() {
+    this._enablingPowerAssist = false;
     if (!this.powerAssistActive && !this.motorOn) {
       return;
     }
@@ -1127,9 +1128,7 @@ export class MainViewModel extends Observable {
   }
 
   private _fullStop() {
-    if (this.powerAssistActive) {
-      this.disablePowerAssist();
-    }
+    this.disablePowerAssist();
     if (this.isTraining) {
       this.onExitTrainingModeTap();
     }
