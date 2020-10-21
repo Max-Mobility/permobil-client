@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PushTracker</string>
+    <string name="title_activity_kimera">PushTracker</string>
+    <string name="foreground_service_notification">Permobil PushTracker kerää aktiviteettisi</string>
+    <string name="complications_provider_service_label_pushes">Työntää</string>
+    <string name="complications_provider_service_label_coast_time">Rannikon aika</string>
+    <string name="complications_provider_service_label_distance">Etäisyys</string>
+    <string name="smartdrive">SmartDrive</string>
+    <string name="personal_record">Henkilökohtainen ennätys</string>
+    <string name="push_warning">Työnnä varoitus</string>
+    <string name="push_warning_notification_text">Ystävällinen muistutus! Olet työntänyt tänään 25% enemmän kuin päivittäinen keskiarvo. Harkitse taukoa tai SmartDriven käyttöä enemmän.</string>
+    <string name="new_coast_time_record">🏆 Uusi rannikon aikatietue!</string>
+    <string name="coast_time_record_notification_text">Teit sen! Saavutit uuden henkilökohtaisen parhaan rannikkoajalle. Tee enemmän, samalla kun säästät hartiat! #ChooseToDoMore</string>
+    <string name="activity_collection">Aktiviteettikokoelma</string>
+</resources>
