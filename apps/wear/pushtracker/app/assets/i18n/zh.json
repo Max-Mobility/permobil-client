@@ -1,171 +1,171 @@
 {
-	"about": {
-		"database": "數據庫ID",
-		"title": "關於信息",
-		"user-email": "你的郵件",
-		"user-name": "你的名字",
-		"version": "PushTracker Wear OS App版本",
-		"watch-serial-number": "Smartwatch序列號"
-	},
-	"busy": {
-		"synchronizing": "同步中..."
-	},
-	"buttons": {
-		"back": "背部",
-		"cancel": "取消",
-		"dismiss": "解僱",
-		"ok": "好"
-	},
-	"charts": {
-		"coast": {
-			"title": "每日海岸時間"
-		},
-		"distance": {
-			"title": "每天旅行的距離"
-		}
-	},
-	"enhancements": {
-		"coast-time": "每日海岸時間",
-		"distance": "每日距離",
-		"pushes": "每日推送"
-	},
-	"failures": {
-		"connect": "連接失敗",
-		"could-not-update-profile": "無法更新Permobil服務器上的配置文件。",
-		"must-wear-watch": "[檢查手腕]設置已啟用，因此必須佩戴智能手錶才能控制SmartDrive。",
-		"no-auth-for-saving": "要將設置保存到服務器（可選），必須將PushTracker Wear OS應用程序連接到PushTracker Mobile應用程序。為此，請按照PushTracker Mobile應用程序“設備設置”頁面上的說明進行操作。",
-		"not-connected-to-mobile": "無法通過Permobil服務器進行身份驗證。需要重新連接到PushTracker Mobile應用程序。",
-		"not-fully-initialized": "仍在初始化與Permobil服務器的連接。可能時將發送設置。",
-		"permissions": "無法執行請求的操作。未授予所需權限。",
-		"saving-activity": "保存活動失敗。",
-		"scan": "無法掃描。",
-		"title": "注意"
-	},
-	"goals": {
-		"coast": {
-			"units": "秒"
-		},
-		"distance": {
-			"english": "英里",
-			"metric": "公里"
-		}
-	},
-	"information": "信息",
-	"language-list": {
-		"cs": "切什蒂納",
-		"da": "丹斯克",
-		"de": "德意志",
-		"en": "英語",
-		"es": "西班牙文",
-		"fi": "索馬萊寧",
-		"fr": "法蘭西",
-		"it": "意大利語",
-		"ja": "日本語",
-		"ko": "한국어",
-		"nb": "Norskbokmål",
-		"nl": "荷蘭",
-		"pl": "波蘭語",
-		"pt": "葡萄牙語",
-		"sv": "斯文斯卡",
-		"zh": "中國傳統的"
-	},
-	"languages": {
-		"da": "丹麥",
-		"de": "德語",
-		"en": "英語",
-		"es": "西班牙語",
-		"fr": "法國",
-		"it": "意大利",
-		"ja": "日本",
-		"ko": "朝鮮的",
-		"nb": "挪威語[Bokmål]",
-		"nl": "荷蘭人",
-		"sv": "瑞典",
-		"zh": "中國傳統的]"
-	},
-	"menu": {
-		"about": "關於",
-		"profile": "輪廓",
-		"title": "菜單"
-	},
-	"notifications": {
-		"add-pt-element": "想要更快地訪問您的PushTracker統計信息？您可以更改錶盤以設置快捷方式。查看我們的YouTube頻道或給我們發送電子郵件以獲取詳細信息。",
-		"channels": {
-			"maintenance": "保養",
-			"personal-record": "個人記錄",
-			"smartdrive": "的SmartDrive"
-		},
-		"daily-push-warning": "溫馨的提示！今天您已將每日平均推送量提高了25%。考慮休息一下或更多使用SmartDrive。",
-		"foreground-service": "Permobil PushTracker正在收集您的活動",
-		"new-coast-record": "你做到了！您在海岸時間取得了新的個人最好成績。做更多的事情，同時節省您的肩膀！ #ChooseToDoMore",
-		"titles": {
-			"add-pt-element": "將PushTracker添加為元素",
-			"daily-push-warning": "每日推送警告",
-			"new-coast-record": "新海岸時間紀錄！",
-			"wheelchair-maintenance": "輪椅保養提醒"
-		},
-		"wheelchair-maintenance": "保持輪椅坐姿可以使推擠變得更加容易。腳輪，腳叉和輪胎磨損是影響您推椅子能力的常見問題。"
-	},
-	"permissions-reasons": {
-		"coarse-location": "要使用藍牙與iPhone上的PushTracker Mobile應用程序連接，我們需要您在以下屏幕上允許“位置”權限[ACCESS_COARSE_LOCATION]。有了此許可，Permobil將不會訪問您的位置數據。",
-		"fine-location": "可選：要使用SmartWatch GPS測量距離，我們需要您在以下屏幕之一上允許[ACCESS_FINE_LOCATION]權限。有了此許可，Permobil將不會訪問您的位置數據。",
-		"phone-state": "可選：要訪問智能手錶序列號（可用於支持和保修目的），我們需要您在以下某個屏幕上允許電話權限[READ_PHONE_STATE]。根據此權限，Permobil將不會訪問您的電話號碼，蜂窩網絡信息或除智能手錶序列號以外的任何其他數據。"
-	},
-	"permissions-request": {
-		"title": "權限通知"
-	},
-	"profile": "輪廓",
-	"pushes": {
-		"units": "推"
-	},
-	"settings": {
-		"coastgoal": {
-			"description": "您的目標是每天兩次推送之間的平均海岸時間。",
-			"title": "海岸時間目標",
-			"units": "小號"
-		},
-		"connect-pushtracker": "連接PushTracker移動應用程序",
-		"distancegoal": {
-			"description": "您通過SmartDrive衡量的每天輪椅行進距離的目標。",
-			"title": "遠距離射門",
-			"units": {
-				"english": "MI",
-				"metric": "千米"
-			}
-		},
-		"information": "信息",
-		"install-smartdrive": "安裝SmartDrive MX2 Wear OS App",
-		"language": {
-			"change": "您確定要更改語言嗎？ PushTracker應用必須重新啟動才能應用語言更改。",
-			"description": "PushTracker應用中的文字語言。",
-			"title": "語言"
-		},
-		"pushsensitivity": {
-			"description": "檢測計數的靈敏度。百分比越低，對推送的檢測就越不敏感-0%是最不敏感的，因此將檢測到較少的推送，而100%是最敏感的，因此將檢測到更多推送。",
-			"title": "推靈敏度"
-		},
-		"title": "PushTracker設置",
-		"units": {
-			"description": "在用戶界面中顯示度量的單位製或度量單位。選擇英制[ft，mi和lbs]或公制[cm，km和kg]。",
-			"title": "單位",
-			"values": {
-				"english": "帝國",
-				"metric": "公"
-			}
-		}
-	},
-	"units": {
-		"distance": {
-			"english": "MI",
-			"metric": "千米"
-		},
-		"english": "帝國",
-		"metric": "公"
-	},
-	"wearos-comms": {
-		"errors": {
-			"bad-authorization": "從PushTracker移動應用接收到無效的帳戶授權數據。確保您的帳戶信息是最新的，並且您的智能手錶通過Wi-Fi或手機連接到Internet。",
-			"bad-data": "從PushTracker移動應用接收到的數據無效。檢查連接，然後重試。"
-		}
-	}
+  "about": {
+    "database": "數據庫ID",
+    "title": "關於信息",
+    "user-email": "你的郵件",
+    "user-name": "你的名字",
+    "version": "PushTracker Wear OS App版本",
+    "watch-serial-number": "Smartwatch序列號"
+  },
+  "busy": {
+    "synchronizing": "同步中..."
+  },
+  "buttons": {
+    "back": "背部",
+    "cancel": "取消",
+    "dismiss": "解僱",
+    "ok": "好"
+  },
+  "charts": {
+    "coast": {
+      "title": "每日海岸時間"
+    },
+    "distance": {
+      "title": "每天旅行的距離"
+    }
+  },
+  "enhancements": {
+    "coast-time": "每日海岸時間",
+    "distance": "每日距離",
+    "pushes": "每日推送"
+  },
+  "failures": {
+    "connect": "連接失敗",
+    "could-not-update-profile": "無法更新Permobil服務器上的配置文件。",
+    "must-wear-watch": "[檢查手腕]設置已啟用，因此必須佩戴智能手錶才能控制SmartDrive。",
+    "no-auth-for-saving": "要將設置保存到服務器（可選），必須將PushTracker Wear OS應用程序連接到PushTracker Mobile應用程序。為此，請按照PushTracker Mobile應用程序“設備設置”頁面上的說明進行操作。",
+    "not-connected-to-mobile": "無法通過Permobil服務器進行身份驗證。需要重新連接到PushTracker Mobile應用程序。",
+    "not-fully-initialized": "仍在初始化與Permobil服務器的連接。可能時將發送設置。",
+    "permissions": "無法執行請求的操作。未授予所需權限。",
+    "saving-activity": "保存活動失敗。",
+    "scan": "無法掃描。",
+    "title": "注意"
+  },
+  "goals": {
+    "coast": {
+      "units": "秒"
+    },
+    "distance": {
+      "english": "英里",
+      "metric": "公里"
+    }
+  },
+  "information": "信息",
+  "language-list": {
+    "cs": "切什蒂納",
+    "da": "丹斯克",
+    "de": "德意志",
+    "en": "英語",
+    "es": "西班牙文",
+    "fi": "索馬萊寧",
+    "fr": "法蘭西",
+    "it": "意大利語",
+    "ja": "日本語",
+    "ko": "한국어",
+    "nb": "Norskbokmål",
+    "nl": "荷蘭",
+    "pl": "波蘭語",
+    "pt": "葡萄牙語",
+    "sv": "斯文斯卡",
+    "zh": "中國傳統的"
+  },
+  "languages": {
+    "da": "丹麥",
+    "de": "德語",
+    "en": "英語",
+    "es": "西班牙語",
+    "fr": "法國",
+    "it": "意大利",
+    "ja": "日本",
+    "ko": "朝鮮的",
+    "nb": "挪威語[Bokmål]",
+    "nl": "荷蘭人",
+    "sv": "瑞典",
+    "zh": "中國傳統的]"
+  },
+  "menu": {
+    "about": "關於",
+    "profile": "輪廓",
+    "title": "菜單"
+  },
+  "notifications": {
+    "add-pt-element": "想要更快地訪問您的PushTracker統計信息？您可以更改錶盤以設置快捷方式。查看我們的YouTube頻道或給我們發送電子郵件以獲取詳細信息。",
+    "channels": {
+      "maintenance": "保養",
+      "personal-record": "個人記錄",
+      "smartdrive": "的SmartDrive"
+    },
+    "daily-push-warning": "溫馨的提示！今天您已將每日平均推送量提高了25%。考慮休息一下或更多使用SmartDrive。",
+    "foreground-service": "Permobil PushTracker正在收集您的活動",
+    "new-coast-record": "你做到了！您在海岸時間取得了新的個人最好成績。做更多的事情，同時節省您的肩膀！ #ChooseToDoMore",
+    "titles": {
+      "add-pt-element": "將PushTracker添加為元素",
+      "daily-push-warning": "每日推送警告",
+      "new-coast-record": "新海岸時間紀錄！",
+      "wheelchair-maintenance": "輪椅保養提醒"
+    },
+    "wheelchair-maintenance": "保持輪椅坐姿可以使推擠變得更加容易。腳輪，腳叉和輪胎磨損是影響您推椅子能力的常見問題。"
+  },
+  "permissions-reasons": {
+    "coarse-location": "要使用藍牙與iPhone上的PushTracker Mobile應用程序連接，我們需要您在以下屏幕上允許“位置”權限[ACCESS_COARSE_LOCATION]。有了此許可，Permobil將不會訪問您的位置數據。",
+    "fine-location": "可選：要使用SmartWatch GPS測量距離，我們需要您在以下屏幕之一上允許[ACCESS_FINE_LOCATION]權限。有了此許可，Permobil將不會訪問您的位置數據。",
+    "phone-state": "可選：要訪問智能手錶序列號（可用於支持和保修目的），我們需要您在以下某個屏幕上允許電話權限[READ_PHONE_STATE]。根據此權限，Permobil將不會訪問您的電話號碼，蜂窩網絡信息或除智能手錶序列號以外的任何其他數據。"
+  },
+  "permissions-request": {
+    "title": "權限通知"
+  },
+  "profile": "輪廓",
+  "pushes": {
+    "units": "推"
+  },
+  "settings": {
+    "coastgoal": {
+      "description": "您的目標是每天兩次推送之間的平均海岸時間。",
+      "title": "海岸時間目標",
+      "units": "小號"
+    },
+    "connect-pushtracker": "連接PushTracker移動應用程序",
+    "distancegoal": {
+      "description": "您通過SmartDrive衡量的每天輪椅行進距離的目標。",
+      "title": "遠距離射門",
+      "units": {
+        "english": "MI",
+        "metric": "千米"
+      }
+    },
+    "information": "信息",
+    "install-smartdrive": "安裝SmartDrive MX2 Wear OS App",
+    "language": {
+      "change": "您確定要更改語言嗎？ PushTracker應用必須重新啟動才能應用語言更改。",
+      "description": "PushTracker應用中的文字語言。",
+      "title": "語言"
+    },
+    "pushsensitivity": {
+      "description": "檢測計數的靈敏度。百分比越低，對推送的檢測就越不敏感-0%是最不敏感的，因此將檢測到較少的推送，而100%是最敏感的，因此將檢測到更多推送。",
+      "title": "推靈敏度"
+    },
+    "title": "PushTracker設置",
+    "units": {
+      "description": "在用戶界面中顯示度量的單位製或度量單位。選擇英制[ft，mi和lbs]或公制[cm，km和kg]。",
+      "title": "單位",
+      "values": {
+        "english": "帝國",
+        "metric": "公"
+      }
+    }
+  },
+  "units": {
+    "distance": {
+      "english": "MI",
+      "metric": "千米"
+    },
+    "english": "帝國",
+    "metric": "公"
+  },
+  "wearos-comms": {
+    "errors": {
+      "bad-authorization": "從PushTracker移動應用接收到無效的帳戶授權數據。確保您的帳戶信息是最新的，並且您的智能手錶通過Wi-Fi或手機連接到Internet。",
+      "bad-data": "從PushTracker移動應用接收到的數據無效。檢查連接，然後重試。"
+    }
+  }
 }

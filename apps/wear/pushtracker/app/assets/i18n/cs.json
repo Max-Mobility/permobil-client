@@ -1,171 +1,171 @@
 {
-	"about": {
-		"database": "ID databáze",
-		"title": "informace",
-		"user-email": "Tvůj e-mail",
-		"user-name": "Tvé jméno",
-		"version": "Verze aplikace PushTracker Wear OS",
-		"watch-serial-number": "Sériové číslo Smartwatch"
-	},
-	"busy": {
-		"synchronizing": "Probíhá synchronizace ..."
-	},
-	"buttons": {
-		"back": "Zadní",
-		"cancel": "zrušení",
-		"dismiss": "Propustit",
-		"ok": "OK"
-	},
-	"charts": {
-		"coast": {
-			"title": "Denní doba pobřeží"
-		},
-		"distance": {
-			"title": "Ujetá vzdálenost denně"
-		}
-	},
-	"enhancements": {
-		"coast-time": "Denní doba pobřeží",
-		"distance": "Vzdálenost denně",
-		"pushes": "Tlačí denně"
-	},
-	"failures": {
-		"connect": "Připojení se nezdařilo",
-		"could-not-update-profile": "Aktualizace profilu na serveru Permobil se nezdařila.",
-		"must-wear-watch": "Nastavení [Check for Wrist] (Kontrola zápěstí) je povoleno, proto musí být chytré hodinky používány k ovládání vašeho SmartDrive.",
-		"no-auth-for-saving": "Chcete-li uložit nastavení na server, což je volitelné, musíte připojit aplikaci PushTracker Wear OS k mobilní aplikaci PushTracker. Postupujte podle pokynů na stránce „Nastavení zařízení“ mobilní aplikace PushTracker.",
-		"not-connected-to-mobile": "Ověření na serveru Permobil se nezdařilo. Je vyžadováno opětovné připojení k mobilní aplikaci PushTracker.",
-		"not-fully-initialized": "Stále se inicializuje připojení k serveru Permobil. Nastavení bude odesláno, pokud je to možné.",
-		"permissions": "Požadovanou akci nelze provést. Požadovaná oprávnění nebyla udělena.",
-		"saving-activity": "Uložení aktivity se nezdařilo.",
-		"scan": "Nelze skenovat.",
-		"title": "Oznámení"
-	},
-	"goals": {
-		"coast": {
-			"units": "sekundy"
-		},
-		"distance": {
-			"english": "MIL",
-			"metric": "kilometrů"
-		}
-	},
-	"information": "informace",
-	"language-list": {
-		"cs": "čeština",
-		"da": "Dansk",
-		"de": "Deutsche",
-		"en": "Angličtina",
-		"es": "Español",
-		"fi": "Suomalainen",
-		"fr": "Français",
-		"it": "Italiano",
-		"ja": "日本語",
-		"ko": "한국어",
-		"nb": "Norsk Bokmål",
-		"nl": "Nederlands",
-		"pl": "Polski",
-		"pt": "Portugalský",
-		"sv": "Svenska",
-		"zh": "中國 傳統 的"
-	},
-	"languages": {
-		"da": "dánský",
-		"de": "Němec",
-		"en": "Angličtina",
-		"es": "Španělština",
-		"fr": "francouzština",
-		"it": "Italština",
-		"ja": "japonský",
-		"ko": "korejština",
-		"nb": "Norština [Bokmål]",
-		"nl": "holandský",
-		"sv": "švédský",
-		"zh": "Čínština [tradiční]"
-	},
-	"menu": {
-		"about": "O",
-		"profile": "Profil",
-		"title": "Jídelní lístek"
-	},
-	"notifications": {
-		"add-pt-element": "Chcete rychlejší přístup k vašim statistikám PushTracker? Můžete změnit ciferník a nastavit zkratku. Podívejte se na náš kanál YouTube nebo nám pošlete e-mail s podrobnostmi.",
-		"channels": {
-			"maintenance": "Údržba",
-			"personal-record": "Osobní rekord",
-			"smartdrive": "SmartDrive"
-		},
-		"daily-push-warning": "Přátelské připomenutí! Dnes jste posunuli o 25% více, než je váš denní průměr. Zvažte přestávku nebo více používejte svůj SmartDrive.",
-		"foreground-service": "Permobil PushTracker shromažďuje vaši aktivitu",
-		"new-coast-record": "Udělal jsi to! Dosáhli jste nového osobního maxima pro čas na pobřeží. Dělejte více a současně šetřete ramena! #ChooseToDoMore",
-		"titles": {
-			"add-pt-element": "Přidejte PushTracker jako prvek",
-			"daily-push-warning": "Varování na denní stisk",
-			"new-coast-record": "Nový pobřežní časový záznam!",
-			"wheelchair-maintenance": "Připomenutí údržby invalidního vozíku"
-		},
-		"wheelchair-maintenance": "Udržování invalidního vozíku usnadňuje tlačení. Kolečka, vidlice a opotřebení pneumatik jsou běžné problémy, které ovlivňují vaši schopnost tlačit na židli."
-	},
-	"permissions-reasons": {
-		"coarse-location": "Pro připojení k mobilní aplikaci PushTracker na vašem iPhone pomocí Bluetooth vyžadujeme, abyste na následující obrazovce povolili oprávnění k umístění [ACCESS_COARSE_LOCATION]. Z tohoto povolení nebude mít Permobil přístup k vašim údajům o poloze.",
-		"fine-location": "VOLITELNÉ: Chcete-li měřit vzdálenost pomocí GPS smartwatch, potřebujeme povolení [ACCESS_FINE_LOCATION] na jedné z následujících obrazovek. Z tohoto povolení nebude mít Permobil přístup k vašim údajům o poloze.",
-		"phone-state": "VOLITELNÉ: Chcete-li získat přístup k sériovému číslu smartwatch, které může být užitečné pro účely podpory a záruky, potřebujeme, abyste na jedné z následujících obrazovek povolili telefonické oprávnění [READ_PHONE_STATE]. Na základě tohoto povolení nebude Permobil přistupovat k vašemu telefonnímu číslu, informacím o celulární síti ani k jiným datům kromě sériového čísla smartwatch."
-	},
-	"permissions-request": {
-		"title": "Oznámení o oprávnění"
-	},
-	"profile": "Profil",
-	"pushes": {
-		"units": "tlačí"
-	},
-	"settings": {
-		"coastgoal": {
-			"description": "Váš cíl pro průměrnou dobu dojezdu mezi tlaky každý den.",
-			"title": "Cíl pobřežního času",
-			"units": "s"
-		},
-		"connect-pushtracker": "Připojte mobilní aplikaci PushTracker",
-		"distancegoal": {
-			"description": "Váš cíl vzdálenosti ujeté na vozíku každý den, měřeno pomocí SmartDrive.",
-			"title": "Ujetá vzdálenost",
-			"units": {
-				"english": "mi",
-				"metric": "Km"
-			}
-		},
-		"information": "informace",
-		"install-smartdrive": "Nainstalujte si aplikaci SmartDrive MX2 + Wear OS",
-		"language": {
-			"change": "Opravdu chcete změnit jazyk? Chcete-li použít změnu jazyka, musí se aplikace PushTracker restartovat.",
-			"description": "Jazyk textu v aplikaci PushTracker.",
-			"title": "jazyk"
-		},
-		"pushsensitivity": {
-			"description": "Citlivost detekce použitá k počítání stisknutí. Čím nižší je procento, tím méně je citlivé na detekci stisknutí - 0% je nejméně citlivé, a proto detekuje méně stisknutí, a 100% je nejcitlivější, a proto detekuje více stisknutí.",
-			"title": "Citlivost na tlak"
-		},
-		"title": "Nastavení aplikace PushTracker",
-		"units": {
-			"description": "Systém jednotek nebo měrné jednotky pro zobrazení měření v uživatelských rozhraních. Vyberte buď imperiální [ft, mi a lb] nebo metrické [cm, km a kg].",
-			"title": "Jednotky",
-			"values": {
-				"english": "Císařský",
-				"metric": "Metrický"
-			}
-		}
-	},
-	"units": {
-		"distance": {
-			"english": "mi",
-			"metric": "Km"
-		},
-		"english": "Císařský",
-		"metric": "Metrický"
-	},
-	"wearos-comms": {
-		"errors": {
-			"bad-authorization": "Neplatná data autorizace účtu přijatá z mobilní aplikace PushTracker. Zajistěte, aby informace o vašem účtu byly aktuální a vaše chytré hodinky jsou připojeny k internetu prostřednictvím Wi-Fi nebo telefonu.",
-			"bad-data": "Neplatná data přijatá z mobilní aplikace PushTracker. Zkontrolujte připojení a zkuste to znovu."
-		}
-	}
+  "about": {
+    "database": "ID databáze",
+    "title": "informace",
+    "user-email": "Tvůj e-mail",
+    "user-name": "Tvé jméno",
+    "version": "Verze aplikace PushTracker Wear OS",
+    "watch-serial-number": "Sériové číslo Smartwatch"
+  },
+  "busy": {
+    "synchronizing": "Probíhá synchronizace ..."
+  },
+  "buttons": {
+    "back": "Zadní",
+    "cancel": "zrušení",
+    "dismiss": "Propustit",
+    "ok": "OK"
+  },
+  "charts": {
+    "coast": {
+      "title": "Denní doba pobřeží"
+    },
+    "distance": {
+      "title": "Ujetá vzdálenost denně"
+    }
+  },
+  "enhancements": {
+    "coast-time": "Denní doba pobřeží",
+    "distance": "Vzdálenost denně",
+    "pushes": "Tlačí denně"
+  },
+  "failures": {
+    "connect": "Připojení se nezdařilo",
+    "could-not-update-profile": "Aktualizace profilu na serveru Permobil se nezdařila.",
+    "must-wear-watch": "Nastavení [Check for Wrist] (Kontrola zápěstí) je povoleno, proto musí být chytré hodinky používány k ovládání vašeho SmartDrive.",
+    "no-auth-for-saving": "Chcete-li uložit nastavení na server, což je volitelné, musíte připojit aplikaci PushTracker Wear OS k mobilní aplikaci PushTracker. Postupujte podle pokynů na stránce „Nastavení zařízení“ mobilní aplikace PushTracker.",
+    "not-connected-to-mobile": "Ověření na serveru Permobil se nezdařilo. Je vyžadováno opětovné připojení k mobilní aplikaci PushTracker.",
+    "not-fully-initialized": "Stále se inicializuje připojení k serveru Permobil. Nastavení bude odesláno, pokud je to možné.",
+    "permissions": "Požadovanou akci nelze provést. Požadovaná oprávnění nebyla udělena.",
+    "saving-activity": "Uložení aktivity se nezdařilo.",
+    "scan": "Nelze skenovat.",
+    "title": "Oznámení"
+  },
+  "goals": {
+    "coast": {
+      "units": "sekundy"
+    },
+    "distance": {
+      "english": "MIL",
+      "metric": "kilometrů"
+    }
+  },
+  "information": "informace",
+  "language-list": {
+    "cs": "čeština",
+    "da": "Dansk",
+    "de": "Deutsche",
+    "en": "Angličtina",
+    "es": "Español",
+    "fi": "Suomalainen",
+    "fr": "Français",
+    "it": "Italiano",
+    "ja": "日本語",
+    "ko": "한국어",
+    "nb": "Norsk Bokmål",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Portugalský",
+    "sv": "Svenska",
+    "zh": "中國 傳統 的"
+  },
+  "languages": {
+    "da": "dánský",
+    "de": "Němec",
+    "en": "Angličtina",
+    "es": "Španělština",
+    "fr": "francouzština",
+    "it": "Italština",
+    "ja": "japonský",
+    "ko": "korejština",
+    "nb": "Norština [Bokmål]",
+    "nl": "holandský",
+    "sv": "švédský",
+    "zh": "Čínština [tradiční]"
+  },
+  "menu": {
+    "about": "O",
+    "profile": "Profil",
+    "title": "Jídelní lístek"
+  },
+  "notifications": {
+    "add-pt-element": "Chcete rychlejší přístup k vašim statistikám PushTracker? Můžete změnit ciferník a nastavit zkratku. Podívejte se na náš kanál YouTube nebo nám pošlete e-mail s podrobnostmi.",
+    "channels": {
+      "maintenance": "Údržba",
+      "personal-record": "Osobní rekord",
+      "smartdrive": "SmartDrive"
+    },
+    "daily-push-warning": "Přátelské připomenutí! Dnes jste posunuli o 25% více, než je váš denní průměr. Zvažte přestávku nebo více používejte svůj SmartDrive.",
+    "foreground-service": "Permobil PushTracker shromažďuje vaši aktivitu",
+    "new-coast-record": "Udělal jsi to! Dosáhli jste nového osobního maxima pro čas na pobřeží. Dělejte více a současně šetřete ramena! #ChooseToDoMore",
+    "titles": {
+      "add-pt-element": "Přidejte PushTracker jako prvek",
+      "daily-push-warning": "Varování na denní stisk",
+      "new-coast-record": "Nový pobřežní časový záznam!",
+      "wheelchair-maintenance": "Připomenutí údržby invalidního vozíku"
+    },
+    "wheelchair-maintenance": "Udržování invalidního vozíku usnadňuje tlačení. Kolečka, vidlice a opotřebení pneumatik jsou běžné problémy, které ovlivňují vaši schopnost tlačit na židli."
+  },
+  "permissions-reasons": {
+    "coarse-location": "Pro připojení k mobilní aplikaci PushTracker na vašem iPhone pomocí Bluetooth vyžadujeme, abyste na následující obrazovce povolili oprávnění k umístění [ACCESS_COARSE_LOCATION]. Z tohoto povolení nebude mít Permobil přístup k vašim údajům o poloze.",
+    "fine-location": "VOLITELNÉ: Chcete-li měřit vzdálenost pomocí GPS smartwatch, potřebujeme povolení [ACCESS_FINE_LOCATION] na jedné z následujících obrazovek. Z tohoto povolení nebude mít Permobil přístup k vašim údajům o poloze.",
+    "phone-state": "VOLITELNÉ: Chcete-li získat přístup k sériovému číslu smartwatch, které může být užitečné pro účely podpory a záruky, potřebujeme, abyste na jedné z následujících obrazovek povolili telefonické oprávnění [READ_PHONE_STATE]. Na základě tohoto povolení nebude Permobil přistupovat k vašemu telefonnímu číslu, informacím o celulární síti ani k jiným datům kromě sériového čísla smartwatch."
+  },
+  "permissions-request": {
+    "title": "Oznámení o oprávnění"
+  },
+  "profile": "Profil",
+  "pushes": {
+    "units": "tlačí"
+  },
+  "settings": {
+    "coastgoal": {
+      "description": "Váš cíl pro průměrnou dobu dojezdu mezi tlaky každý den.",
+      "title": "Cíl pobřežního času",
+      "units": "s"
+    },
+    "connect-pushtracker": "Připojte mobilní aplikaci PushTracker",
+    "distancegoal": {
+      "description": "Váš cíl vzdálenosti ujeté na vozíku každý den, měřeno pomocí SmartDrive.",
+      "title": "Ujetá vzdálenost",
+      "units": {
+        "english": "mi",
+        "metric": "Km"
+      }
+    },
+    "information": "informace",
+    "install-smartdrive": "Nainstalujte si aplikaci SmartDrive MX2 + Wear OS",
+    "language": {
+      "change": "Opravdu chcete změnit jazyk? Chcete-li použít změnu jazyka, musí se aplikace PushTracker restartovat.",
+      "description": "Jazyk textu v aplikaci PushTracker.",
+      "title": "jazyk"
+    },
+    "pushsensitivity": {
+      "description": "Citlivost detekce použitá k počítání stisknutí. Čím nižší je procento, tím méně je citlivé na detekci stisknutí - 0% je nejméně citlivé, a proto detekuje méně stisknutí, a 100% je nejcitlivější, a proto detekuje více stisknutí.",
+      "title": "Citlivost na tlak"
+    },
+    "title": "Nastavení aplikace PushTracker",
+    "units": {
+      "description": "Systém jednotek nebo měrné jednotky pro zobrazení měření v uživatelských rozhraních. Vyberte buď imperiální [ft, mi a lb] nebo metrické [cm, km a kg].",
+      "title": "Jednotky",
+      "values": {
+        "english": "Císařský",
+        "metric": "Metrický"
+      }
+    }
+  },
+  "units": {
+    "distance": {
+      "english": "mi",
+      "metric": "Km"
+    },
+    "english": "Císařský",
+    "metric": "Metrický"
+  },
+  "wearos-comms": {
+    "errors": {
+      "bad-authorization": "Neplatná data autorizace účtu přijatá z mobilní aplikace PushTracker. Zajistěte, aby informace o vašem účtu byly aktuální a vaše chytré hodinky jsou připojeny k internetu prostřednictvím Wi-Fi nebo telefonu.",
+      "bad-data": "Neplatná data přijatá z mobilní aplikace PushTracker. Zkontrolujte připojení a zkuste to znovu."
+    }
+  }
 }

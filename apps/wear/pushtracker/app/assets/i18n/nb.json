@@ -1,171 +1,171 @@
 {
-	"about": {
-		"database": "Database ID",
-		"title": "Om informasjon",
-		"user-email": "Din epost",
-		"user-name": "Navnet ditt",
-		"version": "PushTracker Wear OS-appversjon",
-		"watch-serial-number": "Smartwatch serienummer"
-	},
-	"busy": {
-		"synchronizing": "Synkronisere ..."
-	},
-	"buttons": {
-		"back": "Tilbake",
-		"cancel": "Avbryt",
-		"dismiss": "Avskjedige",
-		"ok": "OK"
-	},
-	"charts": {
-		"coast": {
-			"title": "Coast Time Daily (r)"
-		},
-		"distance": {
-			"title": "Avstand reist daglig"
-		}
-	},
-	"enhancements": {
-		"coast-time": "Kysttid daglig",
-		"distance": "Avstand daglig",
-		"pushes": "Skyver daglig"
-	},
-	"failures": {
-		"connect": "Kunne ikke koble til",
-		"could-not-update-profile": "Kunne ikke oppdatere profilen på Permobil-serveren.",
-		"must-wear-watch": "[Kontroller om håndleddet] Innstillingen er aktivert, derfor må smarturet brukes for å kontrollere SmartDrive.",
-		"no-auth-for-saving": "For å lagre innstillinger på serveren, som er valgfri, må du koble PushTracker Wear OS-appen til PushTracker Mobile-appen. Følg instruksjonene på siden \"Enhetsoppsett\" i PushTracker Mobile-appen.",
-		"not-connected-to-mobile": "Kunne ikke autentisere med Permobil-serveren. Koble til på nytt til PushTracker mobilapp.",
-		"not-fully-initialized": "Fortsetter initialiserer tilkoblingen til Permobil-serveren. Innstillinger vil bli sendt når det er mulig.",
-		"permissions": "Kan ikke utføre den forespurte handlingen. Nødvendige tillatelser ble ikke gitt.",
-		"saving-activity": "Kunne ikke lagre aktivitet.",
-		"scan": "Kunne ikke skanne.",
-		"title": "Legge merke til"
-	},
-	"goals": {
-		"coast": {
-			"units": "sekunder"
-		},
-		"distance": {
-			"english": "miles",
-			"metric": "KILOMETER"
-		}
-	},
-	"information": "informasjon",
-	"language-list": {
-		"cs": "Čeština",
-		"da": "dansk",
-		"de": "Deutsche",
-		"en": "engelsk",
-		"es": "español",
-		"fi": "Suomalainen",
-		"fr": "fransk",
-		"it": "Italiano",
-		"ja": "日本語",
-		"ko": "한국어",
-		"nb": "Norsk bokmål",
-		"nl": "Nederlands",
-		"pl": "Polski",
-		"pt": "Português",
-		"sv": "Svenska",
-		"zh": "中國 傳統 的"
-	},
-	"languages": {
-		"da": "dansk",
-		"de": "tysk",
-		"en": "engelsk",
-		"es": "spansk",
-		"fr": "fransk",
-		"it": "italiensk",
-		"ja": "japansk",
-		"ko": "Korean",
-		"nb": "Norsk [bokmål]",
-		"nl": "nederlandsk",
-		"sv": "svensk",
-		"zh": "Tradisjonell kinesisk]"
-	},
-	"menu": {
-		"about": "Handle om",
-		"profile": "profil",
-		"title": "Meny"
-	},
-	"notifications": {
-		"add-pt-element": "Ønsker du raskere tilgang til PushTracker-statistikken din? Du kan endre urskiven for å angi en snarvei. Ta en titt på YouTube-kanalen vår eller send oss en e-post for mer informasjon.",
-		"channels": {
-			"maintenance": "Vedlikehold",
-			"personal-record": "Personlig post",
-			"smartdrive": "Smart"
-		},
-		"daily-push-warning": "Vennlig påminnelse! Du har presset 25% mer i dag enn ditt daglige gjennomsnitt. Vurder å ta en pause eller bruke SmartDrive mer.",
-		"foreground-service": "Permobil PushTracker samler inn aktiviteten din",
-		"new-coast-record": "Du gjorde det! Du oppnådde et nytt personlig rekord for kysten. Gjør mer, mens du sparer skuldrene! #ChooseToDoMore",
-		"titles": {
-			"add-pt-element": "Legg til PushTracker som element",
-			"daily-push-warning": "Daglig push-advarsel",
-			"new-coast-record": "Ny Coast Time Record!",
-			"wheelchair-maintenance": "Påminnelse om vedlikehold av rullestol"
-		},
-		"wheelchair-maintenance": "Å holde rullestolen vedlikeholdt gjør det lettere å skyve. Hjul, hjul og hjulslitasje er vanlige problemer som påvirker din evne til å skyve stolen."
-	},
-	"permissions-reasons": {
-		"coarse-location": "For å få forbindelse med PushTracker Mobile-appen på din iPhone ved hjelp av Bluetooth, krever vi at du tillater plasseringstillatelse [ACCESS_COARSE_LOCATION] på følgende skjermbilde. Fra denne tillatelsen får Permobil ikke tilgang til posisjonsdataene dine.",
-		"fine-location": "ALTERNATIV: For å måle avstand ved hjelp av smartwatch-GPS-en din, trenger vi at du tillater tillatelsen [ACCESS_FINE_LOCATION] på en av følgende skjermbilder. Fra denne tillatelsen får Permobil ikke tilgang til posisjonsdataene dine.",
-		"phone-state": "ALTERNATIV: For å få tilgang til smartwatch serienummeret ditt, som kan være nyttig for støtte og garantiformål, må vi at du tillater telefontillatelse [READ_PHONE_STATE] på en av følgende skjermbilder. Fra denne tillatelsen får Permobil ikke tilgang til telefonnummeret ditt, mobilnettinformasjon eller andre data bortsett fra smartwatch serienummeret."
-	},
-	"permissions-request": {
-		"title": "Tillatelsesvarsel"
-	},
-	"profile": "profil",
-	"pushes": {
-		"units": "skyver"
-	},
-	"settings": {
-		"coastgoal": {
-			"description": "Målet ditt for gjennomsnittlig kysttid mellom dytter hver dag.",
-			"title": "Coast Time Goal",
-			"units": "s"
-		},
-		"connect-pushtracker": "Koble PushTracker mobilapp",
-		"distancegoal": {
-			"description": "Målet ditt for tilbakelagt distanse i rullestolen din hver dag, målt med en SmartDrive.",
-			"title": "Avstand reist mål",
-			"units": {
-				"english": "mi",
-				"metric": "km"
-			}
-		},
-		"information": "informasjon",
-		"install-smartdrive": "Installer SmartDrive MX2 Wear OS-app",
-		"language": {
-			"change": "Er du sikker på at du vil endre språk? PushTracker-appen må starte på nytt for å bruke språkendringen.",
-			"description": "Språket i teksten i PushTracker-appen.",
-			"title": "språk"
-		},
-		"pushsensitivity": {
-			"description": "Følsomheten for deteksjonen som brukes til å telle skyver. Jo lavere prosentandel er, desto mindre følsom er det å oppdage et trykk - 0% er det minst følsomme og vil derfor oppdage færre trykk, og 100% er det mest følsomme og vil derfor oppdage flere trykk.",
-			"title": "Push følsomhet"
-		},
-		"title": "PushTracker-innstillinger",
-		"units": {
-			"description": "Enhetssystemet eller måleenhetene for å vise målingene i brukergrensesnittene. Velg enten Imperial [ft, mi og lbs] eller Metric [cm, km og kg].",
-			"title": "enheter",
-			"values": {
-				"english": "Imperial",
-				"metric": "Metric"
-			}
-		}
-	},
-	"units": {
-		"distance": {
-			"english": "mi",
-			"metric": "km"
-		},
-		"english": "Imperial",
-		"metric": "Metric"
-	},
-	"wearos-comms": {
-		"errors": {
-			"bad-authorization": "Ugyldige data om kontoautorisasjon mottatt fra PushTracker mobilapp. Forsikre deg om at kontoinformasjonen din er oppdatert og at smartwatchet ditt er koblet til internett enten via Wi-Fi eller telefonen.",
-			"bad-data": "Ugyldige data mottatt fra PushTracker mobilapp. Kontroller tilkoblingen og prøv igjen."
-		}
-	}
+  "about": {
+    "database": "Database ID",
+    "title": "Om informasjon",
+    "user-email": "Din epost",
+    "user-name": "Navnet ditt",
+    "version": "PushTracker Wear OS-appversjon",
+    "watch-serial-number": "Smartwatch serienummer"
+  },
+  "busy": {
+    "synchronizing": "Synkronisere ..."
+  },
+  "buttons": {
+    "back": "Tilbake",
+    "cancel": "Avbryt",
+    "dismiss": "Avskjedige",
+    "ok": "OK"
+  },
+  "charts": {
+    "coast": {
+      "title": "Coast Time Daily (r)"
+    },
+    "distance": {
+      "title": "Avstand reist daglig"
+    }
+  },
+  "enhancements": {
+    "coast-time": "Kysttid daglig",
+    "distance": "Avstand daglig",
+    "pushes": "Skyver daglig"
+  },
+  "failures": {
+    "connect": "Kunne ikke koble til",
+    "could-not-update-profile": "Kunne ikke oppdatere profilen på Permobil-serveren.",
+    "must-wear-watch": "[Kontroller om håndleddet] Innstillingen er aktivert, derfor må smarturet brukes for å kontrollere SmartDrive.",
+    "no-auth-for-saving": "For å lagre innstillinger på serveren, som er valgfri, må du koble PushTracker Wear OS-appen til PushTracker Mobile-appen. Følg instruksjonene på siden \"Enhetsoppsett\" i PushTracker Mobile-appen.",
+    "not-connected-to-mobile": "Kunne ikke autentisere med Permobil-serveren. Koble til på nytt til PushTracker mobilapp.",
+    "not-fully-initialized": "Fortsetter initialiserer tilkoblingen til Permobil-serveren. Innstillinger vil bli sendt når det er mulig.",
+    "permissions": "Kan ikke utføre den forespurte handlingen. Nødvendige tillatelser ble ikke gitt.",
+    "saving-activity": "Kunne ikke lagre aktivitet.",
+    "scan": "Kunne ikke skanne.",
+    "title": "Legge merke til"
+  },
+  "goals": {
+    "coast": {
+      "units": "sekunder"
+    },
+    "distance": {
+      "english": "miles",
+      "metric": "KILOMETER"
+    }
+  },
+  "information": "informasjon",
+  "language-list": {
+    "cs": "Čeština",
+    "da": "dansk",
+    "de": "Deutsche",
+    "en": "engelsk",
+    "es": "español",
+    "fi": "Suomalainen",
+    "fr": "fransk",
+    "it": "Italiano",
+    "ja": "日本語",
+    "ko": "한국어",
+    "nb": "Norsk bokmål",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Português",
+    "sv": "Svenska",
+    "zh": "中國 傳統 的"
+  },
+  "languages": {
+    "da": "dansk",
+    "de": "tysk",
+    "en": "engelsk",
+    "es": "spansk",
+    "fr": "fransk",
+    "it": "italiensk",
+    "ja": "japansk",
+    "ko": "Korean",
+    "nb": "Norsk [bokmål]",
+    "nl": "nederlandsk",
+    "sv": "svensk",
+    "zh": "Tradisjonell kinesisk]"
+  },
+  "menu": {
+    "about": "Handle om",
+    "profile": "profil",
+    "title": "Meny"
+  },
+  "notifications": {
+    "add-pt-element": "Ønsker du raskere tilgang til PushTracker-statistikken din? Du kan endre urskiven for å angi en snarvei. Ta en titt på YouTube-kanalen vår eller send oss en e-post for mer informasjon.",
+    "channels": {
+      "maintenance": "Vedlikehold",
+      "personal-record": "Personlig post",
+      "smartdrive": "Smart"
+    },
+    "daily-push-warning": "Vennlig påminnelse! Du har presset 25% mer i dag enn ditt daglige gjennomsnitt. Vurder å ta en pause eller bruke SmartDrive mer.",
+    "foreground-service": "Permobil PushTracker samler inn aktiviteten din",
+    "new-coast-record": "Du gjorde det! Du oppnådde et nytt personlig rekord for kysten. Gjør mer, mens du sparer skuldrene! #ChooseToDoMore",
+    "titles": {
+      "add-pt-element": "Legg til PushTracker som element",
+      "daily-push-warning": "Daglig push-advarsel",
+      "new-coast-record": "Ny Coast Time Record!",
+      "wheelchair-maintenance": "Påminnelse om vedlikehold av rullestol"
+    },
+    "wheelchair-maintenance": "Å holde rullestolen vedlikeholdt gjør det lettere å skyve. Hjul, hjul og hjulslitasje er vanlige problemer som påvirker din evne til å skyve stolen."
+  },
+  "permissions-reasons": {
+    "coarse-location": "For å få forbindelse med PushTracker Mobile-appen på din iPhone ved hjelp av Bluetooth, krever vi at du tillater plasseringstillatelse [ACCESS_COARSE_LOCATION] på følgende skjermbilde. Fra denne tillatelsen får Permobil ikke tilgang til posisjonsdataene dine.",
+    "fine-location": "ALTERNATIV: For å måle avstand ved hjelp av smartwatch-GPS-en din, trenger vi at du tillater tillatelsen [ACCESS_FINE_LOCATION] på en av følgende skjermbilder. Fra denne tillatelsen får Permobil ikke tilgang til posisjonsdataene dine.",
+    "phone-state": "ALTERNATIV: For å få tilgang til smartwatch serienummeret ditt, som kan være nyttig for støtte og garantiformål, må vi at du tillater telefontillatelse [READ_PHONE_STATE] på en av følgende skjermbilder. Fra denne tillatelsen får Permobil ikke tilgang til telefonnummeret ditt, mobilnettinformasjon eller andre data bortsett fra smartwatch serienummeret."
+  },
+  "permissions-request": {
+    "title": "Tillatelsesvarsel"
+  },
+  "profile": "profil",
+  "pushes": {
+    "units": "skyver"
+  },
+  "settings": {
+    "coastgoal": {
+      "description": "Målet ditt for gjennomsnittlig kysttid mellom dytter hver dag.",
+      "title": "Coast Time Goal",
+      "units": "s"
+    },
+    "connect-pushtracker": "Koble PushTracker mobilapp",
+    "distancegoal": {
+      "description": "Målet ditt for tilbakelagt distanse i rullestolen din hver dag, målt med en SmartDrive.",
+      "title": "Avstand reist mål",
+      "units": {
+        "english": "mi",
+        "metric": "km"
+      }
+    },
+    "information": "informasjon",
+    "install-smartdrive": "Installer SmartDrive MX2 Wear OS-app",
+    "language": {
+      "change": "Er du sikker på at du vil endre språk? PushTracker-appen må starte på nytt for å bruke språkendringen.",
+      "description": "Språket i teksten i PushTracker-appen.",
+      "title": "språk"
+    },
+    "pushsensitivity": {
+      "description": "Følsomheten for deteksjonen som brukes til å telle skyver. Jo lavere prosentandel er, desto mindre følsom er det å oppdage et trykk - 0% er det minst følsomme og vil derfor oppdage færre trykk, og 100% er det mest følsomme og vil derfor oppdage flere trykk.",
+      "title": "Push følsomhet"
+    },
+    "title": "PushTracker-innstillinger",
+    "units": {
+      "description": "Enhetssystemet eller måleenhetene for å vise målingene i brukergrensesnittene. Velg enten Imperial [ft, mi og lbs] eller Metric [cm, km og kg].",
+      "title": "enheter",
+      "values": {
+        "english": "Imperial",
+        "metric": "Metric"
+      }
+    }
+  },
+  "units": {
+    "distance": {
+      "english": "mi",
+      "metric": "km"
+    },
+    "english": "Imperial",
+    "metric": "Metric"
+  },
+  "wearos-comms": {
+    "errors": {
+      "bad-authorization": "Ugyldige data om kontoautorisasjon mottatt fra PushTracker mobilapp. Forsikre deg om at kontoinformasjonen din er oppdatert og at smartwatchet ditt er koblet til internett enten via Wi-Fi eller telefonen.",
+      "bad-data": "Ugyldige data mottatt fra PushTracker mobilapp. Kontroller tilkoblingen og prøv igjen."
+    }
+  }
 }

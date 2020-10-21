@@ -1,171 +1,171 @@
 {
-	"about": {
-		"database": "データベースID",
-		"title": "情報について",
-		"user-email": "あなたのEメール",
-		"user-name": "あなたの名前",
-		"version": "PushTracker Wear OSアプリバージョン",
-		"watch-serial-number": "スマートウォッチのシリアル番号"
-	},
-	"busy": {
-		"synchronizing": "同期しています..."
-	},
-	"buttons": {
-		"back": "バック",
-		"cancel": "キャンセル",
-		"dismiss": "やめる",
-		"ok": "OK"
-	},
-	"charts": {
-		"coast": {
-			"title": "コーストタイムデイリー（s）"
-		},
-		"distance": {
-			"title": "毎日の移動距離"
-		}
-	},
-	"enhancements": {
-		"coast-time": "コーストタイムデイリー",
-		"distance": "毎日の距離",
-		"pushes": "毎日プッシュ"
-	},
-	"failures": {
-		"connect": "への接続に失敗しました",
-		"could-not-update-profile": "Permobilサーバーでプロファイルを更新できませんでした。",
-		"must-wear-watch": "[手首の確認]設定が有効になっているため、SmartDriveを制御するにはスマートウォッチを装着する必要があります。",
-		"no-auth-for-saving": "オプションであるサーバーに設定を保存するには、PushTracker Wear OSアプリをPushTracker Mobileアプリに接続する必要があります。これを行うには、PushTracker Mobileアプリの「デバイス設定」ページの指示に従ってください。",
-		"not-connected-to-mobile": "Permobilサーバーでの認証に失敗しました。 PushTracker Mobileアプリへの再接続が必要です。",
-		"not-fully-initialized": "まだPermobilサーバーへの接続を初期化しています。可能な場合、設定が送信されます。",
-		"permissions": "要求されたアクションを実行できません。必要な権限が付与されていません。",
-		"saving-activity": "アクティビティの保存に失敗しました。",
-		"scan": "スキャンできませんでした。",
-		"title": "通知"
-	},
-	"goals": {
-		"coast": {
-			"units": "秒"
-		},
-		"distance": {
-			"english": "マイル",
-			"metric": "キロメートル"
-		}
-	},
-	"information": "情報",
-	"language-list": {
-		"cs": "チェシュティナ",
-		"da": "ダンスク",
-		"de": "ドイチェ",
-		"en": "英語",
-		"es": "スペイン語",
-		"fi": "スオマライネン",
-		"fr": "フランス語",
-		"it": "イタリアーノ",
-		"ja": "日本語",
-		"ko": "日本語",
-		"nb": "Norskbokmål",
-		"nl": "オランダ人",
-		"pl": "ポルスキ",
-		"pt": "ポルトガル語",
-		"sv": "スヴェンスカ",
-		"zh": "中國傳統的"
-	},
-	"languages": {
-		"da": "デンマーク語",
-		"de": "ドイツ人",
-		"en": "英語",
-		"es": "スペイン語",
-		"fr": "フランス語",
-		"it": "イタリアの",
-		"ja": "日本人",
-		"ko": "韓国語",
-		"nb": "ノルウェー語[ブークモール]",
-		"nl": "オランダの",
-		"sv": "スウェーデンの",
-		"zh": "中国の伝統的な]"
-	},
-	"menu": {
-		"about": "約",
-		"profile": "プロフィール",
-		"title": "メニュー"
-	},
-	"notifications": {
-		"add-pt-element": "PushTracker統計にすばやくアクセスしたいですか？ウォッチフェイスを変更してショートカットを設定できます。詳細については、YouTubeチャンネルを確認するか、メールでお問い合わせください。",
-		"channels": {
-			"maintenance": "メンテナンス",
-			"personal-record": "個人記録",
-			"smartdrive": "SmartDrive"
-		},
-		"daily-push-warning": "フレンドリーなリマインダー！あなたは今日、あなたの毎日の平均よりも25%多くプッシュしました。休憩を取るか、SmartDriveをもっと使用することを検討してください。",
-		"foreground-service": "Permobil PushTrackerはアクティビティを収集しています",
-		"new-coast-record": "できたね！あなたはコーストタイムで新しいパーソナルベストを達成しました。あなたの肩を節約しながら、より多くのことを！ #ChooseToDoMore",
-		"titles": {
-			"add-pt-element": "PushTrackerを要素として追加する",
-			"daily-push-warning": "毎日のプッシュ警告",
-			"new-coast-record": "ニューコーストタイムレコード！",
-			"wheelchair-maintenance": "車椅子メンテナンスリマインダー"
-		},
-		"wheelchair-maintenance": "車椅子を維持しておくと、押しやすくなります。キャスターホイール、キャスターフォーク、タイヤの摩耗は、椅子を押す能力に影響を与える一般的な問題です。"
-	},
-	"permissions-reasons": {
-		"coarse-location": "Bluetoothを使用してiPhoneのPushTracker Mobileアプリに接続するには、次の画面でロケーション許可[ACCESS_COARSE_LOCATION]を許可する必要があります。この許可から、Permobilはあなたの位置データにアクセスしなくなります。",
-		"fine-location": "オプション：スマートウォッチGPSを使用して距離を測定するには、次のいずれかの画面で[ACCESS_FINE_LOCATION]の許可を許可する必要があります。この許可から、Permobilはあなたの位置データにアクセスしなくなります。",
-		"phone-state": "オプション：スマートウォッチのシリアル番号にアクセスするには、サポートと保証の目的に役立ちます。次のいずれかの画面で電話の許可[READ_PHONE_STATE]を許可する必要があります。この許可から、Permobilは電話番号、セルラーネットワーク情報、またはスマートウォッチのシリアル番号以外のデータにアクセスしなくなります。"
-	},
-	"permissions-request": {
-		"title": "許可通知"
-	},
-	"profile": "プロフィール",
-	"pushes": {
-		"units": "押す"
-	},
-	"settings": {
-		"coastgoal": {
-			"description": "毎日のプッシュ間の平均海岸時間の目標。",
-			"title": "コーストタイムゴール",
-			"units": "S"
-		},
-		"connect-pushtracker": "PushTrackerモバイルアプリを接続",
-		"distancegoal": {
-			"description": "SmartDriveで測定した車椅子での毎日の走行距離の目標。",
-			"title": "走行距離目標",
-			"units": {
-				"english": "ミ",
-				"metric": "km"
-			}
-		},
-		"information": "情報",
-		"install-smartdrive": "SmartDrive MX2 Wear OSアプリをインストールする",
-		"language": {
-			"change": "言語を変更してもよろしいですか？言語の変更を適用するには、PushTrackerアプリを再起動する必要があります。",
-			"description": "PushTrackerアプリのテキストの言語。",
-			"title": "言語"
-		},
-		"pushsensitivity": {
-			"description": "プッシュのカウントに使用される検出の感度。パーセンテージが低いほど、プッシュの検出に対する感度は低くなります-0%は感度が最も低く、したがって、検出されるプッシュが少なくなり、100%が最も感度が高く、したがって、より多くのプッシュが検出されます。",
-			"title": "プッシュ感度"
-		},
-		"title": "PushTracker設定",
-		"units": {
-			"description": "ユーザーインターフェイス内に測定値を表示する単位系または測定単位。インペリアル[ft、mi、lbs]またはメトリック[cm、km、kg]を選択します。",
-			"title": "単位",
-			"values": {
-				"english": "インペリアル",
-				"metric": "メトリック"
-			}
-		}
-	},
-	"units": {
-		"distance": {
-			"english": "ミ",
-			"metric": "km"
-		},
-		"english": "インペリアル",
-		"metric": "メトリック"
-	},
-	"wearos-comms": {
-		"errors": {
-			"bad-authorization": "PushTracker Mobileアプリから受け取った無効なアカウント認証データ。アカウント情報が最新であり、スマートウォッチがWi-Fiまたは電話を介してインターネットに接続されていることを確認してください。",
-			"bad-data": "PushTracker Mobileアプリから受信した無効なデータ。接続を確認して再試行してください。"
-		}
-	}
+  "about": {
+    "database": "データベースID",
+    "title": "情報について",
+    "user-email": "あなたのEメール",
+    "user-name": "あなたの名前",
+    "version": "PushTracker Wear OSアプリバージョン",
+    "watch-serial-number": "スマートウォッチのシリアル番号"
+  },
+  "busy": {
+    "synchronizing": "同期しています..."
+  },
+  "buttons": {
+    "back": "バック",
+    "cancel": "キャンセル",
+    "dismiss": "やめる",
+    "ok": "OK"
+  },
+  "charts": {
+    "coast": {
+      "title": "コーストタイムデイリー（s）"
+    },
+    "distance": {
+      "title": "毎日の移動距離"
+    }
+  },
+  "enhancements": {
+    "coast-time": "コーストタイムデイリー",
+    "distance": "毎日の距離",
+    "pushes": "毎日プッシュ"
+  },
+  "failures": {
+    "connect": "への接続に失敗しました",
+    "could-not-update-profile": "Permobilサーバーでプロファイルを更新できませんでした。",
+    "must-wear-watch": "[手首の確認]設定が有効になっているため、SmartDriveを制御するにはスマートウォッチを装着する必要があります。",
+    "no-auth-for-saving": "オプションであるサーバーに設定を保存するには、PushTracker Wear OSアプリをPushTracker Mobileアプリに接続する必要があります。これを行うには、PushTracker Mobileアプリの「デバイス設定」ページの指示に従ってください。",
+    "not-connected-to-mobile": "Permobilサーバーでの認証に失敗しました。 PushTracker Mobileアプリへの再接続が必要です。",
+    "not-fully-initialized": "まだPermobilサーバーへの接続を初期化しています。可能な場合、設定が送信されます。",
+    "permissions": "要求されたアクションを実行できません。必要な権限が付与されていません。",
+    "saving-activity": "アクティビティの保存に失敗しました。",
+    "scan": "スキャンできませんでした。",
+    "title": "通知"
+  },
+  "goals": {
+    "coast": {
+      "units": "秒"
+    },
+    "distance": {
+      "english": "マイル",
+      "metric": "キロメートル"
+    }
+  },
+  "information": "情報",
+  "language-list": {
+    "cs": "チェシュティナ",
+    "da": "ダンスク",
+    "de": "ドイチェ",
+    "en": "英語",
+    "es": "スペイン語",
+    "fi": "スオマライネン",
+    "fr": "フランス語",
+    "it": "イタリアーノ",
+    "ja": "日本語",
+    "ko": "日本語",
+    "nb": "Norskbokmål",
+    "nl": "オランダ人",
+    "pl": "ポルスキ",
+    "pt": "ポルトガル語",
+    "sv": "スヴェンスカ",
+    "zh": "中國傳統的"
+  },
+  "languages": {
+    "da": "デンマーク語",
+    "de": "ドイツ人",
+    "en": "英語",
+    "es": "スペイン語",
+    "fr": "フランス語",
+    "it": "イタリアの",
+    "ja": "日本人",
+    "ko": "韓国語",
+    "nb": "ノルウェー語[ブークモール]",
+    "nl": "オランダの",
+    "sv": "スウェーデンの",
+    "zh": "中国の伝統的な]"
+  },
+  "menu": {
+    "about": "約",
+    "profile": "プロフィール",
+    "title": "メニュー"
+  },
+  "notifications": {
+    "add-pt-element": "PushTracker統計にすばやくアクセスしたいですか？ウォッチフェイスを変更してショートカットを設定できます。詳細については、YouTubeチャンネルを確認するか、メールでお問い合わせください。",
+    "channels": {
+      "maintenance": "メンテナンス",
+      "personal-record": "個人記録",
+      "smartdrive": "SmartDrive"
+    },
+    "daily-push-warning": "フレンドリーなリマインダー！あなたは今日、あなたの毎日の平均よりも25%多くプッシュしました。休憩を取るか、SmartDriveをもっと使用することを検討してください。",
+    "foreground-service": "Permobil PushTrackerはアクティビティを収集しています",
+    "new-coast-record": "できたね！あなたはコーストタイムで新しいパーソナルベストを達成しました。あなたの肩を節約しながら、より多くのことを！ #ChooseToDoMore",
+    "titles": {
+      "add-pt-element": "PushTrackerを要素として追加する",
+      "daily-push-warning": "毎日のプッシュ警告",
+      "new-coast-record": "ニューコーストタイムレコード！",
+      "wheelchair-maintenance": "車椅子メンテナンスリマインダー"
+    },
+    "wheelchair-maintenance": "車椅子を維持しておくと、押しやすくなります。キャスターホイール、キャスターフォーク、タイヤの摩耗は、椅子を押す能力に影響を与える一般的な問題です。"
+  },
+  "permissions-reasons": {
+    "coarse-location": "Bluetoothを使用してiPhoneのPushTracker Mobileアプリに接続するには、次の画面でロケーション許可[ACCESS_COARSE_LOCATION]を許可する必要があります。この許可から、Permobilはあなたの位置データにアクセスしなくなります。",
+    "fine-location": "オプション：スマートウォッチGPSを使用して距離を測定するには、次のいずれかの画面で[ACCESS_FINE_LOCATION]の許可を許可する必要があります。この許可から、Permobilはあなたの位置データにアクセスしなくなります。",
+    "phone-state": "オプション：スマートウォッチのシリアル番号にアクセスするには、サポートと保証の目的に役立ちます。次のいずれかの画面で電話の許可[READ_PHONE_STATE]を許可する必要があります。この許可から、Permobilは電話番号、セルラーネットワーク情報、またはスマートウォッチのシリアル番号以外のデータにアクセスしなくなります。"
+  },
+  "permissions-request": {
+    "title": "許可通知"
+  },
+  "profile": "プロフィール",
+  "pushes": {
+    "units": "押す"
+  },
+  "settings": {
+    "coastgoal": {
+      "description": "毎日のプッシュ間の平均海岸時間の目標。",
+      "title": "コーストタイムゴール",
+      "units": "S"
+    },
+    "connect-pushtracker": "PushTrackerモバイルアプリを接続",
+    "distancegoal": {
+      "description": "SmartDriveで測定した車椅子での毎日の走行距離の目標。",
+      "title": "走行距離目標",
+      "units": {
+        "english": "ミ",
+        "metric": "km"
+      }
+    },
+    "information": "情報",
+    "install-smartdrive": "SmartDrive MX2 Wear OSアプリをインストールする",
+    "language": {
+      "change": "言語を変更してもよろしいですか？言語の変更を適用するには、PushTrackerアプリを再起動する必要があります。",
+      "description": "PushTrackerアプリのテキストの言語。",
+      "title": "言語"
+    },
+    "pushsensitivity": {
+      "description": "プッシュのカウントに使用される検出の感度。パーセンテージが低いほど、プッシュの検出に対する感度は低くなります-0%は感度が最も低く、したがって、検出されるプッシュが少なくなり、100%が最も感度が高く、したがって、より多くのプッシュが検出されます。",
+      "title": "プッシュ感度"
+    },
+    "title": "PushTracker設定",
+    "units": {
+      "description": "ユーザーインターフェイス内に測定値を表示する単位系または測定単位。インペリアル[ft、mi、lbs]またはメトリック[cm、km、kg]を選択します。",
+      "title": "単位",
+      "values": {
+        "english": "インペリアル",
+        "metric": "メトリック"
+      }
+    }
+  },
+  "units": {
+    "distance": {
+      "english": "ミ",
+      "metric": "km"
+    },
+    "english": "インペリアル",
+    "metric": "メトリック"
+  },
+  "wearos-comms": {
+    "errors": {
+      "bad-authorization": "PushTracker Mobileアプリから受け取った無効なアカウント認証データ。アカウント情報が最新であり、スマートウォッチがWi-Fiまたは電話を介してインターネットに接続されていることを確認してください。",
+      "bad-data": "PushTracker Mobileアプリから受信した無効なデータ。接続を確認して再試行してください。"
+    }
+  }
 }
