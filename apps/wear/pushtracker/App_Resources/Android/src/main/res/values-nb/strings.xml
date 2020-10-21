@@ -8,7 +8,7 @@
     <string name="complications_provider_service_label_distance">Avstand daglig</string>
     <string name="personal_record">Personlig post</string>
     <string name="push_warning">Trykk advarsel</string>
-    <string name="push_warning_notification_text">Vennlig påminnelse! Du har presset 25% mer i dag enn ditt daglige gjennomsnitt. Vurder å ta en pause eller bruke Smart Drive mer.</string>
+    <string name="push_warning_notification_text">Vennlig påminnelse! Du har presset 25% mer i dag enn ditt daglige gjennomsnitt. Vurder å ta en pause eller bruke SmartDrive mer.</string>
     <string name="new_coast_time_record">🏆 Ny Coast Time Record!</string>
     <string name="coast_time_record_notification_text">Du gjorde det! Du oppnådde et nytt personlig rekord for kysten. Gjør mer, mens du sparer skuldrene! #choosetodomore</string>
     <string name="activity_collection">Aktivitetssamling</string>
