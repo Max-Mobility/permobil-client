@@ -70,7 +70,8 @@ export class DataBoxComponent extends TextField {
         title: this._translateService.instant('general.birthday'),
         okButtonText: this._translateService.instant('general.ok'),
         cancelButtonText: this._translateService.instant('general.cancel'),
-        locale: this._translateService.getDefaultLang()
+        // THIS IS FOR PRODCUTION RELEASE ONLY - at launch PT.M will only support english
+        locale: 'en' // this._translateService.getDefaultLang()
       },
       dateTimePickerStyle
     )

@@ -131,12 +131,15 @@
         <Label class="setting-title" [text]="'profile-settings.theme' | translate"></Label>
         <Label class="setting-value" [text]="CURRENT_THEME" textWrap="true"></Label>
       </StackLayout>
-      
+
+      <!--
+      // THIS IS FOR PRODCUTION RELEASE ONLY - at launch PT.M will only support english
       // Language
       <StackLayout (tap)="onListPickerItemTap('language')" ripple rippleColorAlpha="0.18" row="17" class="setting-layout">
         <Label class="setting-title" [text]="'profile-settings.language' | translate"></Label>
         <Label class="setting-value" [text]="CURRENT_LANGUAGE" textWrap="true"></Label>
       </StackLayout>
+      -->
 
       // App info
       <Label row="18" class="category" [text]="'general.app-info' | translate"></Label>

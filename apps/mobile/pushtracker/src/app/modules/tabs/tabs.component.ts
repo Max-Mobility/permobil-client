@@ -248,6 +248,8 @@ export class TabsComponent {
     let language: string | APP_LANGUAGES = APP_LANGUAGES.English;
     if (this.user && this.user.data.language_preference) {
       language = APP_LANGUAGES[this.user.data.language_preference];
+      // THIS IS FOR PRODCUTION RELEASE ONLY - at launch PT.M will only support english
+      language = APP_LANGUAGES.English;
     }
     if (this._translateService.currentLang !== language) {
       await this._translateService.reloadLang(language).toPromise();
