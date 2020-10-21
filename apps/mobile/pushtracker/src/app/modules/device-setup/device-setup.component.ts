@@ -222,7 +222,7 @@ export class DeviceSetupComponent {
       // only show our permissions alert on android - on iOS the
       // system has already shown the permissions request at this
       // point, and the text for it comes from Info.plist
-      await alert({
+      await Dialogs.alert({
         title: this._translateService.instant('permissions-request.title'),
         message: this._translateService.instant(
           'permissions-reasons.coarse-location'
@@ -401,7 +401,7 @@ export class DeviceSetupComponent {
     // user they need to set up a PushTracker E2 with the WearOS app
     // to pair it to their phone.
     if (nodesConnected.length === 0) {
-      await alert({
+      await Dialogs.alert({
         title: this._translateService.instant(
           'wearos-comms.errors.pte2-not-setup.title'
         ),
@@ -424,7 +424,7 @@ export class DeviceSetupComponent {
     // potentially wait here for the user to install the app -
     // or should we just inform them that we've opened the play store
     // and they'll need to install, run, and retry?
-    await alert({
+    await Dialogs.alert({
       title: this._translateService.instant(
         'wearos-comms.errors.pte2-not-installed.title'
       ),
@@ -459,7 +459,7 @@ export class DeviceSetupComponent {
 
     if (possiblePeripherals === null || possiblePeripherals === undefined) {
       // search failed, let them know
-      await alert({
+      await Dialogs.alert({
         title: this._translateService.instant(
           'wearos-comms.errors.bluetooth-error.title'
         ),
@@ -476,7 +476,7 @@ export class DeviceSetupComponent {
     }
     if (possiblePeripherals.length === 0) {
       // we don't have any peripherals, let them know to
-      await alert({
+      await Dialogs.alert({
         title: this._translateService.instant(
           'wearos-comms.errors.pte2-scan-error.title'
         ),
@@ -500,7 +500,7 @@ export class DeviceSetupComponent {
     });
     const selection = possiblePeripherals.filter(p => p.name === result);
     if (selection.length === 0) {
-      await alert({
+      await Dialogs.alert({
         title: this._translateService.instant(
           'device-setup.e2.must-select-error.title'
         ),
@@ -568,7 +568,7 @@ export class DeviceSetupComponent {
         return;
       }
     } else {
-      await alert({
+      await Dialogs.alert({
         title: this._translateService.instant(
           'wearos-comms.errors.pte2-connection-error.title'
         ),
