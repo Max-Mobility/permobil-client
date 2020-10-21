@@ -5,6 +5,7 @@ import {
   Application,
   ApplicationEventData,
   ApplicationSettings,
+  Dialogs,
   EventData,
   Observable,
   Page,
@@ -492,7 +493,7 @@ export class MainViewModel extends Observable {
     if (splits.length <= 1) {
       this.hideSynchronizing();
       // we got bad data
-      alert({
+      Dialogs.alert({
         title: L('failures.title'),
         message: L('wearos-comms.errors.bad-data'),
         okButtonText: L('buttons.ok')
@@ -549,7 +550,7 @@ export class MainViewModel extends Observable {
         android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
       );
     } else {
-      await alert({
+      await Dialogs.alert({
         title: L('failures.title'),
         message: L('wearos-comms.errors.bad-authorization'),
         okButtonText: L('buttons.ok')
@@ -624,7 +625,7 @@ export class MainViewModel extends Observable {
     const reasons = this.permissionsReasons.join('\n\n');
     if (neededPermissions && neededPermissions.length > 0) {
       // Log.D('requesting permissions!', neededPermissions);
-      await alert({
+      await Dialogs.alert({
         title: L('permissions-request.title'),
         message: reasons,
         okButtonText: L('buttons.ok')
