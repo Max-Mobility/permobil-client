@@ -80,9 +80,6 @@ export class JourneyTabComponent {
   noMoreSmartDriveUsageDataAvailable = false;
   noMoreDataAvailable = false;
 
-  static api_base = PushTrackerKinveyKeys.HOST_URL;
-  static api_app_key = PushTrackerKinveyKeys.DEV_KEY;
-  static api_app_secret = PushTrackerKinveyKeys.DEV_SECRET;
   private _weeklyActivityFromKinvey: any;
   private _weeklyUsageFromKinvey: any;
   private MAX_COMMIT_INTERVAL_MS: number = 1 * 3000; // 3 seconds
@@ -95,7 +92,7 @@ export class JourneyTabComponent {
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _page: Page
-  ) {}
+  ) { }
 
   onJourneyTabLoaded() {
     this._logService.logBreadCrumb(JourneyTabComponent.name, 'Loaded');
@@ -178,7 +175,7 @@ export class JourneyTabComponent {
       let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
         DeviceBase.caseTicksToKilometers(
           this.todayUsage.distance_smartdrive_coast -
-            this.todayUsage.distance_smartdrive_coast_start
+          this.todayUsage.distance_smartdrive_coast_start
         ),
         this.user.data.distance_unit_preference
       );
@@ -216,10 +213,10 @@ export class JourneyTabComponent {
         if (syncWithServer) {
           try {
             await this._activityService.refreshWeekly();
-          } catch (err) {}
+          } catch (err) { }
           try {
             await this._usageService.refreshWeekly();
-          } catch (err) {}
+          } catch (err) { }
         }
 
         // now load the cached or refreshed data and display it
@@ -345,7 +342,7 @@ export class JourneyTabComponent {
       })
       .sort()
       .reverse()
-      .forEach(function (key) {
+      .forEach(function(key) {
         orderedJourneyMap[key] = self._journeyMap[key];
       });
 
@@ -515,15 +512,15 @@ export class JourneyTabComponent {
             icon_small:
               this.CURRENT_THEME === APP_THEMES.DEFAULT
                 ? ImageSource.fromResourceSync(
-                    journey.journeyType === JourneyType.ROLL
-                      ? 'roll_black'
-                      : 'smartdrive_material_black_45'
-                  )
+                  journey.journeyType === JourneyType.ROLL
+                    ? 'roll_black'
+                    : 'smartdrive_material_black_45'
+                )
                 : ImageSource.fromResourceSync(
-                    journey.journeyType === JourneyType.ROLL
-                      ? 'roll_white'
-                      : 'smartdrive_material_white_45'
-                  ),
+                  journey.journeyType === JourneyType.ROLL
+                    ? 'roll_white'
+                    : 'smartdrive_material_white_45'
+                ),
             icon_large: ImageSource.fromResourceSync(
               journey.journeyType === JourneyType.ROLL
                 ? 'roll_white'
@@ -548,8 +545,8 @@ export class JourneyTabComponent {
       journeyList.push({ startTime: key, stats: orderedJourneyMap[key] });
     }
 
-    const arrayRemove = function (arr, value) {
-      return arr.filter(function (ele) {
+    const arrayRemove = function(arr, value) {
+      return arr.filter(function(ele) {
         return ele !== value;
       });
     };
