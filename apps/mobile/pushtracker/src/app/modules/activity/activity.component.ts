@@ -131,9 +131,7 @@ export class ActivityComponent implements OnInit {
   private _debouncedLoadDailyActivity: any = null;
   private _debouncedLoadWeeklyActivity: any = null;
   private MAX_COMMIT_INTERVAL_MS: number = 1 * 500;
-  static api_base = PushTrackerKinveyKeys.HOST_URL;
-  static api_app_key = PushTrackerKinveyKeys.DEV_KEY;
-  static api_app_secret = PushTrackerKinveyKeys.DEV_SECRET;
+
   private _weeklyActivityFromKinvey: any;
   private _dailyActivityFromKinvey: any;
   private _weeklyUsageFromKinvey: any;
@@ -216,10 +214,10 @@ export class ActivityComponent implements OnInit {
     // actually synchronize with the server
     try {
       await this._activityService.refreshWeekly();
-    } catch (err) {}
+    } catch (err) { }
     try {
       await this._usageService.refreshWeekly();
-    } catch (err) {}
+    } catch (err) { }
 
     this.onSelectedIndexChanged({
       object: { selectedIndex: this.currentTab },
@@ -484,7 +482,7 @@ export class ActivityComponent implements OnInit {
     this._loadWeeklyActivity(forcePullFromDatabase)
       .then(() => {
         // If the start fo the week is 0th element in an array of size 7, what is the index of date?
-        const getIndex = function (date1, date2) {
+        const getIndex = function(date1, date2) {
           // date1 = Week start, date2 = current date
           const index = differenceInCalendarDays(date2, date1);
           return index;
@@ -562,8 +560,8 @@ export class ActivityComponent implements OnInit {
                     convertToMilesIfUnitPreferenceIsMiles(
                       DeviceBase.caseTicksToKilometers(
                         this._dailyUsageFromKinvey.distance_smartdrive_coast -
-                          this._dailyUsageFromKinvey
-                            .distance_smartdrive_coast_start
+                        this._dailyUsageFromKinvey
+                          .distance_smartdrive_coast_start
                       ),
                       this.user.data.distance_unit_preference
                     ) || 0
@@ -830,7 +828,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   cache.weeklyActivity.distance_smartdrive_coast -
-                    cache.weeklyActivity.distance_smartdrive_coast_start
+                  cache.weeklyActivity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -901,7 +899,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   activity.distance_smartdrive_coast -
-                    activity.distance_smartdrive_coast_start
+                  activity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -1137,7 +1135,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   activity.distance_smartdrive_coast -
-                    activity.distance_smartdrive_coast_start
+                  activity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -1190,7 +1188,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.motorTicksToKilometers(
                   dailyActivity.distance_smartdrive_drive -
-                    dailyActivity.distance_smartdrive_drive_start
+                  dailyActivity.distance_smartdrive_drive_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0;
@@ -1199,7 +1197,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   dailyActivity.distance_smartdrive_coast -
-                    dailyActivity.distance_smartdrive_coast_start
+                  dailyActivity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0;
@@ -1442,7 +1440,7 @@ export class ActivityComponent implements OnInit {
             convertToMilesIfUnitPreferenceIsMiles(
               DeviceBase.caseTicksToKilometers(
                 activity.distance_smartdrive_coast -
-                  activity.distance_smartdrive_coast_start
+                activity.distance_smartdrive_coast_start
               ),
               this.user.data.distance_unit_preference
             ) || 0
@@ -1488,7 +1486,7 @@ export class ActivityComponent implements OnInit {
           convertToMilesIfUnitPreferenceIsMiles(
             DeviceBase.caseTicksToKilometers(
               activity.distance_smartdrive_coast -
-                activity.distance_smartdrive_coast_start
+              activity.distance_smartdrive_coast_start
             ),
             this.user.data.distance_unit_preference
           ) || 0;
@@ -1547,7 +1545,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   activity.distance_smartdrive_coast -
-                    activity.distance_smartdrive_coast_start
+                  activity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -1564,7 +1562,7 @@ export class ActivityComponent implements OnInit {
             convertToMilesIfUnitPreferenceIsMiles(
               DeviceBase.caseTicksToKilometers(
                 cache.weeklyActivity.distance_smartdrive_coast -
-                  cache.weeklyActivity.distance_smartdrive_coast_start
+                cache.weeklyActivity.distance_smartdrive_coast_start
               ),
               this.user.data.distance_unit_preference
             ) || 0
@@ -1640,7 +1638,7 @@ export class ActivityComponent implements OnInit {
             convertToMilesIfUnitPreferenceIsMiles(
               DeviceBase.caseTicksToKilometers(
                 activity.distance_smartdrive_coast -
-                  activity.distance_smartdrive_coast_start
+                activity.distance_smartdrive_coast_start
               ),
               this.user.data.distance_unit_preference
             ) || 0;
@@ -1668,7 +1666,7 @@ export class ActivityComponent implements OnInit {
           convertToMilesIfUnitPreferenceIsMiles(
             DeviceBase.caseTicksToKilometers(
               cache.weeklyActivity.distance_smartdrive_coast -
-                cache.weeklyActivity.distance_smartdrive_coast_start
+              cache.weeklyActivity.distance_smartdrive_coast_start
             ),
             this.user.data.distance_unit_preference
           ) || 0;

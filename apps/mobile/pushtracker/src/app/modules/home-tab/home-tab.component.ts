@@ -86,9 +86,6 @@ export class HomeTabComponent {
   private _debouncedLoadWeeklyActivity: any;
   private _debouncedLoadWeeklyUsage: any;
 
-  static api_base = PushTrackerKinveyKeys.HOST_URL;
-  static api_app_key = PushTrackerKinveyKeys.DEV_KEY;
-  static api_app_secret = PushTrackerKinveyKeys.DEV_SECRET;
   private _weeklyActivityFromKinvey: any;
   private _weeklyUsageFromKinvey: any;
 
@@ -101,7 +98,7 @@ export class HomeTabComponent {
     private _vcRef: ViewContainerRef,
     private _activityService: ActivityService,
     private _usageService: SmartDriveUsageService
-  ) {}
+  ) { }
 
   async onHomeTabLoaded(args) {
     this._logService.logBreadCrumb(HomeTabComponent.name, 'Loaded');
@@ -360,10 +357,10 @@ export class HomeTabComponent {
       if (forceRefresh) {
         try {
           await this._activityService.refreshWeekly();
-        } catch (err) {}
+        } catch (err) { }
         try {
           await this._usageService.refreshWeekly();
-        } catch (err) {}
+        } catch (err) { }
       }
 
       // The user might come back and refresh the next day, just keeping
@@ -402,7 +399,7 @@ export class HomeTabComponent {
         context: {
           currentTab:
             this.user.data.control_configuration !==
-            CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+              CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
               ? 0
               : 1,
           user: this.user
@@ -495,7 +492,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.caseTicksToMiles(
                 this._todaysUsage.distance_smartdrive_coast -
-                  this._todaysUsage.distance_smartdrive_coast_start
+                this._todaysUsage.distance_smartdrive_coast_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -507,7 +504,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.motorTicksToMiles(
                 this._todaysUsage.distance_smartdrive_drive -
-                  this._todaysUsage.distance_smartdrive_drive_start
+                this._todaysUsage.distance_smartdrive_drive_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -561,8 +558,8 @@ export class HomeTabComponent {
           this._logService.logBreadCrumb(
             HomeTabComponent.name,
             '' +
-              'Successfully loaded WeeklySmartDriveUsage from Kinvey for date ' +
-              result.date
+            'Successfully loaded WeeklySmartDriveUsage from Kinvey for date ' +
+            result.date
           );
           return Promise.resolve(result);
         }
@@ -608,8 +605,8 @@ export class HomeTabComponent {
           this._logService.logBreadCrumb(
             HomeTabComponent.name,
             '' +
-              'Successfully loaded latest WeeklyPushTrackerActivity from Kinvey - for ' +
-              result.date
+            'Successfully loaded latest WeeklyPushTrackerActivity from Kinvey - for ' +
+            result.date
           );
           return Promise.resolve(result);
         }
@@ -728,7 +725,7 @@ export class HomeTabComponent {
             ).toFixed(1);
             this.distanceGoalUnit =
               this.user.data.distance_unit_preference ===
-              DISTANCE_UNITS.KILOMETERS
+                DISTANCE_UNITS.KILOMETERS
                 ? ' ' + this._translateService.instant('home-tab.km-per-day')
                 : ' ' + this._translateService.instant('home-tab.mi-per-day');
             this.distanceCirclePercentageMaxValue =
@@ -934,7 +931,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.caseTicksToMiles(
                 day.distance_smartdrive_coast -
-                  day.distance_smartdrive_coast_start
+                day.distance_smartdrive_coast_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -1037,7 +1034,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.caseTicksToMiles(
                 dailyUsage.distance_smartdrive_coast -
-                  dailyUsage.distance_smartdrive_coast_start
+                dailyUsage.distance_smartdrive_coast_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -1048,7 +1045,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.motorTicksToMiles(
                 dailyUsage.distance_smartdrive_drive -
-                  dailyUsage.distance_smartdrive_drive_start
+                dailyUsage.distance_smartdrive_drive_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -1116,7 +1113,7 @@ export class HomeTabComponent {
     this._openActivityTabModal({
       currentTab:
         this.user.data.control_configuration !==
-        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
           ? 0
           : 1,
       currentDayInView: dailyActivity.date,
@@ -1132,7 +1129,7 @@ export class HomeTabComponent {
     this._openActivityTabModal({
       currentTab:
         this.user.data.control_configuration !==
-        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
           ? 0
           : 1,
       currentDayInView: dailyActivity.date,
