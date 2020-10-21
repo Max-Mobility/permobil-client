@@ -31,7 +31,7 @@
     "pt": {
       "2_0": [
         "Se ha añadido poder ver la fuerza de conexión Bluetooth SmartDrive más reciente al menú de configuración \"Acerca de\"",
-        "Agregado soporte para enviar y recibir configuraciones de control de interruptor de / al SmartDrive desde las aplicaciones móviles PushTracker y SmartDrive"
+        "Se ha añadido soporte para enviar y recibir configuraciones de control de interruptor de / al SmartDrive desde las aplicaciones móviles PushTracker y SmartDrive"
       ]
     },
     "sd": {
@@ -66,7 +66,7 @@
       "overcurrent": "[ERR: 003] Pico de corriente SD",
       "overtemperature": "[ERR: 004] Sobrecalentamiento del SD"
     },
-    "load-more": "Carga más",
+    "load-more": "Mostrar más",
     "loading": "Cargando ...",
     "no-errors": "No se han registrado ni recibido errores del SmartDrive.",
     "title": "Historial de errores del SmartDrive"
@@ -82,7 +82,7 @@
     "downloading-translations": "Error al descargar los archivos de idioma actualizados.",
     "getting-error": "No se puede obtener el error del SmartDrive.",
     "must-wear-watch": "El ajuste [Verificar muñeca] está habilitado, por lo tanto, el reloj inteligente (PushTracker E2) debe usarse para controlar su SmartDrive.",
-    "no-network": "La conexión a la nube no está disponible. Asegúrese de que su reloj inteligente esté conectado a Internet a través de Wi-Fi o su teléfono.",
+    "no-network": "La conexión a la red inalambrica no está disponible. Asegúrese de que su reloj inteligente esté conectado a Internet a través de Wi-Fi o su teléfono.",
     "no-smartdrive-paired": "SmartDrive no emparejado.",
     "no-smartdrives-found": "No se han encontrado otros SmartDrives cerca.",
     "permissions": "No se puede realizar la acción solicitada. No se otorgaron los permisos requeridos.",
@@ -96,14 +96,14 @@
   },
   "language-list": {
     "cs": "čeština",
-    "da": "Dansk",
-    "de": "Deutsche",
-    "en": "Inglés",
+    "da": "danés",
+    "de": "aleman",
+    "en": "inglés",
     "es": "español",
     "fi": "Suomalainen",
-    "fr": "Français",
+    "fr": "francés",
     "it": "italiano",
-    "ja": "日本人",
+    "ja": "日本語",
     "ko": "한국어",
     "nb": "Norsk bokmål",
     "nl": "Nederlands",
@@ -138,22 +138,22 @@
     "updates": "Actualizaciones inalámbricas"
   },
   "notifications": {
-    "accelerate-while-moving": "¡Aumente su velocidad de conducción mientras ya está navegando! Presione la rueda para ir más rápido, luego toque una vez con su PushTracker. Mantenga presionado SwitchControl para aumentar la velocidad nuevamente.",
-    "access-more-features": "¿Quiere más información sobre su actividad de propulsión diaria / semanal / mensual? Visite el sitio web de Permobil para aprender cómo aprovechar al máximo su SmartDrive y PushTracker.",
+    "accelerate-while-moving": "¡Aumente su velocidad de conducción mientras ya está navegando! Presione la rueda para ir más rápido, luego de una palmada con su PushTracker. Mantenga presionado SwitchControl para aumentar la velocidad nuevamente.",
+    "access-more-features": "¿Quiere más información sobre su actividad de propulsión diaria / semanal / mensual? Visite la pagina web de Permobil para aprender cómo aprovechar al máximo su SmartDrive y PushTracker.",
     "channels": {
       "maintenance": "mantenimiento",
       "personal-record": "Registro personal",
       "smartdrive": "SmartDrive"
     },
-    "daily-distance-record": "¡Lo hiciste! Lograste un nuevo récord personal de distancia recorrida en un día. ¡Seguid así! Y no te olvides de la costa. #ElegirToDoMás",
-    "odometer-records-part-one": "Hacer más mientras mantiene los hombros saludables es de lo que se trata. Usted ha puesto",
-    "odometer-records-part-two": "en su SmartDrive. #ElegirToDoMás",
-    "open-pt-wear": "¿Quieres saber más sobre tu movilidad diaria? Abra la aplicación PushTracker para comenzar a ver el recuento de impulsos, el tiempo de costa y la distancia recorrida cada día.",
+    "daily-distance-record": "¡Lo hiciste! Lograste un nuevo récord personal de distancia recorrida en un día. ¡Sigue así! Y no te olvides de mantener la velocidad. #ChooseToDoMore",
+    "odometer-records-part-one": "Hacer más mientras mantiene los hombros saludables es de lo que se trata. Usted ha recorrido",
+    "odometer-records-part-two": "en su SmartDrive. #ChooseToDoMore",
+    "open-pt-wear": "¿Quieres saber más sobre tu movilidad diaria? Abre la aplicación PushTracker para comenzar a ver el recuento de impulsos, el tiempo de costa y la distancia recorrida cada día.",
     "routine-maintenance": "¡Mantener su equipo limpio ayuda a que dure más! Use una esponja húmeda, detergente suave y seque bien para mantener su SmartDrive como nuevo. (No remojar ni sumergir)",
     "sc-light-indications": "¿Tienes curiosidad por las luces intermitentes de tus botones SwitchControl? Consulte el Manual del usuario o la página de YouTube de Permobil para averiguar qué significa cada uno.",
     "sd-clamp-check": "¡Es hora de comprobar su alineación! Asegúrese de que su abrazadera o adaptador de marco plegable estén colocados correctamente. Consulte las instrucciones o contáctenos.",
     "sd-e2-charging": "Para obtener el máximo rendimiento, comience cada día con su SmartDrive completamente cargado. Asegúrese de mantenerlo cargado por encima del 25%, especialmente si no lo va a utilizar durante un período de tiempo prolongado. Consulte su manual de usuario o póngase en contacto con Permobil para obtener más detalles.",
-    "sd-roller-check": "Revise sus rodillos. ¿Ves puntos planos? ¿Son difíciles de girar? Póngase en contacto con Permobil hoy para discutir.",
+    "sd-roller-check": "Revise sus rodillos. ¿Ve puntos planos? ¿Son difíciles de girar? Póngase en contacto con Permobil hoy para discuitirlo.",
     "switch-control-reminder": "Los botones SwitchControl le brindan otra forma de control. Conéctelos directamente al puerto de carga SmartDrive (no se requiere Bluetooth). Presione el botón para conducir, detener o establecer su velocidad. Póngase en contacto con su proveedor o con el soporte de Permobil para obtener más información.",
     "tire-pressure": "La presión de los neumáticos afecta enormemente su capacidad para empujar. ¿Lo ha comprobado últimamente?",
     "titles": {
@@ -165,13 +165,13 @@
       "routine-maintenance": "Mantenimiento de rutina",
       "sc-light-indications": "Indicaciones de los botones",
       "sd-clamp-check": "Recordatorio de verificación de adjuntos",
-      "sd-e2-charging": "Carga de SmartDrive y PushTracker",
+      "sd-e2-charging": "SmartDrive y PushTracker cargando",
       "sd-roller-check": "Recordatorio de comprobación de rodillos",
       "switch-control-reminder": "Botones SwitchControl",
       "tire-pressure": "Recordatorio de revisión de neumáticos",
       "unlock-more-features": "Haciendo más"
     },
-    "unlock-more-features": "Los mensajes de texto y las alertas de calendario son solo algunas otras funciones que puede obtener de su PushTracker. Póngase en contacto con Permobil o visite nuestro sitio web para saber cómo hacer que le brinde más funcionalidad."
+    "unlock-more-features": "Los mensajes de texto y las alertas de calendario son solo algunas otras funciones que puede obtener de su PushTracker. Póngase en contacto con Permobil o visite nuestra pagina web para saber cómo hacer que le brinde más funcionalidad."
   },
   "ota": {
     "action": {

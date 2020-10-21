@@ -97,7 +97,7 @@
   "language-list": {
     "cs": "čeština",
     "da": "Dansk",
-    "de": "Deutsche",
+    "de": "Deutsch",
     "en": "Englisch",
     "es": "Español",
     "fi": "Suomalainen",
@@ -138,24 +138,24 @@
     "updates": "Wireless Updates"
   },
   "notifications": {
-    "accelerate-while-moving": "Nehmen Sie Ihre Fahrgeschwindigkeit auf, während Sie bereits unterwegs sind! Drücken Sie das Rad, um schneller zu fahren, und tippen Sie dann einmal mit Ihrem PushTracker. Halten Sie SwitchControl gedrückt, um die Geschwindigkeit erneut zu erhöhen.",
+    "accelerate-while-moving": "Nehmen Sie Ihre Fahrgeschwindigkeit auf, während Sie bereits unterwegs sind! Schieben Sie am Greifreifen, um schneller zu fahren und tippen Sie dann einmal mit Ihrem PushTracker. Halten Sie SwitchControl gedrückt, um die Geschwindigkeit erneut zu erhöhen.",
     "access-more-features": "Wünschen Sie weitere Informationen zu Ihrer täglichen / wöchentlichen / monatlichen Antriebsaktivität? Besuchen Sie die Permobil-Website, um zu erfahren, wie Sie Ihr SmartDrive und Ihren PushTracker optimal nutzen können!",
     "channels": {
       "maintenance": "Instandhaltung",
-      "personal-record": "Persönliche Aufzeichnung",
+      "personal-record": "Persönliche Ziele",
       "smartdrive": "SmartDrive"
     },
-    "daily-distance-record": "Du hast es geschafft! Sie haben einen neuen persönlichen Rekord für die an einem Tag zurückgelegte Strecke erzielt. Mach weiter! Und vergessen Sie nicht, die Küste zu erkunden. #ChooseToDoMore",
-    "odometer-records-part-one": "Es geht darum, mehr zu tun und gleichzeitig die Schultern gesund zu halten. Du hast gesetzt",
-    "odometer-records-part-two": "auf Ihrem SmartDrive. #ChooseToDoMore",
-    "open-pt-wear": "Möchten Sie mehr über Ihre tägliche Mobilität erfahren? Öffnen Sie die PushTracker-App, um Ihre Push-Anzahl, die Küstenzeit und die zurückgelegte Entfernung jeden Tag anzuzeigen.",
+    "daily-distance-record": "Sie haben es geschafft! Sie haben einen neuen persönlichen Rekord für die an einem Tag zurückgelegte Strecke erzielt. Machen Sie weiter! Und vergessen Sie nicht den Tempomat zu benutzen. #ChooseToDoMore",
+    "odometer-records-part-one": "Es geht darum, mehr zu tun und gleichzeitig die Schultern zu entlasten. Sie haben jetzt",
+    "odometer-records-part-two": "mit Ihren SmartDrive gefahren. #ChooseToDoMore",
+    "open-pt-wear": "Möchten Sie mehr über Ihre tägliche Mobilität erfahren? Öffnen Sie die PushTracker-App, um Ihre tägliche Push-Anzahl, die Tempomatzeit und die zurückgelegte Entfernung anzuzeigen.",
     "routine-maintenance": "Wenn Sie Ihre Ausrüstung sauber halten, hält sie länger! Verwenden Sie einen feuchten Schwamm, ein mildes Reinigungsmittel und trocknen Sie es gründlich ab, damit Ihr SmartDrive wie neu bleibt! (Nicht einweichen oder eintauchen)",
-    "sc-light-indications": "Neugierig auf die blinkenden Lichter auf Ihren SwitchControl-Tasten? Weitere Informationen finden Sie im Benutzerhandbuch oder auf der YouTube-Seite von Permobil.",
-    "sd-clamp-check": "Zeit, Ihre Ausrichtung zu überprüfen! Stellen Sie sicher, dass Ihre Klemme oder Ihr Klapprahmenadapter richtig eingestellt sind. Lesen Sie die Anweisungen oder kontaktieren Sie uns.",
-    "sd-e2-charging": "Beginnen Sie jeden Tag mit maximal aufgeladenem SmartDrive, um maximale Leistung zu erzielen. Stellen Sie sicher, dass die Gebühr über 25% liegt, insbesondere wenn Sie sie längere Zeit nicht verwenden. Weitere Informationen finden Sie in Ihrem Benutzerhandbuch oder bei Permobil.",
-    "sd-roller-check": "Überprüfen Sie Ihre Walzen. Sehen Sie flache Stellen? Sind sie schwer zu spinnen? Wenden Sie sich noch heute an Permobil, um dies zu besprechen.",
-    "switch-control-reminder": "Mit den SwitchControl-Tasten können Sie auf andere Weise steuern. Schließen Sie sie direkt an den SmartDrive-Ladeanschluss an (kein Bluetooth erforderlich). Drücken Sie die Taste, um zu fahren, anzuhalten oder Ihre Geschwindigkeit einzustellen. Wenden Sie sich an Ihren Provider oder den Permobil-Support, um weitere Informationen zu erhalten.",
-    "tire-pressure": "Der Reifendruck wirkt sich stark auf Ihre Druckfähigkeit aus. Hast du es in letzter Zeit überprüft?",
+    "sc-light-indications": "Benötigen Sie Erklärungen über die blinkenden Lichter auf Ihren SwitchControl-Tasten? Weitere Informationen finden Sie im Benutzerhandbuch oder auf der YouTube-Seite von Permobil.",
+    "sd-clamp-check": "Zeit, Ihren Adapter zu überprüfen! Stellen Sie sicher, dass Ihre Klemme oder Ihr Klapprahmenadapter richtig eingestellt ist. Lesen Sie die Anweisungen oder kontaktieren Sie uns.",
+    "sd-e2-charging": "Beginnen Sie jeden Tag mit maximal aufgeladenem SmartDrive, um maximale Leistung zu erzielen. Stellen Sie sicher, dass die Ladung über 25 % liegt, insbesondere wenn Sie sie längere Zeit nicht verwenden. Weitere Informationen finden Sie in Ihrem Benutzerhandbuch oder bei Permobil.",
+    "sd-roller-check": "Überprüfen Sie Ihre Rollen. Sehen Sie flache Stellen? Sind sie schwer zu drehen? Wenden Sie sich noch heute an Permobil, um dies zu besprechen.",
+    "switch-control-reminder": "Mit den SwitchControl-Tasten können Sie auf andere Weise fahren. Schließen Sie sie direkt an den SmartDrive-Ladeanschluss an (kein Bluetooth erforderlich). Drücken Sie die Taste, um zu fahren, anzuhalten oder Ihre Geschwindigkeit einzustellen. Wenden Sie sich an Ihren Händler oder den Permobil-Support, um weitere Informationen zu erhalten.",
+    "tire-pressure": "Der Reifendruck wirkt sich stark auf Ihre Schubkraft aus. Haben Sie es in letzter Zeit überprüft?",
     "titles": {
       "accelerate-while-moving": "Beschleunigen",
       "access-more-features": "Antrieb und mehr",
@@ -164,12 +164,12 @@
       "open-pt-wear": "Öffnen Sie die PushTracker Wear App",
       "routine-maintenance": "Routinewartung",
       "sc-light-indications": "Tastenanzeigen",
-      "sd-clamp-check": "Erinnerung an Anhangsprüfung",
+      "sd-clamp-check": "Erinnerung an Adapterbefestigung",
       "sd-e2-charging": "SmartDrive & PushTracker Laden",
-      "sd-roller-check": "Rollen Check Reminder",
+      "sd-roller-check": "Erinnerung: Rollenprüfung",
       "switch-control-reminder": "SwitchControl-Tasten",
-      "tire-pressure": "Erinnerung an die Reifenprüfung",
-      "unlock-more-features": "Mehr tun"
+      "tire-pressure": "Erinnerung: Reifendruckprüfung",
+      "unlock-more-features": "Mehr machen"
     },
     "unlock-more-features": "Textnachrichten und Kalenderbenachrichtigungen sind nur einige weitere Funktionen, die Sie von Ihrem PushTracker erhalten können. Wenden Sie sich an Permobil oder besuchen Sie unsere Website, um zu erfahren, wie Sie mehr Funktionen erhalten."
   },
@@ -269,8 +269,8 @@
     },
     "scanning": "SmartDrive Suche zum Koppeln mit...",
     "select-smartdrive": "Wählen Sie SmartDrive",
-    "send-settings-prompt": "Änderungen an den SmartDrive-Einstellungen werden erst wirksam, wenn der PushTracker eine Verbindung zum SmartDrive herstellt. Möchten Sie die Stromversorgung jetzt einschalten, um eine Verbindung zum SmartDrive herzustellen und dessen Einstellungen zu aktualisieren?",
-    "set-time": "Terminzeit",
+    "send-settings-prompt": "Änderungen an den SmartDrive-Einstellungen werden erst wirksam, wenn der PushTracker eine Verbindung zum SmartDrive herstellt. Möchten Sie SmartDrive jetzt einschalten, um eine Verbindung herzustellen und dessen Einstellungen zu aktualisieren?",
+    "set-time": "Datum und Zeit",
     "syncing-with-server": "Mit Server synchronisieren ...",
     "tap-sensitivity": "Tippen Sie auf Empfindlichkeit",
     "title": "SmartDrive-Einstellungen",
@@ -300,7 +300,7 @@
     }
   },
   "updates": {
-    "available": "Für Ihr SmartDrive sind Updates verfügbar. Möchten Sie die Seite Wireless-Updates aufrufen, um die Updates herunterzuladen und auszuführen?",
+    "available": "Für Ihr SmartDrive sind Updates verfügbar. Möchten Sie Wireless-Updates öffnen, um die Updates herunterzuladen und auszuführen?",
     "canceled": "SmartDrive-Updates abgebrochen.",
     "changes": "Zusammenfassung der Änderungen",
     "checking-for-updates": "Nach Updates suchen...",
