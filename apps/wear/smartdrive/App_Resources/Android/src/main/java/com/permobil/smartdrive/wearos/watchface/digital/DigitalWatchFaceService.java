@@ -63,7 +63,6 @@ import io.sentry.event.BreadcrumbBuilder;
  */
 public class DigitalWatchFaceService extends CanvasWatchFaceService {
     private static final String TAG = "ComplicationWatchFace";
-    private SharedPreferences sharedPreferences;
     private boolean isShowingTimeText = true;
 
     /**
@@ -252,8 +251,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             super.onCreate(holder);
 
             mRelativeLayout = (RelativeLayout) mInflater.inflate(R.layout.watchface_layout, null);
-
-            sharedPreferences = getApplicationContext().getSharedPreferences("prefs.db", 0);
 
             Resources resources = getResources();
 
@@ -795,6 +792,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         private float getSmartDriveBatteryLevel() {
             // try to check if we have the sd.battery key in sharedPrefs from the SD.W app
             try {
+                SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("prefs.db", 0);
                 return sharedPreferences.getFloat("sd.battery", 0);
             } catch (Exception e) {
                 Log.e(TAG, "Error trying to get the sd.battery value from sharedPrefs: " + e.getMessage());
