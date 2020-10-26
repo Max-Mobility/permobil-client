@@ -539,7 +539,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                     new BreadcrumbBuilder().setMessage("SmartDrive MX2 Digital WatchFace started.").build()
             );
 
-            if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(DigitalWatchFaceService.this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                 Sentry.getContext().addTag("watch_serial_number", android.os.Build.getSerial());
                 Log.d(TAG, "Added serial number to Sentry logs.");
             } else {
@@ -563,7 +563,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             // drawable/custom_complication_styles.xml.
             ComplicationDrawable topComplicationDrawable = (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
             if (topComplicationDrawable != null) {
-                topComplicationDrawable.setContext(getApplicationContext());
+                topComplicationDrawable.setContext(DigitalWatchFaceService.this);
             }
 
             // Adds new complications to a SparseArray to simplify setting styles and ambient
@@ -591,8 +591,8 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                     }
                 } else if (complicationData.getType() == ComplicationData.TYPE_NO_PERMISSION) {
                     // Watch face does not have permission to receive complication data, so launch permission request.
-                    ComponentName componentName = new ComponentName(getApplicationContext(), DigitalWatchFaceService.class);
-                    Intent permissionRequestIntent = ComplicationHelperActivity.createPermissionRequestHelperIntent(getApplicationContext(), componentName);
+                    ComponentName componentName = new ComponentName(DigitalWatchFaceService.this, DigitalWatchFaceService.class);
+                    Intent permissionRequestIntent = ComplicationHelperActivity.createPermissionRequestHelperIntent(DigitalWatchFaceService.this, componentName);
                     permissionRequestIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(permissionRequestIntent);
                     Log.e("TAG", "Need permission");
@@ -782,7 +782,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
 
         private float getWatchBatteryLevel() {
             IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-            Intent batteryStatus = getApplicationContext().registerReceiver(null, iFilter);
+            Intent batteryStatus = DigitalWatchFaceService.this.registerReceiver(null, iFilter);
             int level = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) : 0;
             int scale = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1) : 0;
 
@@ -792,7 +792,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         private float getSmartDriveBatteryLevel() {
             // try to check if we have the sd.battery key in sharedPrefs from the SD.W app
             try {
-                SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("prefs.db", 0);
+                SharedPreferences sharedPreferences = DigitalWatchFaceService.this.getSharedPreferences("prefs.db", 0);
                 return sharedPreferences.getFloat("sd.battery", 0);
             } catch (Exception e) {
                 Log.e(TAG, "Error trying to get the sd.battery value from sharedPrefs: " + e.getMessage());
