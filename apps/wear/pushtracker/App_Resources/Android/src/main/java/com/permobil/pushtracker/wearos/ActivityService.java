@@ -88,7 +88,6 @@ public class ActivityService
     private LocationManager mLocationManager;
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
-    private Sensor mOffBodyDetect;
 
     // for sending data to the app and the backend
     private HandlerThread mHandlerThread;
@@ -102,7 +101,6 @@ public class ActivityService
     public boolean isServiceRunning = false;
 
     // activity detection
-    private boolean hasData = false;
     private float[] activityDetectorData = new float[ActivityDetector.InputSize];
     public boolean personIsActive = false;
     public boolean watchBeingWorn = false;
@@ -630,9 +628,6 @@ public class ActivityService
 
     private void registerAllSensors() {
         breadcrumb("registerAllSensors()");
-        // register the body sensor so we get events when the user
-        // wears the watch and takes it off
-        this.registerBodySensor(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
         // turn on accelerometer sensing
         this.registerAccelerometer(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
     }
@@ -761,38 +756,28 @@ public class ActivityService
             lastCheckTimeMs = now;
         }
         // handle event
-        updateActivity(event);
         updateDetectorInputs(event);
         // detect activity
-        if (canRunDetector()) {
-            // reset flags for running detector
-            hasData = false;
-            // use the data to detect activities
-            ActivityDetector.Detection detection =
-                    activityDetector.detectActivity(activityDetectorData, event.timestamp);
-            boolean hasNewActivity = handleDetection(detection);
-            // reset the data
-            clearDetectorInputs();
-            if (hasNewActivity) {
-                // remove all callbacks
-                mHandler.removeCallbacksAndMessages(null);
-                // post to the send runnable
-                mHandler.postDelayed(mSendTask, SEND_DATA_PERIOD_MS);
-                // post to the push runnable
-                mHandler.postDelayed(mPushTask, PUSH_DATA_PERIOD_MS);
-                // notify the user if they've achieved records / warnings
-                checkNotifications();
-            }
+        ActivityDetector.Detection detection =
+          activityDetector.detectActivity(activityDetectorData, event.timestamp);
+        boolean hasNewActivity = handleDetection(detection);
+        // reset the detector data
+        clearDetectorInputs();
+        if (hasNewActivity) {
+            // remove all callbacks
+            mHandler.removeCallbacksAndMessages(null);
+            // post to the send runnable
+            mHandler.postDelayed(mSendTask, SEND_DATA_PERIOD_MS);
+            // post to the push runnable
+            mHandler.postDelayed(mPushTask, PUSH_DATA_PERIOD_MS);
+            // notify the user if they've achieved records / warnings
+            checkNotifications();
         }
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // TODO Auto-generated method stub
-    }
-
-    boolean canRunDetector() {
-        return hasData; // && (watchBeingWorn || disableWearCheck);
     }
 
     void clearDetectorInputs() {
@@ -824,21 +809,6 @@ public class ActivityService
                 activityDetectorData[i + ActivityDetector.InputAcclOffset] = _accel[i];
                 activityDetectorData[i + ActivityDetector.InputGravOffset] = _gravity[i];
             }
-            // and inform it that we have new data
-            hasData = true;
-        }
-    }
-
-    void updateActivity(SensorEvent event) {
-        // check if the user is wearing the watch
-        if (event.sensor.getType() == Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT) {
-            // 1.0 => device is on body, 0.0 => device is off body
-            watchBeingWorn = (event.values[0] != 0.0);
-            if (watchBeingWorn) {
-                // onWristCallback();
-            } else {
-                // offWristCallback();
-            }
         }
     }
 
@@ -862,24 +832,8 @@ public class ActivityService
         }
     }
 
-    private void registerBodySensor(int delay, int reportingLatency) {
-        if (mSensorManager != null) {
-            mOffBodyDetect = mSensorManager.getDefaultSensor(Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT);
-            if (mOffBodyDetect != null)
-                mSensorManager.registerListener(this, mOffBodyDetect, delay, reportingLatency);
-        }
-    }
-
-    private void unregisterBodySensor() {
-        if (mSensorManager != null) {
-            if (mOffBodyDetect != null)
-                mSensorManager.unregisterListener(this, mOffBodyDetect);
-        }
-    }
-
     private void unregisterDeviceSensors() {
         breadcrumb("unregisterDeviceSensors()");
-        unregisterBodySensor();
         unregisterAccelerometer();
     }
 
