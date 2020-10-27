@@ -87,7 +87,7 @@ public class ActivityService
     private Location mLastKnownLocation = null;
     private LocationManager mLocationManager;
     private SensorManager mSensorManager;
-    private Sensor mLinearAcceleration;
+    private Sensor mAccelerometer;
     private Sensor mGravity;
     private Sensor mOffBodyDetect;
 
@@ -812,6 +812,10 @@ public class ActivityService
     private List<float[]> mAccList = new ArrayList<float[]>();
     private List<float[]> mGravList = new ArrayList<float[]>();
 
+    // used to filter raw accelerometer data into linear acceleration
+    // data
+    private float[] _gravity = new float[3];
+    private float _alpha = 0.8f;
 
     void updateDetectorInputs(SensorEvent event) {
         int sensorType = event.sensor.getType();
@@ -823,6 +827,17 @@ public class ActivityService
         }
         if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
             numAccl++;
+            mAccList.add(sensorValue);
+        } else if (sensorType == Sensor.TYPE_ACCELEROMETER) {
+            numAccl++;
+            // manually filter these values to get the same as what
+            // LINEAR_ACCELERATION would have given
+            _gravity[0] = _alpha * _gravity[0] + (1 - _alpha) * event.values[0];
+            _gravity[1] = _alpha * _gravity[1] + (1 - _alpha) * event.values[1];
+            _gravity[2] = _alpha * _gravity[2] + (1 - _alpha) * event.values[2];
+            sensorValue[0] = event.values[0] - _gravity[0];
+            sensorValue[1] = event.values[1] - _gravity[1];
+            sensorValue[2] = event.values[2] - _gravity[2];
             mAccList.add(sensorValue);
         } else if (sensorType == Sensor.TYPE_GRAVITY) {
             numGrav++;
@@ -861,16 +876,16 @@ public class ActivityService
 
     private void registerAccelerometer(int delay, int reportingLatency) {
         if (mSensorManager != null) {
-            mLinearAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-            if (mLinearAcceleration != null)
-                mSensorManager.registerListener(this, mLinearAcceleration, delay, reportingLatency);
+            mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            if (mAccelerometer != null)
+                mSensorManager.registerListener(this, mAccelerometer, delay, reportingLatency);
         }
     }
 
     private void unregisterAccelerometer() {
         if (mSensorManager != null) {
-            if (mLinearAcceleration != null)
-                mSensorManager.unregisterListener(this, mLinearAcceleration);
+            if (mAccelerometer != null)
+                mSensorManager.unregisterListener(this, mAccelerometer);
         }
     }
 

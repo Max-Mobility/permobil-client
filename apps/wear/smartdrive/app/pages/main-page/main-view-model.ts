@@ -1512,6 +1512,8 @@ export class MainViewModel extends Observable {
   /**
    * Sensor Data Handlers
    */
+  private _gravity = { x: 0, y: 0, z: 0 };
+  private _alpha = 0.8;
   private _handleSensorData(args: SensorChangedEventData) {
     try {
       // if we're using litedata for android sensor plugin option
@@ -1522,7 +1524,7 @@ export class MainViewModel extends Observable {
         this.disablePowerAssist();
         return;
       }
-
+      // monitor off-body detect to see if the watch is being worn
       if (
         parsedData.s === android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT
       ) {
@@ -1535,9 +1537,22 @@ export class MainViewModel extends Observable {
           }
         }
       }
-
+      // older style virtual sensor (not available in all devices)
       if (parsedData.s === android.hardware.Sensor.TYPE_LINEAR_ACCELERATION) {
         this._handleAccel(parsedData.d, parsedData.ts);
+      }
+      // compute filtered acceleration from raw accelerometer
+      // (available in all devices)
+      if (parsedData.s === android.hardware.Sensor.TYPE_ACCELEROMETER) {
+        this._gravity.x = this._alpha * this._gravity.x + (1 - this._alpha) * parsedData.d.x;
+        this._gravity.y = this._alpha * this._gravity.y + (1 - this._alpha) * parsedData.d.y;
+        this._gravity.z = this._alpha * this._gravity.z + (1 - this._alpha) * parsedData.d.z;
+        const accel = {
+          x: parsedData.d.x - this._gravity.x,
+          y: parsedData.d.y - this._gravity.y,
+          z: parsedData.d.z - this._gravity.z
+        };
+        this._handleAccel(accel, parsedData.ts);
       }
     } catch (err) {
       Log.E('_handleSensorData::err -', err);
@@ -1734,7 +1749,7 @@ export class MainViewModel extends Observable {
     try {
       if (!this._tapSensorEnabled) {
         this._tapSensorEnabled = this._sensorService.startDeviceSensor(
-          android.hardware.Sensor.TYPE_LINEAR_ACCELERATION,
+          android.hardware.Sensor.TYPE_ACCELEROMETER,
           this.SENSOR_DELAY_US,
           this.MAX_REPORTING_INTERVAL_US
         );
@@ -1751,7 +1766,7 @@ export class MainViewModel extends Observable {
     try {
       this._tapSensorEnabled = false;
       this._sensorService.stopDeviceSensor(
-        android.hardware.Sensor.TYPE_LINEAR_ACCELERATION
+        android.hardware.Sensor.TYPE_ACCELEROMETER
       );
     } catch (err) {
       Sentry.captureException(err);
