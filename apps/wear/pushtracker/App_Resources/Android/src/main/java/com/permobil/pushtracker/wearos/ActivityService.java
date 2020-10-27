@@ -88,7 +88,6 @@ public class ActivityService
     private LocationManager mLocationManager;
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
-    private Sensor mGravity;
     private Sensor mOffBodyDetect;
 
     // for sending data to the app and the backend
@@ -636,7 +635,6 @@ public class ActivityService
         this.registerBodySensor(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
         // turn on accelerometer sensing
         this.registerAccelerometer(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
-        this.registerGravity(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
     }
 
     private void onWristCallback() {
@@ -653,13 +651,11 @@ public class ActivityService
                                             );
     */
         this.registerAccelerometer(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
-        this.registerGravity(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
     }
 
     private void offWristCallback() {
         // turn off activity sensors
         unregisterAccelerometer();
-        unregisterGravity();
         // turn off location sensing
         // mLocationManager.removeUpdates(this);
     }
@@ -819,29 +815,28 @@ public class ActivityService
 
     void updateDetectorInputs(SensorEvent event) {
         int sensorType = event.sensor.getType();
-        float[] sensorValue = new float[3];
-        if (event.values.length == 3) {
-            sensorValue[0] = event.values[0];
-            sensorValue[1] = event.values[1];
-            sensorValue[2] = event.values[2];
-        }
-        if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
-            numAccl++;
-            mAccList.add(sensorValue);
-        } else if (sensorType == Sensor.TYPE_ACCELEROMETER) {
-            numAccl++;
+        if (sensorType == Sensor.TYPE_ACCELEROMETER) {
+            float[] gravity = new float[3];
+            float[] accel = new float[3];
             // manually filter these values to get the same as what
             // LINEAR_ACCELERATION would have given
             _gravity[0] = _alpha * _gravity[0] + (1 - _alpha) * event.values[0];
             _gravity[1] = _alpha * _gravity[1] + (1 - _alpha) * event.values[1];
             _gravity[2] = _alpha * _gravity[2] + (1 - _alpha) * event.values[2];
-            sensorValue[0] = event.values[0] - _gravity[0];
-            sensorValue[1] = event.values[1] - _gravity[1];
-            sensorValue[2] = event.values[2] - _gravity[2];
-            mAccList.add(sensorValue);
-        } else if (sensorType == Sensor.TYPE_GRAVITY) {
+            // compute accel
+            accel[0] = event.values[0] - _gravity[0];
+            accel[1] = event.values[1] - _gravity[1];
+            accel[2] = event.values[2] - _gravity[2];
+            // copy gravity since the list.Add() uses reference
+            // semantics and we modify gravity
+            gravity[0] = _gravity[0];
+            gravity[1] = _gravity[1];
+            gravity[2] = _gravity[2];
+            // add to the lists
+            numAccl++;
+            mAccList.add(accel);
             numGrav++;
-            mGravList.add(sensorValue);
+            mGravList.add(gravity);
         }
 
         if (mAccList.size() > 0 && mGravList.size() > 0) {
@@ -889,21 +884,6 @@ public class ActivityService
         }
     }
 
-    private void registerGravity(int delay, int reportingLatency) {
-        if (mSensorManager != null) {
-            mGravity = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-            if (mGravity != null)
-                mSensorManager.registerListener(this, mGravity, delay, reportingLatency);
-        }
-    }
-
-    private void unregisterGravity() {
-        if (mSensorManager != null) {
-            if (mGravity != null)
-                mSensorManager.unregisterListener(this, mGravity);
-        }
-    }
-
     private void registerBodySensor(int delay, int reportingLatency) {
         if (mSensorManager != null) {
             mOffBodyDetect = mSensorManager.getDefaultSensor(Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT);
@@ -923,7 +903,6 @@ public class ActivityService
         breadcrumb("unregisterDeviceSensors()");
         unregisterBodySensor();
         unregisterAccelerometer();
-        unregisterGravity();
     }
 
     private PendingIntent getAlarmIntent(int intentFlag) {
