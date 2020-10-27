@@ -801,54 +801,32 @@ public class ActivityService
         }
     }
 
-    private long numGrav = 0;
-    private long numAccl = 0;
-    private static final long LOG_TIME_MS = 1000;
-    private long lastLogTimeMs = 0;
-    private List<float[]> mAccList = new ArrayList<float[]>();
-    private List<float[]> mGravList = new ArrayList<float[]>();
-
     // used to filter raw accelerometer data into linear acceleration
     // data
     private float[] _gravity = new float[3];
+    private float[] _accel = new float[3];
     private float _alpha = 0.8f;
 
     void updateDetectorInputs(SensorEvent event) {
         int sensorType = event.sensor.getType();
         if (sensorType == Sensor.TYPE_ACCELEROMETER) {
-            float[] gravity = new float[3];
-            float[] accel = new float[3];
             // manually filter these values to get the same as what
-            // LINEAR_ACCELERATION would have given
+            // LINEAR_ACCELERATION would have given - compute gravity
             _gravity[0] = _alpha * _gravity[0] + (1 - _alpha) * event.values[0];
             _gravity[1] = _alpha * _gravity[1] + (1 - _alpha) * event.values[1];
             _gravity[2] = _alpha * _gravity[2] + (1 - _alpha) * event.values[2];
             // compute accel
-            accel[0] = event.values[0] - _gravity[0];
-            accel[1] = event.values[1] - _gravity[1];
-            accel[2] = event.values[2] - _gravity[2];
-            // copy gravity since the list.Add() uses reference
-            // semantics and we modify gravity
-            gravity[0] = _gravity[0];
-            gravity[1] = _gravity[1];
-            gravity[2] = _gravity[2];
-            // add to the lists
-            numAccl++;
-            mAccList.add(accel);
-            numGrav++;
-            mGravList.add(gravity);
-        }
-
-        if (mAccList.size() > 0 && mGravList.size() > 0) {
+            _accel[0] = event.values[0] - _gravity[0];
+            _accel[1] = event.values[1] - _gravity[1];
+            _accel[2] = event.values[2] - _gravity[2];
+            // copy accel and gravity into the detector data list
             for (int i = 0; i < 3; i++) {
-                activityDetectorData[i + ActivityDetector.InputAcclOffset] = mAccList.get(0)[i];
-                activityDetectorData[i + ActivityDetector.InputGravOffset] = mGravList.get(0)[i];
+                activityDetectorData[i + ActivityDetector.InputAcclOffset] = _accel[i];
+                activityDetectorData[i + ActivityDetector.InputGravOffset] = _gravity[i];
             }
+            // and inform it that we have new data
             hasData = true;
-            mAccList.remove(0);
-            mGravList.remove(0);
         }
-
     }
 
     void updateActivity(SensorEvent event) {
