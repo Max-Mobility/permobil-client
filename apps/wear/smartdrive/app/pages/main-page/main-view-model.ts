@@ -674,9 +674,11 @@ export class MainViewModel extends Observable {
   }
 
   async disablePowerAssist() {
-    if (!this.powerAssistActive && !this.motorOn) {
-      return;
-    }
+    // ensure that we only vibrate if this was called while power
+    // assist was actually on or the motor was still registered as
+    // being on.
+    const shouldVibrate = this.powerAssistActive || this.motorOn;
+
     // update state variables
     this.powerAssistActive = false;
     this.motorOn = false;
@@ -695,8 +697,10 @@ export class MainViewModel extends Observable {
     this._enableWifi();
     this.powerAssistState = PowerAssist.State.Inactive;
 
-    // vibrate twice
-    this._vibrator.vibrate([0, 200, 50, 200]);
+    if (shouldVibrate) {
+      // vibrate twice
+      this._vibrator.vibrate([0, 200, 50, 200]);
+    }
 
     // update UI
     clearInterval(this._ringTimerId);
@@ -898,7 +902,7 @@ export class MainViewModel extends Observable {
     });
   }
 
-  private async _askForPermissions() {
+  private async _askForPermissions(onlyAskLocation: boolean = false) {
     try {
       // will throw an error if permissions are denied, else will
       // return either true or a permissions object detailing all the
@@ -906,7 +910,10 @@ export class MainViewModel extends Observable {
       // permissions were rejected
       const reasons = [];
       const neededPermissions = this.permissionsNeeded.filter(
-        p => !hasPermission(p)
+        p => (
+          !hasPermission(p) &&
+          (p === android.Manifest.permission.ACCESS_COARSE_LOCATION || !onlyAskLocation)
+        )
       );
       const reasoning = {
         [android.Manifest.permission.ACCESS_COARSE_LOCATION]: L(
@@ -1126,8 +1133,12 @@ export class MainViewModel extends Observable {
     }
   }
 
-  private _fullStop() {
-    if (this.powerAssistActive) {
+  private _fullStop(forceDisable: boolean = false) {
+    if (!this._ensuringBluetoothCapabilities || forceDisable) {
+      // fullStop is called by app event handlers (such as suspend)
+      // which may be triggered when we ask for permissions or to
+      // enable the BLE radio when turning power assist on, so we
+      // don't *always* want to turn power assist off
       this.disablePowerAssist();
     }
     if (this.isTraining) {
@@ -1210,7 +1221,7 @@ export class MainViewModel extends Observable {
         if (_isActivityThis(args.activity)) {
           sentryBreadCrumb('*** activityStopped ***');
           // similar to the app suspend / exit event.
-          this._fullStop();
+          this._fullStop(true);
         }
       }
     );
@@ -1226,6 +1237,10 @@ export class MainViewModel extends Observable {
 
     Application.on(Application.suspendEvent, async () => {
       sentryBreadCrumb('*** appSuspend ***');
+      // this event is called when the app is backgrounded - e.g. when
+      // the user presses the power button to leave the app, or when
+      // an activity such as permissions request or incoming phone
+      // call shows in front of our app
 
       // ensure power assist is turned off if it is on
       this._fullStop();
@@ -1241,7 +1256,7 @@ export class MainViewModel extends Observable {
 
     Application.on(Application.exitEvent, () => {
       sentryBreadCrumb('*** appExit ***');
-      this._fullStop();
+      this._fullStop(true);
     });
 
     Application.on(Application.lowMemoryEvent, () => {
@@ -2129,11 +2144,16 @@ export class MainViewModel extends Observable {
     Application.android.foregroundActivity.overridePendingTransition(0, 0);
   }
 
-  private async _ensureBluetoothCapabilities() {
+  private _ensuringBluetoothCapabilities: boolean = false;
+  private async _ensureBluetoothCapabilities(onlyEnforceBLEPermission: boolean = false) {
+    if (this._ensuringBluetoothCapabilities) {
+      return;
+    }
+    this._ensuringBluetoothCapabilities = true;
     try {
       sentryBreadCrumb('ensuring bluetooth capabilities');
       // ensure we have the permissions
-      await this._askForPermissions();
+      await this._askForPermissions(onlyEnforceBLEPermission);
       // we only need the BLE/Location permission to proceed with connecting devices
       if (!hasPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION)) {
         sentryBreadCrumb(
@@ -2144,6 +2164,7 @@ export class MainViewModel extends Observable {
           message: L('failures.permissions'),
           okButtonText: L('buttons.ok')
         });
+        this._ensuringBluetoothCapabilities = false;
         return false;
       }
 
@@ -2157,6 +2178,7 @@ export class MainViewModel extends Observable {
           // we could not enable the radio!
           sentryBreadCrumb('Unable to enable the Bluetooth radio.');
           // throw 'BLE OFF';
+          this._ensuringBluetoothCapabilities = false;
           return false;
         }
         // wait here to ensure that the radio is back on!
@@ -2164,9 +2186,11 @@ export class MainViewModel extends Observable {
       }
       // ensure bluetoothservice is functional
       await this._bluetoothService.initialize();
+      this._ensuringBluetoothCapabilities = false;
       return true;
     } catch (err) {
       Sentry.captureException(err);
+      this._ensuringBluetoothCapabilities = false;
       return false;
     }
   }
@@ -2175,7 +2199,7 @@ export class MainViewModel extends Observable {
     sentryBreadCrumb('Saving new SmartDrive');
     try {
       // make sure everything works
-      const didEnsure = await this._ensureBluetoothCapabilities();
+      const didEnsure = await this._ensureBluetoothCapabilities(true);
       if (!didEnsure) {
         return false;
       }
@@ -2247,7 +2271,7 @@ export class MainViewModel extends Observable {
     this._updateSmartDrive(address);
     // now connect to smart drive
     try {
-      const didEnsure = await this._ensureBluetoothCapabilities();
+      const didEnsure = await this._ensureBluetoothCapabilities(true);
       if (!didEnsure) {
         Log.E('could not ensure bluetooth capabilities!');
         return false;
@@ -2273,13 +2297,6 @@ export class MainViewModel extends Observable {
   }
 
   private async _connectToSavedSmartDrive() {
-    if (!this._hasSavedSmartDrive()) {
-      const didSave = await this._saveNewSmartDrive();
-      if (!didSave) {
-        return false;
-      }
-    }
-
     // try to connect to the SmartDrive
     return this._connectToSmartDrive(this._savedSmartDriveAddress);
   }
@@ -2295,6 +2312,7 @@ export class MainViewModel extends Observable {
     if (
       this.powerAssistActive &&
       this.smartDrive &&
+      this._hasSavedSmartDrive() &&
       !this.smartDrive.connected
     ) {
       Utils.setTimeout(this._connectToSavedSmartDrive.bind(this), 0);
