@@ -1,5 +1,5 @@
 import { File, knownFolders, path } from '@nativescript/core';
-import { eachDay, format, subDays } from 'date-fns';
+import { eachDayOfInterval, format, subDays } from 'date-fns';
 import {
   DownloadProgress,
   RequestOptions
@@ -65,7 +65,7 @@ export namespace SmartDriveData {
 
     export function getPastDates(numDates: number) {
       const now = new Date();
-      return eachDay(subDays(now, numDates), now);
+      return eachDayOfInterval({ start: subDays(now, numDates), end: now });
     }
 
     export function makeRecord(
