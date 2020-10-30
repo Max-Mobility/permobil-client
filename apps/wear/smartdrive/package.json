@@ -9,7 +9,7 @@
     "@maxmobility/nativescript-wear-os-comms": "file:../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/wear-os-comms-2.0.0.tgz",
     "@maxmobility/private-keys": "github:autochair/maxmobility-private-keys#master",
     "@nativescript-community/ui-material-ripple": "~4.0.11",
-    "@nativescript/animated-circle": "~1.1.0",
+    "@nativescript/animated-circle": "~1.1.5",
     "@nativescript/appavailability": "~2.0.0",
     "@nativescript/auto-fit-text": "~1.0.1",
     "@nativescript/core": "file:../../../forked-plugins/nativescript-core-7.0.3.tgz",
