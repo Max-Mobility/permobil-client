@@ -8,8 +8,8 @@ jobs:
     name: PushTracker Mobile iOS
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v1 # checks out the repo to CI runner
-      - uses: webfactory/ssh-agent@v0.2.0 # sets SSH key for our private-keys repo
+      - uses: actions/checkout@v2.3.4 # checks out the repo to CI runner
+      - uses: webfactory/ssh-agent@v0.4.1 # sets SSH key for our private-keys repo
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Build PT.M iOS
@@ -19,8 +19,8 @@ jobs:
     name: PushTracker Mobile Android
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: webfactory/ssh-agent@v0.2.0
+      - uses: actions/checkout@v2.3.4
+      - uses: webfactory/ssh-agent@v0.4.1
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - uses: actions/setup-java@v1
@@ -33,8 +33,8 @@ jobs:
     name: PushTracker Wear Android
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: webfactory/ssh-agent@v0.2.0
+      - uses: actions/checkout@v2.3.4
+      - uses: webfactory/ssh-agent@v0.4.1
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - uses: actions/setup-java@v1
@@ -47,8 +47,8 @@ jobs:
     name: SmartDrive Wear Android
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: webfactory/ssh-agent@v0.2.0
+      - uses: actions/checkout@v2.3.4
+      - uses: webfactory/ssh-agent@v0.4.1
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - uses: actions/setup-java@v1
