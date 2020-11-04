@@ -34,7 +34,7 @@
     "reflect-metadata": "~0.1.13"
   },
   "devDependencies": {
-    "@nativescript/android": "7.0.0",
+    "@nativescript/android": "7.0.1",
     "@nativescript/types": "~7.0.4",
     "@nativescript/webpack": "~3.0.7",
     "@types/lodash": "file:../../../node_modules/@types/lodash",
