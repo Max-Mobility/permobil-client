@@ -24,7 +24,7 @@ export function applyTheme(newTheme: string) {
 
 export function enableDarkTheme() {
   themes.applyThemeCss(
-    require('../scss/theme-dark.scss').toString(),
+    require('../scss/theme-dark.scss').default.toString(),
     'theme-dark.scss'
   );
   clearLightStatusBar();
@@ -44,7 +44,7 @@ export function enableDarkTheme() {
 
 export function enableDefaultTheme() {
   themes.applyThemeCss(
-    require('../scss/theme-default.scss').toString(),
+    require('../scss/theme-default.scss').default.toString(),
     'theme-default.scss'
   );
   setLightStatusBar();

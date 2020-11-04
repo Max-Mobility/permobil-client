@@ -12,7 +12,7 @@
     "@maxmobility/nativescript-wear-os-comms": "file:../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/wear-os-comms-2.0.0.tgz",
     "@maxmobility/private-keys": "autochair/maxmobility-private-keys#master",
     "@nativescript/animated-circle": "~1.1.5",
-    "@nativescript/core": "~7.0.12",
+    "@nativescript/core": "~7.0.13",
     "@nativescript/angular": "~10.1.7",
     "@nativescript/appversion": "~2.0.0",
     "@nativescript/datetimepicker": "~2.0.4",
