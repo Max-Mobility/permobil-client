@@ -1,51 +1,29 @@
 <GridLayout rows="auto, auto, auto, auto, *" columns="*, *" class="support-layout">
   // Mock ActionBar
-  <MockActionBar row="0" [title]="'support-component.title' | translate" [showBackNav]="true" (navTapEvent)="onNavBtnTap()">
-  </MockActionBar>
+  <MockActionBar row="0" [title]="'support-component.title' | translate" [showBackNav]="true" (navTapEvent)="onNavBtnTap()"> </MockActionBar>
 
-  <StackLayout row="0" col="1" horizontalAlign="right" class="data-box" (tap)="onFilterSelectorTapped($event)"
-               padding="0" paddingRight="5">
+  <StackLayout row="0" col="1" horizontalAlign="right" class="data-box" (tap)="onFilterSelectorTapped($event)" padding="0" paddingRight="5">
     <GridLayout rows="*" columns="*, auto" height="40">
-      <Label class="data-box-value" [text]="selectedCategory" textWrap="true" paddingRight="10" fontSize="13">
-      </Label>
+      <Label class="data-box-value" [text]="selectedCategory" textWrap="true" paddingRight="10" fontSize="13"> </Label>
       <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
     </GridLayout>
   </StackLayout>
 
   <GridLayout class="search-layout" row="2" colSpan="2" rows="auto" columns="auto, *, auto">
-    <Label col="0" class="search-btn" text="&#xe8b6;" (tap)="onSearch()" ripple rippleColorAlpha="0.18"></Label>
-    <TextField col="1"
-               class="search-bar"
-               returnKeyType="search"
-               [hint]="'support-component.search-hint' | translate"
-               [text]="searchPhrase"
-               (textChange)="onTextChanged($event)"
-               (returnPress)="onSubmit($event)"
-               >
-    </TextField>
-
-    <Label col="2" class="cancel-search-btn" text="&#xe5cd;" (tap)="onClear()" ripple rippleColorAlpha="0.18"></Label>
+    <Label col="0" class="search-btn" textAlign="center" text="&#xe8b6;" (tap)="onSearch()" ripple rippleColorAlpha="0.18"></Label>
+    <TextField col="1" class="search-bar" returnKeyType="search" [hint]="'support-component.search-hint' | translate" [text]="searchPhrase" (textChange)="onTextChanged($event)" (returnPress)="onSubmit($event)"></TextField>
+    <Label col="2" class="cancel-search-btn" textAlign="center" text="&#xe5cd;" (tap)="onClear()" ripple rippleColorAlpha="0.18"></Label>
   </GridLayout>
 
   <Label row="3" colSpan="2" text="" class="hr" textWrap="true"></Label>
 
-  <StackLayout row="4" colSpan="2" >
-    <ListView [items]="supportItems" [itemTemplateSelector]="itemTemplateSelector" (itemLoading)="onItemLoading($event)" class="faq-list">
-      <ng-template nsTemplateKey="no-links" let-item="item">
+  <StackLayout row="4" colSpan="2">
+    <ListView [items]="supportItems" (itemLoading)="onItemLoading($event)" class="faq-list">
+      <ng-template let-item="item">
         <GridLayout rows="auto, auto" columns="auto, *" padding="8">
           <Label rowSpan="2" col="0" text="&#xe8af;" class="item-icon"></Label>
-          <label row="0" col="1" [text]="item.q" textWrap="true" class="faq-question"></label>
-          <label row="1" col="1" [text]="item.a" textWrap="true" class="faq-answer"></label>
-        </GridLayout>
-      </ng-template>
-      <ng-template nsTemplateKey="has-links" let-item="item">
-        <GridLayout rows="auto, auto, auto" columns="auto, *" padding="8">
-          <Label rowSpan="2" col="0" text="&#xe8af;" class="item-icon"></Label>
-          <label row="0" col="1" [text]="item.q" textWrap="true" class="faq-question"></label>
-          <label row="1" col="1" [text]="item.a" textWrap="true" class="faq-answer"></label>
-          <StackLayout row="2" col="1">
-            <Button *ngFor="let link of item.links" [text]="link" textWrap="true" class="faq-link" (tap)="onLinkTapped(link)"></Button>
-          </StackLayout>
+          <HTMLLabel row="0" col="1" [html]="item.q" fontFamily="OpenSans-Regular" fontSize="18" margin="2 5 5 5" textWrap="true" class="faq-question"></HTMLLabel>
+          <HTMLLabel row="1" col="1" [html]="item.a" fontFamily="OpenSans-Regular" fontSize="14" margin="2 5 5 20" linkColor="#0067a6" linkUnderline="true" (linkTap)="onLinkTapped($event)" textWrap="true" class="faq-answer"></HTMLLabel>
         </GridLayout>
       </ng-template>
     </ListView>
