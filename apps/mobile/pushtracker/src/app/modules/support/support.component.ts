@@ -125,18 +125,10 @@ export class SupportComponent implements OnInit {
           SupportComponent.name,
           `User opening link: ${link}`
         );
-        if (await InAppBrowser.isAvailable()) {
-          const result = await InAppBrowser.open(link, {
-            // iOS Properties
-            dismissButtonStyle: 'cancel',
-            preferredBarTintColor: '#453AA4',
-            preferredControlTintColor: 'white',
-            readerMode: false,
-            animated: true,
-            modalPresentationStyle: 'fullScreen',
-            modalTransitionStyle: 'coverVertical',
-            modalEnabled: true,
-            enableBarCollapsing: false,
+        if (isIOS || (await !InAppBrowser.isAvailable())) {
+          Utils.openUrl(link);
+        } else {
+          await InAppBrowser.open(link, {
             // Android Properties
             showTitle: true,
             toolbarColor: '#6200EE',
@@ -158,8 +150,6 @@ export class SupportComponent implements OnInit {
           }).catch(err => {
             this._logService.logException(err);
           });
-        } else {
-          Utils.openUrl(link);
         }
       }
     } catch (err) {

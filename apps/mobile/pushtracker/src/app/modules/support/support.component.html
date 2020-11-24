@@ -22,8 +22,8 @@
       <ng-template let-item="item">
         <GridLayout rows="auto, auto" columns="auto, *" padding="8">
           <Label rowSpan="2" col="0" text="&#xe8af;" class="item-icon"></Label>
-          <label row="0" col="1" [text]="item.q" textWrap="true" class="faq-question"></label>
-          <HTMLLabel row="1" col="1" [html]="item.a" linkColor="blue" linkUnderline="true" (linkTap)="onLinkTapped($event)" textWrap="true" class="faq-answer"></HTMLLabel>
+          <HTMLLabel row="0" col="1" [html]="item.q" fontFamily="OpenSans-Regular" fontSize="18" margin="2 5 5 5" textWrap="true" class="faq-question"></HTMLLabel>
+          <HTMLLabel row="1" col="1" [html]="item.a" fontFamily="OpenSans-Regular" fontSize="14" margin="2 5 5 20" linkColor="#0067a6" linkUnderline="true" (linkTap)="onLinkTapped($event)" textWrap="true" class="faq-answer"></HTMLLabel>
         </GridLayout>
       </ng-template>
     </ListView>
