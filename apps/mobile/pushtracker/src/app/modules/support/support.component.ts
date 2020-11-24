@@ -14,6 +14,7 @@ import {
 import { compose } from '@nativescript/email';
 import { TranslateService } from '@ngx-translate/core';
 import { validate } from 'email-validator';
+import { InAppBrowser } from 'nativescript-inappbrowser';
 import { LoggingService } from '../../services';
 import { ListPickerSheetComponent } from '../shared/components';
 
@@ -44,7 +45,10 @@ export class SupportComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this._logService.logBreadCrumb(SupportComponent.name, 'OnInit');
+    this._logService.logBreadCrumb(
+      SupportComponent.name,
+      ' SupportComponent OnInit'
+    );
 
     // since this is an array object it appears we can't simply pass
     // the parameters as the second argument to the instant function -
@@ -57,35 +61,20 @@ export class SupportComponent implements OnInit {
       if (this.categories.indexOf(i.category) === -1) {
         this.categories.push(i.category);
       }
-      if (i.links) {
-        return {
-          category: i.category,
-          a: i.a,
-          q: i.q,
-          links: Object.values(i.links)
-        };
-      } else {
-        return {
-          category: i.category,
-          a: i.a,
-          q: i.q,
-          links: null
-        };
-      }
+      return {
+        category: i.category,
+        a: i.a,
+        q: i.q
+      };
     });
 
     this._allSupportItems = this.supportItems.map((i: any) => {
       return {
         category: i.category,
         a: i.a,
-        q: i.q,
-        links: i.links
+        q: i.q
       };
     });
-  }
-
-  itemTemplateSelector(item: any, index: number, items: any) {
-    return item.links ? 'has-links' : 'no-links';
   }
 
   async onFilterSelectorTapped(args: EventData) {
@@ -118,8 +107,9 @@ export class SupportComponent implements OnInit {
       });
   }
 
-  async onLinkTapped(link: string) {
+  async onLinkTapped(args) {
     try {
+      const link = args.link;
       const emailRegex = new RegExp('@permobil.com', 'i');
       const isEmail = emailRegex.test(link);
       if (isEmail || validate(link)) {
@@ -127,13 +117,50 @@ export class SupportComponent implements OnInit {
           subject: '',
           body: '',
           to: [link]
-        })
-          .then(() => {})
-          .catch(err => {
+        }).catch(err => {
+          this._logService.logException(err);
+        });
+      } else {
+        this._logService.logBreadCrumb(
+          SupportComponent.name,
+          `User opening link: ${link}`
+        );
+        if (await InAppBrowser.isAvailable()) {
+          const result = await InAppBrowser.open(link, {
+            // iOS Properties
+            dismissButtonStyle: 'cancel',
+            preferredBarTintColor: '#453AA4',
+            preferredControlTintColor: 'white',
+            readerMode: false,
+            animated: true,
+            modalPresentationStyle: 'fullScreen',
+            modalTransitionStyle: 'coverVertical',
+            modalEnabled: true,
+            enableBarCollapsing: false,
+            // Android Properties
+            showTitle: true,
+            toolbarColor: '#6200EE',
+            secondaryToolbarColor: 'black',
+            enableUrlBarHiding: true,
+            enableDefaultShare: true,
+            forceCloseOnRedirection: false,
+            // Specify full animation resource identifier(package:anim/name)
+            // or only resource name(in case of animation bundled with app).
+            animations: {
+              startEnter: 'slide_in_right',
+              startExit: 'slide_out_left',
+              endEnter: 'slide_in_left',
+              endExit: 'slide_out_right'
+            },
+            hasBackButton: true,
+            browserPackage: '',
+            showInRecents: false
+          }).catch(err => {
             this._logService.logException(err);
           });
-      } else {
-        Utils.openUrl(link);
+        } else {
+          Utils.openUrl(link);
+        }
       }
     } catch (err) {
       this._logService.logException(err);
@@ -163,17 +190,13 @@ export class SupportComponent implements OnInit {
         );
       });
       this.supportItems.splice(0, this.supportItems.length, ...relevant);
-      if (this._searchBar) {
-        this._searchBar.dismissSoftInput();
-      }
+      this._searchBar?.dismissSoftInput();
     } else if (this.selectedCategory !== this.allCategory) {
       const relevant = this._allSupportItems.filter(i => {
         return i.category === this.selectedCategory;
       });
       this.supportItems.splice(0, this.supportItems.length, ...relevant);
-      if (this._searchBar) {
-        this._searchBar.dismissSoftInput();
-      }
+      this._searchBar?.dismissSoftInput();
     } else {
       this.onClear();
     }
