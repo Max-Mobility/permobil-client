@@ -1,9 +1,5 @@
-import { File, knownFolders, path } from '@nativescript/core';
+import { Device, File, Http, knownFolders, path } from '@nativescript/core';
 import { eachDayOfInterval, format, subDays } from 'date-fns';
-import {
-  DownloadProgress,
-  RequestOptions
-} from 'nativescript-download-progress';
 
 export namespace SmartDriveData {
   export namespace Info {
@@ -309,7 +305,7 @@ export namespace SmartDriveData {
       });
     }
 
-    export function saveToFileSystem(f) {
+    export function saveToFileSystem(f: { filename: string, data: any }) {
       const file = File.fromPath(
         f.filename || f[SmartDriveData.Firmwares.FileName]
       );
@@ -328,25 +324,17 @@ export namespace SmartDriveData {
       }
       console.log('Downloading FW update', f['_filename']);
 
-      const download = new DownloadProgress();
-      const requestOptions: RequestOptions = {
-        method: 'GET',
-        headers: {}
-      };
-      return download
-        .downloadFile(url, requestOptions)
-        .then(file => {
-          const fileData = File.fromPath(file.path).readSync();
-          return {
-            version: SmartDriveData.Firmwares.versionStringToByte(f['version']),
-            name: f['_filename'],
-            data: fileData,
-            changes: f['change_notes']
-          };
-        })
-        .catch(error => {
-          console.error('download error', url, error);
-        });
+      console.log('starting http get file...');
+      return Http.getFile(url).then(file => {
+        console.log('http get file:', file);
+        const fileData = File.fromPath(file.path).readSync();
+        return {
+          version: SmartDriveData.Firmwares.versionStringToByte(f['version']),
+          name: f['_filename'],
+          data: fileData,
+          changes: f['change_notes']
+        };
+      });
     }
 
     export function versionByteToString(version: number): string {
@@ -367,21 +355,27 @@ export namespace SmartDriveData {
       return path.join(firmwares.path, firmware);
     }
 
-    export function loadFirmware(
-      id: any,
-      version: number,
-      firmwareName: string,
-      fileName: string,
-      changes: string
-    ) {
+    export function loadFirmware({ id, version, firmware, filename, changes }: {
+      id?: any,
+      version?: number,
+      firmware?: string,
+      filename?: string,
+      changes?: any
+    }) {
+      let _changes: any = { "en": [] };
+      if (changes) {
+        try {
+          _changes = JSON.parse(changes);
+        } catch (err) {
+          _changes = changes;
+        }
+      }
       return {
         [SmartDriveData.Firmwares.IdName]: id,
         [SmartDriveData.Firmwares.VersionName]: version,
-        [SmartDriveData.Firmwares.FirmwareName]: firmwareName,
-        [SmartDriveData.Firmwares.FileName]: fileName,
-        [SmartDriveData.Firmwares.ChangesName]: changes
-          ? JSON.parse(changes)
-          : []
+        [SmartDriveData.Firmwares.FirmwareName]: firmware,
+        [SmartDriveData.Firmwares.FileName]: filename,
+        [SmartDriveData.Firmwares.ChangesName]: _changes
       };
     }
 
@@ -389,17 +383,21 @@ export namespace SmartDriveData {
       version: number,
       firmwareName: string,
       fileName?: string,
-      changes?: string[]
+      changes?: any
     ) {
       const fname =
         fileName || SmartDriveData.Firmwares.getFileName(firmwareName);
+      let _changes = '{"en": []}'
+      try {
+        _changes = JSON.stringify(changes);
+      } catch (err) {
+        console.log('error stringifying changes:', err);
+      }
       return {
         [SmartDriveData.Firmwares.VersionName]: version,
         [SmartDriveData.Firmwares.FirmwareName]: firmwareName,
         [SmartDriveData.Firmwares.FileName]: fname,
-        [SmartDriveData.Firmwares.ChangesName]: changes
-          ? JSON.stringify(changes)
-          : '[]'
+        [SmartDriveData.Firmwares.ChangesName]: _changes
       };
     }
   }
