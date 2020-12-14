@@ -788,7 +788,9 @@
       "more-than-one-pushtracker-detected": "More than one PushTracker detected!",
       "more-than-one-smartdrive-detected": "More than one SmartDrive detected!",
       "no-pushtracker-detected": "No PushTracker detected!",
-      "no-smartdrives-detected": "No SmartDrives detected!"
+      "no-smartdrives-detected": "No SmartDrives detected!",
+      "pushtracker-up-to-date": "PushTracker is up to date!",
+      "smartdrive-up-to-date": "SmartDrive is up to date!"
     },
     "title": "Wireless Updates"
   }
