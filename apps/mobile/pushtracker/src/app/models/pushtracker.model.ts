@@ -1,4 +1,4 @@
-import { Device as PhoneDevice, File, Http, isIOS, knownFolders, path, Utils } from '@nativescript/core';
+import { File, Http, isIOS, knownFolders, path, Utils } from '@nativescript/core';
 import { bindingTypeToString, Device, Packet } from '@permobil/core';
 import { differenceInCalendarDays } from 'date-fns';
 import throttle from 'lodash/throttle';
