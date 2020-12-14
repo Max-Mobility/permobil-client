@@ -1075,7 +1075,7 @@ export namespace PushTrackerData {
         fileName || PushTrackerData.Firmware.getFileName(firmwareName);
       let _changes = '{"en": []}';
       try {
-        _changes = JSON.stringify(changes)
+        _changes = JSON.stringify(changes);
       } catch (err) {
         console.log('error stringifying changes:', err);
       }
