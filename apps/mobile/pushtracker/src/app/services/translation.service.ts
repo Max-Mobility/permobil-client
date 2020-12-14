@@ -7,11 +7,11 @@ import {
 import {
   ApplicationSettings,
   File,
+  Http,
   knownFolders,
   Observable,
   path
 } from '@nativescript/core';
-import { DownloadProgress } from 'nativescript-download-progress';
 import { LoggingService } from './logging.service';
 
 @Injectable()
@@ -134,7 +134,7 @@ export class TranslationService extends Observable {
           '{}'
         )
       );
-    } catch (err) {}
+    } catch (err) { }
     const objs = Object.values(versions);
     if (objs.length) {
       // for each language we got, try to load the file. If we have
@@ -178,9 +178,9 @@ export class TranslationService extends Observable {
     }
 
     const i18nFolder = knownFolders.documents().getFolder('i18n');
-    const download = new DownloadProgress();
     const destFilePath = path.join(i18nFolder.path, f._filename);
-    const file = await download.downloadFile(url, null, destFilePath);
+    console.log('starting http get file...');
+    const file = await Http.getFile(url, destFilePath);
     return file;
   }
 }
