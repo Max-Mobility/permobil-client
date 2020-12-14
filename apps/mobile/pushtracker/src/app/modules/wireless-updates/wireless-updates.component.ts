@@ -106,7 +106,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this.checkForPushTrackerUpdates();
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() { }
 
   onMoreBtnTap() {
     this._logService.logBreadCrumb(
@@ -191,7 +191,12 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       versions = JSON.parse(
         appSettings.getString(SmartDriveData.Firmwares.TableName, '{}')
       );
-    } catch (err) {}
+    } catch (err) {
+      this._logService.logBreadCrumb(
+        WirelessUpdatesComponent.name,
+        'Could not load smartdrive firmware metadata:\n' + err
+      );
+    }
 
     const objs = [];
     for (const key in versions) {
@@ -200,7 +205,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     let firmwareData = {};
     if (objs.length) {
       // @ts-ignore
-      const mds = objs.map(o => SmartDriveData.Firmwares.loadFirmware(...o));
+      const mds = objs.map(o => SmartDriveData.Firmwares.loadFirmware(o));
       // make the metadata
       firmwareData = mds.reduce((data, md) => {
         const fname = md[SmartDriveData.Firmwares.FileName];
@@ -221,6 +226,11 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
               data: blob
             };
           }
+        } else {
+          this._logService.logBreadCrumb(
+            WirelessUpdatesComponent.name,
+            `no filename for metadata: ${md}`
+          );
         }
         return data;
       }, firmwareData);
@@ -229,18 +239,22 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   async updateFirmwareData(f: any) {
+    this._logService.logBreadCrumb(
+      WirelessUpdatesComponent.name,
+      'saving smartdrive metadata to fs');
     const id = this.currentVersions[f.name] && this.currentVersions[f.name].id;
     // update the data in the db
     const newFirmware = SmartDriveData.Firmwares.newFirmware(
       f.version,
       f.name,
-      undefined,
+      undefined, // leave filename undefined so it will be generated
       f.changes
     );
     // update current versions
     this.currentVersions[f.name] = {
       version: f.version,
       changes: f.changes,
+      firmware: f.name,
       filename: newFirmware[SmartDriveData.Firmwares.FileName],
       data: f.data
     };
@@ -372,10 +386,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         }
         try {
           await Promise.all(promises);
+          this._logService.logBreadCrumb(
+            WirelessUpdatesComponent.name,
+            'Saved SmartDrive firmware files to disk'
+          );
         } catch (err2) {
           this._logService.logBreadCrumb(
             WirelessUpdatesComponent.name,
-            'Failed to save SmartDrive firmware files to disk' + '\n' + err2
+            'Failed to save SmartDrive firmware files to disk\n' + err2
           );
           // this._logService.logException(err2);
         }
@@ -434,6 +452,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     const mcuVersion = this.currentVersions['SmartDriveMCU.ota'].version;
 
     if (!this.smartDrive) {
+      this._logService.logBreadCrumb(
+        WirelessUpdatesComponent.name,
+        'Getting smartdrive'
+      );
       await this._bluetoothService
         .scanForSmartDriveReturnOnFirst(10)
         .then(async () => {
@@ -477,64 +499,84 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         });
     }
 
-    if (!this.smartDrive) return;
+    if (!this.smartDrive) {
+      this._logService.logBreadCrumb(
+        WirelessUpdatesComponent.name,
+        'no smartdrive found'
+      );
+      this.smartDriveCheckedForUpdates = true;
+      return;
+    }
+
+    this._logService.logBreadCrumb(
+      WirelessUpdatesComponent.name,
+      'have smartdrive, checking against update data'
+    );
 
     this.smartDriveUpToDate = false;
 
-    // the smartdrive is not up to date, so we need to update it.
-    // reset the ota progress to 0 (since downloaing may have used it)
-    // this.smartDriveOtaProgress = 0;
-    // get info out to tell the user
-    const version = SmartDriveData.Firmwares.versionByteToString(
-      Math.max(mcuVersion, bleVersion)
-    );
+    const versionString = [mcuVersion, bleVersion].map(SmartDrive.versionByteToString).join(', ');
     this._logService.logBreadCrumb(
       WirelessUpdatesComponent.name,
-      `Got version: ${version}`
+      `downloaded smartdrive versions: ${versionString}`
     );
-    // show dialog to user informing them of the version number and changes
-    Object.keys(this.currentVersions).forEach(
-      k => this.currentVersions[k].changes
-    );
-    let bleFw = null;
-    let mcuFw = null;
-    if (isAndroid) {
-      bleFw = new Uint8Array(this.currentVersions['SmartDriveBLE.ota'].data);
-      mcuFw = new Uint8Array(this.currentVersions['SmartDriveMCU.ota'].data);
+
+    const isUpToDate = this.smartDrive.isMcuUpToDate(mcuVersion) &&
+      this.smartDrive.isBleUpToDate(bleVersion);
+    if (isUpToDate) {
+      // set the state and progress
+      this.smartDriveOtaState = this._translateService.instant(
+        'wireless-updates.state.smartdrive-up-to-date'
+      );
+      this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length);
+      this.smartDriveOtaProgress = 100;
+      this.smartDrive.canBackNavigate = true;
+      this.updateBackButton();
     } else {
-      let len = 0;
-      let tmp = null;
-      // ble fw
-      len = this.currentVersions['SmartDriveBLE.ota'].data.length;
-      tmp = new ArrayBuffer(len);
-      this.currentVersions['SmartDriveBLE.ota'].data.getBytes(tmp);
-      bleFw = new Uint8Array(tmp);
-      // mcu fw
-      tmp = new ArrayBuffer(
-        this.currentVersions['SmartDriveMCU.ota'].data.length
-      );
-      this.currentVersions['SmartDriveMCU.ota'].data.getBytes(tmp);
-      mcuFw = new Uint8Array(tmp);
-    }
-    // smartdrive needs to update
-    try {
-      this.registerForSmartDriveEvents();
-      await this.smartDrive.performOTA(
-        bleFw,
-        mcuFw,
-        bleVersion,
-        mcuVersion,
-        300 * 1000
-      );
-      if (this.smartDrive) {
-        this.smartDrive.disconnect();
+      // the smartdrive is not up to date, so we need to update it.
+      // reset the ota progress to 0 (since downloaing may have used it)
+      // this.smartDriveOtaProgress = 0;
+      // get info out to tell the user
+      let bleFw = null;
+      let mcuFw = null;
+      if (isAndroid) {
+        bleFw = new Uint8Array(this.currentVersions['SmartDriveBLE.ota'].data);
+        mcuFw = new Uint8Array(this.currentVersions['SmartDriveMCU.ota'].data);
+      } else {
+        let len = 0;
+        let tmp = null;
+        // ble fw
+        len = this.currentVersions['SmartDriveBLE.ota'].data.length;
+        tmp = new ArrayBuffer(len);
+        this.currentVersions['SmartDriveBLE.ota'].data.getBytes(tmp);
+        bleFw = new Uint8Array(tmp);
+        // mcu fw
+        tmp = new ArrayBuffer(
+          this.currentVersions['SmartDriveMCU.ota'].data.length
+        );
+        this.currentVersions['SmartDriveMCU.ota'].data.getBytes(tmp);
+        mcuFw = new Uint8Array(tmp);
       }
-    } catch (err) {
-      if (this.smartDrive) {
-        this.smartDrive.cancelOTA();
+      // smartdrive needs to update
+      try {
+        this.registerForSmartDriveEvents();
+        await this.smartDrive.performOTA(
+          bleFw,
+          mcuFw,
+          bleVersion,
+          mcuVersion,
+          300 * 1000
+        );
+        if (this.smartDrive) {
+          this.smartDrive.disconnect();
+        }
+      } catch (err) {
+        if (this.smartDrive) {
+          this.smartDrive.cancelOTA();
+        }
       }
+      this.unregisterForSmartDriveEvents();
     }
-    this.unregisterForSmartDriveEvents();
   }
 
   registerForSmartDriveEvents() {
@@ -637,7 +679,8 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this.smartDrive.otaState === SmartDrive.OTAState.complete
     ) {
       this.smartDriveOtaProgress = 100;
-      this.setBackNav(true);
+      this.smartDrive.canBackNavigate = true;
+      this.updateBackButton();
     }
   }
 
@@ -647,7 +690,12 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       versions = JSON.parse(
         appSettings.getString(PushTrackerData.Firmware.TableName, '{}')
       );
-    } catch (err) {}
+    } catch (err) {
+      this._logService.logBreadCrumb(
+        WirelessUpdatesComponent.name,
+        'Could not load pushtracker firmware metadata:\n' + err
+      );
+    }
 
     const objs = [];
     for (const key in versions) {
@@ -656,7 +704,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     let firmwareData = {};
     if (objs.length) {
       // @ts-ignore
-      const mds = objs.map(o => PushTrackerData.Firmware.loadFirmware(...o));
+      const mds = objs.map(o => PushTrackerData.Firmware.loadFirmware(o));
       // make the metadata
       firmwareData = mds.reduce((data, md) => {
         const fname = md[PushTrackerData.Firmware.FileName];
@@ -672,11 +720,17 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
             data[md[PushTrackerData.Firmware.FirmwareName]] = {
               version: md[PushTrackerData.Firmware.VersionName],
               filename: fname,
+              firmware: md[PushTrackerData.Firmware.FirmwareName],
               id: md[PushTrackerData.Firmware.IdName],
               changes: md[PushTrackerData.Firmware.ChangesName],
               data: blob
             };
           }
+        } else {
+          this._logService.logBreadCrumb(
+            WirelessUpdatesComponent.name,
+            `no filename for metadata: ${md}`
+          );
         }
         return data;
       }, firmwareData);
@@ -685,6 +739,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   async updatePushTrackerFirmwareData(f: any) {
+    this._logService.logBreadCrumb(
+      WirelessUpdatesComponent.name,
+      'saving pushtracker metadata to fs');
     const id =
       this.currentPushTrackerVersions[f.name] &&
       this.currentPushTrackerVersions[f.name].id;
@@ -692,13 +749,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     const newFirmware = PushTrackerData.Firmware.newFirmware(
       f.version,
       f.name,
-      undefined,
+      undefined, // leave file name undefined so that it is generated
       f.changes
     );
     // update current versions
     this.currentPushTrackerVersions[f.name] = {
       version: f.version,
       changes: f.changes,
+      firmware: f.name,
       filename: newFirmware[PushTrackerData.Firmware.FileName],
       data: f.data
     };
@@ -814,10 +872,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         }
         try {
           await Promise.all(promises);
+          this._logService.logBreadCrumb(
+            WirelessUpdatesComponent.name,
+            'Saved PushTracker firmware files to disk'
+          );
         } catch (err) {
           this._logService.logBreadCrumb(
             WirelessUpdatesComponent.name,
-            'Failed to save PushTracker firmware files to disk'
+            'Failed to save PushTracker firmware files to disk:\n' + err
           );
           // this._logService.logException(err);
         }
@@ -913,18 +975,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
 
     this.pushTrackerUpToDate = false;
 
-    // the smartdrive is not up to date, so we need to update it.
+    // the pushtracker is not up to date, so we need to update it.
     // reset the ota progress to 0 (since downloaing may have used it)
-    // this.smartDriveOtaProgress = 0;
+    // this.pushTrackerOtaProgress = 0;
     // get info out to tell the user
     const version = PushTracker.versionByteToString(ptVersion);
     this._logService.logBreadCrumb(
       WirelessUpdatesComponent.name,
-      `Got version: ${version}`
-    );
-    // show dialog to user informing them of the version number and changes
-    Object.keys(this.currentPushTrackerVersions).forEach(
-      k => this.currentPushTrackerVersions[k].changes
+      `Got pushtracker version: ${version}`
     );
     let ptFw = null;
     if (isAndroid) {
@@ -1053,7 +1111,8 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this.pushTracker.otaState === PushTracker.OTAState.complete
     ) {
       this.pushTrackerOtaProgress = 100;
-      this.setBackNav(true);
+      this.pushTracker.canBackNavigate = true;
+      this.updateBackButton();
     }
   }
 
