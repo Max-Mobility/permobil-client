@@ -362,7 +362,7 @@ export namespace SmartDriveData {
       filename?: string,
       changes?: any
     }) {
-      let _changes: any = { "en": [] };
+      let _changes: any = { 'en': [] };
       if (changes) {
         try {
           _changes = JSON.parse(changes);
@@ -387,7 +387,7 @@ export namespace SmartDriveData {
     ) {
       const fname =
         fileName || SmartDriveData.Firmwares.getFileName(firmwareName);
-      let _changes = '{"en": []}'
+      let _changes = '{"en": []}';
       try {
         _changes = JSON.stringify(changes);
       } catch (err) {

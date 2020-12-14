@@ -1050,7 +1050,7 @@ export namespace PushTrackerData {
       filename?: string,
       changes?: any
     }) {
-      let _changes: any = { "en": [] };
+      let _changes: any = { 'en': [] };
       try {
         _changes = JSON.parse(changes);
       } catch (err) {
@@ -1073,7 +1073,7 @@ export namespace PushTrackerData {
     ) {
       const fname =
         fileName || PushTrackerData.Firmware.getFileName(firmwareName);
-      let _changes = '{"en": []}'
+      let _changes = '{"en": []}';
       try {
         _changes = JSON.stringify(changes)
       } catch (err) {
