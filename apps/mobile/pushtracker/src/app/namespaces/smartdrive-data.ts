@@ -1,4 +1,4 @@
-import { Device, File, Http, knownFolders, path } from '@nativescript/core';
+import { File, Http, knownFolders, path } from '@nativescript/core';
 import { eachDayOfInterval, format, subDays } from 'date-fns';
 
 export namespace SmartDriveData {
