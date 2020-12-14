@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   Component,
+  NgZone,
   OnInit,
   ViewContainerRef
 } from '@angular/core';
@@ -50,8 +51,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   /**
    * SmartDrive Wireless Updates:
    */
-  updateProgressText: string = '';
-  isUpdatingSmartDrive: boolean = false;
   smartDriveOtaProgress: number = 0;
   smartDriveOtaState: string = null;
   smartDriveOtaActions = [];
@@ -61,7 +60,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
    */
   smartDrive: SmartDrive;
   smartDriveCheckedForUpdates = false;
-  smartDriveUpToDate = false;
   noSmartDriveDetected = false;
   private _throttledOtaAction: any = null;
   private _throttledOtaStatus: any = null;
@@ -74,7 +72,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   pushTrackerOtaActions = [];
   pushTracker: PushTracker;
   pushTrackerCheckedForUpdates = false;
-  pushTrackerUpToDate = false;
   noPushTrackerDetected = false;
   private _throttledPTOtaAction: any = null;
   private _throttledPTOtaStatus: any = null;
@@ -87,6 +84,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     private _params: ModalDialogParams,
     private _bluetoothService: BluetoothService,
     private _modalService: ModalDialogService,
+    private _zone: NgZone,
     private _vcRef: ViewContainerRef
   ) {
     this.languagePreference = _params.context.languagePreference || 'English';
@@ -150,16 +148,20 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   onRescanForSmartDrives() {
-    this.noSmartDriveDetected = false;
-    this.smartDriveCheckedForUpdates = false;
-    this.smartDriveOtaProgress = 0;
+    this._zone.run(() => {
+      this.noSmartDriveDetected = false;
+      this.smartDriveCheckedForUpdates = false;
+      this.smartDriveOtaProgress = 0;
+    });
     this.checkForSmartDriveUpdates();
   }
 
   onRescanForPushTrackers() {
-    this.noPushTrackerDetected = false;
-    this.pushTrackerCheckedForUpdates = false;
-    this.pushTrackerOtaProgress = 0;
+    this._zone.run(() => {
+      this.noPushTrackerDetected = false;
+      this.pushTrackerCheckedForUpdates = false;
+      this.pushTrackerOtaProgress = 0;
+    });
     this.checkForPushTrackerUpdates();
   }
 
@@ -432,18 +434,38 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       });
   }
 
+  async updateSmartDriveDisplay({ has_checked, state, progress, no_sd_detected }: {
+    has_checked?: boolean,
+    state?: string,
+    progress?: number,
+    no_sd_detected?: boolean
+  }) {
+    this._zone.run(() => {
+      if (has_checked !== undefined)
+        this.smartDriveCheckedForUpdates = has_checked;
+      if (state !== undefined)
+        this.smartDriveOtaState = state;
+      if (progress !== undefined)
+        this.smartDriveOtaProgress = progress;
+      if (no_sd_detected !== undefined)
+        this.noSmartDriveDetected = no_sd_detected;
+    });
+  }
+
   async performSmartDriveWirelessUpdate() {
     if (
       !this.currentVersions['SmartDriveBLE.ota'] ||
       !this.currentVersions['SmartDriveMCU.ota']
     ) {
       // Download failed
-      this.smartDriveCheckedForUpdates = true;
-      this.smartDriveOtaState = this._translateService.instant(
-        'wireless-updates.state.firmware-download-failed'
-      );
-      this.smartDriveOtaProgress = 0;
-      this.noSmartDriveDetected = true;
+      this.updateSmartDriveDisplay({
+        has_checked: true,
+        state: this._translateService.instant(
+          'wireless-updates.state.firmware-download-failed'
+        ),
+        progress: 0,
+        no_sd_detected: true
+      });
       return;
     }
 
@@ -467,12 +489,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
               ),
               duration: ToastDuration.LONG
             }).show();
-            this.smartDriveCheckedForUpdates = true;
-            this.smartDriveOtaState = this._translateService.instant(
-              'wireless-updates.state.no-smartdrives-detected'
-            );
-            this.smartDriveOtaProgress = 0;
-            this.noSmartDriveDetected = true;
+            this.updateSmartDriveDisplay({
+              has_checked: true,
+              state: this._translateService.instant(
+                'wireless-updates.state.no-smartdrives-detected'
+              ),
+              progress: 0,
+              no_sd_detected: true
+            });
             return;
           } else if (drives.length > 1) {
             new Toasty({
@@ -481,12 +505,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
               ),
               duration: ToastDuration.LONG
             }).show();
-            this.smartDriveCheckedForUpdates = true;
-            this.smartDriveOtaState = this._translateService.instant(
-              'wireless-updates.state.more-than-one-smartdrive-detected'
-            );
-            this.smartDriveOtaProgress = 0;
-            this.noSmartDriveDetected = true;
+            this.updateSmartDriveDisplay({
+              has_checked: true,
+              state: this._translateService.instant(
+                'wireless-updates.state.more-than-one-smartdrive-detected'
+              ),
+              progress: 0,
+              no_sd_detected: true
+            });
             return;
           } else {
             drives.map(drive => {
@@ -504,7 +530,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         WirelessUpdatesComponent.name,
         'no smartdrive found'
       );
-      this.smartDriveCheckedForUpdates = true;
+      this.updateSmartDriveDisplay({
+        has_checked: true
+      });
       return;
     }
 
@@ -512,8 +540,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       WirelessUpdatesComponent.name,
       'have smartdrive, checking against update data'
     );
-
-    this.smartDriveUpToDate = false;
 
     const versionString = [mcuVersion, bleVersion].map(SmartDrive.versionByteToString).join(', ');
     this._logService.logBreadCrumb(
@@ -525,11 +551,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this.smartDrive.isBleUpToDate(bleVersion);
     if (isUpToDate) {
       // set the state and progress
-      this.smartDriveOtaState = this._translateService.instant(
-        'wireless-updates.state.smartdrive-up-to-date'
-      );
       this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length);
-      this.smartDriveOtaProgress = 100;
+      this.updateSmartDriveDisplay({
+        has_checked: true,
+        state: this._translateService.instant(
+          'wireless-updates.state.smartdrive-up-to-date'
+        ),
+        progress: 100
+      });
       this.smartDrive.canBackNavigate = true;
       this.updateBackButton();
     } else {
@@ -619,18 +648,20 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   private _previousSmartDriveOtaState = null;
   onSmartDriveOtaStatus(args: any) {
     // get the current progress of the update
-    const progress = args.data.progress;
+    let progress = args.data.progress;
     const otaState = args.data.state; // .replace('ota.sd.state.', '');
 
     // translate the state
-    const state = this._translateService.instant(otaState);
+    let state = this._translateService.instant(otaState);
 
     // Allow users to back navigate as long as the update is not
     // started:
     // https://github.com/Max-Mobility/permobil-client/issues/521
     if (otaState !== this._previousSmartDriveOtaState) {
       this._previousSmartDriveOtaState = otaState;
+      // update the navigation capability
       if (
+        otaState === SmartDrive.OTAState.already_uptodate ||
         otaState === SmartDrive.OTAState.canceled ||
         otaState === SmartDrive.OTAState.comm_failure ||
         otaState === SmartDrive.OTAState.complete ||
@@ -643,6 +674,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       } else {
         this.smartDrive.canBackNavigate = false;
       }
+      // update the progress if we are complete or up to date
+      if (
+        otaState === SmartDrive.OTAState.already_uptodate ||
+        otaState === SmartDrive.OTAState.complete
+      ) {
+        progress = 100;
+      }
+      // make sure we update the navigation
       this.updateBackButton();
     }
 
@@ -658,30 +697,41 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         class: actionClass
       };
     });
-    // now set the renderable bound data
-    this.smartDriveOtaProgress = progress;
     this.smartDriveOtaActions.splice(
       0,
       this.smartDriveOtaActions.length,
       ...actions
     );
-    if (this.smartDriveOtaProgress > 0) {
-      this.smartDriveOtaState = `${this.smartDriveOtaProgress.toFixed(
+    // update the ota state to be progress if we have a percentage value
+    if (progress > 0) {
+      state = `${progress.toFixed(
         1
       )} % ${state}`;
-    } else {
-      this.smartDriveOtaState = state;
     }
-    if (!this.smartDriveCheckedForUpdates)
-      this.smartDriveCheckedForUpdates = true;
-    if (
-      this.smartDrive.otaState === SmartDrive.OTAState.already_uptodate ||
-      this.smartDrive.otaState === SmartDrive.OTAState.complete
-    ) {
-      this.smartDriveOtaProgress = 100;
-      this.smartDrive.canBackNavigate = true;
-      this.updateBackButton();
-    }
+    // now set the renderable bound data
+    this.updateSmartDriveDisplay({
+      has_checked: true,
+      state: state,
+      progress: progress
+    });
+  }
+
+  async updatePushTrackerDisplay({ has_checked, state, progress, no_pt_detected }: {
+    has_checked?: boolean,
+    state?: string,
+    progress?: number,
+    no_pt_detected?: boolean
+  }) {
+    this._zone.run(() => {
+      if (has_checked !== undefined)
+        this.pushTrackerCheckedForUpdates = has_checked;
+      if (state !== undefined)
+        this.pushTrackerOtaState = state;
+      if (progress !== undefined)
+        this.pushTrackerOtaProgress = progress;
+      if (no_pt_detected !== undefined)
+        this.noPushTrackerDetected = no_pt_detected;
+    });
   }
 
   async getPushTrackerFirmwareData() {
@@ -909,12 +959,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   async performPushTrackerWirelessUpdate() {
     if (!this.currentPushTrackerVersions['PushTracker.ota']) {
       // Download failed
-      this.pushTrackerCheckedForUpdates = true;
-      this.pushTrackerOtaState = this._translateService.instant(
-        'wireless-updates.state.firmware-download-failed'
-      );
-      this.pushTrackerOtaProgress = 0;
-      this.noPushTrackerDetected = true;
+      this.updatePushTrackerDisplay({
+        has_checked: true,
+        state: this._translateService.instant(
+          'wireless-updates.state.firmware-download-failed'
+        ),
+        progress: 0,
+        no_pt_detected: true
+      });
       return;
     }
 
@@ -935,12 +987,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           duration: ToastDuration.LONG
         }).show();
         */
-        this.pushTrackerCheckedForUpdates = true;
-        this.pushTrackerOtaState = this._translateService.instant(
-          'wireless-updates.state.no-pushtracker-detected'
-        );
-        this.pushTrackerOtaProgress = 0;
-        this.noPushTrackerDetected = true;
+        this.updatePushTrackerDisplay({
+          has_checked: true,
+          state: this._translateService.instant(
+            'wireless-updates.state.no-pushtracker-detected'
+          ),
+          progress: 0,
+          no_pt_detected: true
+        });
         return;
       } else if (trackers.length > 1) {
         /*
@@ -951,12 +1005,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           duration: ToastDuration.LONG
         }).show();
         */
-        this.pushTrackerCheckedForUpdates = true;
-        this.pushTrackerOtaState = this._translateService.instant(
-          'wireless-updates.state.more-than-one-pushtracker-detected'
-        );
-        this.pushTrackerOtaProgress = 0;
-        this.noPushTrackerDetected = true;
+        this.updatePushTrackerDisplay({
+          has_checked: true,
+          state: this._translateService.instant(
+            'wireless-updates.state.more-than-one-pushtracker-detected'
+          ),
+          progress: 0,
+          no_pt_detected: true
+        });
         return;
       } else {
         trackers.forEach(tracker => {
@@ -966,14 +1022,15 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     }
 
     if (!this.pushTracker) {
-      this.pushTrackerOtaProgress = 0;
-      this.pushTrackerOtaState = PushTracker.OTAState.failed;
-      this.pushTrackerCheckedForUpdates = true;
-      this.pushTrackerUpToDate = true;
+      this.updatePushTrackerDisplay({
+        has_checked: true,
+        state: this._translateService.instant(
+          PushTracker.OTAState.failed
+        ),
+        progress: 0
+      });
       return;
     }
-
-    this.pushTrackerUpToDate = false;
 
     // the pushtracker is not up to date, so we need to update it.
     // reset the ota progress to 0 (since downloaing may have used it)
@@ -1052,11 +1109,11 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   private _previousPushTrackerOtaState = null;
   onPushTrackerOtaStatus(args: any) {
     // get the current progress of the update
-    const progress = args.data.progress;
+    let progress = args.data.progress;
     const otaState = args.data.state; // .replace('ota.sd.state.', '');
 
     // translate the state
-    const state = this._translateService.instant(otaState);
+    let state = this._translateService.instant(otaState);
 
     // Allow users to back navigate as long as the update is not
     // started:
@@ -1064,6 +1121,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     if (otaState !== this._previousPushTrackerOtaState) {
       this._previousPushTrackerOtaState = otaState;
       if (
+        otaState === PushTracker.OTAState.already_uptodate ||
         otaState === PushTracker.OTAState.canceled ||
         otaState === PushTracker.OTAState.complete ||
         otaState === PushTracker.OTAState.failed ||
@@ -1074,6 +1132,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         this.pushTracker.canBackNavigate = true;
       } else {
         this.pushTracker.canBackNavigate = false;
+      }
+      if (
+        otaState === PushTracker.OTAState.already_uptodate ||
+        otaState === PushTracker.OTAState.complete
+      ) {
+        // update the progress to be 100 if the update doesn't need to
+        // be done or is complete
+        progress = 100;
       }
       this.updateBackButton();
     }
@@ -1090,30 +1156,23 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         class: actionClass
       };
     });
-    // now set the renderable bound data
-    this.pushTrackerOtaProgress = progress;
     this.pushTrackerOtaActions.splice(
       0,
       this.pushTrackerOtaActions.length,
       ...actions
     );
+    // update the state to include progress percentage if it's non-zero
     if (this.pushTrackerOtaProgress > 0) {
-      this.pushTrackerOtaState = `${this.pushTrackerOtaProgress.toFixed(
+      state = `${progress.toFixed(
         1
       )} % ${state}`;
-    } else {
-      this.pushTrackerOtaState = state;
     }
-    if (!this.pushTrackerCheckedForUpdates)
-      this.pushTrackerCheckedForUpdates = true;
-    if (
-      this.pushTracker.otaState === PushTracker.OTAState.already_uptodate ||
-      this.pushTracker.otaState === PushTracker.OTAState.complete
-    ) {
-      this.pushTrackerOtaProgress = 100;
-      this.pushTracker.canBackNavigate = true;
-      this.updateBackButton();
-    }
+    // now set the renderable bound data
+    this.updatePushTrackerDisplay({
+      has_checked: true,
+      progress: progress,
+      state: state
+    });
   }
 
   private setBackNav(allowed: boolean) {
