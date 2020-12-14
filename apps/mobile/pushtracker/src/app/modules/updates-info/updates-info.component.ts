@@ -14,7 +14,7 @@ export class UpdatesInfoComponent implements OnInit {
   constructor(
     private _logService: LoggingService,
     private _params: ModalDialogParams
-  ) {}
+  ) { }
 
   versionByteToString(version: number): string {
     if (version === 0xff || version === 0x00) {
@@ -41,7 +41,7 @@ export class UpdatesInfoComponent implements OnInit {
       let smartDriveMCUVersion = '';
       if (smartDriveMCUData && smartDriveMCUData.changes) {
         smartDriveMCUChanges =
-          smartDriveMCUData.changes[APP_LANGUAGES[languagePreference]];
+          smartDriveMCUData.changes[APP_LANGUAGES[languagePreference] || 'en'];
         smartDriveMCUVersion = this.versionByteToString(
           smartDriveMCUData.version
         );
@@ -51,7 +51,7 @@ export class UpdatesInfoComponent implements OnInit {
       let smartDriveBLEVersion = '';
       if (smartDriveBLEData && smartDriveBLEData.changes) {
         smartDriveBLEChanges =
-          smartDriveBLEData.changes[APP_LANGUAGES[languagePreference]];
+          smartDriveBLEData.changes[APP_LANGUAGES[languagePreference] || 'en'];
         smartDriveBLEVersion = this.versionByteToString(
           smartDriveBLEData.version
         );
@@ -61,7 +61,7 @@ export class UpdatesInfoComponent implements OnInit {
       let pushTrackerVersion = '';
       if (pushTrackerOTAData && pushTrackerOTAData.changes) {
         pushTrackerChanges =
-          pushTrackerOTAData.changes[APP_LANGUAGES[languagePreference]];
+          pushTrackerOTAData.changes[APP_LANGUAGES[languagePreference] || 'en'];
         pushTrackerVersion = this.versionByteToString(
           pushTrackerOTAData.version
         );
@@ -78,7 +78,7 @@ export class UpdatesInfoComponent implements OnInit {
             text: parseInt(i) + 1 + '. ' + item
           });
         }
-        if (smartDriveMCUChanges.length) {
+        if (smartDriveMCUChanges?.length) {
           this.infoItems.push(smartDriveMCUSection);
         }
       }
@@ -94,7 +94,7 @@ export class UpdatesInfoComponent implements OnInit {
             text: parseInt(i) + 1 + '. ' + item
           });
         }
-        if (smartDriveBLEChanges.length) {
+        if (smartDriveBLEChanges?.length) {
           this.infoItems.push(smartDriveBLESection);
         }
       }
@@ -110,7 +110,7 @@ export class UpdatesInfoComponent implements OnInit {
             text: parseInt(i) + 1 + '. ' + item
           });
         }
-        if (pushTrackerChanges.length) {
+        if (pushTrackerChanges?.length) {
           this.infoItems.push(pushTrackerSection);
         }
       }
