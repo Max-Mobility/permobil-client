@@ -810,7 +810,7 @@ export class BluetoothService extends Observable {
       ? PushTrackerState.disconnected
       : PushTrackerState.unknown;
 
-    let state = BluetoothService.PushTrackers.reduce((ptState, pt) => {
+    const state = BluetoothService.PushTrackers.reduce((ptState, pt) => {
       let _state: any;
       if (pt && pt.connected) {
         if (pt.version !== 0xff) {
