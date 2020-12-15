@@ -41,9 +41,11 @@ import {
 import {
   DeviceBase,
   PushTracker,
+  PushTrackerData,
   PushTrackerUser,
   SmartDrive
 } from '../../models';
+import { SmartDriveData } from '../../namespaces';
 import {
   BluetoothService,
   LoggingService,
@@ -116,7 +118,7 @@ export class ProfileSettingsComponent implements OnInit {
     private _zone: NgZone,
     private _bottomSheet: BottomSheetService,
     private _vcRef: ViewContainerRef
-  ) {}
+  ) { }
 
   ngOnInit() {
     this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'ngOnInit');
@@ -770,6 +772,57 @@ export class ProfileSettingsComponent implements OnInit {
     }, 300);
   }
 
+  private async _getLatestVersionInfo() {
+    // get the latest version from what the updates component has
+    // downloaded (stored in appsettings), default to latest when the
+    // app was released if there is nothing there
+    const pt_info_str = appSettings.getString(PushTrackerData.Firmware.TableName, '{}');
+    const sd_info_str = appSettings.getString(SmartDriveData.Firmwares.TableName, '{}');
+    let latest_pt = '2.1';
+    let latest_mcu = '2.0';
+    let latest_ble = '2.0';
+    // parse the pt info
+    try {
+      const pt_info = JSON.parse(pt_info_str);
+      if (pt_info['PushTracker.ota']) {
+        latest_pt = PushTracker.versionByteToString(pt_info['PushTracker.ota'].version);
+      }
+    } catch (err) {
+      this._logService.logBreadCrumb(
+        ProfileSettingsComponent.name,
+        'Could not parse pt info: ' + err
+      );
+    }
+    // parse the sd info
+    try {
+      const sd_info = JSON.parse(sd_info_str);
+      if (sd_info['SmartDriveMCU.ota']) {
+        latest_mcu = PushTracker.versionByteToString(sd_info['SmartDriveMCU.ota'].version);
+      }
+      if (sd_info['SmartDriveBLE.ota']) {
+        latest_ble = PushTracker.versionByteToString(sd_info['SmartDriveBLE.ota'].version);
+      }
+    } catch (err) {
+      this._logService.logBreadCrumb(
+        ProfileSettingsComponent.name,
+        'Could not parse sd info: ' + err
+      );
+    }
+    this._logService.logBreadCrumb(
+      ProfileSettingsComponent.name,
+      'Got latest versions: ' +
+      latest_pt + ', ' +
+      latest_mcu + ', ' +
+      latest_ble
+    );
+    // return the structure
+    return {
+      'pt': latest_pt,
+      'mcu': latest_mcu,
+      'ble': latest_ble,
+    };
+  }
+
   private async _commitSettingsChange() {
     this.syncSuccessful = false;
     this.settingsService.saveToFileSystem();
@@ -789,10 +842,15 @@ export class ProfileSettingsComponent implements OnInit {
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
             'Sending to pushtrackers: ' +
-              pts.map(pt => pt.address) +
-              ' - ' +
-              this._changedSettingsWhichRequireUpdate
+            pts.map(pt => pt.address) +
+            ' - ' +
+            this._changedSettingsWhichRequireUpdate
           );
+
+          // note - we are not using the latest info here because
+          // right now we only care if they are at least 2.0 - at
+          // which point they can receive the latest settings this app
+          // provides.
 
           const ptsUpToDate = pts.reduce((upToDate, pt) => {
             return upToDate && pt.isUpToDate('2.0');
@@ -854,7 +912,7 @@ export class ProfileSettingsComponent implements OnInit {
       this._logService.logBreadCrumb(
         ProfileSettingsComponent.name,
         'Scan is not forced - Already have a SmartDrive: ' +
-          this.smartDrive.address
+        this.smartDrive.address
       );
       return true;
     }
@@ -947,6 +1005,9 @@ export class ProfileSettingsComponent implements OnInit {
         try {
           // update the label
           this._updateSmartDriveSectionLabel();
+          // again, we statically check against 2.0 since that's the
+          // one that matters w.r.t. the settings this app currently
+          // sends
           this._showUpdateWarning(true, this.smartDrive.isUpToDate('2.0'));
 
           // now actually send the data
@@ -970,7 +1031,7 @@ export class ProfileSettingsComponent implements OnInit {
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
             'Settings successfully commited to SmartDrive: ' +
-              this.smartDrive.address
+            this.smartDrive.address
           );
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
@@ -983,7 +1044,7 @@ export class ProfileSettingsComponent implements OnInit {
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
             'Error committing settings to SmartDrive: ' +
-              this.smartDrive.address
+            this.smartDrive.address
           );
           this._logService.logBreadCrumb(ProfileSettingsComponent.name, err);
           this._logService.logException(err);
