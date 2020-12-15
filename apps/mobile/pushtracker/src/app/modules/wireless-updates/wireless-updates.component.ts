@@ -24,6 +24,7 @@ import {
   Screen
 } from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
+import cloneDeep from 'lodash/cloneDeep';
 import debounce from 'lodash/debounce';
 import last from 'lodash/last';
 import throttle from 'lodash/throttle';
@@ -60,7 +61,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
    */
   smartDrive: SmartDrive;
   smartDriveCheckedForUpdates = false;
-  noSmartDriveDetected = false;
+  enableSmartDriveRetry = false;
   private _throttledOtaAction: any = null;
   private _throttledOtaStatus: any = null;
 
@@ -72,7 +73,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   pushTrackerOtaActions = [];
   pushTracker: PushTracker;
   pushTrackerCheckedForUpdates = false;
-  noPushTrackerDetected = false;
+  enablePushTrackerRetry = false;
   private _throttledPTOtaAction: any = null;
   private _throttledPTOtaStatus: any = null;
   CURRENT_THEME: string;
@@ -148,19 +149,19 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   onRescanForSmartDrives() {
-    this._zone.run(() => {
-      this.noSmartDriveDetected = false;
-      this.smartDriveCheckedForUpdates = false;
-      this.smartDriveOtaProgress = 0;
+    this.updateSmartDriveDisplay({
+      has_checked: false,
+      progress: 0,
+      enable_retry: false
     });
     this.checkForSmartDriveUpdates();
   }
 
   onRescanForPushTrackers() {
-    this._zone.run(() => {
-      this.noPushTrackerDetected = false;
-      this.pushTrackerCheckedForUpdates = false;
-      this.pushTrackerOtaProgress = 0;
+    this.updatePushTrackerDisplay({
+      has_checked: false,
+      progress: 0,
+      enable_retry: false
     });
     this.checkForPushTrackerUpdates();
   }
@@ -434,11 +435,11 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       });
   }
 
-  async updateSmartDriveDisplay({ has_checked, state, progress, no_sd_detected }: {
+  async updateSmartDriveDisplay({ has_checked, state, progress, enable_retry }: {
     has_checked?: boolean,
     state?: string,
     progress?: number,
-    no_sd_detected?: boolean
+    enable_retry?: boolean
   }) {
     this._zone.run(() => {
       if (has_checked !== undefined)
@@ -447,8 +448,8 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         this.smartDriveOtaState = state;
       if (progress !== undefined)
         this.smartDriveOtaProgress = progress;
-      if (no_sd_detected !== undefined)
-        this.noSmartDriveDetected = no_sd_detected;
+      if (enable_retry !== undefined)
+        this.enableSmartDriveRetry = enable_retry;
     });
   }
 
@@ -464,7 +465,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           'wireless-updates.state.firmware-download-failed'
         ),
         progress: 0,
-        no_sd_detected: true
+        enable_retry: true
       });
       return;
     }
@@ -495,7 +496,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
                 'wireless-updates.state.no-smartdrives-detected'
               ),
               progress: 0,
-              no_sd_detected: true
+              enable_retry: true
             });
             return;
           } else if (drives.length > 1) {
@@ -511,7 +512,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
                 'wireless-updates.state.more-than-one-smartdrive-detected'
               ),
               progress: 0,
-              no_sd_detected: true
+              enable_retry: true
             });
             return;
           } else {
@@ -716,11 +717,11 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     });
   }
 
-  async updatePushTrackerDisplay({ has_checked, state, progress, no_pt_detected }: {
+  async updatePushTrackerDisplay({ has_checked, state, progress, enable_retry }: {
     has_checked?: boolean,
     state?: string,
     progress?: number,
-    no_pt_detected?: boolean
+    enable_retry?: boolean
   }) {
     this._zone.run(() => {
       if (has_checked !== undefined)
@@ -729,8 +730,8 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         this.pushTrackerOtaState = state;
       if (progress !== undefined)
         this.pushTrackerOtaProgress = progress;
-      if (no_pt_detected !== undefined)
-        this.noPushTrackerDetected = no_pt_detected;
+      if (enable_retry !== undefined)
+        this.enablePushTrackerRetry = enable_retry;
     });
   }
 
@@ -878,6 +879,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         const mds = kinveyResponse;
 
         let promises = [];
+
         // get the max firmware version for each firmware
         const maxes = mds.reduce((maxes, md) => {
           const v = PushTracker.versionStringToByte(md['version']);
@@ -886,6 +888,40 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           maxes[fwName] = Math.max(v, maxes[fwName]);
           return maxes;
         }, {});
+
+        // have to download version 2.1 in case they are running <=
+        // 2.0 and there is a version >= 2.2
+        const md_21 = mds.filter(md => md['version'] === '2.1');
+        // NOTE: we need to modify the filename it will download so:
+        //   1. it doesn't overwrite newer PT fw on the filesystem
+        //   2. it doesn't overwrite newer PT fw in currentVersions
+        // this ensures that the filter below will track it properly
+        // and download it if necessary.
+        if (md_21 && md_21.length) {
+          // copy it
+          const pt_fw_21 = cloneDeep(md_21[0]);
+          // update the filename
+          const filename = 'PushTracker.2.1.ota';
+          pt_fw_21['_filename'] = filename;
+          // update maxes
+          maxes[filename] = PushTracker.versionStringToByte(pt_fw_21['version']);
+          // add our new object to mds
+          mds.push(pt_fw_21);
+        }
+        /*
+        // FOR TESTING MULTI_UPGRADE ONLY!
+        const md_20 = mds.filter(md => md['version'] === '2.0');
+        if (md_20 && md_20.length) {
+          // copy it
+          const pt_fw_22 = cloneDeep(md_20[0]);
+          // update the version
+          pt_fw_22['version'] = '2.2';
+          // update maxes
+          maxes[pt_fw_22['_filename']] = PushTracker.versionStringToByte(pt_fw_22['version']);
+          // add our new object to mds
+          mds.push(pt_fw_22);
+        }
+        */
 
         // filter only the firmwares that we don't have or that are newer
         // than the ones we have (and are the max)
@@ -957,7 +993,15 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   async performPushTrackerWirelessUpdate() {
-    if (!this.currentPushTrackerVersions['PushTracker.ota']) {
+    let latest = this.currentPushTrackerVersions['PushTracker.ota'];
+    const pt_21 = this.currentPushTrackerVersions['PushTracker.2.1.ota'];
+    if (!latest) {
+      // the latest is 'PushTracker.2.1.ota'
+      latest = pt_21;
+    }
+
+    // if we have no latest now, the download failed
+    if (!latest) {
       // Download failed
       this.updatePushTrackerDisplay({
         has_checked: true,
@@ -965,14 +1009,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           'wireless-updates.state.firmware-download-failed'
         ),
         progress: 0,
-        no_pt_detected: true
+        enable_retry: true
       });
       return;
     }
-
-    // do we need to update? - check against pushtracker version
-    const ptVersion = this.currentPushTrackerVersions['PushTracker.ota']
-      .version;
 
     if (!this.pushTracker) {
       const trackers = BluetoothService.PushTrackers.filter((val, _1, _2) => {
@@ -993,7 +1033,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
             'wireless-updates.state.no-pushtracker-detected'
           ),
           progress: 0,
-          no_pt_detected: true
+          enable_retry: true
         });
         return;
       } else if (trackers.length > 1) {
@@ -1011,7 +1051,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
             'wireless-updates.state.more-than-one-pushtracker-detected'
           ),
           progress: 0,
-          no_pt_detected: true
+          enable_retry: true
         });
         return;
       } else {
@@ -1021,42 +1061,91 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       }
     }
 
-    if (!this.pushTracker) {
+    if (!this.pushTracker || !this.pushTracker.hasVersionInfo()) {
       this.updatePushTrackerDisplay({
         has_checked: true,
         state: this._translateService.instant(
-          PushTracker.OTAState.failed
+          'wireless-updates.state.reconnect-pushtracker'
+        ),
+        progress: 0,
+        enable_retry: true
+      });
+      return;
+    }
+
+    // check for early exit if the PT is already up to date
+    if (this.pushTracker.version >= latest.version) {
+      this.updatePushTrackerDisplay({
+        has_checked: true,
+        state: this._translateService.instant(
+          'wireless-updates.state.pushtracker-up-to-date'
         ),
         progress: 0
       });
       return;
     }
 
+    // check if we need to update to 2.1 first before going to latest
+    // update
+    let multi_step_upgrade = false;
+    if (latest.version > pt_21.version && this.pushTracker.version < pt_21.version) {
+      multi_step_upgrade = true;
+      this._logService.logBreadCrumb(
+        WirelessUpdatesComponent.name,
+        'Performing step 1 of multi-step-upgrade from ' +
+        `${this.pushTracker.version} -> ${pt_21.version} -> ${latest.version}`
+      );
+      // alert the user that multiple upgrades are required for the PT
+      await Dialogs.alert({
+        title: this._translateService.instant(
+          'wireless-updates.titles.multiple-pushtracker-updates-required'
+        ),
+        message: this._translateService.instant(
+          'wireless-updates.messages.multiple-pushtracker-updates-required'
+        ),
+        okButtonText: this._translateService.instant('profile-tab.ok')
+      });
+      // for this run we will update to 2.1
+      latest = pt_21;
+    }
+
     // the pushtracker is not up to date, so we need to update it.
     // reset the ota progress to 0 (since downloaing may have used it)
     // this.pushTrackerOtaProgress = 0;
     // get info out to tell the user
-    const version = PushTracker.versionByteToString(ptVersion);
+    const version = PushTracker.versionByteToString(latest.version);
     this._logService.logBreadCrumb(
       WirelessUpdatesComponent.name,
-      `Got pushtracker version: ${version}`
+      `Updating pushtracker with firmware version: ${version}`
     );
-    let ptFw = null;
+    let latestFw = null;
     if (isAndroid) {
-      ptFw = new Uint8Array(
-        this.currentPushTrackerVersions['PushTracker.ota'].data
-      );
+      latestFw = new Uint8Array(latest.data);
     } else {
-      const len = this.currentPushTrackerVersions['PushTracker.ota'].data
-        .length;
+      const len = latest.data.length;
       const tmp = new ArrayBuffer(len);
-      this.currentPushTrackerVersions['PushTracker.ota'].data.getBytes(tmp);
-      ptFw = new Uint8Array(tmp);
+      latest.data.getBytes(tmp);
+      latestFw = new Uint8Array(tmp);
     }
     // pushtracker needs to update
     try {
       this.registerForPushTrackerEvents();
-      await this.pushTracker.performOTA(ptFw, ptVersion, 300 * 1000);
+      const result = await this.pushTracker.performOTA(latestFw, latest.version, 300 * 1000);
+      // TODO: the performOTA should probably resolve with a more
+      // meaningful / easier to interpret state instead of a string
+      // that we are comparing...
+      if (result.includes('Complete')) {
+        if (multi_step_upgrade) {
+          this._logService.logBreadCrumb(
+            WirelessUpdatesComponent.name,
+            'Performing step 2 of multi-step-upgrade'
+          );
+          // set a timer to re-run this function so we do another
+          // upgrade - don't call it so that we can clear this stack
+          // frame
+          setTimeout(this.performPushTrackerWirelessUpdate.bind(this), 0);
+        }
+      }
     } catch (err) {
       if (this.pushTracker) {
         this.pushTracker.cancelOTA();
