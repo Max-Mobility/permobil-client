@@ -778,6 +778,7 @@
     "messages": {
       "more-than-one-pushtracker-connected": "More than one PushTracker connected! Please disconnect all but one of the PushTrackers and retry",
       "more-than-one-smartdrive-detected": "More than one SmartDrive detected! Please switch OFF all but one of the SmartDrives and retry",
+      "multiple-pushtracker-updates-required": "Your PushTracker requires more than one update to be performed. Please allow all updates to complete before leaving this page.",
       "no-pushtracker-detected": "Failed to detect a PushTracker. Please make sure that your PushTracker is paired and then connected to the app.",
       "no-smartdrives-detected": "Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby.",
       "pushtracker-connected": "PushTracker connected!",
@@ -790,8 +791,12 @@
       "no-pushtracker-detected": "No PushTracker detected!",
       "no-smartdrives-detected": "No SmartDrives detected!",
       "pushtracker-up-to-date": "PushTracker is up to date!",
+      "reconnect-pushtracker": "Please disconnect and re-connect your PushTracker to your phone to continue.",
       "smartdrive-up-to-date": "SmartDrive is up to date!"
     },
-    "title": "Wireless Updates"
+    "title": "Wireless Updates",
+    "titles": {
+      "multiple-pushtracker-updates-required"
+    }
   }
 }
