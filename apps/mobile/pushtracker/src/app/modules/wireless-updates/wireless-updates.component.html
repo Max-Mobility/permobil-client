@@ -33,7 +33,7 @@
           >
           </AnimatedCircle>
           <GridLayout width="100%" height="100%" row="0" rows="*, *, *" columns="*" horizontalAlignment="center" verticalAlignment="center">
-            <Button *ngIf="noPushTrackerDetected" row="0" class="action-retry" [text]="'ota.action.retry' | translate" (tap)="onRescanForPushTrackers($event)"> </Button>
+            <Button *ngIf="enablePushTrackerRetry" row="0" class="action-retry" [text]="'ota.action.retry' | translate" (tap)="onRescanForPushTrackers($event)"> </Button>
             <Button *ngFor="let action of pushTrackerOtaActions; let i = index" [row]="i === 0 ? 0 : 2" [class]="action.class" [text]="action.label" (tap)="action.func(action)"> </Button>
             <Label row="1" width="50%" textWrap="true" class="update-status-label" [text]="pushTrackerOtaState"></Label>
           </GridLayout>
@@ -70,7 +70,7 @@
           >
           </AnimatedCircle>
           <GridLayout width="100%" height="100%" rows="*, *, *" columns="*" horizontalAlignment="center" verticalAlignment="center">
-            <Button *ngIf="noSmartDriveDetected" row="0" class="action-retry" [text]="'ota.action.retry' | translate" (tap)="onRescanForSmartDrives($event)"> </Button>
+            <Button *ngIf="enableSmartDriveRetry" row="0" class="action-retry" [text]="'ota.action.retry' | translate" (tap)="onRescanForSmartDrives($event)"> </Button>
             <Button *ngFor="let action of smartDriveOtaActions; let i = index" [row]="i === 0 ? 0 : 2" [class]="action.class" [text]="action.label" (tap)="action.func(action)"> </Button>
             <Label row="1" width="50%" textWrap="true" class="update-status-label" [text]="smartDriveOtaState"></Label>
           </GridLayout>

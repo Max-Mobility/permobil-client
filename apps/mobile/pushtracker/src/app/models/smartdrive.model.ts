@@ -418,16 +418,10 @@ export class SmartDrive extends DeviceBase {
         const bleVersionHandler = data => {
           bleVersion = data.data.ble;
           haveBLEVersion = true;
-          if (autoForce || bleVersion < bleFWVersion) {
-            this.doBLEUpdate = canDoBLEUpdate;
-          }
         };
         const mcuVersionHandler = data => {
           mcuVersion = data.data.mcu;
           haveMCUVersion = true;
-          if (autoForce || mcuVersion < mcuFWVersion) {
-            this.doMCUUpdate = canDoMCUUpdate;
-          }
         };
         const otaMCUReadyHandler = _ => {
           startedOTA = true;
@@ -605,6 +599,14 @@ export class SmartDrive extends DeviceBase {
               break;
             case SmartDrive.OTAState.awaiting_versions:
               this.canBackNavigate = false;
+              // set the do flags for the updates here
+              if (autoForce || bleVersion < bleFWVersion) {
+                this.doBLEUpdate = canDoBLEUpdate;
+              }
+              if (autoForce || mcuVersion < mcuFWVersion) {
+                this.doMCUUpdate = canDoMCUUpdate;
+              }
+              // now transition to the right state
               if (haveBLEVersion && haveMCUVersion) {
                 if (
                   !autoForce &&
@@ -639,7 +641,7 @@ export class SmartDrive extends DeviceBase {
                   'OTADevice',
                   'PacketOTAType',
                   'SmartDrive'
-                ).catch(_ => {});
+                ).catch(_ => { });
               }
               break;
             case SmartDrive.OTAState.updating_mcu:
@@ -656,8 +658,8 @@ export class SmartDrive extends DeviceBase {
               const nextState = this.doBLEUpdate
                 ? SmartDrive.OTAState.awaiting_ble_ready
                 : this.doMCUUpdate
-                ? SmartDrive.OTAState.rebooting_mcu
-                : SmartDrive.OTAState.complete;
+                  ? SmartDrive.OTAState.rebooting_mcu
+                  : SmartDrive.OTAState.complete;
 
               if (this.doMCUUpdate) {
                 // we need to reboot after the OTA
@@ -704,7 +706,7 @@ export class SmartDrive extends DeviceBase {
                     characteristicUUID: SmartDrive.BLEOTAControlCharacteristic.toUpperCase(),
                     value: data
                   })
-                  .catch(_ => {});
+                  .catch(_ => { });
               }
               break;
             case SmartDrive.OTAState.updating_ble:
@@ -748,9 +750,10 @@ export class SmartDrive extends DeviceBase {
               // if we have gotten the version, it has
               // rebooted so now we should reboot the
               // MCU
-              if (haveBLEVersion) {
+              if (haveBLEVersion && hasRebooted) {
                 this.otaState = SmartDrive.OTAState.rebooting_mcu;
                 hasRebooted = false;
+                haveMCUVersion = false;
               } else if (this.connected && !hasRebooted) {
                 // send BLE stop ota command
                 console.log(`Sending StopOTA::BLE to ${this.address}`);
@@ -762,7 +765,7 @@ export class SmartDrive extends DeviceBase {
                     characteristicUUID: SmartDrive.BLEOTAControlCharacteristic.toUpperCase(),
                     value: data
                   })
-                  .catch(_ => {});
+                  .catch(_ => { });
               }
               break;
             case SmartDrive.OTAState.rebooting_mcu:
@@ -773,7 +776,7 @@ export class SmartDrive extends DeviceBase {
               // if we have gotten the version, it has
               // rebooted so now we should reboot the
               // MCU
-              if (haveMCUVersion) {
+              if (haveMCUVersion && hasRebooted) {
                 this.otaState = SmartDrive.OTAState.verifying_update;
                 hasRebooted = false;
               } else if (this.connected && !hasRebooted) {
@@ -785,29 +788,27 @@ export class SmartDrive extends DeviceBase {
                   'OTADevice',
                   'PacketOTAType',
                   'SmartDrive'
-                ).catch(() => {});
+                ).catch(() => { });
               }
               break;
             case SmartDrive.OTAState.verifying_update:
               this.setOtaActions();
               // check the versions here and notify the
               // user of the success / failure of each
-              // of t he updates!
+              // of the updates!
               // - probably add buttons so they can retry?
               this.otaEndTime = new Date();
-              let msg = '';
-              if (mcuVersion === mcuFWVersion && bleVersion === bleFWVersion) {
-                msg = `SmartDrive OTA Succeeded! ${mcuVersion.toString(
-                  16
-                )}, ${bleVersion.toString(16)}`;
-                console.log(msg);
+              const otaSuccess =
+                // can't do a strict check on MCU since if the SD is
+                // at a higher version than what we were told to use,
+                // it won't take it
+                ((this.doMCUUpdate && mcuVersion >= mcuFWVersion) || !this.doMCUUpdate) &&
+                // can do a strict check on BLE since it will go to
+                // whatever version (even downgrade) that we give it.
+                ((this.doBLEUpdate && bleVersion === bleFWVersion) || !this.doBLEUpdate);
+              if (otaSuccess) {
                 this.otaState = SmartDrive.OTAState.complete;
               } else {
-                msg = `SmartDrive OTA FAILED! ${mcuVersion.toString(
-                  16
-                )}, ${bleVersion.toString(16)}`;
-                console.log(msg);
-                console.log(mcuVersion, mcuFWVersion, bleVersion, bleFWVersion);
                 this.otaState = SmartDrive.OTAState.failed;
                 stopOTA('updates.failed', false, true);
               }
@@ -1010,7 +1011,7 @@ export class SmartDrive extends DeviceBase {
     try {
       this._numStartNotifyTriesLeft = 10;
       await this.startNotifyCharacteristics(SmartDrive.Characteristics);
-    } catch (err) {}
+    } catch (err) { }
   }
 
   handleDisconnect() {

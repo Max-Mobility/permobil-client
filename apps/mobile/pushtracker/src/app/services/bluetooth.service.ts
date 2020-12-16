@@ -404,9 +404,9 @@ export class BluetoothService extends Observable {
     return this._bluetooth.disconnect(args);
   }
 
-  discoverServices(_: any) {}
+  discoverServices(_: any) { }
 
-  discoverCharacteristics(_: any) {}
+  discoverCharacteristics(_: any) { }
 
   startNotifying(opts: any) {
     return this._bluetooth.startNotifying(opts);
@@ -554,7 +554,7 @@ export class BluetoothService extends Observable {
     }
   }
 
-  private onDeviceNameChange(_: any): void {}
+  private onDeviceNameChange(_: any): void { }
 
   private onDeviceUuidChange(_: any): void {
     // TODO: This function doesn't work (android BT impl returns null)
@@ -694,7 +694,7 @@ export class BluetoothService extends Observable {
     p.destroy();
   }
 
-  private onCharacteristicReadRequest(_: any): void {}
+  private onCharacteristicReadRequest(_: any): void { }
 
   // service controls
   private deleteServices() {
@@ -810,14 +810,15 @@ export class BluetoothService extends Observable {
       ? PushTrackerState.disconnected
       : PushTrackerState.unknown;
 
-    let state = BluetoothService.PushTrackers.reduce((ptState, pt) => {
+    const state = BluetoothService.PushTrackers.reduce((ptState, pt) => {
+      let _state: any;
       if (pt && pt.connected) {
         if (pt.version !== 0xff) {
-          state = <any>(
+          _state = <any>(
             this._mergePushTrackerState(ptState as any, PushTrackerState.ready)
           );
         } else {
-          state = <any>(
+          _state = <any>(
             this._mergePushTrackerState(
               ptState as any,
               PushTrackerState.connected
@@ -827,7 +828,7 @@ export class BluetoothService extends Observable {
         // setting true so we know the user has connected to a PT previously
         appSettings.setBoolean(STORAGE_KEYS.HAS_PAIRED_TO_PUSHTRACKER, true);
       } else if (pt && pt.paired) {
-        state = <any>(
+        _state = <any>(
           this._mergePushTrackerState(
             ptState as any,
             PushTrackerState.disconnected
@@ -837,11 +838,11 @@ export class BluetoothService extends Observable {
         // setting true so we know the user has connected to a PT previously
         appSettings.setBoolean(STORAGE_KEYS.HAS_PAIRED_TO_PUSHTRACKER, true);
       } else {
-        state = <any>(
+        _state = <any>(
           this._mergePushTrackerState(ptState as any, PushTrackerState.unknown)
         );
       }
-      return state;
+      return _state;
     }, defaultState);
 
     BluetoothService.pushTrackerStatus.set('state', state);
