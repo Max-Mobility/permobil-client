@@ -675,15 +675,15 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       } else {
         this.smartDrive.canBackNavigate = false;
       }
-      // update the progress if we are complete or up to date
-      if (
-        otaState === SmartDrive.OTAState.already_uptodate ||
-        otaState === SmartDrive.OTAState.complete
-      ) {
-        progress = 100;
-      }
       // make sure we update the navigation
       this.updateBackButton();
+    }
+    // update the progress if we are complete or up to date
+    if (
+      otaState === SmartDrive.OTAState.already_uptodate ||
+      otaState === SmartDrive.OTAState.complete
+    ) {
+      progress = 100;
     }
 
     // now turn the actions into structures for our UI
@@ -1080,7 +1080,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         state: this._translateService.instant(
           'wireless-updates.state.pushtracker-up-to-date'
         ),
-        progress: 0
+        progress: 100
       });
       return;
     }
@@ -1222,15 +1222,15 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       } else {
         this.pushTracker.canBackNavigate = false;
       }
-      if (
-        otaState === PushTracker.OTAState.already_uptodate ||
-        otaState === PushTracker.OTAState.complete
-      ) {
-        // update the progress to be 100 if the update doesn't need to
-        // be done or is complete
-        progress = 100;
-      }
       this.updateBackButton();
+    }
+    if (
+      otaState === PushTracker.OTAState.already_uptodate ||
+      otaState === PushTracker.OTAState.complete
+    ) {
+      // update the progress to be 100 if the update doesn't need to
+      // be done or is complete
+      progress = 100;
     }
 
     // now turn the actions into structures for our UI
