@@ -796,7 +796,7 @@
     },
     "title": "Wireless Updates",
     "titles": {
-      "multiple-pushtracker-updates-required"
+      "multiple-pushtracker-updates-required": "Multiple Updates Required"
     }
   }
 }
