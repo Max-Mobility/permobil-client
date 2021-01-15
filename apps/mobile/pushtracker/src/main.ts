@@ -50,6 +50,19 @@ if (isIOS) {
     extends UIResponder
     implements UIApplicationDelegate {
     static ObjCProtocols = [UIApplicationDelegate];
+
+    applicationDidFinishLaunchingWithOptions(
+      application: UIApplication,
+      launchOptions
+    ): boolean {
+      //   if WCSession.isSupported() {
+      //     let session = WCSession.default()
+      //     session.delegate = self
+      //     session.activate()
+      // }
+      return true;
+    }
+
     applicationDidBecomeActive(application: UIApplication): void {
       const ratings = new Ratings({
         id: 'PUSHTRACKER.RATER.COUNT',
