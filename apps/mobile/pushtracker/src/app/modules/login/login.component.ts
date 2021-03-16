@@ -11,7 +11,8 @@ import {
   Page,
   PercentLength,
   TextField,
-  View
+  View,
+  Dialogs
 } from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
@@ -154,8 +155,18 @@ export class LoginComponent implements OnInit {
           duration: ToastDuration.SHORT,
           position: ToastPosition.CENTER
         }).show();
+      } else if (error.toString().includes('UnknownHostException')) {
+        this._logService.logBreadCrumb(
+          LoginComponent.name,
+          'UnknownHostException thrown. Most likely a poor internet conntection.'
+        );
+        new Toasty({
+          text: this._translateService.instant('general.sign-in-error-3'),
+          duration: ToastDuration.SHORT,
+          position: ToastPosition.CENTER
+        }).show();
       } else {
-        alert({
+        Dialogs.alert({
           title: this._translateService.instant('general.error'),
           message: this._translateService.instant('general.sign-in-error-1'),
           okButtonText: this._translateService.instant('general.ok')

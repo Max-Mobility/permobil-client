@@ -1,11 +1,7 @@
-import { File, isIOS, knownFolders, path, Utils } from '@nativescript/core';
+import { File, Http, isIOS, knownFolders, path, Utils } from '@nativescript/core';
 import { bindingTypeToString, Device, Packet } from '@permobil/core';
 import { differenceInCalendarDays } from 'date-fns';
 import throttle from 'lodash/throttle';
-import {
-  DownloadProgress,
-  RequestOptions
-} from 'nativescript-download-progress';
 import { BluetoothService } from '../services';
 import { DeviceBase } from './device-base.model';
 
@@ -495,7 +491,7 @@ export class PushTracker extends DeviceBase {
                   'OTADevice',
                   'PacketOTAType',
                   'PushTracker'
-                ).catch(_ => {});
+                ).catch(_ => { });
               }
               break;
             case PushTracker.OTAState.updating:
@@ -533,7 +529,7 @@ export class PushTracker extends DeviceBase {
                   'OTADevice',
                   'PacketOTAType',
                   'PushTracker'
-                ).catch(_ => {});
+                ).catch(_ => { });
               } else if (this.ableToSend && haveVersion) {
                 this.otaState = PushTracker.OTAState.verifying_update;
               }
@@ -574,7 +570,7 @@ export class PushTracker extends DeviceBase {
                       this.otaState = PushTracker.OTAState.canceled;
                     }
                   })
-                  .catch(_ => {});
+                  .catch(_ => { });
               } else {
                 // now update the ota state
                 this.otaState = PushTracker.OTAState.canceled;
@@ -619,7 +615,7 @@ export class PushTracker extends DeviceBase {
     }
     console.log(
       `\n\n PushTracker.model Sending ${Type}::${SubType} (${p.toString()}) to ${
-        this.address
+      this.address
       } \n\n`
     );
     const transmitData = p.writableBuffer();
@@ -1024,25 +1020,17 @@ export namespace PushTrackerData {
       }
       console.log('Downloading FW update', f['_filename']);
 
-      const download = new DownloadProgress();
-      const requestOptions: RequestOptions = {
-        method: 'GET',
-        headers: {}
-      };
-      return download
-        .downloadFile(url, requestOptions)
-        .then(file => {
-          const fileData = File.fromPath(file.path).readSync();
-          return {
-            version: PushTrackerData.Firmware.versionStringToByte(f['version']),
-            name: f['_filename'],
-            data: fileData,
-            changes: f['change_notes']
-          };
-        })
-        .catch(error => {
-          console.error('download error', url, error);
-        });
+      console.log('starting http get file...');
+      return Http.getFile(url).then(file => {
+        console.log('http get file:', file);
+        const fileData = File.fromPath(file.path).readSync();
+        return {
+          version: PushTrackerData.Firmware.versionStringToByte(f['version']),
+          name: f['_filename'],
+          data: fileData,
+          changes: f['change_notes']
+        };
+      });
     }
 
     export function versionStringToByte(version: string): number {
@@ -1055,21 +1043,25 @@ export namespace PushTrackerData {
       return path.join(firmwares.path, firmware);
     }
 
-    export function loadFirmware(
-      id: any,
-      version: number,
-      firmwareName: string,
-      fileName: string,
-      changes: string
-    ) {
+    export function loadFirmware({ id, version, firmware, filename, changes }: {
+      id?: any,
+      version?: number,
+      firmware?: string,
+      filename?: string,
+      changes?: any
+    }) {
+      let _changes: any = { 'en': [] };
+      try {
+        _changes = JSON.parse(changes);
+      } catch (err) {
+        _changes = changes;
+      }
       return {
         [PushTrackerData.Firmware.IdName]: id,
         [PushTrackerData.Firmware.VersionName]: version,
-        [PushTrackerData.Firmware.FirmwareName]: firmwareName,
-        [PushTrackerData.Firmware.FileName]: fileName,
-        [PushTrackerData.Firmware.ChangesName]: changes
-          ? JSON.parse(changes)
-          : []
+        [PushTrackerData.Firmware.FirmwareName]: firmware,
+        [PushTrackerData.Firmware.FileName]: filename,
+        [PushTrackerData.Firmware.ChangesName]: _changes
       };
     }
 
@@ -1077,17 +1069,21 @@ export namespace PushTrackerData {
       version: number,
       firmwareName: string,
       fileName?: string,
-      changes?: string[]
+      changes?: any
     ) {
       const fname =
         fileName || PushTrackerData.Firmware.getFileName(firmwareName);
+      let _changes = '{"en": []}';
+      try {
+        _changes = JSON.stringify(changes);
+      } catch (err) {
+        console.log('error stringifying changes:', err);
+      }
       return {
         [PushTrackerData.Firmware.VersionName]: version,
         [PushTrackerData.Firmware.FirmwareName]: firmwareName,
         [PushTrackerData.Firmware.FileName]: fname,
-        [PushTrackerData.Firmware.ChangesName]: changes
-          ? JSON.stringify(changes)
-          : '[]'
+        [PushTrackerData.Firmware.ChangesName]: _changes
       };
     }
   }

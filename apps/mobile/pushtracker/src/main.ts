@@ -34,12 +34,12 @@ const SAVED_THEME = ApplicationSettings.getString(
 );
 if (SAVED_THEME === APP_THEMES.DEFAULT) {
   themes.applyThemeCss(
-    require('./app/scss/theme-default.scss').toString(),
+    require('./app/scss/theme-default.scss').default.toString(),
     'theme-default.scss'
   );
 } else if (SAVED_THEME === APP_THEMES.DARK) {
   themes.applyThemeCss(
-    require('./app/scss/theme-dark.scss').toString(),
+    require('./app/scss/theme-dark.scss').default.toString(),
     'theme-dark.scss'
   );
 }
@@ -50,6 +50,19 @@ if (isIOS) {
     extends UIResponder
     implements UIApplicationDelegate {
     static ObjCProtocols = [UIApplicationDelegate];
+
+    applicationDidFinishLaunchingWithOptions(
+      application: UIApplication,
+      launchOptions
+    ): boolean {
+      //   if WCSession.isSupported() {
+      //     let session = WCSession.default()
+      //     session.delegate = self
+      //     session.activate()
+      // }
+      return true;
+    }
+
     applicationDidBecomeActive(application: UIApplication): void {
       const ratings = new Ratings({
         id: 'PUSHTRACKER.RATER.COUNT',

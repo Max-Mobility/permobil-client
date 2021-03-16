@@ -15,7 +15,6 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { APP_KEY, APP_SECRET } from '@permobil/nativescript';
-// import { Sentry } from 'nativescript-sentry';
 import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService } from './services';
 import { applyTheme } from './utils';
@@ -34,6 +33,10 @@ registerElement(
 registerElement(
   'PullToRefresh',
   () => require('@nstudio/nativescript-pulltorefresh').PullToRefresh
+);
+registerElement(
+  'HTMLLabel',
+  () => require('@nativescript-community/ui-label').Label
 );
 
 @Component({
