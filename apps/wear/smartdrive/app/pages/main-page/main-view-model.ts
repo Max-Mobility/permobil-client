@@ -125,7 +125,6 @@ export class MainViewModel extends Observable {
 
   private _showingModal: boolean = false;
 
-  // private currentSignalStrength: string = '--';
   private currentSpeed: number = 0.0;
   private estimatedDistance: number = 0.0;
   private watchIsCharging: boolean = false;
@@ -195,9 +194,6 @@ export class MainViewModel extends Observable {
   private _bodySensorEnabled: boolean = false;
   private _tapSensorEnabled: boolean = false;
 
-  // private _rssi = 0;
-  private rssiIntervalId = null;
-
   // permissions for the app
   private permissionsNeeded = [
     android.Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -266,7 +262,6 @@ export class MainViewModel extends Observable {
       Log.D('init finished in the main-view-model');
       // According to Ben: only check for firmware updates on app startup:
       this._checkForUpdates();
-      // TODO: schedule notifications here
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
@@ -628,7 +623,6 @@ export class MainViewModel extends Observable {
           // enable the tap sensor
           const didEnableTapSensor = this._enableTapSensor();
           if (!didEnableTapSensor) {
-            // TODO: translate this alert!
             Dialogs.alert({
               title: L('failures.title'),
               message: L('failures.could-not-enable-tap-sensor'),
@@ -655,7 +649,6 @@ export class MainViewModel extends Observable {
         }
       } catch (err) {
         Sentry.captureException(err);
-        // Log.E(`Caught error, disabling power assist: ${err}`);
         this.disablePowerAssist();
       }
     } else {
@@ -939,7 +932,7 @@ export class MainViewModel extends Observable {
         // @link - https://github.com/Max-Mobility/permobil-client/pull/819#pullrequestreview-391073852
         // if we get the permissions then we update the serial number
         // if no permission just log breadcrumb and return false
-        const gotPermissions = await requestPermissions(neededPermissions)
+        return await requestPermissions(neededPermissions)
           .then(() => {
             this._updateSerialNumber();
 
@@ -960,7 +953,6 @@ export class MainViewModel extends Observable {
             );
             return false;
           });
-        return gotPermissions;
       }
 
       return true;
@@ -1270,9 +1262,8 @@ export class MainViewModel extends Observable {
 
     Application.on(Application.lowMemoryEvent, () => {
       sentryBreadCrumb('*** appLowMemory ***');
-      // TODO: determine if we need to stop for this - we see this
-      // even even when the app is using very little memory
-      // this.disablePowerAssist();
+      // currently we don't do anything here, it's mostly for logging
+      // purposes
     });
 
     Application.on(
@@ -1412,13 +1403,11 @@ export class MainViewModel extends Observable {
           com.permobil.pushtracker.AuthorizationHandler.AUTHORIZATION_DATA_INDEX
         );
         authCursor.close();
-        // Log.D('Got token:', token);
         if (token !== null && token.length) {
           // we have a valid token
           authorization = token;
         }
       } else {
-        // Log.E('Could not get authCursor to move to first:', authCursor);
       }
       const idCursor = contentResolver.query(
         com.permobil.pushtracker.AuthorizationHandler.USER_ID_URI,
@@ -1433,13 +1422,12 @@ export class MainViewModel extends Observable {
           com.permobil.pushtracker.AuthorizationHandler.USER_ID_DATA_INDEX
         );
         idCursor.close();
-        // Log.D('Got uid:', uid);
         if (uid !== null && uid.length) {
           // we have a valid token
           userId = uid;
         }
       } else {
-        // Log.E('Could not get idCursor to move to first:', idCursor);
+        // do nothing
       }
     } catch (err) {
       Log.E('error getting auth:', err);
@@ -1517,11 +1505,8 @@ export class MainViewModel extends Observable {
       }
       Log.D('Got valid authorization!');
     }
-    // sentryBreadCrumb('Network available - sending errors');
     await this._sendErrorsToServer(10);
-    // sentryBreadCrumb('Network available - sending info');
     await this._sendInfosToServer(10);
-    // sentryBreadCrumb('Network available - sending settings');
     await this._sendSettingsToServer();
   }
 
@@ -1764,8 +1749,6 @@ export class MainViewModel extends Observable {
     } catch (err) {
       this._bodySensorEnabled = false;
       Sentry.captureException(err);
-      // Log.E('Error starting the body sensor', err);
-      // Utils.setTimeout(this._enableBodySensor.bind(this), 500);
     }
     return this._bodySensorEnabled;
   }
@@ -1782,7 +1765,6 @@ export class MainViewModel extends Observable {
     } catch (err) {
       this._tapSensorEnabled = false;
       Sentry.captureException(err);
-      // Log.E('Error starting the tap sensor', err);
     }
     return this._tapSensorEnabled;
   }
@@ -1795,7 +1777,6 @@ export class MainViewModel extends Observable {
       );
     } catch (err) {
       Sentry.captureException(err);
-      // Log.E('Error disabling the tap sensor:', err);
     }
   }
 
@@ -1806,7 +1787,6 @@ export class MainViewModel extends Observable {
       this._sensorService.stopAllDeviceSensors();
     } catch (err) {
       Sentry.captureException(err);
-      // Log.E('Error disabling the device sensors:', err);
     }
   }
 
@@ -1836,7 +1816,6 @@ export class MainViewModel extends Observable {
           value: value
         };
       });
-      // sentryBreadCrumb('Highest Battery Value:', maxBattery);
       this.batteryChartMaxValue = maxBattery.toFixed(0);
       this.batteryChartData = batteryData;
     } catch (err) {
@@ -1880,7 +1859,6 @@ export class MainViewModel extends Observable {
         // @ts-ignore
         if (data.value) data.value += '%';
       });
-      // sentryBreadCrumb('Highest Distance Value:', maxDist);
       if (this._settingsService.settings.units === 'Metric') {
         this.distanceChartMaxValue = (maxDist * 1.609).toFixed(1);
       } else {
@@ -1939,7 +1917,6 @@ export class MainViewModel extends Observable {
 
   private async _updateChartData() {
     try {
-      // sentryBreadCrumb('Updating Chart Data / Display');
       const sdData = (await this._getUsageInfoFromDatabase(6)) as any[];
       // keep track of the most recent day so we know when to update
       this._lastChartDay = new Date(last(sdData).date);
@@ -2380,10 +2357,6 @@ export class MainViewModel extends Observable {
     this._updatePowerAssistRing();
     this.hasSentSettingsToSmartDrive = false;
     this._onceSendSmartDriveSettings = once(this._sendSmartDriveSettings);
-    if (this.rssiIntervalId) {
-      clearInterval(this.rssiIntervalId);
-      this.rssiIntervalId = null;
-    }
     if (this.powerAssistActive) {
       // we've connected - set the timeout to be the user-configured
       // timeout
@@ -2391,19 +2364,9 @@ export class MainViewModel extends Observable {
         this._settingsService.watchSettings.powerAssistTimeoutMinutes
       );
     }
-    /*
-    this.rssiIntervalId = setInterval(
-      this._readSmartDriveSignalStrength.bind(this),
-      this.RSSI_INTERVAL_MS
-    );
-    */
   }
 
   private async _onSmartDriveDisconnect() {
-    if (this.rssiIntervalId) {
-      clearInterval(this.rssiIntervalId);
-      this.rssiIntervalId = null;
-    }
     // make sure to stop any pending taps
     this._stopTaps();
     // handle the case that the motor is on
@@ -2431,28 +2394,15 @@ export class MainViewModel extends Observable {
   }
 
   private async _onSmartDriveError(args: any) {
-    // sentryBreadCrumb('_onSmartDriveError event');
     const errorType = args.data.errorType;
     const errorId = args.data.errorId;
     // save the error into the database
     this._saveErrorToDatabase(errorType, errorId);
   }
 
-  // private _readSmartDriveSignalStrength() {
-  //   if (this.smartDrive && this.smartDrive.connected) {
-  //     this._bluetoothService
-  //       .readRssi(this.smartDrive.address)
-  //       .then((args: any) => {
-  //         this._rssi = (this._rssi * 9) / 10 + (args.value * 1) / 10;
-  //         this.currentSignalStrength = `${this._rssi.toFixed(1)}`;
-  //       });
-  //   }
-  // }
-
   private async _onMotorInfo(args: any) {
     // send current settings to SD
     this._onceSendSmartDriveSettings();
-    // sentryBreadCrumb('_onMotorInfo event');
     const motorInfo = args.data.motorInfo;
 
     // update motor state
@@ -2505,7 +2455,6 @@ export class MainViewModel extends Observable {
       DataKeys.SD_DISTANCE_DRIVE
     );
 
-    // sentryBreadCrumb('_onDistance event');
     const coastDistance = args.data.coastDistance;
     const driveDistance = args.data.driveDistance;
 
@@ -2535,9 +2484,6 @@ export class MainViewModel extends Observable {
   }
 
   private async _onSmartDriveVersion() {
-    // sentryBreadCrumb('_onSmartDriveVersion event');
-    // const mcuVersion = args.data.mcu;
-
     // save the updated SmartDrive version info
     ApplicationSettings.setNumber(
       DataKeys.SD_VERSION_MCU,
@@ -2871,7 +2817,6 @@ export class MainViewModel extends Observable {
           total: totalDiff
         };
       });
-      // Log.D('saving data', data);
       const serialized = JSON.stringify(data);
       // there is only ever one record in this table, so we always
       // insert - the db will perform upsert for us.
@@ -2979,7 +2924,6 @@ export class MainViewModel extends Observable {
         }
       } catch (err) {
         this._handleAuthException(err);
-        // Sentry.captureException(err);
         Log.E('Error sending errors to server:', err);
       }
     }
@@ -3028,7 +2972,6 @@ export class MainViewModel extends Observable {
       return Promise.all(updatePromises);
     } catch (err) {
       this._handleAuthException(err);
-      // Sentry.captureException(err);
       Log.E('Error sending errors to server:', err);
     }
   }
@@ -3072,7 +3015,6 @@ export class MainViewModel extends Observable {
       return Promise.all(updatePromises);
     } catch (e) {
       this._handleAuthException(e);
-      // Sentry.captureException(e);
       Log.E('Error sending infos to server:', e);
     }
   }
@@ -3113,7 +3055,6 @@ export class MainViewModel extends Observable {
         this.chinSize = widthPixels - heightPixels;
       }
     }
-    // Log.D('chinsize:', this.chinSize);
   }
 
   private async _checkForUpdates() {
