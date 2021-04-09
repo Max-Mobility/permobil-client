@@ -1757,7 +1757,8 @@ export class MainViewModel extends Observable {
         this._bodySensorEnabled = this._sensorService.startDeviceSensor(
           android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT,
           this.SENSOR_DELAY_US,
-          this.MAX_REPORTING_INTERVAL_US
+          this.MAX_REPORTING_INTERVAL_US,
+          true // is a wake up sensor
         );
       }
     } catch (err) {
@@ -2052,7 +2053,7 @@ export class MainViewModel extends Observable {
     this._showingModal = true;
 
     // Ensuring that we have the currentPage so this doesn't end up causing a crash to show the scanning dialog
-    const page = Frame.topmost() ?.currentPage;
+    const page = Frame.topmost()?.currentPage;
     if (!page) {
       const ex = new Error(
         'The currentPage for the frame was not found, so the scanning modal cannot be opened.'
@@ -2586,9 +2587,9 @@ export class MainViewModel extends Observable {
       this._saveSmartDriveStateToLS();
       // now save to database
       const driveDistance =
-        args.driveDistance || this.smartDrive ?.driveDistance || 0;
+        args.driveDistance || this.smartDrive?.driveDistance || 0;
       const coastDistance =
-        args.coastDistance || this.smartDrive ?.coastDistance || 0;
+        args.coastDistance || this.smartDrive?.coastDistance || 0;
       const battery = args.battery || 0;
       if (driveDistance === 0 && coastDistance === 0 && battery === 0) {
         return;
@@ -2632,8 +2633,8 @@ export class MainViewModel extends Observable {
     if (!drive || !coast) {
       // try to use our smartdrive's existing drive / coast to
       // initialize the data, fall back on 0 if necessary
-      drive = this.smartDrive ?.driveDistance || 0;
-      coast = this.smartDrive ?.coastDistance || 0;
+      drive = this.smartDrive?.driveDistance || 0;
+      coast = this.smartDrive?.coastDistance || 0;
     }
     const newEntry = SmartDriveData.Info.newInfo(
       undefined,
@@ -3132,8 +3133,8 @@ export class MainViewModel extends Observable {
     // we may have already downloaded the updated info, but the user
     // hasn't updated their smartdrive yet
     const localInfo = updateInfo.currentVersions;
-    const bleVersion = localInfo['SmartDriveBLE.ota'] ?.version;
-    const mcuVersion = localInfo['SmartDriveMCU.ota'] ?.version;
+    const bleVersion = localInfo['SmartDriveBLE.ota']?.version;
+    const mcuVersion = localInfo['SmartDriveMCU.ota']?.version;
     const isUpToDate =
       this.smartDrive.isMcuUpToDate(mcuVersion) &&
       this.smartDrive.isBleUpToDate(bleVersion);
@@ -3151,7 +3152,7 @@ export class MainViewModel extends Observable {
       });
       if (performUpdate) {
         sentryBreadCrumb('User asked to update their smartdrive.');
-        const page = Frame.topmost() ?.currentPage;
+        const page = Frame.topmost()?.currentPage;
         if (!page) {
           const ex = new Error(
             'The currentPage for the frame was not found, so the updates page cannot be opened.'

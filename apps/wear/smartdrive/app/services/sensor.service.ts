@@ -173,12 +173,14 @@ export class SensorService extends Observable {
   startDeviceSensor(
     sensorType: number,
     delay = SensorDelay.GAME,
-    maxReportingDelay: number = null
+    maxReportingDelay: number = null,
+    isWakeUpSensor: boolean = undefined
   ): boolean {
     const sensor = this.androidSensorClass.startSensor(
       sensorType,
       delay,
-      maxReportingDelay
+      maxReportingDelay,
+      isWakeUpSensor
     );
     if (sensor) this.registeredSensors.push(sensor);
     return sensor !== null;
