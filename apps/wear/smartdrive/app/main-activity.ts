@@ -48,6 +48,22 @@ class MainActivity
     );
   }
 
+  onKeyDown(keyCode, event) {
+    console.log('got key code:', keyCode);
+    // Called to inform an activity that whatever decomposition it has sent to Sidekick
+    // is no longer valid and should be re-sent before enabling ambient offload.
+    const eventData = {
+      eventName: 'onKeyDown',
+      object: null,
+      data: {
+        keyCode: keyCode,
+        event: event
+      }
+    };
+    Application.notify(eventData);
+    return true;
+  }
+
   onSaveInstanceState(outState: android.os.Bundle): void {
     this._callbacks.onSaveInstanceState(
       this,

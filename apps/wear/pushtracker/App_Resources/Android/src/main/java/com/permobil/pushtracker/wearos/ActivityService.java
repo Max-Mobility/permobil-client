@@ -87,9 +87,7 @@ public class ActivityService
     private Location mLastKnownLocation = null;
     private LocationManager mLocationManager;
     private SensorManager mSensorManager;
-    private Sensor mLinearAcceleration;
-    private Sensor mGravity;
-    private Sensor mOffBodyDetect;
+    private Sensor mAccelerometer;
 
     // for sending data to the app and the backend
     private HandlerThread mHandlerThread;
@@ -103,7 +101,6 @@ public class ActivityService
     public boolean isServiceRunning = false;
 
     // activity detection
-    private boolean hasData = false;
     private float[] activityDetectorData = new float[ActivityDetector.InputSize];
     public boolean personIsActive = false;
     public boolean watchBeingWorn = false;
@@ -631,12 +628,8 @@ public class ActivityService
 
     private void registerAllSensors() {
         breadcrumb("registerAllSensors()");
-        // register the body sensor so we get events when the user
-        // wears the watch and takes it off
-        this.registerBodySensor(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
         // turn on accelerometer sensing
         this.registerAccelerometer(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
-        this.registerGravity(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
     }
 
     private void onWristCallback() {
@@ -653,13 +646,11 @@ public class ActivityService
                                             );
     */
         this.registerAccelerometer(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
-        this.registerGravity(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
     }
 
     private void offWristCallback() {
         // turn off activity sensors
         unregisterAccelerometer();
-        unregisterGravity();
         // turn off location sensing
         // mLocationManager.removeUpdates(this);
     }
@@ -765,28 +756,22 @@ public class ActivityService
             lastCheckTimeMs = now;
         }
         // handle event
-        updateActivity(event);
         updateDetectorInputs(event);
         // detect activity
-        if (canRunDetector()) {
-            // reset flags for running detector
-            hasData = false;
-            // use the data to detect activities
-            ActivityDetector.Detection detection =
-                    activityDetector.detectActivity(activityDetectorData, event.timestamp);
-            boolean hasNewActivity = handleDetection(detection);
-            // reset the data
-            clearDetectorInputs();
-            if (hasNewActivity) {
-                // remove all callbacks
-                mHandler.removeCallbacksAndMessages(null);
-                // post to the send runnable
-                mHandler.postDelayed(mSendTask, SEND_DATA_PERIOD_MS);
-                // post to the push runnable
-                mHandler.postDelayed(mPushTask, PUSH_DATA_PERIOD_MS);
-                // notify the user if they've achieved records / warnings
-                checkNotifications();
-            }
+        ActivityDetector.Detection detection =
+          activityDetector.detectActivity(activityDetectorData, event.timestamp);
+        boolean hasNewActivity = handleDetection(detection);
+        // reset the detector data
+        clearDetectorInputs();
+        if (hasNewActivity) {
+            // remove all callbacks
+            mHandler.removeCallbacksAndMessages(null);
+            // post to the send runnable
+            mHandler.postDelayed(mSendTask, SEND_DATA_PERIOD_MS);
+            // post to the push runnable
+            mHandler.postDelayed(mPushTask, PUSH_DATA_PERIOD_MS);
+            // notify the user if they've achieved records / warnings
+            checkNotifications();
         }
     }
 
@@ -795,61 +780,34 @@ public class ActivityService
         // TODO Auto-generated method stub
     }
 
-    boolean canRunDetector() {
-        return hasData; // && (watchBeingWorn || disableWearCheck);
-    }
-
     void clearDetectorInputs() {
         for (int i = 0; i < ActivityDetector.InputSize; i++) {
             activityDetectorData[i] = 0;
         }
     }
 
-    private long numGrav = 0;
-    private long numAccl = 0;
-    private static final long LOG_TIME_MS = 1000;
-    private long lastLogTimeMs = 0;
-    private List<float[]> mAccList = new ArrayList<float[]>();
-    private List<float[]> mGravList = new ArrayList<float[]>();
-
+    // used to filter raw accelerometer data into linear acceleration
+    // data
+    private float[] _gravity = new float[3];
+    private float[] _accel = new float[3];
+    private float _alpha = 0.8f;
 
     void updateDetectorInputs(SensorEvent event) {
         int sensorType = event.sensor.getType();
-        float[] sensorValue = new float[3];
-        if (event.values.length == 3) {
-            sensorValue[0] = event.values[0];
-            sensorValue[1] = event.values[1];
-            sensorValue[2] = event.values[2];
-        }
-        if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
-            numAccl++;
-            mAccList.add(sensorValue);
-        } else if (sensorType == Sensor.TYPE_GRAVITY) {
-            numGrav++;
-            mGravList.add(sensorValue);
-        }
-
-        if (mAccList.size() > 0 && mGravList.size() > 0) {
+        if (sensorType == Sensor.TYPE_ACCELEROMETER) {
+            // manually filter these values to get the same as what
+            // LINEAR_ACCELERATION would have given - compute gravity
+            _gravity[0] = _alpha * _gravity[0] + (1 - _alpha) * event.values[0];
+            _gravity[1] = _alpha * _gravity[1] + (1 - _alpha) * event.values[1];
+            _gravity[2] = _alpha * _gravity[2] + (1 - _alpha) * event.values[2];
+            // compute accel
+            _accel[0] = event.values[0] - _gravity[0];
+            _accel[1] = event.values[1] - _gravity[1];
+            _accel[2] = event.values[2] - _gravity[2];
+            // copy accel and gravity into the detector data list
             for (int i = 0; i < 3; i++) {
-                activityDetectorData[i + ActivityDetector.InputAcclOffset] = mAccList.get(0)[i];
-                activityDetectorData[i + ActivityDetector.InputGravOffset] = mGravList.get(0)[i];
-            }
-            hasData = true;
-            mAccList.remove(0);
-            mGravList.remove(0);
-        }
-
-    }
-
-    void updateActivity(SensorEvent event) {
-        // check if the user is wearing the watch
-        if (event.sensor.getType() == Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT) {
-            // 1.0 => device is on body, 0.0 => device is off body
-            watchBeingWorn = (event.values[0] != 0.0);
-            if (watchBeingWorn) {
-                // onWristCallback();
-            } else {
-                // offWristCallback();
+                activityDetectorData[i + ActivityDetector.InputAcclOffset] = _accel[i];
+                activityDetectorData[i + ActivityDetector.InputGravOffset] = _gravity[i];
             }
         }
     }
@@ -861,54 +819,22 @@ public class ActivityService
 
     private void registerAccelerometer(int delay, int reportingLatency) {
         if (mSensorManager != null) {
-            mLinearAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-            if (mLinearAcceleration != null)
-                mSensorManager.registerListener(this, mLinearAcceleration, delay, reportingLatency);
+            mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            if (mAccelerometer != null)
+                mSensorManager.registerListener(this, mAccelerometer, delay, reportingLatency);
         }
     }
 
     private void unregisterAccelerometer() {
         if (mSensorManager != null) {
-            if (mLinearAcceleration != null)
-                mSensorManager.unregisterListener(this, mLinearAcceleration);
-        }
-    }
-
-    private void registerGravity(int delay, int reportingLatency) {
-        if (mSensorManager != null) {
-            mGravity = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-            if (mGravity != null)
-                mSensorManager.registerListener(this, mGravity, delay, reportingLatency);
-        }
-    }
-
-    private void unregisterGravity() {
-        if (mSensorManager != null) {
-            if (mGravity != null)
-                mSensorManager.unregisterListener(this, mGravity);
-        }
-    }
-
-    private void registerBodySensor(int delay, int reportingLatency) {
-        if (mSensorManager != null) {
-            mOffBodyDetect = mSensorManager.getDefaultSensor(Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT);
-            if (mOffBodyDetect != null)
-                mSensorManager.registerListener(this, mOffBodyDetect, delay, reportingLatency);
-        }
-    }
-
-    private void unregisterBodySensor() {
-        if (mSensorManager != null) {
-            if (mOffBodyDetect != null)
-                mSensorManager.unregisterListener(this, mOffBodyDetect);
+            if (mAccelerometer != null)
+                mSensorManager.unregisterListener(this, mAccelerometer);
         }
     }
 
     private void unregisterDeviceSensors() {
         breadcrumb("unregisterDeviceSensors()");
-        unregisterBodySensor();
         unregisterAccelerometer();
-        unregisterGravity();
     }
 
     private PendingIntent getAlarmIntent(int intentFlag) {
