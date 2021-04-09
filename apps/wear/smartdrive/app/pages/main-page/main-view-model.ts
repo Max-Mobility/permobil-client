@@ -1408,6 +1408,7 @@ export class MainViewModel extends Observable {
           authorization = token;
         }
       } else {
+        // do nothing
       }
       const idCursor = contentResolver.query(
         com.permobil.pushtracker.AuthorizationHandler.USER_ID_URI,
@@ -1692,7 +1693,6 @@ export class MainViewModel extends Observable {
       } catch (err) {
         Sentry.captureException(err);
         Log.E('could not send tap', err);
-        // this.disablePowerAssist();
       }
     }
     // do we have any remaining taps to send?
@@ -2179,7 +2179,6 @@ export class MainViewModel extends Observable {
         if (!didEnable) {
           // we could not enable the radio!
           sentryBreadCrumb('Unable to enable the Bluetooth radio.');
-          // throw 'BLE OFF';
           this._ensuringBluetoothCapabilities = false;
           return false;
         }
